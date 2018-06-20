@@ -3,10 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "ISidechainSubWallet.h"
-#include "nlohmann/json.hpp"
-
-using namespace Elastos::SDK;
+#include "Elastos.Wallet.h"
 
 
 //"(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
@@ -23,8 +20,9 @@ static jstring JNICALL nativeSendWithdrawTransaction(JNIEnv *env, jobject clazz,
     const char* memo = env->GetStringUTFChars(jmemo, NULL);
 
     ISidechainSubWallet* wallet = (ISidechainSubWallet*)jSideSubWalletProxy;
-    std::string result = wallet->SendWithdrawTransaction(fromAddress, toAddress, amount, mainchainAccounts, mainchainAmounts
-                , mainchainIndexs, fee, payPassword, memo);
+    String result;
+    wallet->SendWithdrawTransaction(String(fromAddress), String(toAddress), amount, String(mainchainAccounts)
+            , String(mainchainAmounts), String(mainchainIndexs), fee, String(payPassword), String(memo), &result);
 
     env->ReleaseStringUTFChars(jfromAddress, fromAddress);
     env->ReleaseStringUTFChars(jtoAddress, toAddress);
@@ -34,7 +32,7 @@ static jstring JNICALL nativeSendWithdrawTransaction(JNIEnv *env, jobject clazz,
     env->ReleaseStringUTFChars(jpayPassword, payPassword);
     env->ReleaseStringUTFChars(jmemo, memo);
 
-    return env->NewStringUTF(result.c_str());
+    return env->NewStringUTF(result.string());
 }
 
 

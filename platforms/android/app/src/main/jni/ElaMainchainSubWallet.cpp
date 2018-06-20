@@ -3,11 +3,8 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "IMainchainSubWallet.h"
-#include "nlohmann/json.hpp"
+#include "Elastos.Wallet.h"
 
-using namespace Elastos::SDK;
-extern const char* ToStringFromJson(nlohmann::json jsonValue);
 
 //"(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeSendDepositTransaction(JNIEnv *env, jobject clazz, jlong jMainSubWalletProxy,
@@ -23,8 +20,9 @@ static jstring JNICALL nativeSendDepositTransaction(JNIEnv *env, jobject clazz, 
     const char* memo = env->GetStringUTFChars(jmemo, NULL);
 
     IMainchainSubWallet* wallet = (IMainchainSubWallet*)jMainSubWalletProxy;
-    nlohmann::json txidJson = wallet->SendDepositTransaction(fromAddress, toAddress, amount, sidechainAccounts,
-                    sidechainAmounts, sidechainIndexs, fee, payPassword, memo);
+    String txidJson;
+    wallet->SendDepositTransaction(String(fromAddress), String(toAddress), amount, String(sidechainAccounts),
+                   String(sidechainAmounts), String(sidechainIndexs), fee, String(payPassword), String(memo), &txidJson);
 
     env->ReleaseStringUTFChars(jfromAddress, fromAddress);
     env->ReleaseStringUTFChars(jtoAddress, toAddress);
@@ -34,7 +32,7 @@ static jstring JNICALL nativeSendDepositTransaction(JNIEnv *env, jobject clazz, 
     env->ReleaseStringUTFChars(jpayPassword, payPassword);
     env->ReleaseStringUTFChars(jmemo, memo);
 
-    return env->NewStringUTF(ToStringFromJson(txidJson));
+    return env->NewStringUTF(txidJson.string());
 }
 
 

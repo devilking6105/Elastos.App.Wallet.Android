@@ -10,9 +10,8 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
-include_directories(src/main/jni/wallet/include)
-link_directories(src/main/jni/wallet/lib)
-
+include_directories(src/main/jni/elastos/include)
+link_directories(src/main/jni/elastos/libs)
 add_library( # Sets the name of the library.
              elastoswallet
 
@@ -20,14 +19,14 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             src/main/jni/ElaSpv.cpp
+             src/main/jni/ElasotsWalletDemo.cpp
              src/main/jni/ElaEnviroment.cpp
              src/main/jni/ElaMasterWalletManager.cpp
              src/main/jni/ElaMasterWallet.cpp
              src/main/jni/ElaSubWallet.cpp
              src/main/jni/ElaMainchainSubWallet.cpp
              src/main/jni/ElaSidechainSubWallet.cpp
-             src/main/jni/ElaIdChainSubWallet.cpp )
+             src/main/jni/ElaIdChainSubWallet.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -49,6 +48,9 @@ find_library( # Sets the name of the path variable.
 target_link_libraries( # Specifies the target library.
                        elastoswallet
                        spvsdk
+                       Elastos.Runtime
+                       Elastos.Runtime_static
+                       Elastos.Wallet
 
                        # Links the target library to the log library
                        # included in the NDK.

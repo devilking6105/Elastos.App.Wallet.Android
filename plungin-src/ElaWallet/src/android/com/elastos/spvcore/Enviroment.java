@@ -1,6 +1,8 @@
 
 package com.elastos.spvcore;
 
+import android.util.Log;
+
 
 /**
  * Enviroment
@@ -20,6 +22,7 @@ public class Enviroment {
 
     public static IMasterWalletManager GetMasterWalletManager() {
         long proxy = nativeGetMasterWalletManager();
+        Log.d("JS-Enviroment", "GetMasterWalletManager=============proxy="+proxy);
         return new IMasterWalletManager(proxy);
     }
 

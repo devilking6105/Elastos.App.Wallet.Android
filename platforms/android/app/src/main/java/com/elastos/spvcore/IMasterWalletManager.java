@@ -29,9 +29,12 @@ public class IMasterWalletManager {
     public ArrayList<IMasterWallet> GetAllMasterWallets() {
         long[] masterWalletProxies = nativeGetAllMasterWallets(mManagerProxy);
         ArrayList<IMasterWallet> list = new ArrayList<IMasterWallet>();
-        for (int i = 0; i < masterWalletProxies.length; i++) {
-            list.add(new IMasterWallet(masterWalletProxies[i]));
+        if (masterWalletProxies != null) {
+            for (int i = 0; i < masterWalletProxies.length; i++) {
+                list.add(new IMasterWallet(masterWalletProxies[i]));
+            }
         }
+
         return list;
     }
 

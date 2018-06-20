@@ -3,12 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "IIdChainSubWallet.h"
-#include "nlohmann/json.hpp"
-
-using namespace Elastos::SDK;
-
-extern const char* ToStringFromJson(nlohmann::json jsonValue);
+#include "Elastos.Wallet.h"
 
 //"(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeSendIdTransaction(JNIEnv *env, jobject clazz, jlong jIdSubWalletProxy, jstring jfromAddress,
@@ -22,7 +17,9 @@ static jstring JNICALL nativeSendIdTransaction(JNIEnv *env, jobject clazz, jlong
     const char* memo = env->GetStringUTFChars(jmemo, NULL);
 
     IIdChainSubWallet* wallet = (IIdChainSubWallet*)jIdSubWalletProxy;
-    nlohmann::json txidJson = wallet->SendIdTransaction(fromAddress, toAddress, amount, payloadJson, programJson, fee, payPassword, memo);
+    String txidJson;
+    wallet->SendIdTransaction(String(fromAddress), String(toAddress), amount, String(payloadJson)
+            , String(programJson), fee, String(payPassword), String(memo), &txidJson);
 
     env->ReleaseStringUTFChars(jfromAddress, fromAddress);
     env->ReleaseStringUTFChars(jtoAddress, toAddress);
@@ -31,7 +28,7 @@ static jstring JNICALL nativeSendIdTransaction(JNIEnv *env, jobject clazz, jlong
     env->ReleaseStringUTFChars(jpayPassword, payPassword);
     env->ReleaseStringUTFChars(jmemo, memo);
 
-    return env->NewStringUTF(ToStringFromJson(txidJson));
+    return env->NewStringUTF(txidJson.string());
 }
 
 

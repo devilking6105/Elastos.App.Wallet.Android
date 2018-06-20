@@ -48,6 +48,7 @@ public class Wallet extends CordovaPlugin {
         Enviroment.InitializeRootPath(mRootPath);
         mWalletManager = Enviroment.GetMasterWalletManager();
         mMasterWalletList = mWalletManager.GetAllMasterWallets();
+        Log.d("JS-Wallet", "initialize=============mMasterWalletList="+mMasterWalletList);
         if (mMasterWalletList != null && mMasterWalletList.size() > 0) {
             mCurrentMasterWallet = mMasterWalletList.get(0);
         }
