@@ -18,7 +18,7 @@ using namespace Elastos;
 static const _ELASTOS ClassID ECLSID_CWalletEnviroment = {
     {0xDDA12041,0x080C,0x2940,{0x6F,0x40,0xF9,0xCD,0x57,0xE7,0x0F,0x07}},
     (char *)c_pElastos_WalletUunm,
-    0x25e394b0 };
+    0x49f744f4 };
 #endif // __CLSID_CWalletEnviroment_DEFINED__
 
 #ifndef __ECLSID_CWalletEnviromentClassObject_DEFINED__
@@ -26,7 +26,7 @@ static const _ELASTOS ClassID ECLSID_CWalletEnviroment = {
 static const _ELASTOS ClassID ECLSID_CWalletEnviromentClassObject = {
     {0x4CE12B41,0x080C,0x2940,{0x6F,0x40,0xF9,0xCD,0x57,0x27,0x03,0x93}},
     (char *)c_pElastos_WalletUunm,
-    0x25e394b0 };
+    0x49f744f4 };
 #endif // __CLSID_CWalletEnviromentClassObject_DEFINED__
 
 #ifndef __EIID_ISubWalletListener_DEFINED__
@@ -62,7 +62,7 @@ static const _ELASTOS InterfaceID EIID_IIdChainSubWallet = \
 #ifndef __EIID_IMasterWallet_DEFINED__
 #define __EIID_IMasterWallet_DEFINED__
 static const _ELASTOS InterfaceID EIID_IMasterWallet = \
-    {0x2C46A641,0x0592,0xCF45,{0x40,0x00,0x4A,0x79,0xE3,0x47,0x15,0x2B}};
+    {0xB41AB74E,0x0592,0xCF45,{0x40,0x00,0x4A,0x79,0xE3,0x47,0x15,0x2B}};
 #endif // __IID_IMasterWallet_DEFINED__
 
 #ifndef __EIID_IMasterWalletManager_DEFINED__
@@ -337,7 +337,7 @@ IIdChainSubWallet : public IInterface
         /* [out] */ _ELASTOS String * result) = 0;
 
 };
-CAR_INTERFACE("2C46A641-0592-CF45-4000-4A79E347152B")
+CAR_INTERFACE("B41AB74E-0592-CF45-4000-4A79E347152B")
 IMasterWallet : public IInterface
 {
     virtual CARAPI_(PInterface) Probe(
@@ -411,6 +411,9 @@ IMasterWallet : public IInterface
     virtual CARAPI ChangePassword(
         /* [in] */ const _ELASTOS String& oldPassword,
         /* [in] */ const _ELASTOS String& newPassword) = 0;
+
+    virtual CARAPI ResetAddressCache(
+        /* [in] */ const _ELASTOS String& payPassword) = 0;
 
 };
 CAR_INTERFACE("AEF2BD4B-0592-CF45-4000-4A79C382203E")

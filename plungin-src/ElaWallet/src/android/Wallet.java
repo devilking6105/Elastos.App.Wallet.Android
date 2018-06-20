@@ -160,6 +160,9 @@ public class Wallet extends CordovaPlugin {
               case "changePassword":
                   this.changePassword(args, callbackContext);
                   return true;
+              case "resetAddressCache":
+                  this.resetAddressCache(args, callbackContext);
+                  return true;
           }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -559,6 +562,16 @@ public class Wallet extends CordovaPlugin {
     public void changePassword(JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (mCurrentMasterWallet != null) {
             mCurrentMasterWallet.ChangePassword(args.getString(0), args.getString(1));
+            callbackContext.success();
+            return;
+        }
+
+        callbackContext.success(parseOneParam("changePassword", null));
+    }
+
+    public void resetAddressCache(JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if (mCurrentMasterWallet != null) {
+            mCurrentMasterWallet.ResetAddressCache(args.getString(0));
             callbackContext.success();
             return;
         }
