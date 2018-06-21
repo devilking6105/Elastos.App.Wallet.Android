@@ -30,8 +30,8 @@ import cn.jpush.android.api.JPushInterface;
 public class MainActivity extends CordovaActivity
 {
   static {
-    System.loadLibrary("spvsdk");
-    System.loadLibrary("elastoswallet");
+//    System.loadLibrary("spvsdk");
+//    System.loadLibrary("elastoswallet");
 
   }
     @Override
@@ -48,7 +48,7 @@ public class MainActivity extends CordovaActivity
         // Set by <content src="index.html" /> in config.xml
         loadUrl(launchUrl);
 
-        initJG();
+        //initJG();
     }
 
 
