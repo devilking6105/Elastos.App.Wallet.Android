@@ -1,0 +1,1966 @@
+From 6014a3397c4b84b76aa2fa70e8efb125adcb279a Mon Sep 17 00:00:00 2001
+From: "jiadong.zhu" <zhujd02@live.cn>
+Date: Fri, 22 Jun 2018 08:34:52 +0000
+Subject: [PATCH] echrome patch for anroid studio
+
+---
+ .../src/org/apache/cordova/CallbackContext.java    |   4 +-
+ .../src/org/apache/cordova/CallbackMap.java        |   9 +-
+ .../src/org/apache/cordova/ConfigXmlParser.java    |   6 +-
+ .../src/org/apache/cordova/CordovaActivity.java    |  58 +++-
+ .../apache/cordova/CordovaClientCertRequest.java   |   7 +
+ .../org/apache/cordova/CordovaDialogsHelper.java   |  10 +-
+ .../org/apache/cordova/CordovaHttpAuthHandler.java |   2 +
+ .../src/org/apache/cordova/CordovaInterface.java   |   0
+ .../org/apache/cordova/CordovaInterfaceImpl.java   |   5 +-
+ .../src/org/apache/cordova/CordovaWebViewImpl.java |  13 +-
+ .../src/org/apache/cordova/CoreAndroid.java        |  10 +-
+ .../apache/cordova/ICordovaHttpAuthHandler.java    |   2 +-
+ .../CordovaLib/src/org/apache/cordova/LOG.java     |   0
+ .../org/apache/cordova/NativeToJsMessageQueue.java |  18 +-
+ .../src/org/apache/cordova/PluginEntry.java        |   0
+ .../src/org/apache/cordova/PluginManager.java      |   2 +-
+ .../src/org/apache/cordova/ResumeCallback.java     |   3 +-
+ .../engine/CordovaContentsClientBridge.java        | 146 ++++++++++
+ .../org/apache/cordova/engine/ShellWebView.java    | 301 +++++++++++++++++++++
+ .../apache/cordova/engine/ShellWebViewClient.java  | 255 +++++++++++++++++
+ .../apache/cordova/engine/ShellWebViewEngine.java  | 198 ++++++++++++++
+ .../apache/cordova/engine/SystemCookieManager.java |  13 +-
+ .../apache/cordova/engine/SystemExposedJsApi.java  |   3 +
+ .../cordova/engine/SystemWebChromeClient.java      |   2 +-
+ .../apache/cordova/engine/SystemWebViewClient.java |   0
+ .../apache/cordova/engine/SystemWebViewEngine.java |   0
+ platforms/android/app/build.gradle                 |   4 +
+ platforms/android/app/src/main/AndroidManifest.xml | 132 +++++++++
+ 28 files changed, 1171 insertions(+), 32 deletions(-)
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/CordovaActivity.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/CordovaInterface.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/CoreAndroid.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/LOG.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/NativeToJsMessageQueue.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/PluginEntry.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/PluginManager.java
+ create mode 100644 platforms/android/CordovaLib/src/org/apache/cordova/engine/CordovaContentsClientBridge.java
+ create mode 100644 platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebView.java
+ create mode 100644 platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebViewClient.java
+ create mode 100644 platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebViewEngine.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemExposedJsApi.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebChromeClient.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebViewClient.java
+ mode change 100644 => 100755 platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebViewEngine.java
+
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CallbackContext.java b/platforms/android/CordovaLib/src/org/apache/cordova/CallbackContext.java
+index 4336386..7dfd456 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/CallbackContext.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/CallbackContext.java
+@@ -50,14 +50,14 @@ public class CallbackContext {
+     }
+ 
+     public void sendPluginResult(PluginResult pluginResult) {
+-        synchronized (this) {
++        //synchronized (this) {
+             if (finished) {
+                 LOG.w(LOG_TAG, "Attempted to send a second callback for ID: " + callbackId + "\nResult was: " + pluginResult.getMessage());
+                 return;
+             } else {
+                 finished = !pluginResult.getKeepCallback();
+             }
+-        }
++        //}
+         webView.sendPluginResult(pluginResult, callbackId);
+     }
+ 
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CallbackMap.java b/platforms/android/CordovaLib/src/org/apache/cordova/CallbackMap.java
+index 050daa0..82914d5 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/CallbackMap.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/CallbackMap.java
+@@ -29,6 +29,7 @@ import android.util.SparseArray;
+ public class CallbackMap {
+     private int currentCallbackId = 0;
+     private SparseArray<Pair<CordovaPlugin, Integer>> callbacks;
++    private final Object mLock = new Object();
+ 
+     public CallbackMap() {
+         this.callbacks = new SparseArray<Pair<CordovaPlugin, Integer>>();
+@@ -43,10 +44,12 @@ public class CallbackMap {
+      * @return              A unique request code that can be used to retrieve this callback
+      *                      with getAndRemoveCallback()
+      */
+-    public synchronized int registerCallback(CordovaPlugin receiver, int requestCode) {
++    public int registerCallback(CordovaPlugin receiver, int requestCode) {
++      synchronized(mLock){
+         int mappedId = this.currentCallbackId++;
+         callbacks.put(mappedId, new Pair<CordovaPlugin, Integer>(receiver, requestCode));
+         return mappedId;
++      }
+     }
+ 
+     /**
+@@ -57,9 +60,11 @@ public class CallbackMap {
+      * @return              The CordovaPlugin and orignal request code that correspond to the
+      *                      given mappedCode
+      */
+-    public synchronized Pair<CordovaPlugin, Integer> getAndRemoveCallback(int mappedId) {
++    public Pair<CordovaPlugin, Integer> getAndRemoveCallback(int mappedId) {
++      synchronized(mLock){
+         Pair<CordovaPlugin, Integer> callback = callbacks.get(mappedId);
+         callbacks.remove(mappedId);
+         return callback;
++      }
+     }
+ }
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/ConfigXmlParser.java b/platforms/android/CordovaLib/src/org/apache/cordova/ConfigXmlParser.java
+index 01a97f2..c52b1db 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/ConfigXmlParser.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/ConfigXmlParser.java
+@@ -33,7 +33,8 @@ import android.content.Context;
+ public class ConfigXmlParser {
+     private static String TAG = "ConfigXmlParser";
+ 
+-    private String launchUrl = "file:///android_asset/www/index.html";
++    private String launchUrl = "file:///sdcard/www/index.html";
++    //private String launchUrl = "https://sina.cn";
+     private CordovaPreferences prefs = new CordovaPreferences();
+     private ArrayList<PluginEntry> pluginEntries = new ArrayList<PluginEntry>(20);
+ 
+@@ -46,6 +47,7 @@ public class ConfigXmlParser {
+     }
+ 
+     public String getLaunchUrl() {
++        //return "http://wangda.test.bizsov.com";
+         return launchUrl;
+     }
+ 
+@@ -139,7 +141,7 @@ public class ConfigXmlParser {
+             if (src.charAt(0) == '/') {
+                 src = src.substring(1);
+             }
+-            launchUrl = "file:///android_asset/www/" + src;
++            //launchUrl = "file:///android_asset/www/" + src;
+         }
+     }
+ }
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaActivity.java b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaActivity.java
+old mode 100644
+new mode 100755
+index e2ed1cb..1271958
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaActivity.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaActivity.java
+@@ -42,7 +42,13 @@ import android.view.Window;
+ import android.view.WindowManager;
+ import android.webkit.WebViewClient;
+ import android.widget.FrameLayout;
+-
++import org.chromium.base.library_loader.LibraryLoader;
++import org.chromium.base.library_loader.LibraryProcessType;
++import org.chromium.base.library_loader.ProcessInitException;
++import org.chromium.base.ContextUtils;
++import org.chromium.base.PathUtils;
++import org.chromium.base.CommandLine;
++import android.content.pm.PackageManager;
+ /**
+  * This class is the main Android activity that represents the Cordova
+  * application. It should be extended by the user to load the specific
+@@ -83,7 +89,7 @@ public class CordovaActivity extends Activity {
+     private static int ACTIVITY_STARTING = 0;
+     private static int ACTIVITY_RUNNING = 1;
+     private static int ACTIVITY_EXITING = 2;
+-
++    private static final String PRIVATE_DATA_DIRECTORY_SUFFIX = "cordova_shell";
+     // Keep app running when pause is received. (default = true)
+     // If true, then the JavaScript and native code continue to run in the background
+     // when another application (activity) is started.
+@@ -97,7 +103,11 @@ public class CordovaActivity extends Activity {
+     protected String launchUrl;
+     protected ArrayList<PluginEntry> pluginEntries;
+     protected CordovaInterfaceImpl cordovaInterface;
+-
++    public static final String COMMAND_LINE_FILE = "/data/local/tmp/cordova-shell-command-line";
++    private static final int PERMISSIONS_REQUEST_ALL_PERMISSIONS = 1;
++    private static String[] PERMISSIONS_STORAGE = {
++            "android.permission.READ_EXTERNAL_STORAGE",
++            "android.permission.WRITE_EXTERNAL_STORAGE" };
+     /**
+      * Called when the activity is first created.
+      */
+@@ -109,6 +119,9 @@ public class CordovaActivity extends Activity {
+         String logLevel = preferences.getString("loglevel", "ERROR");
+         LOG.setLogLevel(logLevel);
+ 
++        if (!CommandLine.isInitialized()) {
++            CommandLine.initFromFile(COMMAND_LINE_FILE);
++        }
+         LOG.i(TAG, "Apache Cordova native platform version " + CordovaWebView.CORDOVA_VERSION + " is starting");
+         LOG.d(TAG, "CordovaActivity.onCreate()");
+ 
+@@ -135,10 +148,40 @@ public class CordovaActivity extends Activity {
+         }
+ 
+         super.onCreate(savedInstanceState);
++        ContextUtils.initApplicationContext(getApplicationContext());
++        PathUtils.setPrivateDataDirectorySuffix(PRIVATE_DATA_DIRECTORY_SUFFIX);
++       try {
++            LibraryLoader.get(LibraryProcessType.PROCESS_BROWSER).ensureInitialized();
++        } catch (ProcessInitException e) {
++            LOG.e(TAG, "ContentView initialization failed.", e);
++            // Since the library failed to initialize nothing in the application
++            // can work, so kill the whole application not just the activity
++            System.exit(-1);
++            return;
++        }
+ 
+         cordovaInterface = makeCordovaInterface();
+         if (savedInstanceState != null) {
+             cordovaInterface.restoreInstanceState(savedInstanceState);
++        }else{
++            validatePermissions();
++        }
++    }
++
++
++    private void validatePermissions() {
++        // Construct a list of missing permissions
++        boolean needRequest = false;
++        for (String permission: PERMISSIONS_STORAGE){
++            if (checkSelfPermission(permission)
++                    != PackageManager.PERMISSION_GRANTED){
++                needRequest = true;
++                break;
++            }
++        }
++        if (needRequest) {
++            requestPermissions(PERMISSIONS_STORAGE,
++                PERMISSIONS_REQUEST_ALL_PERMISSIONS);
+         }
+     }
+ 
+@@ -190,7 +233,7 @@ public class CordovaActivity extends Activity {
+             }
+         }
+ 
+-        appView.getView().requestFocusFromTouch();
++     //   appView.getView().requestFocusFromTouch();
+     }
+ 
+     /**
+@@ -270,7 +313,7 @@ public class CordovaActivity extends Activity {
+         }
+         // Force window to have focus, so application always
+         // receive user input. Workaround for some devices (Samsung Galaxy Note 3 at least)
+-        this.getWindow().getDecorView().requestFocus();
++//        this.getWindow().getDecorView().requestFocus();
+ 
+         this.appView.handleResume(this.keepRunning);
+     }
+@@ -375,6 +418,7 @@ public class CordovaActivity extends Activity {
+         if ((errorUrl != null) && (!failingUrl.equals(errorUrl)) && (appView != null)) {
+             // Load URL on UI thread
+             me.runOnUiThread(new Runnable() {
++                @Override
+                 public void run() {
+                     me.appView.showWebPage(errorUrl, false, true, null);
+                 }
+@@ -384,6 +428,7 @@ public class CordovaActivity extends Activity {
+         else {
+             final boolean exit = !(errorCode == WebViewClient.ERROR_HOST_LOOKUP);
+             me.runOnUiThread(new Runnable() {
++                @Override
+                 public void run() {
+                     if (exit) {
+                         me.appView.getView().setVisibility(View.GONE);
+@@ -400,6 +445,7 @@ public class CordovaActivity extends Activity {
+     public void displayError(final String title, final String message, final String button, final boolean exit) {
+         final CordovaActivity me = this;
+         me.runOnUiThread(new Runnable() {
++            @Override
+             public void run() {
+                 try {
+                     AlertDialog.Builder dlg = new AlertDialog.Builder(me);
+@@ -408,6 +454,7 @@ public class CordovaActivity extends Activity {
+                     dlg.setCancelable(false);
+                     dlg.setPositiveButton(button,
+                             new AlertDialog.OnClickListener() {
++                                @Override
+                                 public void onClick(DialogInterface dialog, int which) {
+                                     dialog.dismiss();
+                                     if (exit) {
+@@ -472,6 +519,7 @@ public class CordovaActivity extends Activity {
+         return null;
+     }
+ 
++    @Override
+     protected void onSaveInstanceState(Bundle outState) {
+         cordovaInterface.onSaveInstanceState(outState);
+         super.onSaveInstanceState(outState);
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaClientCertRequest.java b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaClientCertRequest.java
+index ccda027..fc9ac37 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaClientCertRequest.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaClientCertRequest.java
+@@ -41,6 +41,7 @@ public class CordovaClientCertRequest implements ICordovaClientCertRequest {
+      * Cancel this request
+      */
+     @SuppressLint("NewApi")
++    @Override
+     public void cancel()
+     {
+         request.cancel();
+@@ -50,6 +51,7 @@ public class CordovaClientCertRequest implements ICordovaClientCertRequest {
+      * Returns the host name of the server requesting the certificate.
+      */
+     @SuppressLint("NewApi")
++    @Override
+     public String getHost()
+     {
+         return request.getHost();
+@@ -59,6 +61,7 @@ public class CordovaClientCertRequest implements ICordovaClientCertRequest {
+      * Returns the acceptable types of asymmetric keys (can be null).
+      */
+     @SuppressLint("NewApi")
++    @Override
+     public String[] getKeyTypes()
+     {
+         return request.getKeyTypes();
+@@ -68,6 +71,7 @@ public class CordovaClientCertRequest implements ICordovaClientCertRequest {
+      * Returns the port number of the server requesting the certificate.
+      */
+     @SuppressLint("NewApi")
++    @Override
+     public int getPort()
+     {
+         return request.getPort();
+@@ -77,6 +81,7 @@ public class CordovaClientCertRequest implements ICordovaClientCertRequest {
+      * Returns the acceptable certificate issuers for the certificate matching the private key (can be null).
+      */
+     @SuppressLint("NewApi")
++    @Override
+     public Principal[] getPrincipals()
+     {
+         return request.getPrincipals();
+@@ -86,6 +91,7 @@ public class CordovaClientCertRequest implements ICordovaClientCertRequest {
+      * Ignore the request for now. Do not remember user's choice.
+      */
+     @SuppressLint("NewApi")
++    @Override
+     public void ignore()
+     {
+         request.ignore();
+@@ -98,6 +104,7 @@ public class CordovaClientCertRequest implements ICordovaClientCertRequest {
+      * @param chain The certificate chain 
+      */
+     @SuppressLint("NewApi")
++    @Override
+     public void proceed(PrivateKey privateKey, X509Certificate[] chain)
+     {
+         request.proceed(privateKey, chain);
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaDialogsHelper.java b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaDialogsHelper.java
+index a219c99..94636a7 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaDialogsHelper.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaDialogsHelper.java
+@@ -43,18 +43,21 @@ public class CordovaDialogsHelper {
+         dlg.setCancelable(true);
+         dlg.setPositiveButton(android.R.string.ok,
+                 new AlertDialog.OnClickListener() {
++                    @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         result.gotResult(true, null);
+                     }
+                 });
+         dlg.setOnCancelListener(
+                 new DialogInterface.OnCancelListener() {
++                    @Override
+                     public void onCancel(DialogInterface dialog) {
+                         result.gotResult(false, null);
+                     }
+                 });
+         dlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
+             //DO NOTHING
++            @Override
+             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                 if (keyCode == KeyEvent.KEYCODE_BACK)
+                 {
+@@ -75,24 +78,27 @@ public class CordovaDialogsHelper {
+         dlg.setCancelable(true);
+         dlg.setPositiveButton(android.R.string.ok,
+                 new DialogInterface.OnClickListener() {
++                    @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         result.gotResult(true, null);
+                     }
+                 });
+         dlg.setNegativeButton(android.R.string.cancel,
+                 new DialogInterface.OnClickListener() {
++                    @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         result.gotResult(false, null);
+                     }
+                 });
+         dlg.setOnCancelListener(
+                 new DialogInterface.OnCancelListener() {
++                    @Override
+                     public void onCancel(DialogInterface dialog) {
+                         result.gotResult(false, null);
+                     }
+                 });
+         dlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
+-            //DO NOTHING
++            @Override
+             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                 if (keyCode == KeyEvent.KEYCODE_BACK)
+                 {
+@@ -126,6 +132,7 @@ public class CordovaDialogsHelper {
+         dlg.setCancelable(false);
+         dlg.setPositiveButton(android.R.string.ok,
+                 new DialogInterface.OnClickListener() {
++                    @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         String userText = input.getText().toString();
+                         result.gotResult(true, userText);
+@@ -133,6 +140,7 @@ public class CordovaDialogsHelper {
+                 });
+         dlg.setNegativeButton(android.R.string.cancel,
+                 new DialogInterface.OnClickListener() {
++                    @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         result.gotResult(false, null);
+                     }
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaHttpAuthHandler.java b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaHttpAuthHandler.java
+index 724381e..e39487f 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaHttpAuthHandler.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaHttpAuthHandler.java
+@@ -35,6 +35,7 @@ public class CordovaHttpAuthHandler implements ICordovaHttpAuthHandler {
+     /**
+      * Instructs the WebView to cancel the authentication request.
+      */
++    @Override
+     public void cancel () {
+         this.handler.cancel();
+     }
+@@ -45,6 +46,7 @@ public class CordovaHttpAuthHandler implements ICordovaHttpAuthHandler {
+      * @param username
+      * @param password
+      */
++    @Override
+     public void proceed (String username, String password) {
+         this.handler.proceed(username, password);
+     }
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaInterface.java b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaInterface.java
+old mode 100644
+new mode 100755
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaInterfaceImpl.java b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaInterfaceImpl.java
+index 9a6e924..0a3eb0f 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaInterfaceImpl.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaInterfaceImpl.java
+@@ -222,18 +222,21 @@ public class CordovaInterfaceImpl implements CordovaInterface {
+         }
+     }
+ 
++    @Override
+     public void requestPermission(CordovaPlugin plugin, int requestCode, String permission) {
+         String[] permissions = new String [1];
+         permissions[0] = permission;
+         requestPermissions(plugin, requestCode, permissions);
+     }
+ 
+-        @SuppressLint("NewApi")
++    @SuppressLint("NewApi")
++    @Override
+     public void requestPermissions(CordovaPlugin plugin, int requestCode, String [] permissions) {
+         int mappedRequestCode = permissionResultCallbacks.registerCallback(plugin, requestCode);
+         getActivity().requestPermissions(permissions, mappedRequestCode);
+     }
+ 
++    @Override
+     public boolean hasPermission(String permission)
+     {
+         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaWebViewImpl.java b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaWebViewImpl.java
+index fb99c34..8fc180a 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/CordovaWebViewImpl.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/CordovaWebViewImpl.java
+@@ -29,7 +29,7 @@ import android.view.ViewGroup;
+ import android.webkit.WebChromeClient;
+ import android.widget.FrameLayout;
+ 
+-import org.apache.cordova.engine.SystemWebViewEngine;
++import org.apache.cordova.engine.ShellWebViewEngine;
+ import org.json.JSONException;
+ import org.json.JSONObject;
+ 
+@@ -73,7 +73,7 @@ public class CordovaWebViewImpl implements CordovaWebView {
+     private Set<Integer> boundKeyCodes = new HashSet<Integer>();
+ 
+     public static CordovaWebViewEngine createEngine(Context context, CordovaPreferences preferences) {
+-        String className = preferences.getString("webview", SystemWebViewEngine.class.getCanonicalName());
++        String className = ShellWebViewEngine.class.getCanonicalName();
+         try {
+             Class<?> webViewClass = Class.forName(className);
+             Constructor<?> constructor = webViewClass.getConstructor(Context.class, CordovaPreferences.class);
+@@ -124,6 +124,7 @@ public class CordovaWebViewImpl implements CordovaWebView {
+     }
+ 
+     @Override
++
+     public void loadUrlIntoView(final String url, boolean recreatePlugins) {
+         LOG.d(TAG, ">>> loadUrl(" + url + ")");
+         if (url.equals("about:blank") || url.startsWith("javascript:")) {
+@@ -148,6 +149,7 @@ public class CordovaWebViewImpl implements CordovaWebView {
+ 
+         // Timeout error method
+         final Runnable loadError = new Runnable() {
++            @Override
+             public void run() {
+                 stopLoading();
+                 LOG.e(TAG, "CordovaWebView: TIMEOUT ERROR!");
+@@ -167,6 +169,8 @@ public class CordovaWebViewImpl implements CordovaWebView {
+ 
+         // Timeout timer method
+         final Runnable timeoutCheck = new Runnable() {
++            @Override
++            @SuppressWarnings("WaitNotInLoop")
+             public void run() {
+                 try {
+                     synchronized (this) {
+@@ -178,13 +182,14 @@ public class CordovaWebViewImpl implements CordovaWebView {
+ 
+                 // If timeout, then stop loading and handle error
+                 if (loadUrlTimeout == currentLoadUrlTimeout) {
+-                    cordova.getActivity().runOnUiThread(loadError);
++                   // cordova.getActivity().runOnUiThread(loadError);
+                 }
+             }
+         };
+ 
+         final boolean _recreatePlugins = recreatePlugins;
+         cordova.getActivity().runOnUiThread(new Runnable() {
++            @Override
+             public void run() {
+                 if (loadUrlTimeoutValue > 0) {
+                     cordova.getThreadPool().execute(timeoutCheck);
+@@ -530,10 +535,12 @@ public class CordovaWebViewImpl implements CordovaWebView {
+             // Make app visible after 2 sec in case there was a JS error and Cordova JS never initialized correctly
+             if (engine.getView().getVisibility() != View.VISIBLE) {
+                 Thread t = new Thread(new Runnable() {
++                    @Override
+                     public void run() {
+                         try {
+                             Thread.sleep(2000);
+                             cordova.getActivity().runOnUiThread(new Runnable() {
++                                @Override
+                                 public void run() {
+                                     pluginManager.postMessage("spinner", "stop");
+                                 }
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/CoreAndroid.java b/platforms/android/CordovaLib/src/org/apache/cordova/CoreAndroid.java
+old mode 100644
+new mode 100755
+index e384f8d..af1ba6b
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/CoreAndroid.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/CoreAndroid.java
+@@ -44,7 +44,7 @@ public class CoreAndroid extends CordovaPlugin {
+     private CallbackContext messageChannel;
+     private PluginResult pendingResume;
+     private final Object messageChannelLock = new Object();
+-
++    private final Object mLock = new Object();
+     /**
+      * Send an event to be fired on the Javascript side.
+      *
+@@ -71,6 +71,7 @@ public class CoreAndroid extends CordovaPlugin {
+      * @param callbackContext   The callback context from which we were invoked.
+      * @return                  A PluginResult object with a status and message.
+      */
++    @Override
+     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+         PluginResult.Status status = PluginResult.Status.OK;
+         String result = "";
+@@ -84,6 +85,7 @@ public class CoreAndroid extends CordovaPlugin {
+                 // I recommend we change the name of the Message as spinner/stop is not
+                 // indicative of what this actually does (shows the webview).
+                 cordova.getActivity().runOnUiThread(new Runnable() {
++                    @Override
+                     public void run() {
+                         webView.getPluginManager().postMessage("spinner", "stop");
+                     }
+@@ -138,6 +140,7 @@ public class CoreAndroid extends CordovaPlugin {
+      */
+     public void clearCache() {
+         cordova.getActivity().runOnUiThread(new Runnable() {
++            @Override
+             public void run() {
+                 webView.clearCache(true);
+             }
+@@ -194,7 +197,7 @@ public class CoreAndroid extends CordovaPlugin {
+ 
+         if (wait > 0) {
+             try {
+-                synchronized(this) {
++                synchronized(mLock) {
+                     this.wait(wait);
+                 }
+             } catch (InterruptedException e) {
+@@ -209,6 +212,7 @@ public class CoreAndroid extends CordovaPlugin {
+      */
+     public void clearHistory() {
+         cordova.getActivity().runOnUiThread(new Runnable() {
++            @Override
+             public void run() {
+                 webView.clearHistory();
+             }
+@@ -221,6 +225,7 @@ public class CoreAndroid extends CordovaPlugin {
+      */
+     public void backHistory() {
+         cordova.getActivity().runOnUiThread(new Runnable() {
++            @Override
+             public void run() {
+                 webView.backHistory();
+             }
+@@ -335,6 +340,7 @@ public class CoreAndroid extends CordovaPlugin {
+      * Unregister the receiver
+      *
+      */
++    @Override
+     public void onDestroy()
+     {
+         webView.getContext().unregisterReceiver(this.telephonyReceiver);
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/ICordovaHttpAuthHandler.java b/platforms/android/CordovaLib/src/org/apache/cordova/ICordovaHttpAuthHandler.java
+index c55818a..24d4125 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/ICordovaHttpAuthHandler.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/ICordovaHttpAuthHandler.java
+@@ -22,7 +22,7 @@ package org.apache.cordova;
+  * Specifies interface for HTTP auth handler object which is used to handle auth requests and
+  * specifying user credentials.
+  */
+- public interface ICordovaHttpAuthHandler {
++public interface ICordovaHttpAuthHandler {
+     /**
+      * Instructs the WebView to cancel the authentication request.
+      */
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/LOG.java b/platforms/android/CordovaLib/src/org/apache/cordova/LOG.java
+old mode 100644
+new mode 100755
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/NativeToJsMessageQueue.java b/platforms/android/CordovaLib/src/org/apache/cordova/NativeToJsMessageQueue.java
+old mode 100644
+new mode 100755
+index a8f59fa..de579d7
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/NativeToJsMessageQueue.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/NativeToJsMessageQueue.java
+@@ -57,6 +57,8 @@ public class NativeToJsMessageQueue {
+      */
+     private ArrayList<BridgeMode> bridgeModes = new ArrayList<BridgeMode>();
+ 
++
++    private final Object mLock = new Object();
+     /**
+      * When null, the bridge is disabled. This occurs during page transitions.
+      * When disabled, all callbacks are dropped since they are assumed to be
+@@ -86,7 +88,7 @@ public class NativeToJsMessageQueue {
+             BridgeMode newMode = value < 0 ? null : bridgeModes.get(value);
+             if (newMode != activeBridgeMode) {
+                 LOG.d(LOG_TAG, "Set native->JS mode to " + (newMode == null ? "null" : newMode.getClass().getSimpleName()));
+-                synchronized (this) {
++                synchronized (mLock) {
+                     activeBridgeMode = newMode;
+                     if (newMode != null) {
+                         newMode.reset();
+@@ -103,7 +105,7 @@ public class NativeToJsMessageQueue {
+      * Clears all messages and resets to the default bridge mode.
+      */
+     public void reset() {
+-        synchronized (this) {
++        synchronized (mLock) {
+             queue.clear();
+             setBridgeMode(-1);
+         }
+@@ -128,7 +130,7 @@ public class NativeToJsMessageQueue {
+      * Returns null if the queue is empty.
+      */
+     public String popAndEncode(boolean fromOnlineEvent) {
+-        synchronized (this) {
++        synchronized (mLock) {
+             if (activeBridgeMode == null) {
+                 return null;
+             }
+@@ -166,7 +168,7 @@ public class NativeToJsMessageQueue {
+      * Same as popAndEncode(), except encodes in a form that can be executed as JS.
+      */
+     public String popAndEncodeAsJs() {
+-        synchronized (this) {
++        synchronized (mLock) {
+             int length = queue.size();
+             if (length == 0) {
+                 return null;
+@@ -239,7 +241,7 @@ public class NativeToJsMessageQueue {
+     }
+ 
+     private void enqueueMessage(JsMessage message) {
+-        synchronized (this) {
++        synchronized (mLock) {
+             if (activeBridgeMode == null) {
+                 LOG.d(LOG_TAG, "Dropping Native->JS message due to disabled bridge");
+                 return;
+@@ -259,7 +261,7 @@ public class NativeToJsMessageQueue {
+         }
+         paused = value;
+         if (!value) {
+-            synchronized (this) {
++            synchronized (mLock) {
+                 if (!queue.isEmpty() && activeBridgeMode != null) {
+                     activeBridgeMode.onNativeToJsMessageAvailable(this);
+                 }
+@@ -292,6 +294,7 @@ public class NativeToJsMessageQueue {
+         @Override
+         public void onNativeToJsMessageAvailable(final NativeToJsMessageQueue queue) {
+             cordova.getActivity().runOnUiThread(new Runnable() {
++                @Override
+                 public void run() {
+                     String js = queue.popAndEncodeAsJs();
+                     if (js != null) {
+@@ -320,6 +323,7 @@ public class NativeToJsMessageQueue {
+         @Override
+         public void reset() {
+             delegate.runOnUiThread(new Runnable() {
++                @Override
+                 public void run() {
+                     online = false;
+                     // If the following call triggers a notifyOfFlush, then ignore it.
+@@ -332,6 +336,7 @@ public class NativeToJsMessageQueue {
+         @Override
+         public void onNativeToJsMessageAvailable(final NativeToJsMessageQueue queue) {
+             delegate.runOnUiThread(new Runnable() {
++                @Override
+                 public void run() {
+                     if (!queue.isEmpty()) {
+                         ignoreNextFlush = false;
+@@ -362,6 +367,7 @@ public class NativeToJsMessageQueue {
+         @Override
+         public void onNativeToJsMessageAvailable(final NativeToJsMessageQueue queue) {
+             cordova.getActivity().runOnUiThread(new Runnable() {
++                @Override
+                 public void run() {
+                     String js = queue.popAndEncodeAsJs();
+                     if (js != null) {
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/PluginEntry.java b/platforms/android/CordovaLib/src/org/apache/cordova/PluginEntry.java
+old mode 100644
+new mode 100755
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/PluginManager.java b/platforms/android/CordovaLib/src/org/apache/cordova/PluginManager.java
+old mode 100644
+new mode 100755
+index c9576a6..73a94b7
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/PluginManager.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/PluginManager.java
+@@ -488,7 +488,7 @@ public class PluginManager {
+             if ((className != null) && !("".equals(className))) {
+                 c = Class.forName(className);
+             }
+-            if (c != null & CordovaPlugin.class.isAssignableFrom(c)) {
++            if (c != null && CordovaPlugin.class.isAssignableFrom(c)) {
+                 ret = (CordovaPlugin) c.newInstance();
+             }
+         } catch (Exception e) {
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/ResumeCallback.java b/platforms/android/CordovaLib/src/org/apache/cordova/ResumeCallback.java
+index 49a43b5..c27cd69 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/ResumeCallback.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/ResumeCallback.java
+@@ -29,6 +29,7 @@ public class ResumeCallback extends CallbackContext {
+     private final String TAG = "CordovaResumeCallback";
+     private String serviceName;
+     private PluginManager pluginManager;
++    private final Object mLock = new Object();
+ 
+     public ResumeCallback(String serviceName, PluginManager pluginManager) {
+         super("resumecallback", null);
+@@ -38,7 +39,7 @@ public class ResumeCallback extends CallbackContext {
+ 
+     @Override
+     public void sendPluginResult(PluginResult pluginResult) {
+-        synchronized (this) {
++        synchronized (mLock) {
+             if (finished) {
+                 LOG.w(TAG, serviceName + " attempted to send a second callback to ResumeCallback\nResult was: " + pluginResult.getMessage());
+                 return;
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/engine/CordovaContentsClientBridge.java b/platforms/android/CordovaLib/src/org/apache/cordova/engine/CordovaContentsClientBridge.java
+new file mode 100644
+index 0000000..dffe0b9
+--- /dev/null
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/engine/CordovaContentsClientBridge.java
+@@ -0,0 +1,146 @@
++// Copyright 2013 The Chromium Authors. All rights reserved.
++// Use of this source code is governed by a BSD-style license that can be
++// found in the LICENSE file.
++
++package org.apache.cordova.engine;
++
++import android.content.Context;
++import android.os.Handler;
++
++import org.chromium.base.Callback;
++import org.chromium.base.ThreadUtils;
++import org.chromium.base.annotations.CalledByNative;
++import org.chromium.base.annotations.CalledByNativeUnchecked;
++import org.chromium.base.annotations.JNINamespace;
++import org.chromium.net.NetError;
++
++import java.util.HashMap;
++import java.util.Map;
++import android.webkit.JsResult;
++import android.webkit.JsPromptResult;
++
++/**
++ * This class handles the JNI communication logic for the the AwContentsClient class.
++ * Both the Java and the native peers of AwContentsClientBridge are owned by the
++ * corresponding AwContents instances. This class and its native peer are connected
++ * via weak references. The native AwContentsClientBridge sets up and clear these weak
++ * references.
++ */
++@JNINamespace("content")
++public class CordovaContentsClientBridge {
++    private static final String TAG = "CordovaContentsClientBridge";
++
++    private ShellWebViewClient mClient;
++    private Context mContext;
++    // The native peer of this object.
++    private long mNativeContentsClientBridge;
++
++
++    public CordovaContentsClientBridge(Context context, ShellWebViewClient client) {
++        assert client != null;
++        mContext = context;
++        mClient = client;
++    }
++
++    // Used by the native peer to set/reset a weak ref to the native peer.
++    @CalledByNative
++    private void setNativeCordovaContentsClientBridge(long nativeCordovaContentsClientBridge) {
++        mNativeContentsClientBridge = nativeCordovaContentsClientBridge;
++    }
++
++
++    class JsResultHandler implements JsResult.ResultReceiver {
++        private CordovaContentsClientBridge mBridge;
++        private final int mId;
++
++        private final JsPromptResult mPromptResult = new JsPromptResult(this);
++
++        JsResultHandler(CordovaContentsClientBridge bridge, int id) {
++            mBridge = bridge;
++            mId = id;
++        }
++
++        public JsPromptResult getPromptResult() {
++            return mPromptResult;
++        }
++
++        @Override
++        public void onJsResultComplete(JsResult result){
++            if (mPromptResult.getResult()){
++                ThreadUtils.runOnUiThread(() -> {
++                    if (mBridge != null) mBridge.confirmJsResult(mId, 
++                        mPromptResult.getStringResult());
++                    mBridge = null;
++                });
++            }else{
++                ThreadUtils.runOnUiThread(() -> {
++                    if (mBridge != null) mBridge.cancelJsResult(mId);
++                    mBridge = null;
++                });
++            }
++        }
++    }
++
++
++    @CalledByNative
++    private void handleJsAlert(final String url, final String message, final int id) {
++        // Post the application callback back to the current thread to ensure the application
++        // callback is executed without any native code on the stack. This so that any exception
++        // thrown by the application callback won't have to be propagated through a native call
++        // stack.
++        new Handler().post(() -> {
++            JsResultHandler handler = new JsResultHandler(CordovaContentsClientBridge.this, id);
++            mClient.onJsAlert(url, message, handler.getPromptResult());
++        });
++    }
++
++    @CalledByNative
++    private void handleJsConfirm(final String url, final String message, final int id) {
++        // Post the application callback back to the current thread to ensure the application
++        // callback is executed without any native code on the stack. This so that any exception
++        // thrown by the application callback won't have to be propagated through a native call
++        // stack.
++        new Handler().post(() -> {
++            JsResultHandler handler = new JsResultHandler(CordovaContentsClientBridge.this, id);
++            mClient.onJsConfirm(url, message, handler.getPromptResult());
++        });
++    }
++
++    @CalledByNative
++    private void handleJsPrompt(
++            final String url, final String message, final String defaultValue, final int id) {
++        // Post the application callback back to the current thread to ensure the application
++        // callback is executed without any native code on the stack. This so that any exception
++        // thrown by the application callback won't have to be propagated through a native call
++        // stack.
++        new Handler().post(() -> {
++            JsResultHandler handler = new JsResultHandler(CordovaContentsClientBridge.this, id);
++            mClient.onJsPrompt(url, message, defaultValue, handler.getPromptResult());
++        });
++    }
++
++
++    /*@CalledByNativeUnchecked
++    private boolean shouldOverrideUrlLoading(
++            String url, boolean hasUserGesture, boolean isRedirect, boolean isMainFrame) {
++        return true;
++    }*/
++
++    void confirmJsResult(int id, String prompt) {
++        if (mNativeContentsClientBridge == 0) return;
++        nativeConfirmJsResult(mNativeContentsClientBridge, id, prompt);
++    }
++
++    void cancelJsResult(int id) {
++        if (mNativeContentsClientBridge == 0) return;
++        nativeCancelJsResult(mNativeContentsClientBridge, id);
++    }
++
++    //--------------------------------------------------------------------------------------------
++    //  Native methods
++    //--------------------------------------------------------------------------------------------
++
++    private native void nativeConfirmJsResult(long nativeCordovaContentsClientBridge, int id,
++            String prompt);
++    private native void nativeCancelJsResult(long nativeCordovaContentsClientBridge, int id);
++}
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebView.java b/platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebView.java
+new file mode 100644
+index 0000000..72fd357
+--- /dev/null
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebView.java
+@@ -0,0 +1,301 @@
++package org.apache.cordova.engine;
++
++import android.content.Context;
++import android.util.AttributeSet;
++import android.util.Log;
++import android.view.KeyEvent;
++import android.webkit.WebChromeClient;
++import android.webkit.WebView;
++import android.webkit.WebViewClient;
++
++import org.apache.cordova.CordovaInterface;
++import org.apache.cordova.CordovaWebView;
++import org.apache.cordova.CordovaWebViewEngine;
++
++import android.app.Activity;
++import android.content.Context;
++import android.graphics.drawable.ClipDrawable;
++import android.text.TextUtils;
++import android.util.AttributeSet;
++import android.view.ActionMode;
++import android.view.KeyEvent;
++import android.view.Menu;
++import android.view.MenuItem;
++import android.view.View;
++import android.view.ViewGroup;
++import android.view.inputmethod.EditorInfo;
++import android.view.inputmethod.InputMethodManager;
++import android.widget.AbsoluteLayout;
++import android.widget.EditText;
++import android.widget.FrameLayout;
++import android.widget.ImageButton;
++import android.widget.LinearLayout;
++import android.widget.TextView;
++import android.widget.TextView.OnEditorActionListener;
++import android.webkit.ValueCallback;
++
++import org.chromium.base.annotations.CalledByNative;
++import org.chromium.base.annotations.JNINamespace;
++import org.chromium.content.browser.ActivityContentVideoViewEmbedder;
++import org.chromium.content.browser.ContentVideoViewEmbedder;
++import org.chromium.components.content_view.ContentView;
++import org.chromium.content.browser.ContentViewCoreImpl;
++import org.chromium.content.browser.ContentViewRenderView;
++import org.chromium.content_public.browser.ActionModeCallbackHelper;
++import org.chromium.content_public.browser.LoadUrlParams;
++import org.chromium.content_public.browser.NavigationController;
++import org.chromium.content_public.browser.WebContents;
++import org.chromium.ui.base.WindowAndroid;
++import org.chromium.base.BaseSwitches;
++import org.chromium.base.CommandLine;
++import org.chromium.base.MemoryPressureListener;
++import org.chromium.base.library_loader.LibraryLoader;
++import org.chromium.base.library_loader.LibraryProcessType;
++import org.chromium.base.library_loader.ProcessInitException;
++import org.chromium.content.browser.BrowserStartupController;
++import org.chromium.content.browser.DeviceUtils;
++import org.chromium.content.common.ContentSwitches;
++import org.chromium.content_public.browser.WebContents;
++import org.chromium.ui.base.ActivityWindowAndroid;
++import android.content.Intent;
++import android.view.ViewGroup;
++import android.widget.FrameLayout;
++import org.chromium.content_public.browser.ContentViewCore;
++
++import org.chromium.ui.base.ViewAndroidDelegate;
++import org.chromium.content_public.browser.JavaScriptCallback;
++import org.chromium.content_public.browser.JavascriptInjector;
++
++@JNINamespace("content")
++class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.EngineView {
++    private static final String TAG = "ShellWebView";
++
++    private static final int WARN = 1;
++
++    private static final boolean useAsync = true;
++
++    private ContentViewCoreImpl mContentViewCore;
++    private WebContents mWebContents;
++    private NavigationController mNavigationController;
++    private ActivityWindowAndroid mWindowAndroid;
++    private ContentViewRenderView mContentViewRenderView;
++    private ContentView mContentView;
++    private ViewAndroidDelegate mViewAndroidDelegate;
++
++    private FrameLayout mContentViewHolder;
++    private long mNativeShellWebView;
++
++    private boolean finishInitialized = false;
++
++    private String pendingUrl;
++
++    private JavascriptInjector mJavascriptInjector;
++
++    private CordovaContentsClientBridge mBridge;
++
++    public View getContainerView(){
++        return mContentViewHolder;
++    }
++
++    public ViewGroup getContentView() {
++        ViewAndroidDelegate viewDelegate = mWebContents.getViewAndroidDelegate();
++        return viewDelegate != null ? viewDelegate.getContainerView() : null;
++    }
++
++    public ShellWebView(Context context) {
++        super(context, null);
++        mContentViewHolder = new FrameLayout(context);
++    }
++
++    public void init(ShellWebViewEngine parentEngine){
++        setupClient(parentEngine);
++        mNativeShellWebView = nativeInit();
++        nativeSetJavaPeer(mNativeShellWebView, this, mBridge);
++        initView();
++    }
++
++    @Override
++    public CordovaWebView getCordovaWebView() {
++        return null;
++    }
++
++    private void setupClient(ShellWebViewEngine parentEngine){
++        mBridge = new CordovaContentsClientBridge(getContext(), new ShellWebViewClient(parentEngine));
++    }
++
++    private JavascriptInjector getJavascriptInjector() {
++        if (mJavascriptInjector == null) {
++            mJavascriptInjector = JavascriptInjector.fromWebContents(mWebContents);
++        }
++        return mJavascriptInjector;
++    }
++
++    public void initView() {
++        Log.e(TAG, "init");
++        final boolean listenToActivityState = false;
++        mWindowAndroid = new ActivityWindowAndroid(getContext(), listenToActivityState);
++        mContentViewRenderView = new ContentViewRenderView(getContext());
++        mContentViewRenderView.onNativeLibraryLoaded(mWindowAndroid);
++        mWindowAndroid.setAnimationPlaceholderView(
++                mContentViewRenderView.getSurfaceView());
++        startup();
++    }
++
++    private void finishInitialization()
++    {
++        Log.e(TAG, "finishInitialization");
++       nativeCreateWebContent(mNativeShellWebView);
++
++       if(pendingUrl!=null && pendingUrl.length()> 0){
++        loadUrl(pendingUrl);
++       }
++    }
++
++    private void initializationFailed()
++    {
++        Log.e(TAG, "initializationFailed");
++    }
++
++    private void startup(){
++        Log.e(TAG, "startup");
++        if (!useAsync){
++            try{
++                BrowserStartupController.get(LibraryProcessType.PROCESS_BROWSER)
++                        .startBrowserProcessesSync(false);
++                finishInitialization();
++                return;
++            } catch (ProcessInitException e) {
++                Log.e(TAG, "Unable to load native library.", e);
++                System.exit(-1);
++            }
++        }
++
++        try {
++            BrowserStartupController.get(LibraryProcessType.PROCESS_BROWSER)
++                    .startBrowserProcessesAsync(
++                            true,
++                            new BrowserStartupController.StartupCallback() {
++                                @Override
++                                public void onSuccess(boolean alreadyStarted) {
++                                    finishInitialization();
++                                }
++
++                                @Override
++                                public void onFailure() {
++                                    initializationFailed();
++                                }
++                            });
++        } catch (ProcessInitException e) {
++            Log.e(TAG, "Unable to load native library.", e);
++            System.exit(-1);
++        }
++    }
++
++    public static String sanitizeUrl(String url) {
++        if (url == null) return null;
++        if (url.startsWith("www.") || url.indexOf(":") == -1) url = "http://" + url;
++        return url;
++    }
++
++    public void loadUrl(final String url){
++        if (url == null) return;
++        if (!finishInitialized){
++            pendingUrl = url;
++            return;
++        }
++        Log.e(TAG, "loadUrl:" + url);
++        mNavigationController.loadUrl(new LoadUrlParams(sanitizeUrl(url)));
++        getContentView().clearFocus();
++        getContentView().requestFocus();
++    }
++
++
++    @CalledByNative
++    private void initContentViewCore(WebContents webContents) {
++        Log.e(TAG, "initContentViewCore from native:" + webContents);
++        finishInitialized = true;
++        Context context = getContext();
++        mContentView = ContentView.createContentView(context, webContents);
++        mViewAndroidDelegate = ViewAndroidDelegate.createBasicDelegate(mContentView);
++        mContentViewCore = (ContentViewCoreImpl) ContentViewCore.create(
++                context, "", webContents, mViewAndroidDelegate, mContentView, mWindowAndroid);
++        mWebContents = webContents;
++        mNavigationController = mWebContents.getNavigationController();
++        if (getParent() != null) mWebContents.onShow();
++        mContentViewHolder.addView(mContentViewRenderView,
++                    new FrameLayout.LayoutParams(
++                            FrameLayout.LayoutParams.MATCH_PARENT,
++                            FrameLayout.LayoutParams.MATCH_PARENT));
++
++        mContentViewHolder.addView(mContentView,
++                new FrameLayout.LayoutParams(
++                        FrameLayout.LayoutParams.MATCH_PARENT,
++                        FrameLayout.LayoutParams.MATCH_PARENT));
++        mContentView.requestFocus();
++        mContentViewRenderView.setCurrentWebContents(mWebContents);
++    }
++
++    public String getUrl(){
++        if (isDestroyed(WARN)) return null;
++        String url =  mWebContents.getVisibleUrl();
++        if (url == null || url.trim().isEmpty()) return null;
++        return url;
++    }
++
++    public void stopLoading() {
++        if (!isDestroyed(WARN)) mWebContents.stop();
++    }
++
++    public void clearCache() {
++        //if (!isDestroyed(WARN)) nativeClearCache(true);
++    }
++
++    public void clearHistory() {
++        if (!isDestroyed(WARN)) mNavigationController.clearHistory();
++    }
++
++    public boolean canGoBack() {
++        return isDestroyed(WARN) ? false : mNavigationController.canGoBack();
++    }
++
++    public boolean goBack() {
++        if (!isDestroyed(WARN)) mNavigationController.goBack();
++        return true;
++    }
++
++    public void evaluateJavascript(String js, final ValueCallback<String> callback){
++        JavaScriptCallback jsCallback = null;
++        if (callback != null) {
++            jsCallback = new JavaScriptCallback() {
++                @Override
++                public void handleJavaScriptResult(String jsonResult) {
++                    callback.onReceiveValue(jsonResult);
++                }
++            };
++        }
++
++        mWebContents.evaluateJavaScript(js, jsCallback);
++    }
++
++    private boolean isDestroyed(int warnIfDestroyed) {
++        return false;
++    }
++
++    public void addJavascriptInterface(final Object obj, final String interfaceName){
++        if (finishInitialized){
++            getJavascriptInjector().addPossiblyUnsafeInterface(obj, interfaceName, null);
++        }else{
++
++        }
++    }
++
++    public void destroy(){
++        mContentViewRenderView.destroy();
++        mContentViewRenderView = null;
++        mContentViewCore.destroy();
++    }
++
++    private static native long nativeInit();
++    private native void nativeSetJavaPeer(long nativeShellWebView, ShellWebView sw, CordovaContentsClientBridge bridge);
++    private native void nativeCreateWebContent(long nativeShellWebView);
++}
+\ No newline at end of file
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebViewClient.java b/platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebViewClient.java
+new file mode 100644
+index 0000000..91383a4
+--- /dev/null
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebViewClient.java
+@@ -0,0 +1,255 @@
++/*
++       Licensed to the Apache Software Foundation (ASF) under one
++       or more contributor license agreements.  See the NOTICE file
++       distributed with this work for additional information
++       regarding copyright ownership.  The ASF licenses this file
++       to you under the Apache License, Version 2.0 (the
++       "License"); you may not use this file except in compliance
++       with the License.  You may obtain a copy of the License at
++
++         http://www.apache.org/licenses/LICENSE-2.0
++
++       Unless required by applicable law or agreed to in writing,
++       software distributed under the License is distributed on an
++       "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++       KIND, either express or implied.  See the License for the
++       specific language governing permissions and limitations
++       under the License.
++*/
++package org.apache.cordova.engine;
++
++import java.util.Arrays;
++import android.annotation.TargetApi;
++import android.app.Activity;
++import android.content.Context;
++import android.content.ActivityNotFoundException;
++import android.content.Intent;
++import android.net.Uri;
++import android.os.Build;
++import android.view.Gravity;
++import android.view.View;
++import android.view.ViewGroup.LayoutParams;
++import android.webkit.ConsoleMessage;
++import android.webkit.GeolocationPermissions.Callback;
++import android.webkit.JsPromptResult;
++import android.webkit.JsResult;
++import android.webkit.ValueCallback;
++import android.webkit.WebChromeClient;
++import android.webkit.WebStorage;
++import android.webkit.WebView;
++import android.webkit.PermissionRequest;
++import android.widget.LinearLayout;
++import android.widget.ProgressBar;
++import android.widget.RelativeLayout;
++import android.annotation.SuppressLint;
++
++
++import org.apache.cordova.CordovaDialogsHelper;
++import org.apache.cordova.CordovaPlugin;
++import org.apache.cordova.LOG;
++
++/**
++ * This class is the WebChromeClient that implements callbacks for our web view.
++ * The kind of callbacks that happen here are on the chrome outside the document,
++ * such as onCreateWindow(), onConsoleMessage(), onProgressChanged(), etc. Related
++ * to but different than CordovaWebViewClient.
++ */
++public class ShellWebViewClient{
++
++    private static final int FILECHOOSER_RESULTCODE = 5173;
++    private static final String LOG_TAG = "ShellWebViewClient";
++    private long MAX_QUOTA = 100 * 1024 * 1024;
++    protected final ShellWebViewEngine parentEngine;
++
++    // the video progress view
++    private View mVideoProgressView;
++
++    private CordovaDialogsHelper dialogsHelper;
++    private Context appContext;
++
++    private WebChromeClient.CustomViewCallback mCustomViewCallback;
++    private View mCustomView;
++
++    public ShellWebViewClient(ShellWebViewEngine parentEngine) {
++        this.parentEngine = parentEngine;
++        appContext = parentEngine.webView.getContext();
++        dialogsHelper = new CordovaDialogsHelper(appContext);
++    }
++
++    public boolean onJsAlert(String url, String message, final JsResult result) {
++        LOG.e(LOG_TAG,"onJsAlert:" + url + "|" + message);
++        dialogsHelper.showAlert(message, new CordovaDialogsHelper.Result() {
++            @Override public void gotResult(boolean success, String value) {
++                if (success) {
++                    result.confirm();
++                } else {
++                    result.cancel();
++                }
++            }
++        });
++        return true;
++    }
++
++
++    public boolean onJsConfirm(String url, String message, final JsResult result) {
++        LOG.e(LOG_TAG,"onJsConfirm:" + url + "|" + message);
++        dialogsHelper.showConfirm(message, new CordovaDialogsHelper.Result() {
++            @Override
++            public void gotResult(boolean success, String value) {
++                if (success) {
++                    result.confirm();
++                } else {
++                    result.cancel();
++                }
++            }
++        });
++        return true;
++    }
++
++
++    public boolean onJsPrompt(String origin, String message, String defaultValue, final JsPromptResult result) {
++        // Unlike the @JavascriptInterface bridge, this method is always called on the UI thread.
++        LOG.e(LOG_TAG,"onJsPrompt:" + origin + "|" + message + "|" + defaultValue);
++        String handledRet = parentEngine.bridge.promptOnJsPrompt(origin, message, defaultValue);
++        if (handledRet != null) {
++            result.confirm(handledRet);
++        } else {
++            dialogsHelper.showPrompt(message, defaultValue, new CordovaDialogsHelper.Result() {
++                @Override
++                public void gotResult(boolean success, String value) {
++                    if (success) {
++                        result.confirm(value);
++                    } else {
++                        result.cancel();
++                    }
++                }
++            });
++        }
++        return true;
++    }
++
++    public void onExceededDatabaseQuota(String url, String databaseIdentifier, long currentQuota, long estimatedSize,
++            long totalUsedQuota, WebStorage.QuotaUpdater quotaUpdater)
++    {
++        LOG.d(LOG_TAG, "onExceededDatabaseQuota estimatedSize: %d  currentQuota: %d  totalUsedQuota: %d", estimatedSize, currentQuota, totalUsedQuota);
++        quotaUpdater.updateQuota(MAX_QUOTA);
++    }
++
++
++    public void onConsoleMessage(String message, int lineNumber, String sourceID)
++    {
++        //This is only for Android 2.1
++        if(android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.ECLAIR_MR1)
++        {
++            LOG.d(LOG_TAG, "%s: Line %d : %s", sourceID, lineNumber, message);
++        }
++    }
++
++    public boolean onConsoleMessage(ConsoleMessage consoleMessage)
++    {
++        if (consoleMessage.message() != null)
++            LOG.d(LOG_TAG, "%s: Line %d : %s" , consoleMessage.sourceId() , consoleMessage.lineNumber(), consoleMessage.message());
++        return true;
++    }
++
++
++    public void onGeolocationPermissionsShowPrompt(String origin, Callback callback) {
++        callback.invoke(origin, true, false);
++        //Get the plugin, it should be loaded
++        CordovaPlugin geolocation = parentEngine.pluginManager.getPlugin("Geolocation");
++        if(geolocation != null && !geolocation.hasPermisssion())
++        {
++            geolocation.requestPermissions(0);
++        }
++
++    }
++
++
++    public void onShowCustomView(WebChromeClient.CustomViewCallback callback) {
++        //parentEngine.getCordovaWebView().showCustomView(view, callback);
++    }
++
++
++    public void onHideCustomView() {
++        parentEngine.getCordovaWebView().hideCustomView();
++    }
++
++
++    public View getVideoLoadingProgressView() {
++
++        if (mVideoProgressView == null) {
++            // Create a new Loading view programmatically.
++
++            // create the linear layout
++            LinearLayout layout = new LinearLayout(parentEngine.getView().getContext());
++            layout.setOrientation(LinearLayout.VERTICAL);
++            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
++            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
++            layout.setLayoutParams(layoutParams);
++            // the proress bar
++            ProgressBar bar = new ProgressBar(parentEngine.getView().getContext());
++            LinearLayout.LayoutParams barLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
++            barLayoutParams.gravity = Gravity.CENTER;
++            bar.setLayoutParams(barLayoutParams);
++            layout.addView(bar);
++
++            mVideoProgressView = layout;
++        }
++    return mVideoProgressView;
++    }
++
++    // <input type=file> support:
++    // openFileChooser() is for pre KitKat and in KitKat mr1 (it's known broken in KitKat).
++    // For Lollipop, we use onShowFileChooser().
++    public void openFileChooser(ValueCallback<Uri> uploadMsg) {
++        this.openFileChooser(uploadMsg, "*/*");
++    }
++
++    public void openFileChooser( ValueCallback<Uri> uploadMsg, String acceptType ) {
++        this.openFileChooser(uploadMsg, acceptType, null);
++    }
++
++    public void openFileChooser(final ValueCallback<Uri> uploadMsg, String acceptType, String capture)
++    {
++        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
++        intent.addCategory(Intent.CATEGORY_OPENABLE);
++        intent.setType("*/*");
++        parentEngine.cordova.startActivityForResult(new CordovaPlugin() {
++            @Override
++            public void onActivityResult(int requestCode, int resultCode, Intent intent) {
++                Uri result = intent == null || resultCode != Activity.RESULT_OK ? null : intent.getData();
++                LOG.d(LOG_TAG, "Receive file chooser URL: " + result);
++                uploadMsg.onReceiveValue(result);
++            }
++        }, intent, FILECHOOSER_RESULTCODE);
++    }
++
++    @SuppressLint("NewApi")
++    public boolean onShowFileChooser(final ValueCallback<Uri[]> filePathsCallback, final WebChromeClient.FileChooserParams fileChooserParams) {
++        Intent intent = fileChooserParams.createIntent();
++        try {
++            parentEngine.cordova.startActivityForResult(new CordovaPlugin() {
++                @Override
++                public void onActivityResult(int requestCode, int resultCode, Intent intent) {
++                    Uri[] result = WebChromeClient.FileChooserParams.parseResult(resultCode, intent);
++                    //LOG.d(LOG_TAG, "Receive file chooser URL: " + result);
++                    filePathsCallback.onReceiveValue(result);
++                }
++            }, intent, FILECHOOSER_RESULTCODE);
++        } catch (ActivityNotFoundException e) {
++            LOG.w("No activity found to handle file chooser intent.", e);
++            filePathsCallback.onReceiveValue(null);
++        }
++        return true;
++    }
++
++    @SuppressLint("NewApi")
++    public void onPermissionRequest(final PermissionRequest request) {
++        LOG.d(LOG_TAG, "onPermissionRequest: " + Arrays.toString(request.getResources()));
++        request.grant(request.getResources());
++    }
++
++    public void destroyLastDialog(){
++        dialogsHelper.destroyLastDialog();
++    }
++}
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebViewEngine.java b/platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebViewEngine.java
+new file mode 100644
+index 0000000..7010d96
+--- /dev/null
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/engine/ShellWebViewEngine.java
+@@ -0,0 +1,198 @@
++package org.apache.cordova.engine;
++
++import android.annotation.SuppressLint;
++import android.annotation.TargetApi;
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++import android.content.pm.ApplicationInfo;
++import android.os.Build;
++import android.view.View;
++import android.webkit.ValueCallback;
++import android.util.Log;
++import org.apache.cordova.CordovaBridge;
++import org.apache.cordova.CordovaInterface;
++import org.apache.cordova.CordovaPreferences;
++import org.apache.cordova.CordovaResourceApi;
++import org.apache.cordova.CordovaWebView;
++import org.apache.cordova.CordovaWebViewEngine;
++import org.apache.cordova.ICordovaCookieManager;
++import org.apache.cordova.LOG;
++import org.apache.cordova.NativeToJsMessageQueue;
++import org.apache.cordova.PluginManager;
++
++import java.lang.reflect.InvocationTargetException;
++import java.lang.reflect.Method;
++
++public class ShellWebViewEngine implements CordovaWebViewEngine {
++
++    public static final String TAG = "ShellWebViewEngine";
++
++    protected final ShellWebView webView;
++    protected CordovaPreferences preferences;
++    protected CordovaBridge bridge;
++    protected CordovaWebViewEngine.Client client;
++    protected CordovaWebView parentWebView;
++    protected CordovaInterface cordova;
++    protected PluginManager pluginManager;
++    protected CordovaResourceApi resourceApi;
++    protected NativeToJsMessageQueue nativeToJsMessageQueue;
++    private BroadcastReceiver receiver;
++
++    public ShellWebViewEngine(Context context, CordovaPreferences preferences) {
++        this(new ShellWebView(context), preferences);
++    }
++
++    public ShellWebViewEngine(ShellWebView webView) {
++        this(webView, null);
++    }
++
++    public ShellWebViewEngine(ShellWebView webView, CordovaPreferences preferences) {
++        this.preferences = preferences;
++        this.webView = webView;
++    }
++
++    @Override
++    public void init(CordovaWebView parentWebView, CordovaInterface cordova, Client client,
++              CordovaResourceApi resourceApi, PluginManager pluginManager,
++              NativeToJsMessageQueue nativeToJsMessageQueue){
++        Log.e(TAG, "init");
++        if (this.cordova != null) {
++            throw new IllegalStateException();
++        }
++    // Needed when prefs are not passed by the constructor
++        if (preferences == null) {
++            preferences = parentWebView.getPreferences();
++        }
++        this.parentWebView = parentWebView;
++        this.cordova = cordova;
++        this.client = client;
++        this.resourceApi = resourceApi;
++        this.pluginManager = pluginManager;
++        this.nativeToJsMessageQueue = nativeToJsMessageQueue;
++        webView.init(this);
++
++        initWebViewSettings();
++
++        nativeToJsMessageQueue.addBridgeMode(new NativeToJsMessageQueue.OnlineEventsBridgeMode(new NativeToJsMessageQueue.OnlineEventsBridgeMode.OnlineEventsBridgeModeDelegate() {
++            @Override
++            public void setNetworkAvailable(boolean value) {
++            //sometimes this can be called after calling webview.destroy() on destroy()
++
++            }
++
++            @Override
++            public void runOnUiThread(Runnable r) {
++                ShellWebViewEngine.this.cordova.getActivity().runOnUiThread(r);
++            }
++        }));
++
++        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2)
++            nativeToJsMessageQueue.addBridgeMode(new NativeToJsMessageQueue.EvalBridgeMode(this, cordova));
++        bridge = new CordovaBridge(pluginManager, nativeToJsMessageQueue);
++        exposeJsInterface(webView, bridge);
++    }
++
++    @Override
++    public CordovaWebView getCordovaWebView() {
++        return parentWebView;
++    }
++
++    @Override
++    public ICordovaCookieManager getCookieManager() {
++        return null;
++    }
++
++    @Override
++    public View getView() {
++        return webView.getContainerView();
++    }
++
++    private void initWebViewSettings() {}
++
++    @SuppressLint("AddJavascriptInterface")
++    private static void exposeJsInterface(ShellWebView webView, CordovaBridge bridge) {
++        if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)) {
++            LOG.i(TAG, "Disabled addJavascriptInterface() bridge since Android version is old.");
++            // Bug being that Java Strings do not get converted to JS strings automatically.
++            // This isn't hard to work-around on the JS side, but it's easier to just
++            // use the prompt bridge instead.
++            return;
++        }
++        SystemExposedJsApi exposedJsApi = new SystemExposedJsApi(bridge);
++        webView.addJavascriptInterface(exposedJsApi, "_cordovaNative");
++    }
++
++    @Override
++    public void loadUrl(final String url, boolean clearNavigationStack) {
++        webView.loadUrl(url);
++    }
++
++    @Override
++    public String getUrl() {
++        return webView.getUrl();
++    }
++
++    @Override
++    public void stopLoading() {
++        webView.stopLoading();
++    }
++
++    @Override
++    public void clearCache() {
++        //webView.clearCache(true);
++    }
++
++    @Override
++    public void clearHistory() {
++        webView.clearHistory();
++    }
++
++    @Override
++    public boolean canGoBack() {
++        return webView.canGoBack();
++    }
++
++    @Override
++    public boolean goBack() {
++        // Check webview first to see if there is a history
++        // This is needed to support curPage#diffLink, since they are added to parentEngine's history, but not our history url array (JQMobile behavior)
++        if (webView.canGoBack()) {
++            webView.goBack();
++            return true;
++        }
++        return false;
++    }
++
++    @Override
++    public void setPaused(boolean value) {
++    }
++
++    @Override
++    public void destroy() {
++        //webView.chromeClient.destroyLastDialog();
++        webView.destroy();
++        // unregister the receiver
++        if (receiver != null) {
++            try {
++                webView.getContext().unregisterReceiver(receiver);
++            } catch (Exception e) {
++                LOG.e(TAG, "Error unregistering configuration receiver: " + e.getMessage(), e);
++            }
++        }
++    }
++
++    @Override
++    public void evaluateJavascript(String js, ValueCallback<String> callback) {
++        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
++            webView.evaluateJavascript(js, callback);
++        }
++        else
++        {
++            LOG.d(TAG, "This webview is using the old bridge");
++        }
++    }
++
++
++}
+\ No newline at end of file
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemCookieManager.java b/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemCookieManager.java
+index acf795f..f19eab5 100644
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemCookieManager.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemCookieManager.java
+@@ -28,39 +28,44 @@ import org.apache.cordova.ICordovaCookieManager;
+ 
+ class SystemCookieManager implements ICordovaCookieManager {
+ 
+-    protected final WebView webView;
++    protected final WebView mWebView;
+     private final CookieManager cookieManager;
+ 
+     //Added because lint can't see the conditional RIGHT ABOVE this
+     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+-    public SystemCookieManager(WebView webview) {
+-        webView = webview;
++    public SystemCookieManager(WebView webView) {
++        mWebView = webView;
+         cookieManager = CookieManager.getInstance();
+ 
+         //REALLY? Nobody has seen this UNTIL NOW?
+-        cookieManager.setAcceptFileSchemeCookies(true);
++        CookieManager.setAcceptFileSchemeCookies(true);
+ 
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+             cookieManager.setAcceptThirdPartyCookies(webView, true);
+         }
+     }
+ 
++    @Override
+     public void setCookiesEnabled(boolean accept) {
+         cookieManager.setAcceptCookie(accept);
+     }
+ 
++    @Override
+     public void setCookie(final String url, final String value) {
+         cookieManager.setCookie(url, value);
+     }
+ 
++    @Override
+     public String getCookie(final String url) {
+         return cookieManager.getCookie(url);
+     }
+ 
++    @Override
+     public void clearCookies() {
+         cookieManager.removeAllCookie();
+     }
+ 
++    @Override
+     public void flush() {
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+             cookieManager.flush();
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemExposedJsApi.java b/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemExposedJsApi.java
+old mode 100644
+new mode 100755
+index 94c3d93..c37d455
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemExposedJsApi.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemExposedJsApi.java
+@@ -37,16 +37,19 @@ class SystemExposedJsApi implements ExposedJsApi {
+     }
+ 
+     @JavascriptInterface
++    @Override
+     public String exec(int bridgeSecret, String service, String action, String callbackId, String arguments) throws JSONException, IllegalAccessException {
+         return bridge.jsExec(bridgeSecret, service, action, callbackId, arguments);
+     }
+ 
+     @JavascriptInterface
++    @Override
+     public void setNativeToJsBridgeMode(int bridgeSecret, int value) throws IllegalAccessException {
+         bridge.jsSetNativeToJsBridgeMode(bridgeSecret, value);
+     }
+ 
+     @JavascriptInterface
++    @Override
+     public String retrieveJsMessages(int bridgeSecret, boolean fromOnlineEvent) throws IllegalAccessException {
+         return bridge.jsRetrieveJsMessages(bridgeSecret, fromOnlineEvent);
+     }
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebChromeClient.java b/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebChromeClient.java
+old mode 100644
+new mode 100755
+index 3ea5e57..0148541
+--- a/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebChromeClient.java
++++ b/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebChromeClient.java
+@@ -268,7 +268,7 @@ public class SystemWebChromeClient extends WebChromeClient {
+                 @Override
+                 public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+                     Uri[] result = WebChromeClient.FileChooserParams.parseResult(resultCode, intent);
+-                    LOG.d(LOG_TAG, "Receive file chooser URL: " + result);
++                    //LOG.d(LOG_TAG, "Receive file chooser URL: " + result);
+                     filePathsCallback.onReceiveValue(result);
+                 }
+             }, intent, FILECHOOSER_RESULTCODE);
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebViewClient.java b/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebViewClient.java
+old mode 100644
+new mode 100755
+diff --git a/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebViewEngine.java b/platforms/android/CordovaLib/src/org/apache/cordova/engine/SystemWebViewEngine.java
+old mode 100644
+new mode 100755
+diff --git a/platforms/android/app/build.gradle b/platforms/android/app/build.gradle
+index 178f9f3..ec2e2fa 100644
+--- a/platforms/android/app/build.gradle
++++ b/platforms/android/app/build.gradle
+@@ -244,6 +244,10 @@ android {
+     targetCompatibility JavaVersion.VERSION_1_8
+   }
+ 
++  aaptOptions {
++    noCompress 'dat', 'bin', 'pak'
++  }
++
+   if (cdvReleaseSigningPropertiesFile) {
+     signingConfigs {
+       release {
+diff --git a/platforms/android/app/src/main/AndroidManifest.xml b/platforms/android/app/src/main/AndroidManifest.xml
+index e6853b3..0d1ba7d 100644
+--- a/platforms/android/app/src/main/AndroidManifest.xml
++++ b/platforms/android/app/src/main/AndroidManifest.xml
+@@ -99,6 +99,138 @@
+         </receiver>
+         <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default" />
+         <meta-data android:name="JPUSH_APPKEY" android:value="ce32fee188af2d3284b0c24e" />
++
++        <meta-data
++            android:name="org.chromium.content.browser.NUM_SANDBOXED_SERVICES"
++            android:value="20" />
++
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService0"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process0" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService1"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process1" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService2"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process2" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService3"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process3" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService4"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process4" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService5"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process5" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService6"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process6" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService7"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process7" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService8"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process8" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService9"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process9" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService10"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process10" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService11"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process11" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService12"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process12" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService13"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process13" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService14"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process14" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService15"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process15" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService16"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process16" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService17"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process17" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService18"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process18" />
++        <service
++            android:name="org.chromium.content.app.SandboxedProcessService19"
++            android:exported="false"
++            android:isolatedProcess="true"
++            android:process=":sandboxed_process19" />
++
++        <meta-data
++            android:name="org.chromium.content.browser.NUM_PRIVILEGED_SERVICES"
++            android:value="3" />
++
++        <service
++            android:name="org.chromium.content.app.PrivilegedProcessService0"
++            android:exported="false"
++            android:isolatedProcess="false"
++            android:process=":privileged_process0" />
++        <service
++            android:name="org.chromium.content.app.PrivilegedProcessService1"
++            android:exported="false"
++            android:isolatedProcess="false"
++            android:process=":privileged_process1" />
++        <service
++            android:name="org.chromium.content.app.PrivilegedProcessService2"
++            android:exported="false"
++            android:isolatedProcess="false"
++            android:process=":privileged_process2" />
++
++        <meta-data
++            android:name="org.chromium.content.browser.SMART_CLIP_PROVIDER"
++            android:value="org.chromium.content.browser.SmartClipProvider" />
++        <meta-data
++            android:name="android.arch.lifecycle.VERSION"
++            android:value="27.0.0-SNAPSHOT" />
+     </application>
+     <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="21" />
+     <uses-permission android:name="android.permission.CAMERA" />
+-- 
+2.7.4
+

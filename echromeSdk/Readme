@@ -1,0 +1,28 @@
+最终输出：
+elastosLib.jar
+cordovaLib 
+asset（dat，bin，pak）
+Build.gradle(diff)
+manifest.xml(diff) 
+android.jar
+
+1. chromium构建环境生成 elastosLib.jar和libchrome.so 等， asset 资源文件
+a. chromium中编译target elastos_shell_apk生成ElastosApp.apk
+b. chromium工程中编译ninja -C out/arm/elastos_sdk_lib生成jar包
+c. 手动替换elastosLib.jar中nativelibrary，buildconfig等相关的class文件。
+d. 删除elastosLib.jar中与AndroidStudio冲突的几个package（com.android.support）
+
+2. 修改sdk
+a. 替换studio中使用的android.jar文件
+
+3.  修改studio工程
+a.将ElastosApp.apk中的so文件以及elastosLib.jar添加到studio中cordovaLib/lib下，修改相关的gradle文件。
+b.将ElastosApp.apk中asset目录下的dat，bin，pak文件复制到studio app目录下assets中。
+c.Build.gradle中添加如下几行
+     aaptOptions {
+         noCompress 'dat', 'bin', 'pak'
+     }
+d. 在app的manifest.xml中添加SandboxedProcess相关的几项。
+e. 将CordovaLib目录下的java文件替换为附件CordovaLib文件夹。
+注：c,d,e修改见.patch
+f. sync studio工程，编译生成apk
