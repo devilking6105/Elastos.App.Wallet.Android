@@ -65,14 +65,6 @@ module.exports = [
     ]
   },
   {
-    "id": "AppManager.AppManager",
-    "file": "plugins/AppManager/www/AppManager.js",
-    "pluginId": "AppManager",
-    "clobbers": [
-      "cordova.plugins.AppManager"
-    ]
-  },
-  {
     "id": "com.plugin.testPlugin.TestPlugin",
     "file": "plugins/com.plugin.testPlugin/www/TestPlugin.js",
     "pluginId": "com.plugin.testPlugin",

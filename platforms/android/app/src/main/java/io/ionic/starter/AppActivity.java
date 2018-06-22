@@ -67,7 +67,7 @@ public class AppActivity extends CordovaActivity
           if (scheme.equals("elastos") && host.equals("elastos")) {
             //String path = data.getPath();
             //startParams = path.substring(1) + ";mm";
-            loadUrl("file:///android_asset/samples/www/index.html");
+            loadUrl("file:///android_asset/samples/www/index2.html");
           } else {
             startParams = data.getQuery();
           }
