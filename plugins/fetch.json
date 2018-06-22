@@ -78,5 +78,13 @@
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "com.plugin.testPlugin": {
+    "source": {
+      "type": "local",
+      "path": "D:\\localproject\\Elastos.ORG.Wallet.Mobile\\node_modules\\testplugin"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

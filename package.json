@@ -62,6 +62,7 @@
     "rxjs": "5.5.10",
     "secp256k1": "^3.5.0",
     "sw-toolbox": "3.6.0",
+    "testplugin": "file:TestPlugin",
     "universalify": "^0.1.1",
     "weui": "^1.1.2",
     "zone.js": "0.8.26"
@@ -84,7 +85,8 @@
       },
       "cordova-plugin-filechooser": {},
       "cordova-clipboard": {},
-      "ElaWallet": {}
+      "ElaWallet": {},
+      "com.plugin.testPlugin": {}
     },
     "platforms": [
       "android"

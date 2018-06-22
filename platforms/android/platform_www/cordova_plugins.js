@@ -63,6 +63,14 @@ module.exports = [
     "clobbers": [
       "cordova.plugins.Wallet"
     ]
+  },
+  {
+    "id": "com.plugin.testPlugin.TestPlugin",
+    "file": "plugins/com.plugin.testPlugin/www/TestPlugin.js",
+    "pluginId": "com.plugin.testPlugin",
+    "clobbers": [
+      "cordova.plugins.TestPlugin"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -77,7 +85,9 @@ module.exports.metadata =
   "phonegap-plugin-barcodescanner": "7.1.2",
   "cordova-plugin-filechooser": "1.0.1",
   "cordova-clipboard": "1.2.1",
-  "ElaWallet": "1.0.0"
+  "ElaWallet": "1.0.0",
+  "AppManager": "1.0.0",
+  "com.plugin.testPlugin": "1.0.0"
 };
 // BOTTOM OF METADATA
 });

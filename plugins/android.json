@@ -37,6 +37,12 @@
     },
     "ElaWallet": {
       "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "AppManager": {
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "com.plugin.testPlugin": {
+      "PACKAGE_NAME": "io.ionic.starter"
     }
   },
   "dependent_plugins": {}

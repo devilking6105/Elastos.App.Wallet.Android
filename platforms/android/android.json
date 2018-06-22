@@ -35,6 +35,10 @@
             {
               "xml": "<feature name=\"Wallet\"><param name=\"android-package\" value=\"ElaWallet.Wallet\" /></feature>",
               "count": 1
+            },
+            {
+              "xml": "<feature name=\"TestPlugin\"><param name=\"android-package\" value=\"com.plugin.testPlugin.TestPlugin\" /></feature>",
+              "count": 1
             }
           ],
           "/widget": [
@@ -116,6 +120,12 @@
     },
     "ElaWallet": {
       "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "AppManager": {
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "com.plugin.testPlugin": {
+      "PACKAGE_NAME": "io.ionic.starter"
     }
   },
   "dependent_plugins": {},
@@ -183,6 +193,22 @@
       "clobbers": [
         "cordova.plugins.Wallet"
       ]
+    },
+    {
+      "id": "AppManager.AppManager",
+      "file": "plugins/AppManager/www/AppManager.js",
+      "pluginId": "AppManager",
+      "clobbers": [
+        "cordova.plugins.AppManager"
+      ]
+    },
+    {
+      "id": "com.plugin.testPlugin.TestPlugin",
+      "file": "plugins/com.plugin.testPlugin/www/TestPlugin.js",
+      "pluginId": "com.plugin.testPlugin",
+      "clobbers": [
+        "cordova.plugins.TestPlugin"
+      ]
     }
   ],
   "plugin_metadata": {
@@ -195,6 +221,8 @@
     "phonegap-plugin-barcodescanner": "7.1.2",
     "cordova-plugin-filechooser": "1.0.1",
     "cordova-clipboard": "1.2.1",
-    "ElaWallet": "1.0.0"
+    "ElaWallet": "1.0.0",
+    "AppManager": "1.0.0",
+    "com.plugin.testPlugin": "1.0.0"
   }
 }

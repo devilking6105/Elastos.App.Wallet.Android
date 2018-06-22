@@ -90,6 +90,7 @@
     <plugin name="cordova-plugin-filechooser" spec="^1.0.1" />
     <plugin name="cordova-clipboard" spec="^1.2.1" />
     <plugin name="ElaWallet" spec="ElaWallet" />
-    <engine name="android" spec="^7.0.0" />
     <allow-navigation href="http://192.168.10.126:8100" />
+    <plugin name="com.plugin.testPlugin" spec="D:\localproject\Elastos.ORG.Wallet.Mobile\TestPlugin" />
+    <engine name="android" spec="^7.0.0" />
 </widget>

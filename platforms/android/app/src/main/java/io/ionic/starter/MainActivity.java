@@ -24,11 +24,15 @@ import android.os.Bundle;
 import android.util.Log;
 
 import org.apache.cordova.*;
+import android.content.Intent;
+import android.net.Uri;
 
 import cn.jpush.android.api.JPushInterface;
 
 public class MainActivity extends CordovaActivity
 {
+
+  public String TAG = "Elastos";
   static {
 //    System.loadLibrary("spvsdk");
 //    System.loadLibrary("elastoswallet");
@@ -46,7 +50,40 @@ public class MainActivity extends CordovaActivity
         }
 
         // Set by <content src="index.html" /> in config.xml
-        loadUrl(launchUrl);
+        //loadUrl(launchUrl);
+        Log.e(TAG, launchUrl);
+
+      String scheme = "";
+      String host = "";
+      String startParams= "";
+      Intent intent = getIntent();
+      Log.e(TAG, "intent: " + intent);
+      if (null != intent) {
+        Uri data = intent.getData();
+        Log.e(TAG, "data: " + data);
+        if (null != data) {
+          scheme = data.getScheme();
+          host = data.getHost();
+          if (scheme.equals("elastos") && host.equals("elastos")) {
+            //String path = data.getPath();
+            //startParams = path.substring(1) + ";mm";
+            loadUrl("file:///android_asset/www/index.html");
+          } else {
+            startParams = data.getQuery();
+          }
+        } else {
+          Log.e(TAG,"data is null");
+          String param = intent.getStringExtra("param");
+//          if ("".param.isEmpty(param)) {
+//            int index = param.indexOf("?");
+//            param = param.substring(index + 1);
+//          }
+          //startParams = (param != null ? param : "");
+          loadUrl("file:///android_asset/www/index.html");
+        }
+      } else {
+        loadUrl("file:///android_asset/www/index.html");
+      }
 
         //initJG();
     }
