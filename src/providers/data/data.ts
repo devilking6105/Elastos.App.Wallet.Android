@@ -12,11 +12,11 @@ export class DataProvider {
   } 
   
   getData() {
-    return this.storage.get('todos');  
+    return this.storage.get('desktop');  
   } 
   
   save(data){
     let newData = JSON.stringify(data);
-    this.storage.set('todos', newData);
+    this.storage.set('desktop', newData);
   } 
 }

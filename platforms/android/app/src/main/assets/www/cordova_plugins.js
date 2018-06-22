@@ -71,6 +71,14 @@ module.exports = [
     "clobbers": [
       "cordova.plugins.TestPlugin"
     ]
+  },
+  {
+    "id": "cordova-plugin-statusbar.statusbar",
+    "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+    "pluginId": "cordova-plugin-statusbar",
+    "clobbers": [
+      "window.StatusBar"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -86,8 +94,8 @@ module.exports.metadata =
   "cordova-plugin-filechooser": "1.0.1",
   "cordova-clipboard": "1.2.1",
   "ElaWallet": "1.0.0",
-  "AppManager": "1.0.0",
-  "com.plugin.testPlugin": "1.0.0"
+  "com.plugin.testPlugin": "1.0.0",
+  "cordova-plugin-statusbar": "2.4.2"
 };
 // BOTTOM OF METADATA
 });

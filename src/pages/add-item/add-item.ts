@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,ViewController } from 'ionic-angular';
+import { IonicPage, NavController, ViewController } from 'ionic-angular';
 
 /**
  * Generated class for the AddItemPage page.
@@ -15,7 +15,7 @@ import { IonicPage, NavController, NavParams,ViewController } from 'ionic-angula
 })
 export class AddItemPage {
    title;
-  description;
+  path;
   
   constructor(public navCtrl: NavController, public view: ViewController) {
   }
@@ -27,7 +27,7 @@ export class AddItemPage {
   saveItem(){
      let newItem = {
       title: this.title,
-      description: this.description
+      path: this.path
     };
 	
      this.view.dismiss(newItem);

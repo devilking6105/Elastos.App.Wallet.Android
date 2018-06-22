@@ -65,9 +65,12 @@ public class AppActivity extends CordovaActivity
           scheme = data.getScheme();
           host = data.getHost();
           if (scheme.equals("elastos") && host.equals("elastos")) {
-            //String path = data.getPath();
-            //startParams = path.substring(1) + ";mm";
-            loadUrl("file:///android_asset/samples/www/index2.html");
+
+            String path = data.toString();
+            int urlindex = path.indexOf("url=");
+            String url = path.substring(urlindex + 4);
+            Log.e(TAG, "loadUrl: " + url);
+            loadUrl(url);
           } else {
             startParams = data.getQuery();
           }
@@ -79,10 +82,10 @@ public class AppActivity extends CordovaActivity
 //            param = param.substring(index + 1);
 //          }
           //startParams = (param != null ? param : "");
-          loadUrl("file:///android_asset/www/index.html");
+          loadUrl("file:///android_asset/samples/www/index.html");
         }
       } else {
-        loadUrl("file:///android_asset/www/index.html");
+        loadUrl("file:///android_asset/samples/www/index.html");
       }
 
         //initJG();

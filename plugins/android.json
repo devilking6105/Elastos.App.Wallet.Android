@@ -38,10 +38,10 @@
     "ElaWallet": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
-    "AppManager": {
+    "com.plugin.testPlugin": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
-    "com.plugin.testPlugin": {
+    "cordova-plugin-statusbar": {
       "PACKAGE_NAME": "io.ionic.starter"
     }
   },

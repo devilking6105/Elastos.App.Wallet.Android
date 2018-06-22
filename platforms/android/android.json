@@ -39,6 +39,10 @@
             {
               "xml": "<feature name=\"TestPlugin\"><param name=\"android-package\" value=\"com.plugin.testPlugin.TestPlugin\" /></feature>",
               "count": 1
+            },
+            {
+              "xml": "<feature name=\"StatusBar\"><param name=\"android-package\" value=\"org.apache.cordova.statusbar.StatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
+              "count": 1
             }
           ],
           "/widget": [
@@ -121,10 +125,10 @@
     "ElaWallet": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
-    "AppManager": {
+    "com.plugin.testPlugin": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
-    "com.plugin.testPlugin": {
+    "cordova-plugin-statusbar": {
       "PACKAGE_NAME": "io.ionic.starter"
     }
   },
@@ -195,19 +199,19 @@
       ]
     },
     {
-      "id": "AppManager.AppManager",
-      "file": "plugins/AppManager/www/AppManager.js",
-      "pluginId": "AppManager",
-      "clobbers": [
-        "cordova.plugins.AppManager"
-      ]
-    },
-    {
       "id": "com.plugin.testPlugin.TestPlugin",
       "file": "plugins/com.plugin.testPlugin/www/TestPlugin.js",
       "pluginId": "com.plugin.testPlugin",
       "clobbers": [
         "cordova.plugins.TestPlugin"
+      ]
+    },
+    {
+      "id": "cordova-plugin-statusbar.statusbar",
+      "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+      "pluginId": "cordova-plugin-statusbar",
+      "clobbers": [
+        "window.StatusBar"
       ]
     }
   ],
@@ -222,7 +226,7 @@
     "cordova-plugin-filechooser": "1.0.1",
     "cordova-clipboard": "1.2.1",
     "ElaWallet": "1.0.0",
-    "AppManager": "1.0.0",
-    "com.plugin.testPlugin": "1.0.0"
+    "com.plugin.testPlugin": "1.0.0",
+    "cordova-plugin-statusbar": "2.4.2"
   }
 }

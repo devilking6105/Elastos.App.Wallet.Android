@@ -35,7 +35,7 @@ var AddItemPage = /** @class */ (function () {
     AddItemPage.prototype.saveItem = function () {
         var newItem = {
             title: this.title,
-            description: this.description
+            path: this.path
         };
         this.view.dismiss(newItem);
     };
@@ -44,7 +44,7 @@ var AddItemPage = /** @class */ (function () {
     };
     AddItemPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-add-item',template:/*ion-inline-start:"D:\localproject\Elastos.ORG.Wallet.Mobile\src\pages\add-item\add-item.html"*/'<!--\n  Generated template for the AddItemPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n  <ion-toolbar color="secondary">\n    <ion-title>\n        Add Item\n    </ion-title>\n        <ion-buttons end>\n            <button ion-button icon-only (click)="close()"><ion-icon name="close"></ion-icon></button>\n        </ion-buttons>\n    </ion-toolbar>\n</ion-header>\n <ion-content>\n    <ion-list>\n       <ion-item>\n        <ion-label floating>Title</ion-label>\n        <ion-input type="text" [(ngModel)]="title"></ion-input>\n      </ion-item>\n       <ion-item>\n        <ion-label floating>Description</ion-label>\n        <ion-input type="text" [(ngModel)]="description"></ion-input>\n      </ion-item>\n     </ion-list>\n     <button full ion-button color="secondary" (click)="saveItem()">Save</button> \n </ion-content>\n'/*ion-inline-end:"D:\localproject\Elastos.ORG.Wallet.Mobile\src\pages\add-item\add-item.html"*/,
+            selector: 'page-add-item',template:/*ion-inline-start:"D:\localproject\Elastos.ORG.Wallet.Mobile\src\pages\add-item\add-item.html"*/'<!--\n  Generated template for the AddItemPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n  <ion-toolbar color="secondary">\n    <ion-title>\n        Add Item\n    </ion-title>\n        <ion-buttons end>\n            <button ion-button icon-only (click)="close()"><ion-icon name="close"></ion-icon></button>\n        </ion-buttons>\n    </ion-toolbar>\n</ion-header>\n <ion-content>\n    <ion-list>\n       <ion-item>\n        <ion-label floating>Title</ion-label>\n        <ion-input type="text" [(ngModel)]="title"></ion-input>\n      </ion-item>\n       <ion-item>\n        <ion-label floating>path</ion-label>\n        <ion-input type="text" [(ngModel)]="path"></ion-input>\n      </ion-item>\n     </ion-list>\n     <button full ion-button color="secondary" (click)="saveItem()">Save</button> \n </ion-content>\n'/*ion-inline-end:"D:\localproject\Elastos.ORG.Wallet.Mobile\src\pages\add-item\add-item.html"*/,
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ViewController */]])
     ], AddItemPage);
@@ -241,9 +241,8 @@ var HomePage = /** @class */ (function () {
             }
             else {
                 _this.items = [
-                    { title: 'Elastos TODO1', description: 'TODO List1' },
-                    { title: 'Elastos TODO2', description: 'TODO List2' },
-                    { title: 'Elastos TODO3', description: 'TODO List3' }
+                    { title: '启动应用todo', path: 'todo' },
+                    { title: '启动应用hello', path: 'hello' }
                 ];
             }
         });
@@ -280,17 +279,17 @@ var HomePage = /** @class */ (function () {
         this.items.push(item);
         this.dataService.save(this.items);
     };
-    HomePage.prototype.viewItem = function () {
-        //cordova.plugins.AppManager.run();
-        cordova.plugins.TestPlugin.coolMethod("今天好运气，一老狼请吃鸡呀！", function (result) { return alert(result); }, function (error) { return alert(error); });
+    HomePage.prototype.viewItem = function (item) {
+        cordova.plugins.TestPlugin.coolMethod('file:///android_asset/' + item.path + '/www/index.html', function (data) { }, function (error) { });
     };
     HomePage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
             selector: 'page-home',template:/*ion-inline-start:"D:\localproject\Elastos.ORG.Wallet.Mobile\src\pages\home\home.html"*/'<ion-header>\n  <ion-navbar color="secondary">\n    <ion-title>\n        Todos!\n    </ion-title>\n    <ion-buttons end>\n        <button ion-button icon-only (click)="addItem()"><ion-icon name="add-circle"></ion-icon></button>\n    </ion-buttons>\n  </ion-navbar>\n</ion-header>\n <ion-content>\n  <ion-list>\n    <ion-item *ngFor="let item of items" (click)="viewItem(item)">{{item.title}}</ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"D:\localproject\Elastos.ORG.Wallet.Mobile\src\pages\home\home.html"*/
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* ModalController */], __WEBPACK_IMPORTED_MODULE_3__providers_data_data__["a" /* DataProvider */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* ModalController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* ModalController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__providers_data_data__["a" /* DataProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_data_data__["a" /* DataProvider */]) === "function" && _b || Object])
     ], HomePage);
     return HomePage;
+    var _a, _b;
 }());
 
 //# sourceMappingURL=home.js.map
@@ -326,17 +325,18 @@ var DataProvider = /** @class */ (function () {
         this.storage = storage;
     }
     DataProvider.prototype.getData = function () {
-        return this.storage.get('todos');
+        return this.storage.get('desktop');
     };
     DataProvider.prototype.save = function (data) {
         var newData = JSON.stringify(data);
-        this.storage.set('todos', newData);
+        this.storage.set('desktop', newData);
     };
     DataProvider = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */]) === "function" && _a || Object])
     ], DataProvider);
     return DataProvider;
+    var _a;
 }());
 
 //# sourceMappingURL=data.js.map

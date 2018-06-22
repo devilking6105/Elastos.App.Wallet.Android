@@ -23,9 +23,8 @@ export class HomePage {
         this.items = JSON.parse(todos); 
       } else {
 		this.items = [
-		  {title: 'Elastos TODO1', description: 'TODO List1'},
-		  {title: 'Elastos TODO2', description: 'TODO List2'},
-		  {title: 'Elastos TODO3', description: 'TODO List3'}
+		  {title: '启动应用todo', path: 'todo'},
+		  {title: '启动应用hello', path: 'hello'}
 		];
 	  }
     });
@@ -66,9 +65,8 @@ export class HomePage {
     this.dataService.save(this.items);
    }
 
-   viewItem(){
-	   //cordova.plugins.AppManager.run();
-	   cordova.plugins.TestPlugin.coolMethod("今天好运气，一老狼请吃鸡呀！",result=>alert(result),error=>alert(error));
+   viewItem(item){
+	   cordova.plugins.TestPlugin.coolMethod('file:///android_asset/' + item.path + '/www/index.html',function(data){},function(error){});
    }
 
 }
