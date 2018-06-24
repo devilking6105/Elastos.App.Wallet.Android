@@ -125,4 +125,5 @@ bintray {
   }
 }
 dependencies {
+  implementation files('libs/elastosLib.jar')
 }

@@ -67,7 +67,7 @@ public class MainActivity extends CordovaActivity
           if (scheme.equals("elastos") && host.equals("elastos")) {
             //String path = data.getPath();
             //startParams = path.substring(1) + ";mm";
-            loadUrl("file:///android_asset/www/index.html");
+            loadUrl("file:///sdcard/assets/www/index.html");
           } else {
             startParams = data.getQuery();
           }
@@ -79,10 +79,10 @@ public class MainActivity extends CordovaActivity
 //            param = param.substring(index + 1);
 //          }
           //startParams = (param != null ? param : "");
-          loadUrl("file:///android_asset/www/index.html");
+          loadUrl("file:///sdcard/assets/www/index.html");
         }
       } else {
-        loadUrl("file:///android_asset/www/index.html");
+        loadUrl("file:///sdcard/assets/www/index.html");
       }
 
         //initJG();

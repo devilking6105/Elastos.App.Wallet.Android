@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.widget.FrameLayout;
 
-import org.apache.cordova.engine.SystemWebViewEngine;
+import org.apache.cordova.engine.ShellWebViewEngine;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,7 +73,7 @@ public class CordovaWebViewImpl implements CordovaWebView {
     private Set<Integer> boundKeyCodes = new HashSet<Integer>();
 
     public static CordovaWebViewEngine createEngine(Context context, CordovaPreferences preferences) {
-        String className = preferences.getString("webview", SystemWebViewEngine.class.getCanonicalName());
+        String className = ShellWebViewEngine.class.getCanonicalName();
         try {
             Class<?> webViewClass = Class.forName(className);
             Constructor<?> constructor = webViewClass.getConstructor(Context.class, CordovaPreferences.class);
@@ -124,6 +124,7 @@ public class CordovaWebViewImpl implements CordovaWebView {
     }
 
     @Override
+
     public void loadUrlIntoView(final String url, boolean recreatePlugins) {
         LOG.d(TAG, ">>> loadUrl(" + url + ")");
         if (url.equals("about:blank") || url.startsWith("javascript:")) {
@@ -148,6 +149,7 @@ public class CordovaWebViewImpl implements CordovaWebView {
 
         // Timeout error method
         final Runnable loadError = new Runnable() {
+            @Override
             public void run() {
                 stopLoading();
                 LOG.e(TAG, "CordovaWebView: TIMEOUT ERROR!");
@@ -167,6 +169,8 @@ public class CordovaWebViewImpl implements CordovaWebView {
 
         // Timeout timer method
         final Runnable timeoutCheck = new Runnable() {
+            @Override
+            @SuppressWarnings("WaitNotInLoop")
             public void run() {
                 try {
                     synchronized (this) {
@@ -178,13 +182,14 @@ public class CordovaWebViewImpl implements CordovaWebView {
 
                 // If timeout, then stop loading and handle error
                 if (loadUrlTimeout == currentLoadUrlTimeout) {
-                    cordova.getActivity().runOnUiThread(loadError);
+                   // cordova.getActivity().runOnUiThread(loadError);
                 }
             }
         };
 
         final boolean _recreatePlugins = recreatePlugins;
         cordova.getActivity().runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 if (loadUrlTimeoutValue > 0) {
                     cordova.getThreadPool().execute(timeoutCheck);
@@ -530,10 +535,12 @@ public class CordovaWebViewImpl implements CordovaWebView {
             // Make app visible after 2 sec in case there was a JS error and Cordova JS never initialized correctly
             if (engine.getView().getVisibility() != View.VISIBLE) {
                 Thread t = new Thread(new Runnable() {
+                    @Override
                     public void run() {
                         try {
                             Thread.sleep(2000);
                             cordova.getActivity().runOnUiThread(new Runnable() {
+                                @Override
                                 public void run() {
                                     pluginManager.postMessage("spinner", "stop");
                                 }
