@@ -1,0 +1,117 @@
+<!--
+  Generated template for the ManagePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<style>
+  .content-ios {
+    background-color: #ccc;
+    background: url(assets/imgs/timg.jpg) center center no-repeat;
+    background-size:100% 100%;
+  }
+  .toolbar-ios {
+    /* opacity: 0; */
+    background: rgba(red, green, blue, 0)
+  }
+    .right_arrow {
+      height: 12px;
+    }
+    .icon-right {
+      width: 24px;
+    }
+    .item-ios {
+      background-color: rgba(red, green, blue, 0);
+    }
+    .import-box {
+      background-color: #0064D7;
+      height: 112px; 
+      text-align: center;
+      font-size: 22px;
+      color: #fff;
+      border-radius: 10px;
+    }
+    .import-box .button-ios {
+      background-color: #0064D7;
+    }
+    .card-box {
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 16px;
+    color: #fff;
+    border-radius: 5px;
+  }
+  .card-export {
+    background-color: #0064D7;
+  }
+  .card-delete {
+    background-color: #D0021B;
+  }
+  </style>
+  <ion-header>
+    <ion-navbar>
+      <ion-title>manage</ion-title>
+
+      <ion-buttons end>
+        <button ion-button icon-only>
+          <ion-icon>
+            <img class="icon-right" src="assets/imgs/switch.png" alt="">
+          </ion-icon>
+        </button>
+      </ion-buttons>
+      <ion-buttons end>
+        <button ion-button icon-only>
+          <ion-icon><img class="icon-right" src="assets/imgs/shut.png" alt=""></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-navbar>
+  </ion-header>
+  
+  <ion-content>
+  <ion-card class="import-box">
+    <button ion-button icon-only>
+        <ion-icon>
+          <img class="icon-right" src="assets/imgs/add.png" alt="">
+        </ion-icon>
+      </button>
+    <ion-card-content>
+      <div class="title">Import from Local file</div>
+    </ion-card-content>
+    
+  </ion-card>
+      <ion-list no-lines>
+        <ion-item *ngFor="let item of appManageList, let i = index">
+          <ion-checkbox color="dark" checked="true"></ion-checkbox>
+          <ion-thumbnail item-start>
+            <img src={{item.path}} alt="">
+          </ion-thumbnail>
+          <ion-thumbnail item-start>
+              <h2>{{item.name}}</h2>
+              <p>{{item.size}}</p>
+              <p>{{item.date}}</p>
+            </ion-thumbnail>
+            <button ion-button clear item-end  (click)="goInfo(i)">
+                <img class="right_arrow" src="assets/imgs/arrow.png">
+            </button>
+        </ion-item>
+      </ion-list>
+    <!-- </ion-card> -->
+  </ion-content>
+
+  <ion-footer>
+    <ion-row>
+      <ion-col col-6>
+          <ion-card class="card-box card-export">
+              Export
+          </ion-card>
+      </ion-col>
+      <ion-col col-6>
+          <ion-card class="card-box card-delete">
+              Delete
+          </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-footer>
+  
