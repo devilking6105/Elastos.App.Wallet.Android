@@ -1,15 +1,78 @@
-<ion-header>
-  <ion-navbar color="secondary">
-    <ion-title>
-        Todos!
-    </ion-title>
-    <ion-buttons end>
-        <button ion-button icon-only (click)="addItem()"><ion-icon name="add-circle"></ion-icon></button>
-    </ion-buttons>
+<!-- <ion-header>
+  <ion-navbar>
+    <ion-title>Home</ion-title>
   </ion-navbar>
-</ion-header>
- <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let item of items" (click)="viewItem(item)">{{item.title}}</ion-item>
-  </ion-list>
+</ion-header> -->
+<style>
+  .content-ios {
+    background-color: #ccc;
+    background: url(assets/imgs/timg.jpg) center center no-repeat;
+    background-size:100% 100%;
+  }
+  .app-box {
+    width: 80%;
+    background-color: #888;
+    border-radius: 5px; 
+  }
+  .app-box img {
+    padding: 10px;
+  }
+  .app-title {
+    color: #888;
+    /* font-family:  */
+    text-align: center;
+    padding: 10px 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow:hidden;
+  }
+  .item-ios {
+    background-color: #eef5f9;
+  }
+  [col-3] {
+    padding: 22px 11px 0;
+  }
+  .manage-btn {
+    height: 18px;
+  }
+  .manage-box .button-ios {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+<!-- <ion-header>
+    <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button icon-only>
+          <ion-icon name="more"></ion-icon>
+        </button>
+      </ion-buttons>
+  
+      <ion-title>Header</ion-title>
+  
+      <ion-buttons end>
+        <button ion-button icon-only>
+          <ion-icon name="search"></ion-icon>
+        </button>
+      </ion-buttons>
+  
+    </ion-toolbar>
+  </ion-header> -->
+
+<ion-content>
+    <ion-grid>
+        <ion-row>
+          <ion-col col-3 class="manage-box">
+              <button ion-button clear>
+                <img (click)="goManage()" class="manage-btn" src="assets/imgs/manage.png" alt="">
+              </button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-3 *ngFor="let item of appList, let i = index" (press)="pressEvent($event,i)" (click)="onClick(item)">
+            <img src={{item.path}} alt="">
+            <div class="app-title">{{item.name}}</div>
+          </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

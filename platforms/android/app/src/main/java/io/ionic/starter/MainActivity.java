@@ -68,6 +68,7 @@ public class MainActivity extends CordovaActivity
             //String path = data.getPath();
             //startParams = path.substring(1) + ";mm";
             loadUrl("file:///sdcard/assets/www/index.html");
+            //loadUrl("file:///android_asset/www/index.html");
           } else {
             startParams = data.getQuery();
           }
@@ -80,9 +81,11 @@ public class MainActivity extends CordovaActivity
 //          }
           //startParams = (param != null ? param : "");
           loadUrl("file:///sdcard/assets/www/index.html");
+          //loadUrl("file:///android_asset/www/index.html");
         }
       } else {
         loadUrl("file:///sdcard/assets/www/index.html");
+        //loadUrl("file:///android_asset/www/index.html");
       }
 
         //initJG();

@@ -1,13 +1,8 @@
 import { Component } from '@angular/core';
-import { ModalController} from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 
-import { AddItemPage } from '../add-item/add-item';
+import { ManagePage } from '../manage/manage';
 
-//import { IonicStorageModule } from '@ionic/storage';
-import { DataProvider } from '../../providers/data/data';
-
-
-//import Wallet;
 declare let cordova: any;
 
 @Component({
@@ -15,58 +10,30 @@ declare let cordova: any;
   templateUrl: 'home.html'
 })
 export class HomePage {
- public items;
-  constructor(public modalCtrl: ModalController, public dataService: DataProvider) {
+  public press: number = 0;
 
-	this.dataService.getData().then((todos) => { 
-      if(todos){
-        this.items = JSON.parse(todos); 
-      } else {
-		this.items = [
-		  {title: '启动应用todo', path: 'todo'},
-		  {title: '启动应用hello', path: 'hello'}
-		];
-	  }
-    });
+  public iconList = [ {path: 'assets/imgs/slice2.png', name: 'daPP1' ,url: 'file:///android_asset/todo/www/index.html'},
+    {path: 'assets/imgs/slice2.png', name: 'daPP2', url: 'file:///android_asset/todo/www/index.html'},
+    {path: 'assets/imgs/slice2.png', name: 'daPP3',url: 'file:///android_asset/todo/www/index.html'},
+    {path: 'assets/imgs/slice2.png', name: 'daPP4', url: 'file:///android_asset/hello/www/index.html'},
+    {path: 'assets/imgs/slice2.png', name: 'daPP5', url: 'file:///android_asset/hello/www/index.html'}];
+  public appList = [];
 
-  } 
-  ionViewDidLoad(){
+  constructor(public navCtrl: NavController) {
+    window.localStorage.setItem('iconlist', JSON.stringify(this.iconList))
+    this.appList = JSON.parse(window.localStorage.getItem('iconlist'))
+    console.log(this.appList)
+  }
 
-    /* 开始，
-	  	//Second  Carrier  Wallet  UID components 
-	var a_wallet = new Wallet()
-    result = a_wallet.CreateSubWallet (
-             chainID,  
-           coinTypeIndex,    // 新增，币种的index号，用于构建路径
-           payPassword,
-          singleAddress)
-		
-		  
-     this.items = [
-      {title: 'Elastos TODO1', description: 'TODO List1'},
-      {title: 'Elastos TODO2', description: 'TODO List2'},
-      {title: 'Elastos TODO3', description: 'TODO List3'}
-    ];
-	   */
-   }
-   
-	addItem(){
-     let addModal = this.modalCtrl.create(AddItemPage);
-     addModal.onDidDismiss((item) => {
-           if(item){
-            this.saveItem(item);
-          }
-     });
-     addModal.present();
-   }
-   
-   saveItem(item){
-    this.items.push(item);
-    this.dataService.save(this.items);
-   }
+  goManage() {
+    this.navCtrl.push(ManagePage);
+  }
 
-   viewItem(item){
-	   cordova.plugins.TestPlugin.coolMethod('file:///android_asset/' + item.path + '/www/index.html',function(data){},function(error){});
-   }
-
+  pressEvent(e, index) {
+    this.appList.splice(index,1)
+  }
+  
+  onClick(item) {
+	cordova.plugins.TestPlugin.coolMethod(item.url,function(data){},function(error){});
+  }
 }
