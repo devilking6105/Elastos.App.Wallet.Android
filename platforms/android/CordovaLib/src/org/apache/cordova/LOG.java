@@ -35,7 +35,7 @@ public class LOG {
     public static final int ERROR = Log.ERROR;
 
     // Current log level
-    public static int LOGLEVEL = Log.VERBOSE;
+    public static int LOGLEVEL = Log.ERROR;
 
     /**
      * Set the current log level.
@@ -43,7 +43,7 @@ public class LOG {
      * @param logLevel
      */
     public static void setLogLevel(int logLevel) {
-        LOGLEVEL =  Log.VERBOSE;
+        LOGLEVEL = logLevel;
         Log.i("CordovaLog", "Changing log level to " + logLevel);
     }
 
