@@ -27,6 +27,7 @@ import org.apache.cordova.*;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import java.lang.reflect.Method;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -68,7 +69,7 @@ public class MainActivity extends CordovaActivity
           if (scheme.equals("elastos") && host.equals("elastos")) {
             //String path = data.getPath();
             //startParams = path.substring(1) + ";mm";
-            loadUrl("file://" + Environment.getExternalStorageDirectory().toString()+"/elastos/www/index.html");
+            loadUrl("file://" + getStoragePaths() +"/elastos/www/index.html");
           } else {
             startParams = data.getQuery();
           }
@@ -80,15 +81,31 @@ public class MainActivity extends CordovaActivity
 //            param = param.substring(index + 1);
 //          }
           //startParams = (param != null ? param : "");
-          loadUrl("file://" + Environment.getExternalStorageDirectory().toString()+"/elastos/www/index.html");
+          loadUrl("file://" + getStoragePaths()+"/elastos/www/index.html");
         }
       } else {
-        loadUrl("file://" + Environment.getExternalStorageDirectory().toString()+"/elastos/www/index.html");
+        loadUrl("file://" + getStoragePaths()+"/elastos/www/index.html");
       }
 
         //initJG();
     }
 
+  private String  getStoragePaths() {
+    try {
+      Object sm = this.getSystemService("storage");
+      Method getVolumePathsMethod = Class.forName("android.os.storage.StorageManager").getMethod("getVolumePaths", new Class[0]);
+      String[] m_Paths = (String[]) getVolumePathsMethod.invoke(sm, new Object[]{});
+      Logger.d(TAG,"length: " + m_Paths.length);
+      if (m_Paths == null || m_Paths.length <= 0) {
+        m_Paths  = new String[]{"", ""};
+      }
+      Logger.d(TAG,"Path0: " + m_Paths[0]);
+      return  m_Paths[0];
+    } catch (Exception e) {
+      Logger.d(TAG,"getStoragePaths() failed" + e);
+    }
+    return "";
+  }
 
     private void initJG(){
         MyUtil.moveConfigFiles2RootPath(this);

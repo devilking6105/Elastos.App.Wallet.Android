@@ -1,6 +1,20 @@
-## Elastos Wallet App
+## Elastos Desktop App
 
 
+#####################应用开发人员环境准备##############################
+直接使用android Studio 打开 Elastos.ORG.Wallet.Mobile\platforms\android下的工程，直接Make Project 然后直接在手机上运行即可
+
+目前的安装包里面内置了一个TODO的demo和一个car构件引用的demo
+
+应用开发者使用ionic环境开发好的工程后，如果没有依赖特别的java的cordova插件，
+直接把platforms\android\app\src\main\assets\www文件夹压缩为一个epk包，
+即可在Elastos Trinity里面添加运行
+
+epk包的目录结构说明如下 --todo
+
+
+
+####################插件开发人员环境准备####################################
 ###  安装相关库
 
 ##### 安装 ionic|cordova
@@ -61,4 +75,6 @@
 
 ### 打正式包指令
 ionic cordova build android --release --prod
+
+
 

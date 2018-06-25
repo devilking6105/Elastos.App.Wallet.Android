@@ -35,19 +35,36 @@ public class MyApplication extends Application {
     public void onCreate() {
     	 Logger.d(TAG, "[MyApplication] onCreate");
        super.onCreate();
-      File sdcard  = Environment.getExternalStorageDirectory();//获取跟目录
-      File file = new File(sdcard.toString() + "/elastos/");
-      if (!file.exists()) {
-        try {
-          unZip(this, "assets.zip", sdcard.toString() + "/elastos/", false);
-        } catch (IOException e) {
-          e.printStackTrace();
+        File file = new File(getStoragePaths() + "/elastos/");
+        if (!file.exists()) {
+          try {
+            unZip(this, "assets.zip", getStoragePaths() + "/elastos/", false);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         }
-      }
-         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
-         JPushInterface.init(this);     		// 初始化 JPush
+
+//         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+//         JPushInterface.init(this);     		// 初始化 JPush
     }
 
+
+  private String  getStoragePaths() {
+    try {
+      Object sm = this.getSystemService("storage");
+      Method getVolumePathsMethod = Class.forName("android.os.storage.StorageManager").getMethod("getVolumePaths", new Class[0]);
+      String[] m_Paths = (String[]) getVolumePathsMethod.invoke(sm, new Object[]{});
+      Logger.d(TAG,"length: " + m_Paths.length);
+      if (m_Paths == null || m_Paths.length <= 0) {
+        m_Paths  = new String[]{"", ""};
+      }
+      Logger.d(TAG,"Path0: " + m_Paths[0]);
+       return  m_Paths[0];
+    } catch (Exception e) {
+      Logger.d(TAG,"getStoragePaths() failed" + e);
+    }
+    return "";
+  }
 
   public static void unZip(Context context, String assetName, String outputDirectory, boolean isReWrite) throws IOException {
     Log.e(TAG, "outputDirectory: " + outputDirectory);

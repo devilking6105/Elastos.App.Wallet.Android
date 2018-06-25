@@ -6,36 +6,34 @@
 -->
 
 <style>
-  .content-ios {
-    background-color: #ccc;
-    background: url(assets/imgs/timg.jpg) center center no-repeat;
-    background-size:100% 100%;
+  .content-ios, .content-md {
+    background: #eef5f9;
   }
   .toolbar-ios {
     /* opacity: 0; */
     background: rgba(red, green, blue, 0)
   }
-    .right_arrow {
-      height: 12px;
-    }
-    .icon-right {
-      width: 24px;
-    }
-    .item-ios {
-      background-color: rgba(red, green, blue, 0);
-    }
-    .import-box {
-      background-color: #0064D7;
-      height: 112px; 
-      text-align: center;
-      font-size: 22px;
-      color: #fff;
-      border-radius: 10px;
-    }
-    .import-box .button-ios {
-      background-color: #0064D7;
-    }
-    .card-box {
+  .right_arrow {
+    height: 12px;
+  }
+  .icon-right {
+    width: 24px;
+  }
+  .item-ios {
+    background-color: rgba(red, green, blue, 0);
+  }
+  .import-box {
+    background-color: #0064D7;
+    height: 112px; 
+    text-align: center;
+    font-size: 22px;
+    color: #fff;
+    border-radius: 10px;
+  }
+  .import-box .button-ios {
+    background-color: #0064D7;
+  }
+  .card-box {
     height: 50px;
     text-align: center;
     line-height: 50px;
@@ -83,7 +81,7 @@
   </ion-card>
       <ion-list no-lines>
         <ion-item *ngFor="let item of appManageList, let i = index">
-          <ion-checkbox color="dark" checked="true"></ion-checkbox>
+          <ion-checkbox color="dark" ng-checked="checked" (click) = 'checkApp(item, i)'></ion-checkbox>
           <ion-thumbnail item-start>
             <img src={{item.path}} alt="">
           </ion-thumbnail>
@@ -108,7 +106,7 @@
           </ion-card>
       </ion-col>
       <ion-col col-6>
-          <ion-card class="card-box card-delete">
+          <ion-card class="card-box card-delete" (click)="doDel()">
               Delete
           </ion-card>
       </ion-col>

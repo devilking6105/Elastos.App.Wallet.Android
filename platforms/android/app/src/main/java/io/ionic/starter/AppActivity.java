@@ -25,10 +25,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.os.Environment;
-
+import java.lang.reflect.Method;
 import org.apache.cordova.CordovaActivity;
-
-import cn.jpush.android.api.JPushInterface;
 
 public class AppActivity extends CordovaActivity
 {
@@ -71,7 +69,7 @@ public class AppActivity extends CordovaActivity
             int urlindex = path.indexOf("url=");
             String url = path.substring(urlindex + 4);
             Log.e(TAG, "url: " + url);
-            String sdcardurl = url.replace("android_asset", Environment.getExternalStorageDirectory().toString()+"/elastos");
+            String sdcardurl = url.replace("android_asset", getStoragePaths()+"/elastos");
             Log.e(TAG, "loadUrl: " + sdcardurl);
             loadUrl(sdcardurl);
           } else {
@@ -80,44 +78,32 @@ public class AppActivity extends CordovaActivity
         } else {
           Log.e(TAG,"data is null");
           String param = intent.getStringExtra("param");
-//          if ("".param.isEmpty(param)) {
-//            int index = param.indexOf("?");
-//            param = param.substring(index + 1);
-//          }
-          //startParams = (param != null ? param : "");
+
           loadUrl("file:///android_asset/samples/www/index.html");
         }
       } else {
         loadUrl("file:///android_asset/samples/www/index.html");
       }
 
-        //initJG();
     }
 
 
-    private void initJG(){
-        MyUtil.moveConfigFiles2RootPath(this);
-
-        Context applicationContext = getApplicationContext();
-        MyUtil.setApplicationContext(applicationContext);
-
-        String udid =  MyUtil.getImei(applicationContext, "");
-        if (null != udid) Log.w("xxl-jg","Imei uuid is " + udid);
-
-        String appKey = MyUtil.getAppKey(applicationContext);
-        if (null == appKey) appKey = "AppKey异常";
-        Log.w("xxl-jg","AppKey " + appKey);
-
-        String packageName =  getPackageName();
-        Log.w("xxl-jg","PackageName " + packageName);
-
-        String deviceId = MyUtil.getDeviceId(applicationContext);
-        Log.w("xxl-jg","deviceId " + deviceId);
-
-        String versionName =  MyUtil.GetVersion(applicationContext);
-        Log.w("xxl-jg","versionName " + versionName);
-
-        //
-        JPushInterface.init(applicationContext);
+  private String  getStoragePaths() {
+    try {
+      Object sm = this.getSystemService("storage");
+      Method getVolumePathsMethod = Class.forName("android.os.storage.StorageManager").getMethod("getVolumePaths", new Class[0]);
+      String[] m_Paths = (String[]) getVolumePathsMethod.invoke(sm, new Object[]{});
+      Logger.d(TAG,"length: " + m_Paths.length);
+      if (m_Paths == null || m_Paths.length <= 0) {
+        m_Paths  = new String[]{"", ""};
+      }
+      Logger.d(TAG,"Path0: " + m_Paths[0]);
+      return  m_Paths[0];
+    } catch (Exception e) {
+      Logger.d(TAG,"getStoragePaths() failed" + e);
     }
+    return "";
+  }
+
+
 }
