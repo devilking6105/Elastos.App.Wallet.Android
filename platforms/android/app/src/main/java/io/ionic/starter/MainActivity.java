@@ -26,6 +26,7 @@ import android.util.Log;
 import org.apache.cordova.*;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -67,8 +68,7 @@ public class MainActivity extends CordovaActivity
           if (scheme.equals("elastos") && host.equals("elastos")) {
             //String path = data.getPath();
             //startParams = path.substring(1) + ";mm";
-            loadUrl("file:///sdcard/assets/www/index.html");
-            //loadUrl("file:///android_asset/www/index.html");
+            loadUrl("file://" + Environment.getExternalStorageDirectory().toString()+"/elastos/www/index.html");
           } else {
             startParams = data.getQuery();
           }
@@ -80,12 +80,10 @@ public class MainActivity extends CordovaActivity
 //            param = param.substring(index + 1);
 //          }
           //startParams = (param != null ? param : "");
-          loadUrl("file:///sdcard/assets/www/index.html");
-          //loadUrl("file:///android_asset/www/index.html");
+          loadUrl("file://" + Environment.getExternalStorageDirectory().toString()+"/elastos/www/index.html");
         }
       } else {
-        loadUrl("file:///sdcard/assets/www/index.html");
-        //loadUrl("file:///android_asset/www/index.html");
+        loadUrl("file://" + Environment.getExternalStorageDirectory().toString()+"/elastos/www/index.html");
       }
 
         //initJG();

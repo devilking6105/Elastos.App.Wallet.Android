@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.os.Environment;
 
 import org.apache.cordova.CordovaActivity;
 
@@ -69,8 +70,10 @@ public class AppActivity extends CordovaActivity
             String path = data.toString();
             int urlindex = path.indexOf("url=");
             String url = path.substring(urlindex + 4);
-            Log.e(TAG, "loadUrl: " + url);
-            loadUrl(url);
+            Log.e(TAG, "url: " + url);
+            String sdcardurl = url.replace("android_asset", Environment.getExternalStorageDirectory().toString()+"/elastos");
+            Log.e(TAG, "loadUrl: " + sdcardurl);
+            loadUrl(sdcardurl);
           } else {
             startParams = data.getQuery();
           }
