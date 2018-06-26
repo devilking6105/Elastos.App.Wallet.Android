@@ -34,7 +34,7 @@ import cn.jpush.android.api.JPushInterface;
 public class MainActivity extends CordovaActivity
 {
 
-  public String TAG = "Elastos";
+  public String TAG = "MainActivity";
   static {
 //    System.loadLibrary("spvsdk");
 //    System.loadLibrary("elastoswallet");
@@ -53,39 +53,10 @@ public class MainActivity extends CordovaActivity
 
         // Set by <content src="index.html" /> in config.xml
         //loadUrl(launchUrl);
-        Log.e(TAG, launchUrl);
 
-      String scheme = "";
-      String host = "";
-      String startParams= "";
-      Intent intent = getIntent();
-      Log.e(TAG, "intent: " + intent);
-      if (null != intent) {
-        Uri data = intent.getData();
-        Log.e(TAG, "data: " + data);
-        if (null != data) {
-          scheme = data.getScheme();
-          host = data.getHost();
-          if (scheme.equals("elastos") && host.equals("elastos")) {
-            //String path = data.getPath();
-            //startParams = path.substring(1) + ";mm";
-            loadUrl("file://" + getStoragePaths() +"/elastos/www/index.html");
-          } else {
-            startParams = data.getQuery();
-          }
-        } else {
-          Log.e(TAG,"data is null");
-          String param = intent.getStringExtra("param");
-//          if ("".param.isEmpty(param)) {
-//            int index = param.indexOf("?");
-//            param = param.substring(index + 1);
-//          }
-          //startParams = (param != null ? param : "");
-          loadUrl("file://" + getStoragePaths()+"/elastos/www/index.html");
-        }
-      } else {
-        loadUrl("file://" + getStoragePaths()+"/elastos/www/index.html");
-      }
+        String sdurl = "file://" + getStoragePaths()+"/elastos/www/index.html";
+        Log.e(TAG, sdurl);
+        loadUrl(sdurl);
 
         //initJG();
     }
@@ -95,14 +66,14 @@ public class MainActivity extends CordovaActivity
       Object sm = this.getSystemService("storage");
       Method getVolumePathsMethod = Class.forName("android.os.storage.StorageManager").getMethod("getVolumePaths", new Class[0]);
       String[] m_Paths = (String[]) getVolumePathsMethod.invoke(sm, new Object[]{});
-      Logger.d(TAG,"length: " + m_Paths.length);
+      Log.e(TAG,"length: " + m_Paths.length);
       if (m_Paths == null || m_Paths.length <= 0) {
         m_Paths  = new String[]{"", ""};
       }
-      Logger.d(TAG,"Path0: " + m_Paths[0]);
+      Log.e(TAG,"Path0: " + m_Paths[0]);
       return  m_Paths[0];
     } catch (Exception e) {
-      Logger.d(TAG,"getStoragePaths() failed" + e);
+      Log.d(TAG,"getStoragePaths() failed" + e);
     }
     return "";
   }
