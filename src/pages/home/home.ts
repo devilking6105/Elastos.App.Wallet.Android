@@ -12,7 +12,7 @@ declare let cordova: any;
 export class HomePage {
   public press: number = 0;
 
-  public iconList = [ {path: 'assets/imgs/slice2.png', name: 'Wallet' ,url: 'file:///android_asset/walet/www/index.html'},
+  public iconList = [ {path: 'assets/imgs/slice2.png', name: 'Wallet' ,url: 'file:///android_asset/wallet/www/index.html'},
     {path: 'assets/imgs/slice2.png', name: 'ToDO', url: 'file:///android_asset/todo/www/index.html'},
     {path: 'assets/imgs/slice2.png', name: 'CarTest',url: 'file:///android_asset/hello/www/index.html'},
     {path: 'assets/imgs/slice2.png', name: 'daPP4', url: 'file:///android_asset/hello/www/index.html'},

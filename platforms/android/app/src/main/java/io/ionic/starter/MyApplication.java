@@ -29,20 +29,23 @@ import cn.jpush.android.api.JPushInterface;
  * 一般建议在自定义 Application 类里初始化。也可以在主 Activity 里。
  */
 public class MyApplication extends Application {
-    private static final String TAG = "JIGUANG";
+    private static final String TAG = "MyApplication";
 
     @Override
     public void onCreate() {
-    	 Logger.d(TAG, "[MyApplication] onCreate");
+    	 Log.d(TAG, "[MyApplication] onCreate");
        super.onCreate();
-        File file = new File(getStoragePaths() + "/elastos/");
-        if (!file.exists()) {
-          try {
-            unZip(this, "assets.zip", getStoragePaths() + "/elastos/", false);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
+       String sdpath = getStoragePaths();
+       if(sdpath != null || sdpath.length() > 0) {
+         File file = new File(sdpath + "/elastos/");
+         if (!file.exists()) {
+           try {
+             unZip(this, "assets.zip", getStoragePaths() + "/elastos/", false);
+           } catch (IOException e) {
+             e.printStackTrace();
+           }
+         }
+       }
 
 //         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
 //         JPushInterface.init(this);     		// 初始化 JPush
@@ -54,14 +57,14 @@ public class MyApplication extends Application {
       Object sm = this.getSystemService("storage");
       Method getVolumePathsMethod = Class.forName("android.os.storage.StorageManager").getMethod("getVolumePaths", new Class[0]);
       String[] m_Paths = (String[]) getVolumePathsMethod.invoke(sm, new Object[]{});
-      Logger.d(TAG,"length: " + m_Paths.length);
+      Log.d(TAG,"length: " + m_Paths.length);
       if (m_Paths == null || m_Paths.length <= 0) {
         m_Paths  = new String[]{"", ""};
       }
-      Logger.d(TAG,"Path0: " + m_Paths[0]);
+      Log.d(TAG,"Path0: " + m_Paths[0]);
        return  m_Paths[0];
     } catch (Exception e) {
-      Logger.d(TAG,"getStoragePaths() failed" + e);
+      Log.d(TAG,"getStoragePaths() failed" + e);
     }
     return "";
   }
