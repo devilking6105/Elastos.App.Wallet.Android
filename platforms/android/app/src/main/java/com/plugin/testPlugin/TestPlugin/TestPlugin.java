@@ -33,7 +33,7 @@ public class TestPlugin extends CordovaPlugin {
               Intent mIntent = new Intent();
               mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
               mIntent.setData(Uri.parse("elastos://elastos?action=27&url="+ message));
-              mIntent.setPackage("io.ionic.starter");
+              mIntent.setPackage("com.elastos.desktop");
               cordova.getActivity().startActivity(mIntent);
             }
           });
