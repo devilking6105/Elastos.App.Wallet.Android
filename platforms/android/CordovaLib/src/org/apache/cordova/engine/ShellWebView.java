@@ -72,7 +72,7 @@ class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.Engine
 
     private static final int WARN = 1;
 
-    private static final boolean useAsync = true;
+    private static final boolean useAsync = false;
 
     private ContentViewCoreImpl mContentViewCore;
     private WebContents mWebContents;
@@ -161,7 +161,7 @@ class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.Engine
         if (!useAsync){
             try{
                 BrowserStartupController.get(LibraryProcessType.PROCESS_BROWSER)
-                        .startBrowserProcessesSync(false);
+                        .startBrowserProcessesSync(true);
                 finishInitialization();
                 return;
             } catch (ProcessInitException e) {
