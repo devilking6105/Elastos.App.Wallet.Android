@@ -1,32 +1,173 @@
 ElastosWebRT 为基于Chromium改造后的输出，主要包含如下文件：
-    elastosLib.jar(chromium java 层代码生成的jar包)
+    elastos_webrt_java.jar(chromium java 层代码生成的jar包)
     cordovaLib (cordava 库代码)
     asset(dat，bin，pak即chromium相关资源文件)
     Build.gradle(diff)
     manifest.xml(diff)
     android.jar(只需要替换一次，由于chromium会使用到部分android sdk未开放的api，所以需要替换公共发布的sdk里的android.jar文件，该文件实际由.cipd\pkgs\35\_current\android_system.jar拷贝过来)
 
-1. chromium构建环境生成 elastosLib.jar和libchrome.so 等， asset 资源文件
-    a. chromium中编译target elastos_shell_apk生成ElastosApp.apk
-    b. chromium工程中编译ninja -C out/arm/elastos_sdk_lib生成jar包
-    c. 手动替换elastosLib.jar中nativelibrary，buildconfig等相关的class文件。
-    d. 删除elastosLib.jar中与AndroidStudio冲突的几个package(com.android.support)
+1. chromium构建环境生成 elastos_webrt_java.jar和libchrome.so 等， asset 资源文件
+    a. ninja -C out/arm elastos_webrt_apk 生成 out/arm/apks/ElastosWebRT.apk和out/arm/lib.java/elastos_webrt_java.jar两个文件
+    b. 手动替换elastos_webrt_java.jar中nativelibrary，buildconfig等相关的class文件。
+    用out\arm\gen\content\cordova\android\elastos_webrt_apk\elastos_webrt_apk.jar里的\org\chromium\base\
+    替换out\arm\lib.java\elastos_webrt_apk.jar里的\org\chromium\base\
+    c. 删除elastos_webrt_java.jar中与AndroidStudio冲突的几个package(com.android.support)
+    elastos_webrt_java.jar\android\support\v4
 
 2. 修改sdk (只需要替换一次)
     a. 替换studio中使用的android.jar文件
 
 3.  修改studio工程 （ElastosWebRT有更新就需要替换）
-    a.将ElastosApp.apk中的so文件以及elastosLib.jar添加到studio中cordovaLib/lib下，修改相关的gradle文件。
-    ElastosWebRT\elastosLib.jar ==> platforms\android\CordovaLib\libs
-    ElastosWebRT\armeabi-v7a\*.so ==> platforms\android\app\src\main\jniLibs\armeabi-v7a
-    
-    b.将ElastosApp.apk中asset目录下的dat，bin，pak文件复制到studio app目录下assets中。
-    c. 在platforms/android/app/build.gradle 中添加如下几行
+    a. 将ElastosWebRT.apk中的lib/armeabi-v7a中的so文件拷贝到platforms\android\app\src\main\jniLibs\armeabi-v7a目录；
+    b. 将elastos_webrt_java.jar拷贝到platforms\android\CordovaLib\libs目录；
+    c. 将ElastosWebRT.apk中assets目录下的icudtl.dat,natives_blob.bin,snapshot_blob_32.bin,content_shell.pak文件拷贝到platforms\android\app\src\main\assets目录。
+       在platforms/android/app/build.gradle 中添加如下几行
          aaptOptions {
              noCompress 'dat', 'bin', 'pak'
          }
-    d. 在platforms/android/app/src/main/AndroidManifest.xml中添加SandboxedProcess相关的几项。
-    e. 将CordovaLib目录下的java文件替换为附件CordovaLib文件夹。
+    d. 在platforms/android/app/src/main/AndroidManifest.xml中添加SandboxedProcess相关的几项：
+    --- a/platforms/android/app/src/main/AndroidManifest.xml
+    +++ b/platforms/android/app/src/main/AndroidManifest.xml
+    @@ -99,6 +99,138 @@
+             </receiver>
+             <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default" />
+             <meta-data android:name="JPUSH_APPKEY" android:value="ce32fee188af2d3284b0c24e" />
+    +
+    +        <meta-data
+    +            android:name="org.chromium.content.browser.NUM_SANDBOXED_SERVICES"
+    +            android:value="20" />
+    +
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService0"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process0" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService1"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process1" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService2"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process2" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService3"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process3" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService4"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process4" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService5"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process5" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService6"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process6" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService7"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process7" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService8"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process8" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService9"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process9" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService10"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process10" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService11"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process11" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService12"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process12" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService13"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process13" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService14"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process14" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService15"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process15" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService16"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process16" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService17"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process17" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService18"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process18" />
+    +        <service
+    +            android:name="org.chromium.content.app.SandboxedProcessService19"
+    +            android:exported="false"
+    +            android:isolatedProcess="true"
+    +            android:process=":sandboxed_process19" />
+    +
+    +        <meta-data
+    +            android:name="org.chromium.content.browser.NUM_PRIVILEGED_SERVICES"
+    +            android:value="3" />
+    +
+    +        <service
+    +            android:name="org.chromium.content.app.PrivilegedProcessService0"
+    +            android:exported="false"
+    +            android:isolatedProcess="false"
+    +            android:process=":privileged_process0" />
+    +        <service
+    +            android:name="org.chromium.content.app.PrivilegedProcessService1"
+    +            android:exported="false"
+    +            android:isolatedProcess="false"
+    +            android:process=":privileged_process1" />
+    +        <service
+    +            android:name="org.chromium.content.app.PrivilegedProcessService2"
+    +            android:exported="false"
+    +            android:isolatedProcess="false"
+    +            android:process=":privileged_process2" />
+    +
+    +        <meta-data
+    +            android:name="org.chromium.content.browser.SMART_CLIP_PROVIDER"
+    +            android:value="org.chromium.content.browser.SmartClipProvider" />
+    +        <meta-data
+    +            android:name="android.arch.lifecycle.VERSION"
+    +            android:value="27.0.0-SNAPSHOT" />
+         </application>
+         <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="21" />
+         <uses-permission android:name="android.permission.CAMERA" />
+    e. 将CordovaLib目录下的java文件替换为附件CordovaLib(从chromium\content\cordova\android\CordovaLib拷贝过来)文件夹。
     ElastosWebRT\CordovaLib ==> platforms\android\CordovaLib
    【注】c,d,e修改见.patch
     f. sync studio工程，编译生成apk
