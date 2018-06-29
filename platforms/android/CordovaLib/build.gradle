@@ -125,5 +125,5 @@ bintray {
   }
 }
 dependencies {
-  implementation files('libs/elastosLib.jar')
+  implementation files('libs/elastos_webrt_java.jar')
 }

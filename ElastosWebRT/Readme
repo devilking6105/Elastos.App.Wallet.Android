@@ -8,10 +8,10 @@ ElastosWebRT 为基于Chromium改造后的输出，主要包含如下文件：
 
 1. chromium构建环境生成 elastos_webrt_java.jar和libchrome.so 等， asset 资源文件
     a. ninja -C out/arm elastos_webrt_apk 生成 out/arm/apks/ElastosWebRT.apk和out/arm/lib.java/elastos_webrt_java.jar两个文件
-    b. 手动替换elastos_webrt_java.jar中nativelibrary，buildconfig等相关的class文件。
+    b. 手动替换elastos_webrt_java.jar中nativelibrary，buildconfig目录下的class文件。
     用out\arm\gen\content\cordova\android\elastos_webrt_apk\elastos_webrt_apk.jar里的\org\chromium\base\
     替换out\arm\lib.java\elastos_webrt_apk.jar里的\org\chromium\base\
-    c. 删除elastos_webrt_java.jar中与AndroidStudio冲突的几个package(com.android.support)
+    c. 删除elastos_webrt_java.jar中与AndroidStudio冲突的package(com.android.support)
     elastos_webrt_java.jar\android\support\v4
 
 2. 修改sdk (只需要替换一次)
