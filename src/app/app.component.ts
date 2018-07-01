@@ -34,6 +34,9 @@ export class AppComponent {
       statusBar.styleDefault();
       splashScreen.hide();
 
+      //init java 2 js plugin
+      //cordova.plugins.Java2JSBridge.init(this);
+
       localStorage.getWallet().then((val) => {
         if (val) {
           this.rootPage = TabsComponent;
@@ -43,5 +46,11 @@ export class AppComponent {
       });
     });
   }
+
+    //for callback for js jg
+    onReceiveJG(param) {
+      alert(param);
+    }
+
 }
 
