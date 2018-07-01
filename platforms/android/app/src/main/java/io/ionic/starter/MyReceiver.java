@@ -22,7 +22,7 @@ import cn.jpush.android.api.JPushInterface;
  * 1) 默认用户会打开主界面
  * 2) 接收不到自定义消息
  */
-public class MyReceiver extends BroadcastReceiver implements Java2JSBridgeInterfac{
+public class MyReceiver extends BroadcastReceiver implements Java2JSBridgeInterface{
 	private static final String TAG = "JIGUANG-Example";
 
 	@Override
