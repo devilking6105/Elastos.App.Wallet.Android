@@ -4,7 +4,7 @@ import {IdKycResultComponent} from "../../../../pages/id/kyc/result/result";
 import {ApiUrl} from "../../../../providers/ApiUrl";
 import {IDManager} from "../../../../providers/IDManager";
 import {TransferComponent} from "../../../../pages/coin/transfer/transfer.component";
-
+import {IdResultComponent} from "../../../../pages/id/result/result";
 @Component({
   selector: 'id-company',
   templateUrl: 'company.html',
@@ -32,9 +32,9 @@ export class IdKycCompanyComponent extends BaseComponent implements OnInit {
   onCommit(): void {
     //this.sendCompanyHttp();
     if(this.checkParms()){
-      //this.businessObj["serialNum"] = this.serialNum;
-      //this.Go(TransferComponent,{addr:"ENMLAuBi4qW7ViKwh6GbcaMcktU8j78T6F",money:this.payMoney,type:"kyc",chianId:"IdChain",selectType:"company",parm:this.businessObj});
-      this.Go(IdKycResultComponent,this.idObj);
+      this.businessObj["serialNum"] = this.serialNum;
+      //this.Go(TransferComponent,{did:this.idObj["id"],addr:"ENMLAuBi4qW7ViKwh6GbcaMcktU8j78T6F",money:this.payMoney,type:"kyc",chianId:"IdChain",selectType:"company",parm:this.businessObj});
+      //this.Go(IdKycResultComponent,this.idObj);
     }
   }
 
@@ -75,7 +75,7 @@ export class IdKycCompanyComponent extends BaseComponent implements OnInit {
     let parms ={"appid":"elastid","timestamp":timestamp};
     let checksum = IDManager.getCheckSum(parms,"asc");
     parms["checksum"] = checksum;
-    this.getHttp().postByAuth(ApiUrl.GET_PRICE,parms).toPromise().then().then(data => {
+    this.getHttp().postByAuth(ApiUrl.GET_PRICE,parms).toPromise().then(data => {
         if(data["status"] === 200){
           console.log("sssss======="+JSON.stringify(data));
           this.priceObj = JSON.parse(data["_body"]);
@@ -88,21 +88,4 @@ export class IdKycCompanyComponent extends BaseComponent implements OnInit {
     });
   }
 
-  getAppAuth(){
-    let timestamp = this.getTimestamp();
-    let parms ={"serialNum":"UZF1525871872898829",
-                "txHash":"64a3d36afa4d5e45cd4aa6fab3c2c9f2c26c8d90b1784e994819f573b7488704",
-                "vtoken":"ac00c95b543b77ee94a247bd0fed8467dd0dc7cb583be1dd2f8a0a83fce43256",
-                "timestamp":timestamp,
-               }
-    let checksum = IDManager.getCheckSum(parms,"asc");
-    parms["checksum"] = checksum;
-    this.getHttp().postByAuth(ApiUrl.APP_AUTH,parms).toPromise().then().then(data => {
-      if(data["status"] === 200){
-        console.log("sssss======="+JSON.stringify(data));
-       }
-    }).catch(error => {
-
-    });
-  }
 }
