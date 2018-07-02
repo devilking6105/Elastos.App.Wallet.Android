@@ -37,6 +37,7 @@ export class TransferComponent extends BaseComponent implements OnInit {
   type:string="";
   selectType:string="";
   parms:any;
+  did:string;
   ngOnInit() {
     this.setTitleByAssets('text-transfer');
     let transferObj =this.getNavParams().data;
@@ -47,6 +48,7 @@ export class TransferComponent extends BaseComponent implements OnInit {
     this.type = this.transfer["type"] || "";
     this.selectType = this.transfer["selectType"] || "";
     this.parms = this.transfer["parms"] || "";
+    this.did = this.transfer["did"] || "";
     this.initData();
 
     this.setRightIcon('./assets/images/icon/ico-scan.svg', () => {
@@ -151,7 +153,7 @@ export class TransferComponent extends BaseComponent implements OnInit {
           this.Go(TabsComponent);
         }else if(this.type === "kyc"){
              if(this.selectType === "company"){
-                  this.company();
+                  this.company(data["json"]);
              }else if(this.selectType === "person"){
                   this.person();
              }
@@ -162,22 +164,30 @@ export class TransferComponent extends BaseComponent implements OnInit {
     });
   }
 
-  company(){
-    this.sendCompanyHttp(this.parms);
+  company(message){
+    let txId = JSON.parse(message)[""];
+    this.sendCompanyHttp(txId,this.parms);
   }
 
   person(){
     this.sendPersonAuth(this.parms);
   }
+  //0：信息已一提交 //1：认证已完成 //3：上链中 //4：上链完成
+  //存储结构体{"id":{"1":{status:0}}}
 
-  sendCompanyHttp(params){
+  sendCompanyHttp(txId,params){
     let timestamp = this.getTimestamp();
     params["timestamp"] = timestamp;
     let checksum = IDManager.getCheckSum(params,"asc");
     params["checksum"] = checksum;
     // alert("============"+JSON.stringify(params));
+    //let ss[timestamp] = {};
     this.getHttp().postByAuth(ApiUrl.AUTH,params).toPromise().then(data => {
-         this.Go(IdResultComponent,{'status':'0'});
+          let authData= JSON.parse(data["_body"])
+          this.localStorage.add("kyc",{id:this.did,status:0,'serialNum':authData['serialNum'],'vtoken':authData['vtoken'],'txHash':txId}).then(()=>{
+                this.Go(IdResultComponent,{'status':'0',});
+          });
+
     }).catch(error => {
          this.Go(IdResultComponent,{'status':'1'});
     });
