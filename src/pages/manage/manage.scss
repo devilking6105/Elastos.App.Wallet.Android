@@ -1,3 +1,74 @@
 page-manage {
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border: none;
+        background-color: #eef5f9;
+    }
+    .card-ios {
+        background-color: #eef5f9;
+    }
+
+    .toolbar {
+        /* opacity: 0; */
+        // background: rgba(red, green, blue, 0)
+        .icon-right {
+            width: 24px;
+        }
+    }
+    .content-ios{
+        background: #eef5f9;
+        .content-md {
+            background: #eef5f9;
+          }
+        .item.item-ios {
+            // background-color: rgba(red, green, blue, 0);
+            background: #eef5f9;
+            .checkbox-ios {
+                .checkbox-icon {
+                    border: none;
+                    background: url(../assets/imgs/check.png) 100% 100% no-repeat;
+                    border-radius: 0;
+                    background-size: 21px;
+                }
+                .checkbox-checked {
+                    background: url(../assets/imgs/checked.png) 100% 100% no-repeat;
+                    background-size: 21px;
+                }
+            }
+            .right_arrow {
+                width: 12px;
+            }
+        }
+    }
+    .icon-right {
+        width: 24px;
+    }
+    .footer {
+        .card-box {
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            font-size: 16px;
+            color: #fff;
+            border-radius: 5px;
+            background-color: rgba(0,0,0,0);
+        }
+        .card-export {
+            background-color: #0064D7;
+        }
+        .card-delete {
+            background-color: #D0021B;
+        }
+    }
+    .import-box {
+        background-color: #0064D7;
+        height: 112px;
+        text-align: center;
+        font-size: 22px;
+        color: #fff;
+        border-radius: 10px;
+        .button-ios {
+            background-color: #0064D7;
+        }
+    }
 
 }

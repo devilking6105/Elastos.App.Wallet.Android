@@ -69,11 +69,12 @@
     <plugin name="phonegap-plugin-barcodescanner" spec="^7.1.2">
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
     </plugin>
-    <plugin name="cordova-plugin-filechooser" spec="^1.0.1" />
     <plugin name="cordova-clipboard" spec="^1.2.1" />
     <plugin name="ElaWallet" spec="ElaWallet" />
     <allow-navigation href="http://192.168.10.126:8100" />
     <plugin name="com.plugin.testPlugin" spec="D:\localproject\Elastos.ORG.Wallet.Mobile\TestPlugin" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
+    <plugin name="cordova-plugin-zip" spec="^3.1.0" />
+    <plugin name="cordova-plugin-filechooser" spec="^1.0.1" />
     <engine name="android" spec="^7.0.0" />
 </widget>

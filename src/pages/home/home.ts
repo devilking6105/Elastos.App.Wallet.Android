@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
 import { ManagePage } from '../manage/manage';
+import { AppConfig } from "../../app/app.config";
+
 
 declare let cordova: any;
 
@@ -10,30 +12,40 @@ declare let cordova: any;
   templateUrl: 'home.html'
 })
 export class HomePage {
-  public press: number = 0;
-
-  public iconList = [ {path: 'assets/imgs/slice2.png', name: 'Wallet' ,url: 'file:///android_asset/wallet/www/index.html'},
-    {path: 'assets/imgs/slice2.png', name: 'ToDO', url: 'file:///android_asset/todo/www/index.html'},
-    {path: 'assets/imgs/slice2.png', name: 'CarTest',url: 'file:///android_asset/hello/www/index.html'},
-    {path: 'assets/imgs/slice2.png', name: 'daPP4', url: 'file:///android_asset/hello/www/index.html'},
-    {path: 'assets/imgs/slice2.png', name: 'daPP5', url: 'file:///android_asset/hello/www/index.html'}];
-  public appList = [];
-
-  constructor(public navCtrl: NavController) {
-    window.localStorage.setItem('iconlist', JSON.stringify(this.iconList))
-    this.appList = JSON.parse(window.localStorage.getItem('iconlist'))
-    console.log(this.appList)
+  public checked = false;
+  public manageStatus = true;
+  public  appList = [];
+  
+  constructor(
+    public navCtrl: NavController
+  ) {
+    if(null == window.localStorage.getItem('appList')) {
+      window.localStorage.setItem('appList', JSON.stringify(AppConfig.initAppList));
+    }
+    this.appList = JSON.parse(window.localStorage.getItem('appList'));
   }
 
   goManage() {
     this.navCtrl.push(ManagePage);
   }
 
-  pressEvent(e, index) {
-    this.appList.splice(index,1)
+  pressEvent() {
+    this.checked = true
+    this.manageStatus = false
   }
-  
+
+  delEvent(index) {
+    this.appList.splice(index,1);
+    window.localStorage.setItem('appList', JSON.stringify(this.appList));
+    this.checked = false;
+    this.manageStatus = true;
+  }
+
   onClick(item) {
-	cordova.plugins.TestPlugin.coolMethod(item.url,function(data){},function(error){});
+    if(this.checked) {
+      return false;
+    } else {
+      cordova.plugins.TestPlugin.coolMethod(item.url,function(data){},function(error){});
+    }
   }
 }

@@ -1,3 +1,31 @@
 page-info {
-
+    .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
+        border: none;
+        background-color: #eef5f9;
+    }
+    .icon-right {
+        width: 24px;
+    }
+    .content-ios, .content-md {
+        background-color: #eef5f9;
+        .item-ios {
+            background-color: #eef5f9;
+            img {
+                width: 56px;
+                height: inherit;
+            }
+            .checkbox-ios {
+                .checkbox-icon {
+                    border: none;
+                    background: url(../assets/imgs/check.png) 100% 100% no-repeat;
+                    border-radius: 0;
+                    background-size: 21px;
+                }
+                .checkbox-checked {
+                    background: url(../assets/imgs/checked.png) 100% 100% no-repeat;
+                    background-size: 21px;
+                }
+            }
+        }
+    }
 }

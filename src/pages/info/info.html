@@ -11,105 +11,73 @@
   </ion-navbar>
 
 </ion-header>
-
-
-<style>
-  .content-ios {
-    background-color: #ccc;
-    background: url(../assets/imgs/timg.jpg) center center no-repeat;
-    background-size:100% 100%;
-  }
-    .icon-right {
-      width: 24px;
-    }
-    .content-ios {
-      background-color: #eef5f9;
-  }
-    .item-ios {
-      background-color: #eef5f9;
-    }
-    .item-ios .up-app ion-img, .item-ios .up-app img {
-      width: 56px;
-      height: inherit;
-    }
-  </style>
   
-  <ion-content>
-    <ion-grid>
+<ion-content>
+  <ion-grid>
+    <ion-list no-lines>
+      <ion-row>
+        <ion-item>
+          <ion-thumbnail item-start class="up-app">
+            <img src="assets/imgs/slice2.png">
+          </ion-thumbnail>
+          <h2>My Neighbor Totoro</h2>
+          <p>My Neighbor Totoro</p>
+          <p>Hayao Miyazaki • 1988</p>
+        </ion-item>
+      </ion-row>
+    <ion-list-header>Permissions</ion-list-header>
+
+    </ion-list>
       <ion-list no-lines>
         <ion-row>
-          <ion-item>
-            <ion-thumbnail item-start class="up-app">
-              <img src="assets/imgs/slice2.png">
+          <ion-item *ngFor="let item of appManageList, let i = index">
+            <ion-checkbox color="dark" checked="true"></ion-checkbox>
+            <ion-thumbnail item-start>
+              <img src="assets/imgs/camera.png" alt="">
             </ion-thumbnail>
-            <h2>My Neighbor Totoro</h2>
-            <p>My Neighbor Totoro</p>
-            <p>Hayao Miyazaki • 1988</p>
+            <ion-thumbnail item-start>
+                <h2>My Neighbor Totoro</h2>
+                <p>Hayao Miyazaki • 1988</p>
+            </ion-thumbnail>
+          </ion-item>
+
+          <ion-item>
+            <ion-checkbox color="dark" checked="true"></ion-checkbox>
+            <ion-thumbnail item-start>
+              <img src="assets/imgs/camera.png">
+            </ion-thumbnail>
+            <ion-thumbnail item-start>
+                <h2>My Neighbor Totoro</h2>
+                <p>Hayao Miyazaki • 1988</p>
+            </ion-thumbnail>
+          </ion-item>
+
+          <ion-item>
+            <ion-checkbox color="dark" checked="true"></ion-checkbox>
+            <ion-thumbnail item-start>
+                <img src="assets/imgs/id.png">
+            </ion-thumbnail>
+            <ion-thumbnail item-start>
+                <h2>My Neighbor Totoro</h2>
+                <p>Hayao Miyazaki • 1988</p>
+            </ion-thumbnail>
+          </ion-item>
+
+          <ion-item>
+            <ion-checkbox color="dark" checked="true"></ion-checkbox>
+            <ion-thumbnail item-start>
+                <img src="assets/imgs/speaker.png">
+            </ion-thumbnail>
+            <ion-thumbnail item-start>
+                <h2>My Neighbor Totoro</h2>
+                <p>Hayao Miyazaki • 1988</p>
+            </ion-thumbnail>
           </ion-item>
         </ion-row>
-      <ion-list-header>Permissions</ion-list-header>
+        <ion-list-header>Infomation</ion-list-header>
 
       </ion-list>
-        <ion-list no-lines>
-          <ion-row>
-            <ion-item *ngFor="let item of appManageList, let i = index">
-              <ion-checkbox color="dark" checked="true"></ion-checkbox>
-              <ion-thumbnail item-start>
-                <img src="assets/imgs/camera.png" alt="">
-              </ion-thumbnail>
-              <ion-thumbnail item-start>
-                  <h2>My Neighbor Totoro</h2>
-                  <p>Hayao Miyazaki • 1988</p>
-              </ion-thumbnail>
-            </ion-item>
-
-            <ion-item>
-              <ion-checkbox color="dark" checked="true"></ion-checkbox>
-              <ion-thumbnail item-start>
-                <img src="assets/imgs/camera.png">
-              </ion-thumbnail>
-              <ion-thumbnail item-start>
-                  <h2>My Neighbor Totoro</h2>
-                  <p>Hayao Miyazaki • 1988</p>
-              </ion-thumbnail>
-            </ion-item>
-
-            <ion-item>
-              <ion-checkbox color="dark" checked="true"></ion-checkbox>
-              <ion-thumbnail item-start>
-                  <img src="assets/imgs/id.png">
-              </ion-thumbnail>
-              <ion-thumbnail item-start>
-                  <h2>My Neighbor Totoro</h2>
-                  <p>Hayao Miyazaki • 1988</p>
-              </ion-thumbnail>
-            </ion-item>
-
-            <ion-item>
-              <ion-checkbox color="dark" checked="true"></ion-checkbox>
-              <ion-thumbnail item-start>
-                  <img src="assets/imgs/speaker.png">
-              </ion-thumbnail>
-              <ion-thumbnail item-start>
-                  <h2>My Neighbor Totoro</h2>
-                  <p>Hayao Miyazaki • 1988</p>
-              </ion-thumbnail>
-            </ion-item>
-          </ion-row>
-          <ion-list-header>Infomation</ion-list-header>
-
-        </ion-list>
-    </ion-grid>
-  </ion-content>
+  </ion-grid>
+</ion-content>
   
-  
-  <!-- <ion-content>
-    <ion-list>
-      <ion-list-header>Follow us on Twitter</ion-list-header>
-      <ion-item>
-        <ion-icon name="ionic" item-start></ion-icon>
-        @ionicframework
-      </ion-item>
-    </ion-list>
-  </ion-content> -->
   

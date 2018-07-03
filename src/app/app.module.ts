@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { ComponentsModule } from '../components/components.module'; // 引入模块 
+import { ComponentsModule } from '../components/components.module'; // 引入模块
 
 import { HomePage } from '../pages/home/home';
 import { ManagePage } from '../pages/manage/manage';
@@ -11,6 +11,10 @@ import { InfoPage } from '../pages/info/info';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { Zip } from '@ionic-native/zip';
+import { File } from '@ionic-native/file';
+import { FileChooser } from "@ionic-native/file-chooser";
+import { FilePath } from "@ionic-native/file-path";
 
 @NgModule({
   declarations: [
@@ -38,6 +42,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
+    Zip,
+    File,
+    FileChooser,
+    FilePath,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

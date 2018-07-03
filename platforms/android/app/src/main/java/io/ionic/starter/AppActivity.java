@@ -70,7 +70,8 @@ public class AppActivity extends CordovaActivity
             int urlindex = path.indexOf("url=");
             String url = path.substring(urlindex + 4);
             Log.e(TAG, "url: " + url);
-            String sdcardurl = url.replace("android_asset", getStoragePaths()+"/elastos");
+//            String sdcardurl = url.replace("android_asset", getStoragePaths()+"/elastos");
+            String sdcardurl = "file:///" + getStoragePaths()+"/elastos/" + url;
             Log.e(TAG, "loadUrl: " + sdcardurl);
             loadUrl(sdcardurl);
           } else {

@@ -1,3 +1,49 @@
 page-home {
-
+    .content-ios, .content-md {
+        background: url(../assets/imgs/bg.jpg) center center no-repeat;
+        background-size:100% 100%;
+        .app-box {
+            width: 80%;
+            background-color: #888;
+            border-radius: 5px;
+        }
+        .app-box img {
+            padding: 10px;
+        }
+        .app-title {
+            color: #ccc;
+            /* font-family:  */
+            text-align: center;
+            padding: 10px 0;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow:hidden;
+        }
+        .item-ios {
+            background-color: #eef5f9;
+          }
+          [col-3] {
+            padding: 22px 11px 0;
+          }
+          .manage-btn {
+            height: 18px;
+          }
+          .manage-box .button-ios{
+            padding: 22px 11px 0 0;
+          }
+          .del-ioc {
+            position: absolute;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            top: 16px;
+            color: #fff;
+            font-size: 20px;
+            background: url(../assets/imgs/del.png) center center no-repeat;
+            border-radius: 10px;
+            text-align: center;
+            background-size: 100% 100%;
+          }
+    }
 }
