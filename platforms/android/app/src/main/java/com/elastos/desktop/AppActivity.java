@@ -17,7 +17,7 @@
        under the License.
  */
 
-package io.ionic.starter;
+package com.elastos.desktop;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -27,6 +27,8 @@ import android.util.Log;
 import org.apache.cordova.CordovaActivity;
 
 import java.lang.reflect.Method;
+
+import io.ionic.starter.Logger;
 
 
 public class AppActivity extends CordovaActivity
@@ -71,7 +73,10 @@ public class AppActivity extends CordovaActivity
             String url = path.substring(urlindex + 4);
             Log.e(TAG, "url: " + url);
 //            String sdcardurl = url.replace("android_asset", getStoragePaths()+"/elastos");
-            String sdcardurl = "file:///" + getStoragePaths()+"/elastos/" + url;
+            String sdcardurl = url;
+            if(!url.startsWith("file://")) {
+              sdcardurl = "file:///" + getStoragePaths() + "/elastos/" + url;
+            }
             Log.e(TAG, "loadUrl: " + sdcardurl);
             loadUrl(sdcardurl);
           } else {
