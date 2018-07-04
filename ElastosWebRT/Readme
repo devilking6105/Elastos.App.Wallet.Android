@@ -36,16 +36,16 @@ $ninja -C out/arm elastos_webrt_apk
 ```
 
 生成的文件，我们需要两个：
-out/arm/apks/ElastosWebRT.apk和out/arm/lib.java/elastos_webrt_java.jar
+Elastos.Trinity.android/src/out/arm/apks/ElastosWebRT.apk和Elastos.Trinity.android/src/out/arm/lib.java/elastos_webrt_java.jar
 
 ## 处理目标文件
 由于我们需要把jar包和so提供给studio环境使用，而chromium构建中有部分代码是在生成apk时才自动填充，所以我们分离出的jar包目前需要手动替换，请按下面的步骤进行操作：
 
     a. 手动替换elastos_webrt_java.jar中nativelibrary，buildconfig目录下的class文件。
-    用out\arm\gen\content\cordova\android\elastos_webrt_apk\elastos_webrt_apk.jar里的\org\chromium\base\
-    替换out\arm\lib.java\elastos_webrt_apk.jar里的\org\chromium\base\
+    用Elastos.Trinity.android/src/out/arm/gen/content/cordova/android/elastos_webrt_apk/elastos_webrt_apk.jar里的/org/chromium/base/
+    替换用Elastos.Trinity.android/src/out/arm/lib.java/elastos_webrt_apk.jar里的/org/chromium/base/
     b. 删除elastos_webrt_java.jar中与AndroidStudio冲突的package(com.android.support)，目录如下：
-    elastos_webrt_java.jar\android\support\v4
+    elastos_webrt_java.jar/android/support/v4
 
 ## ElastosWebRT 输出主要包含如下文件：
     elastos_webrt_java.jar(chromium java 层代码生成的jar包)
@@ -56,11 +56,12 @@ out/arm/apks/ElastosWebRT.apk和out/arm/lib.java/elastos_webrt_java.jar
     android.jar
 使用方式有点复杂，但如果是基于Elastos.ORG.Wallet开发并不需要做这些复杂的操作，只需要clone 下来，替换一下sdk里的android.jar包就可以了。只有开发web engine的人员才需要处理。
 
-# Studio 工程搭建
+# Studio 工程搭建(Elastos.ORG.Wallet.Mobile.git仓库)
 
 ## sdk 中的android.jar包替换
-由于chromium会使用到部分android sdk未开放的api，所以需要替换公共发布的sdk里的android.jar文件，该文件实际使用chromium_src\.cipd\pkgs\35\_current\android_system.jar替换
-android-sdk\platforms\android-26\android.jar
+由于chromium会使用到部分android sdk未开放的api，所以需要替换公共发布的sdk里的android.jar文件，这个文件已经拷贝到Elastos.ORG.Wallet.Mobile.git仓库的ds分支ElastosWebRT目录下（该文件实际使用chromium_src/.cipd/pkgs/35/_current/android_system.jar替换
+android-sdk/platforms/android-26/android.jar）
+
 
 ## 下载代码
 git clone git@github.com:elastos/Elastos.ORG.Wallet.Mobile.git wallet
@@ -68,12 +69,12 @@ git clone git@github.com:elastos/Elastos.ORG.Wallet.Mobile.git wallet
 拉下来的代码使用chromium的so和jar包都是已经处理好的，直接编译即可，只有chromium发生变化才需要执行下面的步骤：
 
 ## 如果修改c++文件，需要替换相应so
-    a. 将ElastosWebRT.apk中的lib/armeabi-v7a中的so文件拷贝到platforms\android\app\src\main\jniLibs\armeabi-v7a目录；
+    a. 将ElastosWebRT.apk中的lib/armeabi-v7a中的so文件拷贝到platforms/android/app/src/main/jniLibs/armeabi-v7a目录；
 
 ## 如果修改了Java文件，需要替换jar包和assets下的资源文件，并且需要按照前面chromium编译的方式处理
-    b. 将elastos_webrt_java.jar拷贝到platforms\android\CordovaLib\libs目录；
+    b. 将elastos_webrt_java.jar拷贝到platforms/android/CordovaLib/libs目录；
 
-    c. 将ElastosWebRT.apk中assets目录下的icudtl.dat,natives_blob.bin,snapshot_blob_32.bin,content_shell.pak文件拷贝到platforms\android\app\src\main\assets目录。
+    c. 将ElastosWebRT.apk中assets目录下的icudtl.dat,natives_blob.bin,snapshot_blob_32.bin,content_shell.pak文件拷贝到platforms/android/app/src/main/assets目录。
        在platforms/android/app/build.gradle 中添加如下几行
          aaptOptions {
              noCompress 'dat', 'bin', 'pak'
@@ -223,8 +224,8 @@ git clone git@github.com:elastos/Elastos.ORG.Wallet.Mobile.git wallet
          </application>
          <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="21" />
          <uses-permission android:name="android.permission.CAMERA" />
-    e. 将CordovaLib目录下的java文件替换为附件CordovaLib(从chromium\content\cordova\android\CordovaLib拷贝过来)文件夹。
-    ElastosWebRT\CordovaLib ==> platforms\android\CordovaLib
+    e. 将CordovaLib目录下的java文件替换为附件CordovaLib(从chromium/content/cordova/android/CordovaLib拷贝过来)文件夹。
+    ElastosWebRT/CordovaLib ==> platforms/android/CordovaLib
 
 ## 编译studio工程，生成对应apk
     f. sync studio工程，编译生成apk
