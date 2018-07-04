@@ -17,9 +17,9 @@ export class HomePage {
   constructor(
     public navCtrl: NavController
   ) {
-    // if(null == window.localStorage.getItem('appList')) {
+    if(null == window.localStorage.getItem('appList')) {
       window.localStorage.setItem('appList', JSON.stringify(AppConfig.initAppList));
-    // }
+    }
   }
 
   getAppList() {
