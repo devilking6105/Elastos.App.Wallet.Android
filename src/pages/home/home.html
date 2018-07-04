@@ -4,12 +4,12 @@
         <ion-row>
           <ion-col col-3 class="manage-box">
               <button ion-button clear>
-                <img *ngIf="manageStatus" (click)="goManage()" class="manage-btn" src="assets/imgs/manage.png" alt="">
+                <img *ngIf="!checked" (click)="goManage()" class="manage-btn" src="assets/imgs/manage.png" alt="">
               </button>
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col col-3 *ngFor="let item of appList, let i = index" (press)="pressEvent()" (click)="onClick(item)">
+          <ion-col col-3 *ngFor="let item of getAppList(), let i = index" (press)="pressEvent()" (click)="onClick(item)">
             <img src={{item.path}} alt="">
             <span *ngIf="checked" class="del-ioc" (click)="delEvent(i)"></span>
             <div class="app-title">{{item.name}}</div>

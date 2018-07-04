@@ -12,17 +12,18 @@ declare let cordova: any;
   templateUrl: 'home.html'
 })
 export class HomePage {
-  public checked = false;
-  public manageStatus = true;
-  public  appList = [];
-  
+  public checked = false; // 删除按钮是否激活，激活时隐去跳转管理页面的按钮
+
   constructor(
     public navCtrl: NavController
   ) {
-    if(null == window.localStorage.getItem('appList')) {
+    // if(null == window.localStorage.getItem('appList')) {
       window.localStorage.setItem('appList', JSON.stringify(AppConfig.initAppList));
-    }
-    this.appList = JSON.parse(window.localStorage.getItem('appList'));
+    // }
+  }
+
+  getAppList() {
+    return JSON.parse(window.localStorage.getItem('appList'));
   }
 
   goManage() {
@@ -31,14 +32,13 @@ export class HomePage {
 
   pressEvent() {
     this.checked = true
-    this.manageStatus = false
   }
 
   delEvent(index) {
-    this.appList.splice(index,1);
-    window.localStorage.setItem('appList', JSON.stringify(this.appList));
+    let appList = JSON.parse(window.localStorage.getItem('appList'));
+    appList.splice(index,1);
+    window.localStorage.setItem('appList', JSON.stringify(appList));
     this.checked = false;
-    this.manageStatus = true;
   }
 
   onClick(item) {

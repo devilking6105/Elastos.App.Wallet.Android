@@ -16,26 +16,40 @@ page-manage {
     }
     .content-ios{
         background: #eef5f9;
-        .content-md {
-            background: #eef5f9;
-          }
+        width: 100%;
+        ion-thumbnail {
+            width: 25%;
+            h2, p {
+                white-space: nowrap;
+            }
+        }
         .item.item-ios {
             // background-color: rgba(red, green, blue, 0);
             background: #eef5f9;
             .checkbox-ios {
                 .checkbox-icon {
                     border: none;
-                    background: url(../assets/imgs/check.png) 100% 100% no-repeat;
-                    border-radius: 0;
-                    background-size: 21px;
+                    background: url(/assets/imgs/check.png) 100% 100% no-repeat;
+                    border-radius: 0; 
+                    background-size: 21px; 
                 }
                 .checkbox-checked {
-                    background: url(../assets/imgs/checked.png) 100% 100% no-repeat;
-                    background-size: 21px;
+                    background: url(/assets/imgs/checked.png) 100% 100% no-repeat;
+                    background-size: 21px; 
                 }
             }
             .right_arrow {
                 width: 12px;
+            }
+        }
+    }
+    .content-md {
+        background: #eef5f9;
+        width: 100%;
+        ion-thumbnail {
+            width: 25%;
+            h2, p {
+                white-space: nowrap;
             }
         }
     }

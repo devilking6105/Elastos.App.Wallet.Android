@@ -190,7 +190,7 @@ android {
   }
 
   compileSdkVersion 26
-  buildToolsVersion '26.0.2'
+  buildToolsVersion '27.0.3'
 
   //This code exists for Crosswalk and other Native APIs.
   //By default, we multiply the existing version code in the Android Manifest by 10 and

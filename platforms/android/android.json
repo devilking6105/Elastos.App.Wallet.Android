@@ -51,15 +51,19 @@
             {
               "xml": "<allow-navigation href=\"cdvfile:*\" />",
               "count": 1
+            },
+            {
+              "xml": "<feature name=\"FilePath\"><param name=\"android-package\" value=\"org.apache.cordova.filepath.FilePath\" /><param name=\"onload\" value=\"true\" /></feature>",
+              "count": 1
             }
           ],
           "/widget": [
             {
-              "xml": "<feature name=\"FileChooser\"><param name=\"android-package\" value=\"com.megster.cordova.FileChooser\" /></feature>",
+              "xml": "<feature name=\"FileChooser\"><param name=\"android-package\" value=\"org.apache.cordova.filechooser.FileChooser\" /></feature>",
               "count": 1
             },
             {
-              "xml": "<feature name=\"Zip\"><param name=\"android-package\" value=\"org.apache.cordova.Zip\" /></feature>",
+              "xml": "<feature name=\"Zip\"><param name=\"android-package\" value=\"org.apache.cordova.zip.Zip\" /></feature>",
               "count": 1
             }
           ]
@@ -104,6 +108,10 @@
           "/*": [
             {
               "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+              "count": 2
+            },
+            {
+              "xml": "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />",
               "count": 1
             }
           ]
@@ -153,6 +161,9 @@
       "PACKAGE_NAME": "com.elastos.desktop"
     },
     "cordova-plugin-zip": {
+      "PACKAGE_NAME": "com.elastos.desktop"
+    },
+    "cordova-plugin-filepath": {
       "PACKAGE_NAME": "com.elastos.desktop"
     }
   },
@@ -418,6 +429,14 @@
       "clobbers": [
         "zip"
       ]
+    },
+    {
+      "id": "cordova-plugin-filepath.FilePath",
+      "file": "plugins/cordova-plugin-filepath/www/FilePath.js",
+      "pluginId": "cordova-plugin-filepath",
+      "clobbers": [
+        "window.FilePath"
+      ]
     }
   ],
   "plugin_metadata": {
@@ -434,6 +453,7 @@
     "com.plugin.testPlugin": "1.0.0",
     "cordova-plugin-statusbar": "2.4.2",
     "cordova-plugin-file": "6.0.1",
-    "cordova-plugin-zip": "3.1.0"
+    "cordova-plugin-zip": "3.1.0",
+    "cordova-plugin-filepath": "1.0.2"
   }
 }

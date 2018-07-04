@@ -36,15 +36,15 @@
   </ion-card>
 
   <ion-list no-lines>
-    <ion-item *ngFor="let item of appManageList, let i = index">
-      <ion-checkbox color="dark" ng-checked="checked" (click) = 'checkApp(item, i)'></ion-checkbox>
+    <ion-item *ngFor="let item of appList, let i = index">
+      <ion-checkbox color="dark" ng-checked="checked" (click) = 'checkApp(item)'></ion-checkbox>
       <ion-thumbnail item-start>
         <img src={{item.path}} alt="">
       </ion-thumbnail>
       <ion-thumbnail item-start>
           <h2>{{item.name}}</h2>
           <p>{{item.size}}</p>
-          <p>{{item.date}}</p>
+          <p>Added {{item.date}}</p>
         </ion-thumbnail>
         <button ion-button clear item-end  (click)="goInfo(i)">
             <img class="right_arrow" src="assets/imgs/arrow.png">

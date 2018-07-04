@@ -260,6 +260,14 @@ module.exports = [
     "clobbers": [
       "zip"
     ]
+  },
+  {
+    "id": "cordova-plugin-filepath.FilePath",
+    "file": "plugins/cordova-plugin-filepath/www/FilePath.js",
+    "pluginId": "cordova-plugin-filepath",
+    "clobbers": [
+      "window.FilePath"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -278,7 +286,8 @@ module.exports.metadata =
   "com.plugin.testPlugin": "1.0.0",
   "cordova-plugin-statusbar": "2.4.2",
   "cordova-plugin-file": "6.0.1",
-  "cordova-plugin-zip": "3.1.0"
+  "cordova-plugin-zip": "3.1.0",
+  "cordova-plugin-filepath": "1.0.2"
 };
 // BOTTOM OF METADATA
 });
