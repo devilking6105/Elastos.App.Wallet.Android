@@ -43,7 +43,7 @@ Elastos.Trinity.android/src/out/arm/apks/ElastosWebRT.apk和Elastos.Trinity.andr
 
     a. 手动替换elastos_webrt_java.jar中nativelibrary，buildconfig目录下的class文件。
     用Elastos.Trinity.android/src/out/arm/gen/content/cordova/android/elastos_webrt_apk/elastos_webrt_apk.jar里的/org/chromium/base/
-    替换用Elastos.Trinity.android/src/out/arm/lib.java/elastos_webrt_apk.jar里的/org/chromium/base/
+    替换Elastos.Trinity.android/src/out/arm/lib.java/elastos_webrt_java.jar里的/org/chromium/base/
     b. 删除elastos_webrt_java.jar中与AndroidStudio冲突的package(com.android.support)，目录如下：
     elastos_webrt_java.jar/android/support/v4
 
