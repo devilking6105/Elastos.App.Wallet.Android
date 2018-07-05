@@ -68,9 +68,20 @@ export class ManagePage {
   doDel() {
     let that = this;
     this.checkIndex.forEach(function (item) {
-      that.appList.splice(that.appList.indexOf(item), 1);
+      let path = that.file.externalRootDirectory + AppConfig.appName + "/";
+      let dir = item.url.substr(0, item.url.lastIndexOf("/www/index.html"));
+
+      // remove dir & info
+      that.file.removeRecursively(path, dir)
+        .then(result => {
+          if(result) {
+            that.appList.splice(that.appList.indexOf(item), 1);
+            window.localStorage.setItem('appList', JSON.stringify(that.appList));
+          } else {
+            alert("remove this app " + item.name + " failed!");
+          }
+        }).catch(err => alert(JSON.stringify(err)));
     });
-    window.localStorage.setItem('appList', JSON.stringify(that.appList));
     this.checkIndex = [];
   }
 
@@ -79,7 +90,7 @@ export class ManagePage {
    * @desc 添加应用
    */
   importFromEpk() {
-    let destDir = this.file.externalRootDirectory + "elastos/";
+    let destDir = this.file.externalRootDirectory + AppConfig.appName + "/";
 
     // choose *.epk
     this.fileChooser.open()

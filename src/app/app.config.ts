@@ -1,5 +1,7 @@
 export class AppConfig {
 
+  static appName = "elastos";
+
   static currentDate = new Date();
 
   static currentMM = AppConfig.currentDate.getMonth() < 9 ? "0" + (AppConfig.currentDate.getMonth() + 1) : (AppConfig.currentDate.getMonth() + 1);
@@ -22,21 +24,21 @@ export class AppConfig {
       size: "2 MB",
       date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "../www/assets/imgs/slice2.png",
+      path: "../CarTest/www/assets/imgs/logo.png",
       name: "CarTest",
-      url: "hello/www/index.html",
+      url: "CarTest/www/index.html",
       size: "666 KB",
       date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "assets/imgs/slice2.png",
+      path: "../dApp4/www/assets/imgs/logo.png",
       name: "dApp4",
-      url: "hello/www/index.html",
+      url: "dApp4/www/index.html",
       size: "888 KB",
       date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "assets/imgs/slice2.png",
+      path: "../dApp5/www/assets/imgs/logo.png",
       name: "dApp5",
-      url: "hello/www/index.html",
+      url: "dApp5/www/index.html",
       size: "999 KB",
       date: AppConfig.currentDateYYYYMMDD
     }
