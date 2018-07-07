@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Logger} from "./Logger";
 import {Native} from "./Native";
+import { Chain } from '@angular/compiler';
 //import {StorageUtil} from "./StorageUtil";
 declare var cordova: any;
 
@@ -19,7 +20,7 @@ export class WalletManager {
   public static COINTYPE_ID = 1;
   public static LIMITGAP = 500;
   public static FEEPERKb = 500;
-  public static PAGECOUNT = 20;
+  public static PAGECOUNT = 100;
 
   constructor(public native: Native) {
     this.wallet = cordova.plugins.Wallet;
@@ -86,19 +87,19 @@ export class WalletManager {
    * @param {string} language
    * @param Fun
    */
-  createMasterWallet(masterWalletId: string,language:string, Fun) {
-    this.wallet.createMasterWallet([masterWalletId,language], Fun, this.errorFun);
+  createMasterWallet(masterWalletId: string,mnemonic:string,phrasePassword:string,payPassword:string,language:string, Fun) {
+    this.wallet.createMasterWallet([masterWalletId,mnemonic,phrasePassword,payPassword,language], Fun, this.errorFun);
   }
   /**
    * @param {string} masterWalletId
-   * @param {string} keystorePath
+   * @param {string} keystoreContent
    * @param {string} backupPassword
    * @param {string} payPassword
    * @param {string} phrasePassword
    * @param Fun
    */
-  importWalletWithKeystore(masterWalletId:string,keystorePath: string, backupPassword: string, payPassword: string,phrasePassword:string, Fun) {
-    this.wallet.importWalletWithKeystore([masterWalletId,keystorePath, backupPassword, payPassword,phrasePassword], Fun, this.errorFun);
+  importWalletWithKeystore(masterWalletId:string,keystoreContent: string, backupPassword: string, payPassword: string,phrasePassword:string, Fun) {
+    this.wallet.importWalletWithKeystore([masterWalletId,keystoreContent, backupPassword, payPassword,phrasePassword], Fun, this.errorFun);
   }
 
     /**
@@ -119,8 +120,8 @@ export class WalletManager {
    * @param {string} keystorePath
    * @param Fun
    */
-  exportWalletWithKeystore(backupPassWord:string, payPassword: string,  keystorePath: string,Fun) {
-    this.wallet.createMasterWallet([backupPassWord,payPassword,keystorePath,], Fun, this.errorFun);
+  exportWalletWithKeystore(backupPassWord:string, payPassword: string,Fun) {
+    this.wallet.exportWalletWithKeystore([backupPassWord,payPassword], Fun, this.errorFun);
   }
   /**
    * @param {string} backupPassWord
@@ -136,35 +137,18 @@ export class WalletManager {
 
   createAddress(chainId:string,Fun) {
        this.wallet.createAddress([chainId], Fun, this.errorFun);
-    // let tempAddr = Math.random();
-    // let result = {address: tempAddr};
-    // return result;
   }
 
-  // getTheLastAddress(Fun) {
-  //   this.wallet.getTheLastAddress([], Fun, this.errorFun);
-  //
-  // }
-
-  // getAllAddress(start: number, Fun) {
   getAllAddress(chainId:string,start:number,Fun) {
-    this.wallet.getAllAddress([start, WalletManager.PAGECOUNT], Fun, this.errorFun);
-    // let allAddress = [{id: '', address: 'Exbwononlxnknwlnblnwb'},
-    //     {id: '', address: 'Exbwononlxnknwlnblnwb'},
-    //     {id: '', address: 'Exbwononlxnknwlnblnwb'}]
-    // return allAddress;
+    this.wallet.getAllAddress([chainId,start, WalletManager.PAGECOUNT], Fun, this.errorFun);
   }
 
   getBalanceWithAddress(chainId:string,address, Fun) {
-    this.wallet.getBalanceWithAddress([address], Fun, this.errorFun);
-  }
-
-  sendTransaction(chainId:string,fromAddress, toAddress, amount, fee, payPassword, memo, Fun) {
-    this.wallet.sendTransaction([fromAddress, toAddress, amount, fee, payPassword, memo], Fun, this.errorFun);
+    this.wallet.getBalanceWithAddress([chainId,address], Fun, this.errorFun);
   }
 
   generateMultiSignTransaction(chainId:string,fromAddress, toAddress, amount, fee, payPassword, memo, Fun) {
-    this.wallet.generateMultiSignTransaction([fromAddress, toAddress, amount, fee, payPassword, memo], Fun, this.errorFun);
+    this.wallet.generateMultiSignTransaction([chainId,fromAddress, toAddress, amount, fee, payPassword, memo], Fun, this.errorFun);
   }
 
   createMultiSignAddress(chainId:string,multiPublicKeyJson, totalSignNum, requiredSignNum, Fun) {
@@ -172,20 +156,20 @@ export class WalletManager {
   }
 
   getAllTransaction(chainId:string,start, addressOrTxId, Fun) {
-    this.wallet.getAllTransaction([start, WalletManager.PAGECOUNT, addressOrTxId], Fun, this.errorFun);
+    this.wallet.getAllTransaction([chainId,start, WalletManager.PAGECOUNT, addressOrTxId], Fun, this.errorFun);
   }
 
   registerWalletListener(chainId:string,Fun) {
-    this.wallet.addCallback([chainId], Fun, this.errorFun);
+    this.wallet.registerWalletListener([chainId], Fun, this.errorFun);
   }
 
 
   sign(chainId:string,message, payPassword, Fun) {
-    this.wallet.sign([message, payPassword], Fun, this.errorFun);
+    this.wallet.sign([chainId,message, payPassword], Fun, this.errorFun);
   }
 
-  checkSign(chainId:string,address, message, signature, payPassword, Fun) {
-    this.wallet.checkSign([address, message, signature], Fun, this.errorFun);
+  checkSign(chainId:string,address, message, signature, Fun) {
+    this.wallet.checkSign([chainId,address, message, signature], Fun, this.errorFun);
   }
   /**
    * @param {string} masterWalletId
@@ -215,12 +199,8 @@ export class WalletManager {
       this.wallet.isAddressValid([address], Fun, this.errorFun);
   }
 
-  initializeMasterWallet(masterWalletId: string ,mnemonic: string ,phrasePassword:string,payPassword:string,Fun){
-      this.wallet.initializeMasterWallet([masterWalletId,mnemonic,phrasePassword,payPassword],Fun,this.errorFun);
-  }
-
-  generateMnemonic(Fun){
-    this.wallet.generateMnemonic([],Fun,this.errorFun);
+  generateMnemonic(language:string,Fun){
+    this.wallet.generateMnemonic([language],Fun,this.errorFun);
   }
 
   saveConfigs(Fun){
@@ -244,8 +224,90 @@ export class WalletManager {
     this.wallet.getAllSubWallets([],Fun,this.errorFun);
   }
 
+  changePassword(oldPassword:string , newPassword:string ,Fun){
+     this.wallet.getAllSubWallets([oldPassword,newPassword],Fun,this.errorFun);
+  }
+
+  createTransaction(chainId:string,fromAddress:string , toAddress:string ,amount:number,fee:number, memo:string, remark: string,Fun){
+    this.wallet.createTransaction([chainId,fromAddress,toAddress,amount,fee,memo, remark],Fun,this.errorFun);
+  }
+
+  calculateTransactionFee(chainId:string,rawTransaction:string,feePerKb:number,Fun){
+    this.wallet.calculateTransactionFee([chainId,rawTransaction,feePerKb],Fun,this.errorFun);
+  }
+
+  sendRawTransaction(chainId:string,transactionJson:string ,fee:number, payPassword:string,Fun){
+    this.wallet.sendRawTransaction([chainId,transactionJson,fee,payPassword],Fun,this.errorFun);
+  }
+
+  createDID(password:string,Fun){
+    this.wallet.createDID([password],Fun,this.errorFun);
+  }
+
+  getDIDList(Fun){
+    this.wallet.getDIDList([],Fun,this.errorFun);
+  }
+
+  destoryDID(did:string,Fun){
+    this.wallet.destoryDID([did],Fun,this.errorFun);
+  }
+
+  didSetValue(did:string,keyPath:string,value:string,Fun){
+    this.wallet.didSetValue([did,keyPath,value],Fun,this.errorFun);
+  }
+
+  didGetValue(did:string,keyPath:string,Fun){
+    this.wallet.didGetValue([did,keyPath],Fun,this.errorFun);
+  }
+
+  didGetHistoryValue(did:string,keyPath:string,Fun){
+    this.wallet.didGetValue([did,keyPath],Fun,this.errorFun);
+  }
+
+  didGetAllKeys(did:string,start:number,count:number,Fun){
+    this.wallet.didGetAllKeys([did,start,count],Fun,this.errorFun);
+  }
+
+  didSign(did:string,message:string,password:string,Fun){
+    this.wallet.didSign([did,message,password],Fun,this.errorFun);
+  }
+
+  didCheckSign(did:string,message:string,signature:string,Fun){
+    this.wallet.didCheckSign([did,message,signature],Fun,this.errorFun);
+  }
+
+  didGetPublicKey(did:string,Fun){
+    this.wallet.didGetPublicKey([did],Fun,this.errorFun);
+  }
+
+  createIdTransaction(chainId:string,fromAddress:string,toAddress:string,amount:number,payloadJson:string,programJson:string,fee:number,memo:string,remark:string,Fun){
+     this.wallet.createIdTransaction([chainId,fromAddress,toAddress,amount,payloadJson,programJson,fee,memo,remark],Fun,this.errorFun);
+  }
+
+  createDepositTransaction(chainId:string,fromAddress:string,toAddress:string,amount:number
+                           ,sidechainAccounts:string,sidechainAmounts:string,sidechainIndex:string,fee:number,memo:string,remark:string,Fun){
+    this.wallet.createDepositTransaction([chainId,fromAddress,toAddress,amount,sidechainAccounts,sidechainAmounts,sidechainIndex,fee,memo,remark],Fun,this.errorFun);
+  }
+
+  createWithdrawTransaction(chainId:string,fromAddress:string,toAddress:string,amount:number
+                           ,mainchainAccounts:string,mainchainAmounts:string,mainchainIndexs:string,fee:number,memo:string,remark:string,Fun){
+    this.wallet.createWithdrawTransaction([chainId,fromAddress,toAddress,amount,mainchainAccounts,mainchainAmounts,mainchainIndexs,fee,memo,remark],Fun,this.errorFun);
+  }
+
+  getGenesisAddress(chainId:string,Fun){
+    this.wallet.getGenesisAddress([chainId],Fun,this.errorFun);
+  }
+
+  didGenerateProgram(did:string,message:string,password:string,Fun){
+      this.wallet.didGenerateProgram([did,message,password],Fun,this.errorFun);
+  }
+
+  getAllCreatedSubWallets(Fun){
+    this.wallet.getAllCreatedSubWallets([],Fun,this.errorFun);
+  }
+
   errorFun(error) {
-    alert("错误信息："+error);
+    alert("错误信息：" + error);
     //this.native.toast(error);
   }
 

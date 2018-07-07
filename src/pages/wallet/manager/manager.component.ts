@@ -1,14 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {BaseComponent} from './../../../app/BaseComponent';
 import {ExprotPrikeyComponent} from "../exprot-prikey/exprot-prikey.component";
-import {ImportComponent} from "../import/import.component";
-// import {WalletInfoComponent} from "../wallet-info/wallet-info.component";
 import {PaypasswordResetComponent} from "../paypassword-reset/paypassword-reset.component";
+import {LauncherComponent} from "../../launcher/launcher.component";
 
 @Component({
   selector: 'app-manager',
   templateUrl: './manager.component.html',
-  // styleUrls: ['./manager.component.scss']
 })
 export class ManagerComponent extends BaseComponent implements OnInit {
 
@@ -24,8 +22,7 @@ export class ManagerComponent extends BaseComponent implements OnInit {
     });
   }
 
-  onItem(item, i) {
-    // console.log(i)
+  onItem(i) {
     switch (i){
       case 0:
         this.Go(ExprotPrikeyComponent);
@@ -34,14 +31,21 @@ export class ManagerComponent extends BaseComponent implements OnInit {
         this.Go(PaypasswordResetComponent);
         break;
       case 2:
-        // this.localStorage.clear();
-        console.log("delete wallet");
-        // this.walletManager.destroyWallet(function () {
-
-        // });
+        this.popupProvider.ionicConfirm('confirmTitle', 'confirmSubTitle').then((data) => {
+          if (data) {
+            this.destroyWallet("1");
+          }
+        });
         break;
     }
+  }
 
+  destroyWallet(masterWalletId: string){
+    this.localStorage.remove('myWallet').then(() => {
+      this.walletManager.destroyWallet(masterWalletId, (result)=>{
+        this.Go(LauncherComponent);
+      });
+    });
   }
 
 }

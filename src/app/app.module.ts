@@ -26,6 +26,7 @@ import { Clipboard } from '@ionic-native/clipboard';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BackupProvider } from '../providers/backup';
 import { HttpService } from '../providers/HttpService';
+import { PopupProvider } from '../providers/popup';
 
 /**pages*/
 import {AppComponent} from './app.component';
@@ -50,6 +51,9 @@ import {CoinComponent} from '../pages/coin/coin.component';
 import {RecordComponent} from '../pages/coin/record/record.component';
 import {TransferComponent} from '../pages/coin/transfer/transfer.component';
 import {ReceiveComponent} from '../pages/coin/receive/receive.component';
+import {RechargeComponent} from '../pages/coin/recharge/recharge.component';
+import {CoinSelectComponent} from '../pages/coin/coin-select/coin-select.component';
+import {WithdrawComponent} from '../pages/coin/withdraw/withdraw.component';
 import {ContactListComponent} from '../pages/contacts/contact-list/contact-list.component';
 import {ContactCreateComponent} from '../pages/contacts/contact-create/contact-create.component';
 import {CoinListComponent} from '../pages/coin/coin-list/coin-list.component';
@@ -69,6 +73,7 @@ import {BarcodeScanner} from "@ionic-native/barcode-scanner";
 import {FileChooser} from "@ionic-native/file-chooser";
 
 import {TestJniComponent} from '../pages/testjni/testjni.component';
+import {kycSelectTypeComponent} from "../pages/id/kyc/selecttype/create"
 
 /*id相关页面*/
 import {IdLauncherComponent} from '../pages/id/launcher/launcher';
@@ -131,6 +136,9 @@ export function TranslateLoaderFactory() {
     RecordComponent,
     TransferComponent,
     ReceiveComponent,
+    RechargeComponent,
+    CoinSelectComponent,
+    WithdrawComponent,
     ContactListComponent,
     ContactCreateComponent,
     CoinListComponent,
@@ -152,7 +160,8 @@ export function TranslateLoaderFactory() {
     IdKycCompanyComponent,
     IdKycResultComponent,
     IdAppListComponent,
-    IdResultComponent
+    IdResultComponent,
+    kycSelectTypeComponent
   ],
   imports: [
     BrowserModule,
@@ -198,6 +207,9 @@ export function TranslateLoaderFactory() {
     RecordComponent,
     TransferComponent,
     ReceiveComponent,
+    RechargeComponent,
+    CoinSelectComponent,
+    WithdrawComponent,
     ContactListComponent,
     ContactCreateComponent,
     CoinListComponent,
@@ -219,7 +231,8 @@ export function TranslateLoaderFactory() {
     IdKycCompanyComponent,
     IdKycResultComponent,
     IdAppListComponent,
-    IdResultComponent
+    IdResultComponent,
+    kycSelectTypeComponent
   ],
   providers: [
     StatusBar,
@@ -235,6 +248,7 @@ export function TranslateLoaderFactory() {
     WalletManager,
     BackupProvider,
     HttpService,
+    PopupProvider,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

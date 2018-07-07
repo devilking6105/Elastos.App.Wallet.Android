@@ -13,8 +13,8 @@ export class WalletCreateComponent extends BaseComponent implements OnInit {
   wallet = {
     name: '',
     singleAddress: false,
-    payPassword:'' ,
-    rePayPassword:''
+    payPassword:'' ,//houpeitest
+    rePayPassword:''//houpeitest
   };
 
   ngOnInit() {
@@ -39,8 +39,6 @@ export class WalletCreateComponent extends BaseComponent implements OnInit {
 
   createWallet(){
     // Master Wallet
-    this.walletManager.createMasterWallet("1", this.getMnemonicLang(), (val) => {
-      this.Go(MnemonicComponent, {payPassword: this.wallet.payPassword});
-    });
+    this.Go(MnemonicComponent, {payPassword: this.wallet.payPassword, name: this.wallet.name, singleAddress: this.wallet.singleAddress});
   }
 }

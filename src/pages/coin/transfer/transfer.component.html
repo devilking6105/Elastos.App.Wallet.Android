@@ -4,13 +4,13 @@
 
   <div class="weui-cells">
     <div class="weui-cell">
-        <input class="weui-input" type="text" placeholder="{{ 'text-receiver-address' | translate}}" [(ngModel)]="transfer.toAdd" />
+        <input class="weui-input" type="text" placeholder="{{ 'text-receiver-address' | translate}}" [(ngModel)]="transfer.toAddress" />
         <img  (click)="onClick(1)" class="transfer-account" src="./assets/images/icon/icon-account.svg">
     </div>
       <div class="weui-cell">
         <input class="weui-input" type="text" placeholder="{{ 'text-price' | translate}}" [(ngModel)]="transfer.amount" />
 
-        <span class="transfer-balance">{{'text-balance' | translate}}：{{balance}}</span>
+        <span class="transfer-balance">{{'text-balance' | translate}}：{{balance/SELA}}</span>
     </div>
     <div class="weui-cell">
       <textarea class="weui-textarea" placeholder="{{ 'text-remark' | translate}}" rows="3" [(ngModel)]="transfer.remark"
@@ -51,7 +51,7 @@
 
     <div class="pop-title">{{'transfer-info' | translate}}<img class="close" src="./assets/images/icon/icon-close.svg" (click)="onClick(3)"></div>
     <div class="weui-cell">
-      <p><span>{{'transfer-address' | translate}}</span><span>{{transfer.toAdd}}</span></p>
+      <p><span>{{'transfer-address' | translate}}</span><span>{{transfer.toAddress}}</span></p>
 
     </div>
     <div class="weui-cell">
@@ -60,13 +60,13 @@
     </div>
     <div class="weui-cell">
 
-      <p><span>{{'text-fees' | translate}}</span><span>{{transfer.fees}}</span></p>
+      <p><span>{{'text-fees' | translate}}</span><span>{{transfer.fee/SELA}}</span></p>
     </div>
 
   </div>
 
   <div class="weui-cell">
-      <input class="weui-input" type="password" placeholder="{{ 'text-pay-password' | translate }}" [(ngModel)]="transfer.payPassword">
+      <input class="weui-input" type="password" placeholder="{{ 'text-pay-passworld-input' | translate }}" [(ngModel)]="transfer.payPassword">
   </div>
   <div class="button-default " style="margin: 20px auto"  (click)="onClick(4)">{{ 'confirm' | translate }}</div>
 

@@ -17,6 +17,7 @@
     color: #ccc;
     font-size: 0.8em;
   }
+  margin-bottom: 100px;
 }
 
 .coin-bottom{
@@ -36,6 +37,9 @@
     &:nth-child(2){
       background-color: #36B8C8;
     }
+    &:nth-child(3){
+      background-color: #0070C9;
+    }
   }
 }
 
@@ -43,4 +47,10 @@
   text-align: center;
   color: $color-gray-light;
   margin-top: 10px;
+}
+
+
+.address-whole {
+    overflow: auto;
+    height: 100%;
 }

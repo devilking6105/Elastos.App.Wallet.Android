@@ -1,10 +1,6 @@
 import { Component,OnInit } from '@angular/core';
 import {BaseComponent} from "./../../../app/BaseComponent";
-import {Config} from '../../../providers/Config';
 import {IdHomeComponent} from "../../../pages/id/home/home";
-//import {IDManager} from '../../../providers/IDManager';
-import {Native} from '../../../providers/Native';
-
 
 @Component({
   selector: 'id-create',
@@ -13,17 +9,11 @@ import {Native} from '../../../providers/Native';
 export class IdCreateComponent extends BaseComponent implements OnInit{
 
   createData = {
-    createType: 1,   //1 个人  2企业
     password:'',
     rePassWord:''
   };
 
-  onChange(type){
-    this.createData.createType = type;
-  }
-
   ngOnInit(){
-    //this.localstorage.clear();
     this.setTitleByAssets('text-id-create');
   }
 
@@ -40,31 +30,19 @@ export class IdCreateComponent extends BaseComponent implements OnInit{
       this.messageBox('text-passwold-dif');
       return;
     }
-    let backParms =Native.createId();
-    let id = backParms.id;
-    let priKey = backParms.priKey;
-    if( this.createData.createType === 1){
-        let personObj = Config.getPersonObj();
-        personObj.id = id;
-        personObj.priKey = priKey;
-        personObj.createType = this.createData.createType;
-        personObj.backupPassword = this.createData.password;
-        this.tiaozhuan(personObj);
-    }else if(this.createData.createType === 2){
-      let companyObj = Config.getCompanyObj();
-      companyObj.id = id;
-      companyObj.priKey = priKey;
-      companyObj.createType = this.createData.createType;
-      companyObj.backupPassword = this.createData.password;
-      this.tiaozhuan(companyObj);
-    }
 
+    this.createDID();
   }
 
-  tiaozhuan(obj){
-    this.localStorage.add('kyc',obj).then((val)=>{
-        Config.setKycObj(JSON.parse(val));
-        this.Go(IdHomeComponent);
-      });
+  tiaozhuan(){
+     this.Go(IdHomeComponent);
   }
+
+  createDID(){
+    this.walletManager.createDID(this.createData.password,(result)=>{
+                    alert("===2222ssss222222===="+JSON.stringify(result));
+                    this.tiaozhuan();
+    });
+  }
+
 }

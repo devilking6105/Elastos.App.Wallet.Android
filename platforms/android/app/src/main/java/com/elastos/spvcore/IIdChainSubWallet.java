@@ -3,20 +3,20 @@ package com.elastos.spvcore;
 /**
  * IIdChainSubWallet jni
  */
-public class IIdChainSubWallet {
+public class IIdChainSubWallet extends ISidechainSubWallet{
     private long mIDchainProxy;
 
 
-    public String SendIdTransaction(String fromAddress, String toAddress, long amount,
-            String payloadJson, String programJson, long fee, String payPassword, String memo)
-    {
-        return nativeSendIdTransaction(mIDchainProxy, fromAddress, toAddress, amount, payloadJson, programJson, fee, payPassword, memo);
+    public String CreateIdTransaction(String fromAddress, String toAddress, long amount,
+            String payloadJson, String programJson, long fee, String memo, String remark) throws WalletException {
+        return nativeCreateIdTransaction(mIDchainProxy, fromAddress, toAddress, amount, payloadJson, programJson, fee, memo, remark);
     }
 
     public IIdChainSubWallet(long proxy) {
+        super(proxy);
         mIDchainProxy = proxy;
     }
 
-    private native String nativeSendIdTransaction(long proxy, String fromAddress, String toAddress, long amount,
-            String payloadJson, String programJson, long fee, String payPassword, String memo);
+    private native String nativeCreateIdTransaction(long proxy, String fromAddress, String toAddress, long amount,
+            String payloadJson, String programJson, long fee, String memo, String remark);
 }

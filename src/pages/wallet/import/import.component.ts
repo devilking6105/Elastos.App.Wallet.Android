@@ -1,87 +1,148 @@
 import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from './../../../app/BaseComponent';
-import {Util} from "../../../providers/Util";
-//import {Logger} from "../../../providers/Logger";
+import {BaseComponent} from '../../../app/BaseComponent';
+import {TabsComponent} from '../../../pages/tabs/tabs.component';
 
 @Component({
   selector: 'app-import',
-  templateUrl: './import.component.html',
-  // styleUrls: ['./import.component.scss']
+  templateUrl: './import.component.html'
 })
 export class ImportComponent extends BaseComponent implements OnInit {
-
-  wallet = {
-    keystore: '',
-    mnemonic: '',
-    pwd: '',
-    payPwd: '',
-    rePayPwd: '',
-    type: 1
-  };
+  public selectedTab: string="words";
+  public showAdvOpts:boolean;
+  public keyStoreContent:any;
+  public importFileObj:any={payPassword: "",rePayPassword: "", backupPassWord: "",phrasePassword:""};
+  public mnemonicObj:any={mnemonic:"",payPassword: "", rePayPassword: "",phrasePassword:""}
+  public toggleShowAdvOpts(): void {
+    this.showAdvOpts = !this.showAdvOpts;
+  }
+  selectTab(tab: string) {
+     this.selectedTab = tab;
+  }
 
   ngOnInit() {
     this.setTitleByAssets('launcher-backup-import');
   }
 
-
   onImport() {
-    if (this.wallet.type == 1) {   // 文件
-      if (Util.isNull(this.wallet.keystore)) {
-        this.toast('text-select-key');
-        return;
-      }
-    } else {
-      if (Util.isNull(this.wallet.mnemonic)) {
-        this.toast('text-input-mnemonic');
-        return;
-      }
+     switch(this.selectedTab){
+       case "words":
+            if(this.checkWorld()){
+               this.importWalletWithMnemonic();
+            }
+       break;
+       case "file":
+          if(this.checkImportFile()){
+               this.importWalletWithKeystore();
+          }
+       break;
+     }
+  }
+
+  checkImportFile(){
+   if(this.isNull(this.keyStoreContent)){
+      this.messageBox('import-text-keystroe-message');
+          return false;
     }
-    console.log(this.wallet.mnemonic)
-    if (!Util.isMnemonicValid(this.wallet.mnemonic)) {
-      this.toast("text-mnemonic-validator");
-      return;
+    if(this.isNull(this.importFileObj.backupPassWord)){
+      this.messageBox('text-backup-passworld-input');
+      return false;
     }
-    if (!Util.password(this.wallet.pwd)) {
-      this.toast("text-pwd-validator");
-      return;
-    }
-    if (this.wallet.pwd != this.wallet.rePayPwd) {
-      this.toast("text-wallet-repwd");
-      return;
+    if(this.isNull(this.importFileObj.payPassword)){
+      this.messageBox('text-pay-passworld-input');
+      return false;
     }
 
-    this.importWallet();
+    if(this.importFileObj.payPassword!=this.importFileObj.rePayPassword){
+      this.messageBox('text-passworld-compare');
+      return false;
+    }
+    return true;
+  }
+
+  importWalletWithKeystore(){
+    this.walletManager.importWalletWithKeystore("1",
+                      this.keyStoreContent,this.importFileObj.backupPassWord,
+                      this.importFileObj.payPassword,this.importFileObj.phrasePassword,
+                      ()=>{
+                             this.getAllCreatedSubWallets();
+                      });
+  }
+
+  checkWorld(){
+    if(this.isNull(this.mnemonicObj.mnemonic)){
+        this.messageBox('text-input-mnemonic');
+        return false;
+    }
+
+    let mnemonic = this.normalizeMnemonic(this.normalizeMnemonic(this.mnemonicObj.mnemonic));
+    if(mnemonic.split(/[\u3000\s]+/).length != 12){
+      this.messageBox('text-mnemonic-validator');
+      return false;
+    }
+
+    if(this.isNull(this.mnemonicObj.payPassword)){
+      this.messageBox('text-pay-password');
+      return false;
+    }
+    if(this.mnemonicObj.payPassword!=this.mnemonicObj.rePayPassword){
+      this.messageBox('text-passworld-compare');
+      return false;
+    }
+    return true;
   }
 
 
-  onChange() {
-    this.wallet.type = (this.wallet.type === 1 ? 2 : 1);
+  private normalizeMnemonic(words: string): string {
+    if (!words || !words.indexOf) return words;
+    let isJA = words.indexOf('\u3000') > -1;
+    let wordList = words.split(/[\u3000\s]+/);
+
+    return wordList.join(isJA ? '\u3000' : ' ');
+  };
+
+  importWalletWithMnemonic(){
+    let mnemonic = this.normalizeMnemonic(this.normalizeMnemonic(this.mnemonicObj.mnemonic));
+    this.walletManager.importWalletWithMnemonic("1",mnemonic,this.mnemonicObj.phrasePassword,this.mnemonicObj.payPassword,this.getMnemonicLang(),()=>{
+                 this.messageBox('import-text-world-sucess');
+                 this.localStorage.setWallet({
+                  'name': "ELA-Wallet"
+                 }).then(()=>{
+                    this.Go(TabsComponent);
+                 });
+
+    });
   }
 
-  selectFile() {
-    // this.wallet.keystore = 'xxx.jpg';
-      this.native.openFile().then(data => {
-        this.wallet.keystore = data;
-        console.log(data);
-      }).catch(err => {
-        this.toast('text-select-file-error');
-        console.log(err);
+  getAllCreatedSubWallets(){
+
+    this.localStorage.get('coinListCache').then((val)=>{
+         let coinListCache = JSON.parse(val);
+      this.walletManager.getAllCreatedSubWallets((createdChains) => {
+         for(let china in coinListCache){
+             if(this.isExitCoinListCache(china,createdChains) === -1){
+                    delete(coinListCache[china])
+             }
+         }
+
+         this.localStorage.set('coinListCache', coinListCache).then(()=>{
+          this.messageBox('import-text-keystroe-sucess');
+          this.localStorage.setWallet({
+            'name': "sss"
+           }).then(()=>{
+            this.Go(TabsComponent);
+           });
+         });
       });
+    });
   }
 
-  importWallet(){
-    if(this.wallet.type == 1){
-      // this.walletManager.importWalletWithKeystore(this.wallet.keystore, this.wallet.pwd, this.wallet.payPwd,(data)=>{
-
-      // });
-    }else{
-      // this.walletManager.importWalletWithMnemonic(this.wallet.mnemonic, this.wallet.pwd, this.wallet.payPwd, this.getMnemonicLang(), (data)=>{
-      //   this.localStorage.setWallet({
-      //     'name': "myWallet"
-      //   });
-      // });
+  isExitCoinListCache(cacheChain,createdChains){
+    for (let chain in createdChains) {
+           if(cacheChain === chain){
+                return 1;
+           }
     }
-
+         return -1;
   }
 
 }

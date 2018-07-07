@@ -5,7 +5,7 @@ import 'rxjs/add/observable/timer';
 import {IdResultComponent} from "../../../../pages/id/result/result";
 import {IDManager} from "../../../../providers/IDManager"
 import {ApiUrl} from "../../../../providers/ApiUrl"
-
+import {TransferComponent} from "../../../../pages/coin/transfer/transfer.component";
 
 @Component({
   selector: 'id-person',
@@ -75,7 +75,7 @@ if(this.checkCellphone(phone)){
     let obj  = {};
     for(let key in this.validateObj){
          let vobj = this.validateObj[key];
-         console.log("===key==="+key+typeof(key));
+         //console.log("===key==="+key+typeof(key));
          if(key=="2"){
                 obj["fullName"] = this.personValidate.fullName;
                 obj["identityNumber"] = this.personValidate.identityNumber;
@@ -155,16 +155,15 @@ if(this.checkCellphone(phone)){
           return;
          }
         }
-    this.sendPersonAuth();
+        let parms =this.getpayParms();
+        let type = this.getSelectType();
+        parms["type"] = type;
+        parms["serialNum"] =this.serialNum;
+        parms["txHash"] = "6a943e5079d424dd9daee8b3ef4062072ece5752ceea22612a0781b7a76d1dfe";
+        this.Go(TransferComponent,{addr:"ENMLAuBi4qW7ViKwh6GbcaMcktU8j78T6F",money:this.payMoney,type:"kyc",chianId:"IdChain",selectType:"person",parms:parms});
+    //this.sendPersonAuth();
   }
 
-  sendPersonHttp(){
-
-  }
-
-  bulidPersonParms(types){
-
-  }
 
   sendCodeHttp(){
     let code = (Math.random()*1000000000000000).toString().substring(0,6);

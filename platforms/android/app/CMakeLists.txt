@@ -20,13 +20,16 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/jni/ElasotsWalletDemo.cpp
-             src/main/jni/ElaEnviroment.cpp
              src/main/jni/ElaMasterWalletManager.cpp
              src/main/jni/ElaMasterWallet.cpp
              src/main/jni/ElaSubWallet.cpp
              src/main/jni/ElaMainchainSubWallet.cpp
              src/main/jni/ElaSidechainSubWallet.cpp
-             src/main/jni/ElaIdChainSubWallet.cpp)
+             src/main/jni/ElaIdChainSubWallet.cpp
+             src/main/jni/ElaIdManagerFactory.cpp
+             src/main/jni/ElaDidManager.cpp
+             src/main/jni/ElaDid.cpp
+             src/main/jni/ElaUtils.cpp)
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -51,6 +54,7 @@ target_link_libraries( # Specifies the target library.
                        Elastos.Runtime
                        Elastos.Runtime_static
                        Elastos.Wallet
+                       idchain
 
                        # Links the target library to the log library
                        # included in the NDK.

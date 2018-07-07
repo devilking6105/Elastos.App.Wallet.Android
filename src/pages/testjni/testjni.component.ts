@@ -9,33 +9,54 @@ import {BaseComponent} from '../../app/BaseComponent';
 export class TestJniComponent  extends BaseComponent implements OnInit  {
   masterWalletId:string ="1";
   phrasePassword:string ="66666666";
+  newPassword:string ="66666666";
   payPassword:string ="66666666";
   backupPassword:string="66666666";
-  keystorePath:string ="ssssss";
+  keystoreContent:string ="ssssss";
   mnemonic:string ="sssssss";
   language:string ="english";
   singMessage:string;
   fromAddress:string="sssss";
-  toAddress:string="sssss";
-  chinaId:string ="Idchain";
+  toAddress:string="EWs2TgP4Ds3qZcTzWmBZ5hNsx2PaEyxbui";
+  chinaId:string ="ELA";
   adress:string;
+  toadress:string="EWs2TgP4Ds3qZcTzWmBZ5hNsx2PaEyxbui";
+  did:string;
+  signature:string;
+  unit:number = 100000000;
+  rawTransaction:string="sss";
+  transactionJson:string;
+  fee:number;
   interfaces = [
-                {id:3,name:"createMasterWallet"},
+
                 {id:24,name:"generateMnemonic"},
-                {id:23,name:"initializeMasterWallet"},
-                {id:28,name:"getSupportedChains"},
+                {id:3,name:"createMasterWallet"},
                 {id:0,name:"createSubWallet"},
+                {id:9,name:"createAddress"},
+                {id:41,name:"createTransaction"},
+                {id:42,name:"calculateTransactionFee"},
+                {id:43,name:"sendRawTransaction"},
+                {id:30,name:"createDID"},
+                {id:31,name:"getDIDList"},
+                {id:32,name:"destoryDID"},
+                {id:33,name:"didSetValue"},
+                {id:34,name:"didGetValue"},
+                {id:35,name:"didGetHistoryValue"},
+                {id:37,name:"didGetAllKeys"},
+                {id:38,name:"didSign"},
+                {id:39,name:"didCheckSign"},
+                {id:40,name:"didGetPublicKey"},
+                {id:28,name:"getSupportedChains"},
                 {id:2,name:"getPublicKey"},
                 {id:8,name:"getBalance"},
+                {id:29,name:"changePassword"},
                 {id:19,name:"getAllMasterWallets"},
                 {id:1,name:"recoverSubWallet"},
                 {id:4,name:"importWalletWithKeystore"},
                 {id:5,name:"importWalletWithMnemonic"},
                 {id:6,name:"exportWalletWithKeystore"},
-                {id:9,name:"createAddress"},
                 {id:10,name:"getAllAddress"},
                 {id:11,name:"getBalanceWithAddress"},
-                {id:12,name:"sendTransaction"},
                 {id:13,name:"generateMultiSignTransaction"},
                 {id:14,name:"getAllTransaction"},
                 {id:15,name:"registerWalletListener"},
@@ -49,15 +70,52 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
                 {id:26,name:"getWalletId"},
                 {id:27,name:"getAllChainIds"},
                 {id:7,name:"exportWalletWithMnemonic"},
-
               ];
   ngOnInit() {
   }
 
   onNext(type): void {
      switch (type){
+      case 41:
+          this.createTransaction();
+          break;
+      case 42:
+          this.calculateTransactionFee();
+          break;
+      case 43:
+          this.sendRawTransaction();
+          break;
+      case 40:
+         this.didGetPublicKey();
+         break;
+      case 39:
+          this.didCheckSign();
+           break;
+      case 38:
+          this.didSign();
+          break;
+      case 37:
+        this.didGetAllKeys();
+      break;
+      case 35:
+           this.didGetHistoryValue();
+           break;
+      case 34:
+          this.didGetValue();
+      case 33:
+            this.didSetValue();
+          break;
+      case 30:
+          this.createDID();
+          break;
+      case 31:
+          this.getDIDList();
+        break;
+      case 32:
+          this.destoryDID(this.did);
+        break;
        case 0:
-         this.createSubWallet();
+         this.createSubWallet(this.chinaId);
          break;
        case 1:
          this.recoverSubWallet();
@@ -65,7 +123,7 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
          this.getPublicKey();
          break;
          case 3:
-         this.createMasterWallet(this.masterWalletId,this.language);
+         this.createMasterWallet(this.masterWalletId,this.mnemonic,this.phrasePassword,this.payPassword,this.language);
         break;
        case 4:
           this.importWalletWithKeystore(this.masterWalletId,"sssss",this.backupPassword,this.payPassword,this.phrasePassword);
@@ -74,7 +132,7 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
           this.importWalletWithMnemonic(this.masterWalletId,this.mnemonic,this.phrasePassword,this.payPassword,this.language);
          break;
        case 6:
-          this.exportWalletWithKeystore(this.backupPassword,this.payPassword,"sssss");
+          this.exportWalletWithKeystore(this.backupPassword,this.payPassword);
          break;
        case 7:
           this.exportWalletWithMnemonic(this.backupPassword);
@@ -90,9 +148,6 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
          break;
        case 11:
             this.getBalanceWithAddress(this.chinaId);
-         break;
-      case 12:
-            this.sendTransaction(this.chinaId,this.fromAddress,this.toAddress,1,1,this.payPassword,"ssss");
          break;
       case 13:
            this.generateMultiSignTransaction();
@@ -124,9 +179,6 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
       case 22:
         this.getBalanceInfo(this.chinaId);
          break;
-      case 23:
-        this.initializeMasterWallet(this.masterWalletId,this.mnemonic,this.phrasePassword,this.payPassword);
-        break;
       case 24:
          this.generateMnemonic();
         break;
@@ -142,11 +194,20 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
       case 28:
          this.getSupportedChains();
          break;
+      case 29:
+         this.changePassword();
+         break;
      }
    }
 
+   changePassword(){
+      this.walletManager.changePassword(this.payPassword,this.newPassword,()=>{
+               alert("修改成功");
+      });
+   }
+
    generateMnemonic(){
-     this.walletManager.generateMnemonic((result)=>{
+     this.walletManager.generateMnemonic(this.language,(result)=>{
           this.mnemonic = result.mnemonic.toString();
           alert("住记词"+JSON.stringify(result));
      });
@@ -158,8 +219,8 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
        });
    }
 
-   createSubWallet(){
-      this.walletManager.createSubWallet(this.chinaId,this.payPassword,false,0,(result)=>{
+   createSubWallet(key){
+      this.walletManager.createSubWallet(key,this.payPassword,false,0,(result)=>{
         alert("子钱包");
         alert(JSON.stringify(result));
       });
@@ -178,14 +239,14 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
      })
    }
 
-   createMasterWallet(masterWalletId,language){
-    this.walletManager.createMasterWallet(masterWalletId,language,(result)=>{
+   createMasterWallet(masterWalletId,mnemonic,phrasePassword,payPassWord,language){
+    this.walletManager.createMasterWallet(masterWalletId,mnemonic,phrasePassword,payPassWord,language,(result)=>{
                    alert("创建主钱包成功");
      });
    }
 
-   importWalletWithKeystore(masterWalletId:string,keystorePath:string,backupPassWord:string,payPassWord:string,phrasePassword:string){
-         this.walletManager.importWalletWithKeystore(masterWalletId,keystorePath,backupPassWord,payPassWord,phrasePassword,()=>{
+   importWalletWithKeystore(masterWalletId:string,keystoreContent:string,backupPassWord:string,payPassWord:string,phrasePassword:string){
+         this.walletManager.importWalletWithKeystore(masterWalletId,keystoreContent,backupPassWord,payPassWord,phrasePassword,()=>{
                       alert("导入keystore成功");
          })
    }
@@ -196,9 +257,9 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
        });
    }
 
-   exportWalletWithKeystore(backupPassword: string,payPassWord:string,keystorePath:string,){
-       this.walletManager.exportWalletWithKeystore(backupPassword,payPassWord,keystorePath,(result)=>{
-        alert("导出keystore成功");
+   exportWalletWithKeystore(backupPassword: string,payPassWord:string){
+       this.walletManager.exportWalletWithKeystore(backupPassword,payPassWord,(result)=>{
+        alert("导出keystore成功"+JSON.stringify(result));
        });
    }
 
@@ -210,12 +271,13 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
 
    createAddress(chinaId:string){
          this.walletManager.createAddress(chinaId,(result)=>{
-                this.adress = result;
-                alert(JSON.stringify(result));
+                this.adress = result.address;
+                alert(this.adress);
          });
    }
 
    getAllAddress(chinaId:string){
+        alert("===chinaId===="+chinaId);
         this.walletManager.getAllAddress(chinaId,0,(result)=>{
             alert(JSON.stringify(result));
         });
@@ -227,14 +289,8 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
         });
    }
 
-   sendTransaction(chinaId:string,fromAddress:string, toAddress:string, amount:number, fee:number, payPassword:string, memo:string){
-       this.walletManager.sendTransaction(chinaId,fromAddress,toAddress,amount,fee,payPassword,memo,(result)=>{
-                alert(JSON.stringify(result));
-       });
-   }
-
    generateMultiSignTransaction(){
-      this.walletManager.generateMultiSignTransaction(this.chinaId,this.fromAddress,this.toAddress,1,1,this.payPassword,"sssss",(result)=>{
+      this.walletManager.generateMultiSignTransaction(this.chinaId,this.fromAddress,this.toAddress,1*100000000,0.01*100000000,this.payPassword,"sssss",(result)=>{
         alert(JSON.stringify(result));
       });
    }
@@ -252,7 +308,7 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
    }
 
    checkSign(address:string, message:string, signature:string, payPassword:string){
-         this.walletManager.checkSign(this.chinaId,address,message,signature,payPassword,(result)=>{
+         this.walletManager.checkSign(this.chinaId,address,message,signature,(result)=>{
           alert(JSON.stringify(result));
          });
    }
@@ -294,13 +350,6 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
      });
    }
 
-   initializeMasterWallet(masterWalletId,mnemonic,phrasePassword,payPassWord){
-     alert("masterWalletId=="+masterWalletId+"mnemonic=="+mnemonic+"phrasePassword=="+phrasePassword+"payPassWord=="+payPassWord);
-     this.walletManager.initializeMasterWallet(masterWalletId,mnemonic,phrasePassword,payPassWord,(result)=>{
-             alert("主钱包初始化成功");
-     });
-   }
-
    saveConfigs(){
      this.walletManager.saveConfigs((resust)=>{
          alert("保存配置成功");
@@ -322,7 +371,108 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
    getSupportedChains(){
     this.walletManager.getSupportedChains((result)=>{
       alert("已经支持的所有子钱包=="+JSON.stringify(result));
+      for(let key in result){;
+        this.createSubWallet(key);
+     }
      });
+   }
+
+   createDID(){
+     this.walletManager.createDID(this.payPassword,(result)=>{
+             alert("==did=="+JSON.stringify(result));
+             this.did = result.didname;
+     });
+   }
+
+   getDIDList(){
+    this.walletManager.getDIDList((result)=>{
+             alert('==DIDList=='+JSON.stringify(result));
+    });
+   }
+
+   destoryDID(did:string){
+      this.walletManager.destoryDID(did,(result)=>{
+             alert("删除成功："+did);
+      });
+   }
+
+   didSetValue(){
+         alert("===didSetValue==="+this.did);
+         let obj = {
+          "101": {
+            "datahash": "datahash1",
+            "proof": "hello proof1",
+            "sign": "hello sign1"
+          },
+          "102": {
+            "datahash": "datahash2",
+            "proof": "hello proof2",
+            "sign": "hello sign2"
+          },
+          "103": {
+            "datahash": "datahash3",
+            "proof": "hello proof3",
+            "sign": "hello sign3"
+          }
+        };
+        this.walletManager.didSetValue(this.did,"1",JSON.stringify(obj),(result)=>{
+                   alert("====="+JSON.stringify(result));
+        });
+   }
+
+   didGetValue(){
+        this.walletManager.didGetValue(this.did,"1",(result)=>{
+             alert("===didGetValue===="+JSON.stringify(result));
+        });
+   }
+
+   didGetHistoryValue(){
+     this.walletManager.didGetHistoryValue(this.did,"1",(result)=>{
+           alert("===didGetHistoryValue===="+JSON.stringify(result));
+     });
+   }
+
+   didGetAllKeys(){
+      this.walletManager.didGetAllKeys(this.did,0,2,(result)=>{
+        alert("===didGetAllKeys===="+JSON.stringify(result));
+      });
+   }
+
+   didSign(){
+     this.walletManager.didSign(this.did,"ssssss",this.payPassword,(result)=>{
+             alert("===didSign==="+JSON.stringify(result));
+             this.signature = "sssss";
+     });
+   }
+
+   didCheckSign(){
+      this.walletManager.didCheckSign(this.did,"ssssss",this.signature,(result)=>{
+                  alert("===didCheckSign==="+JSON.stringify(result));
+      });
+   }
+
+   didGetPublicKey(){
+     this.walletManager.didGetPublicKey(this.did,(result)=>{
+          alert("===didGetPublicKey==="+JSON.stringify(result));
+     });
+   }
+
+   createTransaction(){
+      this.walletManager.createTransaction(this.chinaId,"",this.toAddress,1*this.unit,0.01*this.unit,"sssssss", "ssss",(result)=>{
+                      alert("=====createTransaction======"+JSON.stringify(result));
+      });
+   }
+
+   calculateTransactionFee(){
+     this.walletManager.calculateTransactionFee(this.chinaId,this.rawTransaction,0,(result)=>{
+                    alert("===== calculateTransactionFee ====="+JSON.stringify(result));
+     })
+   }
+
+   sendRawTransaction(){
+      this.walletManager.sendRawTransaction(this.chinaId,this.transactionJson,this.fee,this.payPassword,(result)=>{
+                     alert("===sendRawTransaction==="+JSON.stringify(result));
+      });
    }
 
 }

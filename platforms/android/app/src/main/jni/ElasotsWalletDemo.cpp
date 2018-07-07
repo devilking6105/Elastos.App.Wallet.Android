@@ -1,12 +1,21 @@
+// Copyright (c) 2012-2018 The Elastos Open Source Project
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include <string>
 #include <unistd.h>
 
-extern int register_elastos_spv_Enviroment(JNIEnv* env);
 extern int register_elastos_spv_IMasterWalletManager(JNIEnv* env);
 extern int register_elastos_spv_IMasterWallet(JNIEnv* env);
 extern int register_elastos_spv_ISubWallet(JNIEnv* env);
+extern int register_elastos_spv_IMainchainSubWallet(JNIEnv* env);
+extern int register_elastos_spv_ISidechainSubWallet(JNIEnv* env);
+extern int register_elastos_spv_IIdChainSubWallet(JNIEnv* env);
+
+//did
+extern int register_elastos_spv_IDid(JNIEnv* env);
+extern int register_elastos_spv_IDidManager(JNIEnv* env);
+extern int register_elastos_spv_IdManagerFactory(JNIEnv* env);
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved){
     JNIEnv * env;
@@ -16,10 +25,17 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved){
         return JNI_ERR;
     }
 
-    register_elastos_spv_Enviroment(env);
     register_elastos_spv_IMasterWalletManager(env);
     register_elastos_spv_IMasterWallet(env);
     register_elastos_spv_ISubWallet(env);
+    register_elastos_spv_IMainchainSubWallet(env);
+    register_elastos_spv_ISidechainSubWallet(env);
+    register_elastos_spv_IIdChainSubWallet(env);
+
+    //did
+    register_elastos_spv_IDid(env);
+    register_elastos_spv_IDidManager(env);
+    register_elastos_spv_IdManagerFactory(env);
 
     return JNI_VERSION_1_6;
 }

@@ -26,15 +26,16 @@ import android.util.Log;
 import org.apache.cordova.*;
 
 import cn.jpush.android.api.JPushInterface;
-import com.elastos.spvcore.Enviroment;
+import com.elastos.spvcore.MasterWalletManager;
 
 public class MainActivity extends CordovaActivity
 {
-  static {
-    System.loadLibrary("spvsdk");
-    System.loadLibrary("elastoswallet");
+    static {
+        System.loadLibrary("spvsdk");
+        System.loadLibrary("idchain");
+        System.loadLibrary("elastoswallet");
+    }
 
-  }
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -55,7 +56,11 @@ public class MainActivity extends CordovaActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Enviroment.SaveConfigs();
+
+        MasterWalletManager walletManager = MyUtil.GetCurrentMasterWalletManager();
+        if (walletManager != null) {
+            walletManager.SaveConfigs();
+        }
     }
 
     private void initJG(){

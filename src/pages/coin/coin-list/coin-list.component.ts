@@ -1,5 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {BaseComponent} from '../../../app/BaseComponent';
+import { PopupComponent } from "ngx-weui";
+import {Util} from "../../../providers/Util";
 
 @Component({
   selector: 'app-coin-list',
@@ -7,15 +9,20 @@ import {BaseComponent} from '../../../app/BaseComponent';
 })
 export class CoinListComponent extends BaseComponent implements OnInit {
 
+  @ViewChild('subscribe') subPopup: PopupComponent;
+
   coinList = [];
   coinListCache = {};
+  payPassword: string = "";
+  singleAddress: boolean = false;
+  currentCoin: string;
 
   onSelect(item) {
     item.open = ! item.open;
     if (item.open) {
-      let coin = {};
-      coin["id"] = item.name;
-      this.localStorage.add('coinListCache', coin);
+      this.currentCoin = item.name;
+      this.subPopup.show().subscribe((res: boolean) => {
+      });
     } else {
       this.localStorage.get('coinListCache').then((val)=>{
         let coinListCache = JSON.parse(val);
@@ -47,4 +54,27 @@ export class CoinListComponent extends BaseComponent implements OnInit {
       });
     });
   }
+
+  onClick() {
+    this.createSubWallet(this.currentCoin);
+  }
+
+  createSubWallet(chainId){
+    // Sub Wallet IdChain
+    this.walletManager.createSubWallet(chainId, this.payPassword, this.singleAddress, 0, (val)=>{
+      if (val['ERRORCODE'] == undefined) {
+        if (!Util.password(this.payPassword)) {
+          this.toast("text-pwd-validator");
+          return;
+        }
+        let coin = {};
+        coin["id"] = chainId;
+        this.localStorage.add('coinListCache', coin);
+        this.subPopup.hide();
+      }else{
+        this.toast("text-password-error");
+      }
+    });
+  }
+
 }

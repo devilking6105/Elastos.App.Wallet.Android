@@ -17,6 +17,7 @@ export class WriteComponent extends BaseComponent implements OnInit {
   selectComplete = false;
 
   ngOnInit() {
+    this.setHeadDisPlay({left:false});
     this.setTitleByAssets('text-mnemonic-check');
     this.mnemonicStr = this.getNavParams().get("mnemonicStr");
     this.mnemonicList = this.getNavParams().get("mnemonicList").sort(function(){ return 0.5 - Math.random() });
@@ -27,6 +28,7 @@ export class WriteComponent extends BaseComponent implements OnInit {
     for(let i =0;i<this.selectList.length;i++){
       mn += this.selectList[i].text;
     }
+    //hptest
     if(!Util.isNull(mn) && mn == this.mnemonicStr.replace(/\s+/g,"")){
       this.toast('text-mnemonic-ok');
       this.Go(TabsComponent)

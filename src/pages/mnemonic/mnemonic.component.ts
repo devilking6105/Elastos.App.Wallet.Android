@@ -15,11 +15,14 @@ export class MnemonicComponent extends BaseComponent implements OnInit {
   mnemonicPassword: string="";
   mnemonicRepassword: string;
   payPassword: string;
+  name: string;
+  singleAddress: boolean = false;
   defaultCointype = "Ela";
   isSelect:boolean = false;
+  
   ngOnInit() {
     this.setTitleByAssets('text-mnemonic');
-    this.walletManager.generateMnemonic((data) => {
+    this.walletManager.generateMnemonic(this.getMnemonicLang(),(data) => {
       //let data ={"mnemonic":"aaa bbb ccc ddd eee  fff ggg  ssss kkk lll zzz hhh"};
       this.mnemonicStr = data.mnemonic.toString();
       let mnemonicArr = this.mnemonicStr.split(/[\u3000\s]+/);
@@ -29,6 +32,8 @@ export class MnemonicComponent extends BaseComponent implements OnInit {
       // console.log(this.mnemonicList);
     });
     this.payPassword = this.getNavParams().get("payPassword");
+    this.name = this.getNavParams().get("name");
+    this.singleAddress = this.getNavParams().get("singleAddress");
   }
 
   onNext() {
@@ -42,26 +47,27 @@ export class MnemonicComponent extends BaseComponent implements OnInit {
       this.toast("text-repwd-validator");
       return;
     }
-    this.walletManager.initializeMasterWallet("1", this.mnemonicStr, this.mnemonicPassword, this.payPassword, (data) =>{
-           this.getSupportedChains();
+    this.walletManager.createMasterWallet("1", this.mnemonicStr, this.mnemonicPassword, this.payPassword,this.getMnemonicLang(),(data) =>{
+           // this.getSupportedChains();
+           this.createSubWallet('ELA');
            this.Go(WriteComponent, {mnemonicStr: this.mnemonicStr, mnemonicList: this.mnemonicList});
            this.localStorage.setWallet({
-            'name': "sss"
+            'name': this.name
            });
     })
   }
 
-  getSupportedChains(){
-    this.walletManager.getSupportedChains((result)=>{
-      for(let key in result){;
-         this.createSubWallet(key);
-      }
-     });
-   }
+  // getSupportedChains(){
+  //   this.walletManager.getSupportedChains((result)=>{
+  //     for(let key in result){
+  //        this.createSubWallet(key);
+  //     }
+  //    });
+  //  }
 
   createSubWallet(chainId){
     // Sub Wallet
-    this.walletManager.createSubWallet(chainId,this.payPassword, false, 0, (val)=>{
+    this.walletManager.createSubWallet(chainId, this.payPassword, this.singleAddress, 0, (val)=>{
 
     });
   }
