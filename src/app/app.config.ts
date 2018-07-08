@@ -1,16 +1,20 @@
+// import {File} from '@ionic-native/file';
+// import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+
 export class AppConfig {
 
-  static appName = "elastos";
+  /*
+  app info
+   */
+  public static appName = "elastos";
 
-  static currentDate = new Date();
+  private static currentDate = new Date();
 
-  static currentMM = AppConfig.currentDate.getMonth() < 9 ? "0" + (AppConfig.currentDate.getMonth() + 1) : (AppConfig.currentDate.getMonth() + 1);
+  private static currentDateYYYYMMDD = AppConfig.currentDate.getFullYear()  + "."
+    + (AppConfig.currentDate.getMonth() < 9 ? "0" + (AppConfig.currentDate.getMonth() + 1) : (AppConfig.currentDate.getMonth() + 1)) + "."
+    + (AppConfig.currentDate.getDay() < 9 ? "0" + (AppConfig.currentDate.getDay() + 1) : (AppConfig.currentDate.getDay() + 1));
 
-  static currentDD = AppConfig.currentDate.getDay() < 9 ? "0" + (AppConfig.currentDate.getDay() + 1) : (AppConfig.currentDate.getDay() + 1);
-
-  static currentDateYYYYMMDD = AppConfig.currentDate.getFullYear()  + "." + AppConfig.currentMM  + "." + AppConfig.currentDD;
-
-  static initAppList = [
+  private static initAppList = [
     {
       path: "../wallet/www/assets/images/logo.png",
       name: "Wallet",
@@ -43,5 +47,37 @@ export class AppConfig {
       date: AppConfig.currentDateYYYYMMDD
     }
   ];
+
+  public static initAppListData() {
+    if(null == window.localStorage.getItem('appList')) {
+      AppConfig.saveAppListData(AppConfig.initAppList);
+    }
+  }
+
+  public static getAppListData() {
+    return JSON.parse(window.localStorage.getItem('appList'));
+  }
+
+  public static saveAppListData(appList) {
+    window.localStorage.setItem('appList', JSON.stringify(appList));
+  }
+
+  // /*
+  // db info
+  //  */
+  // private static sqlite = new SQLite();
+  //
+  // private static dbName = AppConfig.appName + ".db";
+  //
+  // private static dbLocation = "default";
+  //
+  // private static initDB() {
+  //   AppConfig.sqlite.create({
+  //     name: AppConfig.dbName,
+  //     location: AppConfig.dbLocation
+  //   }).then((db: SQLiteObject) => {
+  //     db.executeSql("CREATE TABLE IF NOT EXISTS appList(id INT, appInfo VARCHAR(320));");
+  //   }).catch(err => alert(JSON.stringify(err)));
+  // }
 
 }

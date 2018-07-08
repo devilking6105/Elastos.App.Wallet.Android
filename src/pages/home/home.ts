@@ -5,7 +5,6 @@ import {File} from '@ionic-native/file';
 import { ManagePage } from '../manage/manage';
 import { AppConfig } from "../../app/app.config";
 
-
 declare let cordova: any;
 
 @Component({
@@ -19,13 +18,11 @@ export class HomePage {
     public navCtrl: NavController,
     public file: File
   ) {
-    if(null == window.localStorage.getItem('appList')) {
-      window.localStorage.setItem('appList', JSON.stringify(AppConfig.initAppList));
-    }
+    AppConfig.initAppListData();
   }
 
   getAppList() {
-    return JSON.parse(window.localStorage.getItem('appList'));
+    return AppConfig.getAppListData();
   }
 
   goManage() {
@@ -33,11 +30,11 @@ export class HomePage {
   }
 
   pressEvent() {
-    this.checked = true
+    this.checked = true;
   }
 
   delEvent(index) {
-    let appList = JSON.parse(window.localStorage.getItem('appList'));
+    let appList = AppConfig.getAppListData();
     let item = appList[index];
 
     let path = this.file.externalRootDirectory + AppConfig.appName + "/";
@@ -48,11 +45,16 @@ export class HomePage {
       .then(result => {
         if(result) {
           appList.splice(index,1);
-          window.localStorage.setItem('appList', JSON.stringify(appList));
+          AppConfig.saveAppListData(appList);
         } else {
           alert("remove this app " + item.name + " failed!");
         }
       }).catch(err => alert(JSON.stringify(err)));
+
+    this.checked = false;
+  }
+
+  tapEvent() {
     this.checked = false;
   }
 

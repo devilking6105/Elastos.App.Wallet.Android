@@ -14,7 +14,7 @@ page-manage {
             width: 24px;
         }
     }
-    .content-ios{
+    .content-ios, .content-md{
         background: #eef5f9;
         width: 100%;
         ion-thumbnail {
@@ -23,7 +23,7 @@ page-manage {
                 white-space: nowrap;
             }
         }
-        .item.item-ios {
+        .item {
             // background-color: rgba(red, green, blue, 0);
             background: #eef5f9;
             .checkbox-ios {
@@ -50,6 +50,25 @@ page-manage {
             width: 25%;
             h2, p {
                 white-space: nowrap;
+            }
+        }
+        .item{
+            // background-color: rgba(red, green, blue, 0);
+            background: #eef5f9;
+            .checkbox-ios {
+                .checkbox-icon {
+                    border: none;
+                    background: url(/assets/imgs/check.png) 100% 100% no-repeat;
+                    border-radius: 0; 
+                    background-size: 21px; 
+                }
+                .checkbox-checked {
+                    background: url(/assets/imgs/checked.png) 100% 100% no-repeat;
+                    background-size: 21px; 
+                }
+            }
+            .right_arrow {
+                width: 12px;
             }
         }
     }

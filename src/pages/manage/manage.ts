@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {IonicPage, NavController, NavParams} from 'ionic-angular';
-import {Zip} from '@ionic-native/zip';
 import {File} from '@ionic-native/file';
 import {FileChooser} from '@ionic-native/file-chooser';
 import {FilePath} from "@ionic-native/file-path";
+import {Zip} from '@ionic-native/zip';
 
 import {InfoPage} from '../info/info';
 import {AppConfig} from "../../app/app.config";
@@ -22,22 +22,18 @@ import {AppConfig} from "../../app/app.config";
 })
 export class ManagePage {
   public checkIndex = []; // 复选框选中的应用集合
+  public isShow = false
   public appList = []; // 应用列表
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
-              public zip: Zip,
               public file: File,
               public fileChooser: FileChooser,
-              public filePath: FilePath) {
-    if (null == window.localStorage.getItem('appList')) {
-      window.localStorage.setItem('appList', JSON.stringify(AppConfig.initAppList));
-    }
-    this.appList = JSON.parse(window.localStorage.getItem('appList'));
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ManagePage');
+              public filePath: FilePath,
+              public zip: Zip
+  ) {
+    AppConfig.initAppListData();
+    this.appList = AppConfig.getAppListData();
   }
 
   /**
@@ -59,6 +55,11 @@ export class ManagePage {
     } else {
       this.checkIndex.splice(this.checkIndex.indexOf(item), 1)
     }
+    if(this.checkIndex.length > 0) {
+      this.isShow = true
+    } else {
+      this.isShow = false
+    }
   }
 
   /**
@@ -76,7 +77,7 @@ export class ManagePage {
         .then(result => {
           if(result) {
             that.appList.splice(that.appList.indexOf(item), 1);
-            window.localStorage.setItem('appList', JSON.stringify(that.appList));
+            AppConfig.saveAppListData(that.appList);
           } else {
             alert("remove this app " + item.name + " failed!");
           }
@@ -146,14 +147,14 @@ export class ManagePage {
                               // analyse the app info
                               let info = JSON.parse(jsonString);
                               this.appList.push({
-                                path: infoFilePath + info.icons[0].src,
+                                path: "../" + fileName + "/www/" + info.icons[0].src,
                                 name: info.name,
-                                url: infoFilePath + 'index.html',
+                                url: fileName + '/www/index.html',
                                 size: fileSize,
                                 date: currentDate.getFullYear()  + "." + currentMM  + "." + currentDD
                               });
                               // save app list
-                              window.localStorage.setItem('appList', JSON.stringify(this.appList));
+                              AppConfig.saveAppListData(this.appList);
                             }).catch(err => alert(JSON.stringify(err)));
                         } else {
                           alert("this file is broken!");
