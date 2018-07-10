@@ -1,5 +1,4 @@
 node_modules/
-package-lock.json
 .sourcemaps/main.js.map
 www/build
 platforms/android/.gradle/
@@ -15,5 +14,4 @@ platforms/android/gradlew.bat
 .vscode/
 platforms/android/.idea/
 www/assets/
-assets/
 
