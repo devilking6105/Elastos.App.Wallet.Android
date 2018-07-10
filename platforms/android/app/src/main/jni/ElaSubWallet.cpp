@@ -2,71 +2,52 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <sstream>
 #include "ElaUtils.h"
-#include "ISubWallet.h"
-#include "nlohmann/json.hpp"
-
-using namespace Elastos::ElaWallet;
+#include "Elastos.Wallet.h"
+#include "elastos/core/Object.h"
+#include <map>
 
 #define  CLASS_SUBWALLET   "com/elastos/spvcore/ISubWallet"
 #define  FIELD_SUBWALLET   "mSubProxy"
 
-const char* ToStringFromJson(const nlohmann::json& jsonValue)
-{
-    std::stringstream ss;
-    ss << jsonValue;
-
-    const char* value = ss.str().c_str();
-    LOGD("Func=[%s]===Line=[%d], value=%s", __FUNCTION__, __LINE__, value);
-    if (!strcmp(value, "null")) {
-        return NULL;
-    }
-
-    return value;
-}
-
-nlohmann::json ToJosnFromString(const char* str)
-{
-    nlohmann::json jsonValue;
-    std::stringstream ss;
-    ss << str;
-    jsonValue << ss;
-    return jsonValue;
-}
-
 static jstring JNICALL nativeGetChainId(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    std::string result = subWallet->GetChainId();
-    return env->NewStringUTF(result.c_str());
+    String result;
+    subWallet->GetChainId(&result);
+    return env->NewStringUTF(result.string());
 }
 
 static jstring JNICALL nativeGetBalanceInfo(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    nlohmann::json result = subWallet->GetBalanceInfo();
-    return env->NewStringUTF(ToStringFromJson(result));
+    String result;
+    subWallet->GetBalanceInfo(&result);
+    return env->NewStringUTF(result.string());
 }
 
 static jlong JNICALL nativeGetBalance(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    return (jlong)subWallet->GetBalance();
+    Int64 balance = 0;
+    subWallet->GetBalance(&balance);
+    return (jlong)balance;
 }
 
 static jstring JNICALL nativeCreateAddress(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    std::string result = subWallet->CreateAddress();
-    return env->NewStringUTF(result.c_str());
+    String result;
+    subWallet->CreateAddress(&result);
+    return env->NewStringUTF(result.string());
 }
 
 static jstring JNICALL nativeGetAllAddress(JNIEnv *env, jobject clazz, jlong jSubProxy, jint jStart, jint jCount)
 {
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    nlohmann::json addresses = subWallet->GetAllAddress(jStart, jCount);
-    return env->NewStringUTF(ToStringFromJson(addresses));
+    String addresses;
+    subWallet->GetAllAddress(jStart, jCount, &addresses);
+    return env->NewStringUTF(addresses.string());
 }
 
 static jlong JNICALL nativeGetBalanceWithAddress(JNIEnv *env, jobject clazz, jlong jSubProxy, jstring jaddress)
@@ -74,26 +55,31 @@ static jlong JNICALL nativeGetBalanceWithAddress(JNIEnv *env, jobject clazz, jlo
     const char* address = env->GetStringUTFChars(jaddress, NULL);
 
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    uint64_t result = subWallet->GetBalanceWithAddress(address);
+    Int64 result = 0;
+    subWallet->GetBalanceWithAddress(String(address), &result);
 
     env->ReleaseStringUTFChars(jaddress, address);
     return (jlong)result;
 }
 
-class ElaSubWalletCallback: public ISubWalletCallback
+class ElaSubWalletListener
+    : public Object
+    , public ISubWalletListener
 {
 public:
-    virtual void OnTransactionStatusChanged(
-        const std::string &txid,
-        const std::string &status,
-        const nlohmann::json &desc,
-        uint32_t confirms);
+    CARAPI OnTransactionStatusChanged(
+        /* [in] */ const String& txid,
+        /* [in] */ const String& status,
+        /* [in] */ const String& desc,
+        /* [in] */ Int32 confirms);
 
-    ElaSubWalletCallback(
+    ElaSubWalletListener(
         /* [in] */ JNIEnv* env,
         /* [in] */ jobject jobj);
 
-    ~ElaSubWalletCallback();
+    ~ElaSubWalletListener();
+
+    CAR_INTERFACE_DECL()
 
 private:
     JNIEnv* GetEnv();
@@ -105,11 +91,11 @@ private:
 };
 
 
-static std::map<jobject, ElaSubWalletCallback*> sSubCallbackMap;
+static std::map<jobject, ElaSubWalletListener*> sSubCallbackMap;
 static void JNICALL nativeAddCallback(JNIEnv *env, jobject clazz, jlong jSubProxy, jobject jsubCallback)
 {
     LOGD("FUNC=[%s]========================LINE=[%d]", __FUNCTION__, __LINE__);
-    ElaSubWalletCallback* subCallback = new ElaSubWalletCallback(env, jsubCallback);
+    ElaSubWalletListener* subCallback = new ElaSubWalletListener(env, jsubCallback);
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
     subWallet->AddCallback(subCallback);
     sSubCallbackMap[jsubCallback] = subCallback;
@@ -118,7 +104,7 @@ static void JNICALL nativeAddCallback(JNIEnv *env, jobject clazz, jlong jSubProx
 static void JNICALL nativeRemoveCallback(JNIEnv *env, jobject clazz, jlong jSubProxy, jobject jsubCallback)
 {
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    std::map<jobject, ElaSubWalletCallback*>::iterator it;
+    std::map<jobject, ElaSubWalletListener*>::iterator it;
     for (it = sSubCallbackMap.begin(); it != sSubCallbackMap.end(); it++) {
         if (jsubCallback == it->first) {
             subWallet->RemoveCallback(it->second);
@@ -140,9 +126,9 @@ static jstring JNICALL nativeCreateTransaction(JNIEnv *env, jobject clazz, jlong
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
     LOGD("nativeCreateTransaction == fromAddress=[%s], to=[%s], amount=[%lld], fee=[%lld], memo=[%s]", fromAddress, toAddress, amount, fee, memo);
 
-    nlohmann::json result;
+    String result;
     try {
-        result = subWallet->CreateTransaction(fromAddress, toAddress, amount, fee, memo, remark);
+        subWallet->CreateTransaction(String(fromAddress), String(toAddress), amount, fee, String(memo), String(remark), &result);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -161,7 +147,7 @@ static jstring JNICALL nativeCreateTransaction(JNIEnv *env, jobject clazz, jlong
     env->ReleaseStringUTFChars(jtoAddress, toAddress);
     env->ReleaseStringUTFChars(jmemo, memo);
     env->ReleaseStringUTFChars(jremark, remark);
-    return env->NewStringUTF(ToStringFromJson(result));
+    return env->NewStringUTF(result.string());
 }
 
 static jstring JNICALL nativeCreateMultiSignAddress(JNIEnv *env, jobject clazz, jlong jSubProxy, jstring jmultiPublicKeyJson,
@@ -170,10 +156,11 @@ static jstring JNICALL nativeCreateMultiSignAddress(JNIEnv *env, jobject clazz, 
     const char* multiPublicKeyJson = env->GetStringUTFChars(jmultiPublicKeyJson, NULL);
 
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    std::string result = subWallet->CreateMultiSignAddress(ToJosnFromString(multiPublicKeyJson), totalSignNum, requiredSignNum);
+    String result;
+    subWallet->CreateMultiSignAddress(String(multiPublicKeyJson), totalSignNum, requiredSignNum, &result);
 
     env->ReleaseStringUTFChars(jmultiPublicKeyJson, multiPublicKeyJson);
-    return env->NewStringUTF(result.c_str());
+    return env->NewStringUTF(result.string());
 }
 
 //"(JLjava/lang/String;Ljava/lang/String;JJLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
@@ -185,10 +172,10 @@ static jstring JNICALL nativeCreateMultiSignTransaction(JNIEnv *env, jobject cla
     const char* memo = env->GetStringUTFChars(jmemo, NULL);
 
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    nlohmann::json result;
+    String result;
 
     try {
-        result = subWallet->CreateMultiSignTransaction(fromAddress, toAddress, amount, fee, memo);
+        subWallet->CreateMultiSignTransaction(String(fromAddress), String(toAddress), amount, fee, String(memo), &result);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -206,7 +193,7 @@ static jstring JNICALL nativeCreateMultiSignTransaction(JNIEnv *env, jobject cla
     env->ReleaseStringUTFChars(jfromAddress, fromAddress);
     env->ReleaseStringUTFChars(jtoAddress, toAddress);
     env->ReleaseStringUTFChars(jmemo, memo);
-    return env->NewStringUTF(ToStringFromJson(result));
+    return env->NewStringUTF(result.string());
 }
 
 static jstring JNICALL nativeSendRawTransaction(JNIEnv *env, jobject clazz, jlong jSubProxy, jstring jtransactionJson
@@ -216,16 +203,16 @@ static jstring JNICALL nativeSendRawTransaction(JNIEnv *env, jobject clazz, jlon
     const char* signJson = env->GetStringUTFChars(jsignJson, NULL);
 
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    nlohmann::json result;
+    String result;
 
     LOGD("FUNC=[%s]=========================line=[%d], transactionJson=[%s]", __FUNCTION__, __LINE__, transactionJson);
     LOGD("FUNC=[%s]=========================line=[%d], signJson=[%s]", __FUNCTION__, __LINE__, signJson);
 
     try {
-        result = subWallet->SendRawTransaction(ToJosnFromString(transactionJson), jfee, signJson);
+        subWallet->SendRawTransaction(String(transactionJson), jfee, String(signJson), &result);
         env->ReleaseStringUTFChars(jtransactionJson, transactionJson);
         env->ReleaseStringUTFChars(jsignJson, signJson);
-        return env->NewStringUTF(ToStringFromJson(result));
+        return env->NewStringUTF(result.string());
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -252,11 +239,12 @@ static jstring JNICALL nativeGetAllTransaction(JNIEnv *env, jobject clazz, jlong
 
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
     LOGD("Func=[%s]===Line=[%d]", __FUNCTION__, __LINE__);
-    nlohmann::json result = subWallet->GetAllTransaction(start, count, addressOrTxid);
+    String result;
+    subWallet->GetAllTransaction(start, count, String(addressOrTxid), &result);
 
     LOGD("Func=[%s]===Line=[%d]", __FUNCTION__, __LINE__);
     env->ReleaseStringUTFChars(jaddressOrTxid, addressOrTxid);
-    jstring value = env->NewStringUTF(result.dump().c_str());
+    jstring value = env->NewStringUTF(result.string());
     LOGD("Func=[%s]===Line=[%d]", __FUNCTION__, __LINE__);
     return value;
 }
@@ -268,10 +256,10 @@ static jstring JNICALL nativeSign(JNIEnv *env, jobject clazz, jlong jSubProxy, j
     const char* payPassword = env->GetStringUTFChars(jpayPassword, NULL);
 
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    std::string result;
+    String result;
 
     try {
-        result = subWallet->Sign(message, payPassword);
+        subWallet->Sign(String(message), String(payPassword), &result);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -288,7 +276,7 @@ static jstring JNICALL nativeSign(JNIEnv *env, jobject clazz, jlong jSubProxy, j
 
     env->ReleaseStringUTFChars(jmessage, message);
     env->ReleaseStringUTFChars(jpayPassword, payPassword);
-    return env->NewStringUTF(result.c_str());
+    return env->NewStringUTF(result.string());
 }
 
 static jstring JNICALL nativeCheckSign(JNIEnv *env, jobject clazz, jlong jSubProxy, jstring jaddress, jstring jmessage, jstring jsignature)
@@ -298,9 +286,9 @@ static jstring JNICALL nativeCheckSign(JNIEnv *env, jobject clazz, jlong jSubPro
     const char* signature = env->GetStringUTFChars(jsignature, NULL);
 
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    nlohmann::json result;
+    String result;
     try {
-        result = subWallet->CheckSign(address, message, signature);
+        subWallet->CheckSign(String(address), String(message), String(signature), &result);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -318,17 +306,17 @@ static jstring JNICALL nativeCheckSign(JNIEnv *env, jobject clazz, jlong jSubPro
     env->ReleaseStringUTFChars(jaddress, address);
     env->ReleaseStringUTFChars(jmessage, message);
     env->ReleaseStringUTFChars(jsignature, signature);
-    return env->NewStringUTF(ToStringFromJson(result));
+    return env->NewStringUTF(result.string());
 }
 
 static jlong JNICALL nativeCalculateTransactionFee(JNIEnv *env, jobject clazz, jlong jSubProxy, jstring jrawTransaction, jlong feePerKb)
 {
     const char* rawTransaction = env->GetStringUTFChars(jrawTransaction, NULL);
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    long fee = 0;
+    Int64 fee = 0;
 
     try {
-        fee = subWallet->CalculateTransactionFee(ToJosnFromString(rawTransaction), feePerKb);
+        subWallet->CalculateTransactionFee(String(rawTransaction), feePerKb, &fee);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -372,7 +360,8 @@ jint register_elastos_spv_ISubWallet(JNIEnv *env)
         gMethods, NELEM(gMethods));
 }
 
-ElaSubWalletCallback::ElaSubWalletCallback(
+CAR_INTERFACE_IMPL(ElaSubWalletListener, Object, ISubWalletListener)
+ElaSubWalletListener::ElaSubWalletListener(
     /* [in] */ JNIEnv* env,
     /* [in] */ jobject jobj)
 {
@@ -381,7 +370,7 @@ ElaSubWalletCallback::ElaSubWalletCallback(
     env->GetJavaVM(&mVM);
 }
 
-ElaSubWalletCallback::~ElaSubWalletCallback()
+ElaSubWalletListener::~ElaSubWalletListener()
 {
     LOGD("FUNC=[%s]========================LINE=[%d]", __FUNCTION__, __LINE__);
     if (mObj) {
@@ -389,7 +378,7 @@ ElaSubWalletCallback::~ElaSubWalletCallback()
     }
 }
 
-JNIEnv* ElaSubWalletCallback::GetEnv()
+JNIEnv* ElaSubWalletListener::GetEnv()
 {
     JNIEnv* env;
     assert(mVM != NULL);
@@ -397,14 +386,17 @@ JNIEnv* ElaSubWalletCallback::GetEnv()
     return env;
 }
 
-void ElaSubWalletCallback::Detach()
+void ElaSubWalletListener::Detach()
 {
     assert(mVM != NULL);
     mVM->DetachCurrentThread();
 }
 
-void ElaSubWalletCallback::OnTransactionStatusChanged(const std::string &txid, const std::string &status,
-    const nlohmann::json &desc, uint32_t confirms)
+ECode ElaSubWalletListener::OnTransactionStatusChanged(
+    /* [in] */ const String& txid,
+    /* [in] */ const String& status,
+    /* [in] */ const String& desc,
+    /* [in] */ Int32 confirms)
 {
     JNIEnv* env = GetEnv();
     LOGD("FUNC=[%s]========================LINE=[%d]", __FUNCTION__, __LINE__);
@@ -412,11 +404,12 @@ void ElaSubWalletCallback::OnTransactionStatusChanged(const std::string &txid, c
     jclass clazz = env->GetObjectClass(mObj);
     //"(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V"
     jmethodID methodId = env->GetMethodID(clazz, "OnTransactionStatusChanged","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V");
-    jstring jtxid = env->NewStringUTF(txid.c_str());
-    jstring jstatus = env->NewStringUTF(status.c_str());
-    jstring jdesc = env->NewStringUTF(ToStringFromJson(desc));
+    jstring jtxid = env->NewStringUTF(txid.string());
+    jstring jstatus = env->NewStringUTF(status.string());
+    jstring jdesc = env->NewStringUTF(desc.string());
 
     env->CallVoidMethod(mObj, methodId, jtxid, jstatus, jdesc, confirms);
 
     Detach();
+    return NOERROR;
 }

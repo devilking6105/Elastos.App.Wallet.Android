@@ -3,12 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "IMainchainSubWallet.h"
-#include "nlohmann/json.hpp"
-
-using namespace Elastos::ElaWallet;
-extern const char* ToStringFromJson(const nlohmann::json& jsonValue);
-extern nlohmann::json ToJosnFromString(const char* str);
+#include "Elastos.Wallet.h"
 
 //"(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeCreateDepositTransaction(JNIEnv *env, jobject clazz, jlong jMainSubWalletProxy,
@@ -23,9 +18,8 @@ static jstring JNICALL nativeCreateDepositTransaction(JNIEnv *env, jobject clazz
     const char* memo = env->GetStringUTFChars(jmemo, NULL);
     const char* remark = env->GetStringUTFChars(jremark, NULL);
 
-    IMainchainSubWallet* wallet = (IMainchainSubWallet*)jMainSubWalletProxy;
-    nlohmann::json txidJson;
-    jstring retValue = NULL;
+    IMainchainSubWallet* wallet = IMainchainSubWallet::Probe((ISubWallet*)jMainSubWalletProxy);
+    String txidJson;
 
     LOGD("FUNC=[%s]=========================line=[%d], fromAddress=[%s]", __FUNCTION__, __LINE__, fromAddress);
     LOGD("FUNC=[%s]=========================line=[%d], toAddress=[%s]", __FUNCTION__, __LINE__, toAddress);
@@ -37,10 +31,10 @@ static jstring JNICALL nativeCreateDepositTransaction(JNIEnv *env, jobject clazz
 
     try {
         LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
-        txidJson = wallet->CreateDepositTransaction(fromAddress, toAddress, amount , ToJosnFromString(sidechainAccounts)
-            , ToJosnFromString(sidechainAmounts), ToJosnFromString(sidechainIndexs), fee, memo, remark);
+        wallet->CreateDepositTransaction(String(fromAddress), String(toAddress), amount , String(sidechainAccounts)
+            , String(sidechainAmounts), String(sidechainIndexs), fee, String(memo), String(remark), &txidJson);
         LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
-        retValue = env->NewStringUTF(ToStringFromJson(txidJson));
+        return env->NewStringUTF(txidJson.string());
         LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
     }
     catch (std::invalid_argument& e) {
@@ -64,7 +58,7 @@ static jstring JNICALL nativeCreateDepositTransaction(JNIEnv *env, jobject clazz
     env->ReleaseStringUTFChars(jmemo, memo);
     env->ReleaseStringUTFChars(jremark, remark);
     LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
-    return retValue;
+    return NULL;
 }
 
 static const JNINativeMethod gMethods[] = {

@@ -584,7 +584,7 @@ typedef struct ElaCallbacks {
      *      context     [in] The application defined context data.
      */
     void (*friend_message)(ElaCarrier *carrier, const char *from,
-                           const char *msg, size_t len, void *context);
+                           const void *msg, size_t len, void *context);
 
     /**
      * \~English
@@ -602,7 +602,7 @@ typedef struct ElaCallbacks {
      *      context     [in] The application defined context data.
      */
     void (*friend_invite)(ElaCarrier *carrier, const char *from,
-                          const char *data, size_t len, void *context);
+                          const void *data, size_t len, void *context);
 
 } ElaCallbacks;
 
@@ -1116,7 +1116,7 @@ int ela_remove_friend(ElaCarrier *carrier, const char *userid);
  */
 CARRIER_API
 int ela_send_friend_message(ElaCarrier *carrier, const char *to,
-                            const char *msg, size_t len);
+                            const void *msg, size_t len);
 
 /**
  * \~English
@@ -1143,7 +1143,7 @@ int ela_send_friend_message(ElaCarrier *carrier, const char *to,
 typedef void ElaFriendInviteResponseCallback(ElaCarrier *carrier,
                                              const char *from,
                                              int status, const char *reason,
-                                             const char *data, size_t len,
+                                             const void *data, size_t len,
                                              void *context);
 
 /**
@@ -1174,7 +1174,7 @@ typedef void ElaFriendInviteResponseCallback(ElaCarrier *carrier,
  */
 CARRIER_API
 int ela_invite_friend(ElaCarrier *carrier, const char *to,
-                      const char *data, size_t len,
+                      const void *data, size_t len,
                       ElaFriendInviteResponseCallback *callback,
                       void *context);
 
@@ -1209,7 +1209,7 @@ int ela_invite_friend(ElaCarrier *carrier, const char *to,
 CARRIER_API
 int ela_reply_friend_invite(ElaCarrier *carrier, const char *to,
                             int status, const char *reason,
-                            const char *data, size_t len);
+                            const void *data, size_t len);
 /******************************************************************************
  * Error handling
  *****************************************************************************/
@@ -1224,43 +1224,232 @@ int ela_reply_friend_invite(ElaCarrier *carrier, const char *to,
 #define ELAF_ICE                                    0x05
 #define ELAF_DHT                                    0x06
 
+/**
+ * \~English
+ * Argument(s) is(are) invalid.
+ */
 #define ELAERR_INVALID_ARGS                         0x01
+
+/**
+ * \~English
+ * Runs out of memory.
+ */
 #define ELAERR_OUT_OF_MEMORY                        0x02
+
+/**
+ * \~English
+ * Buffer size is too small.
+ */
 #define ELAERR_BUFFER_TOO_SMALL                     0x03
+
+/**
+ * \~English
+ * Persistent data is corrupted.
+ */
 #define ELAERR_BAD_PERSISTENT_DATA                  0x04
+
+/**
+ * \~English
+ * Persistent file is invalid.
+ */
 #define ELAERR_INVALID_PERSISTENCE_FILE             0x05
+
+/**
+ * \~English
+ * Control packet is invalid.
+ */
 #define ELAERR_INVALID_CONTROL_PACKET               0x06
+
+/**
+ * \~English
+ * Credential is invalid.
+ */
 #define ELAERR_INVALID_CREDENTIAL                   0x07
+
+/**
+ * \~English
+ * Server failed.
+ */
 #define ELAERR_SERVER_FAILED                        0x08
+
+/**
+ * \~English
+ * Carrier ran already.
+ */
 #define ELAERR_ALREADY_RUN                          0x09
+
+/**
+ * \~English
+ * Carrier not ready.
+ */
 #define ELAERR_NOT_READY                            0x0A
+
+/**
+ * \~English
+ * The requested entity does not exist.
+ */
 #define ELAERR_NOT_EXIST                            0x0B
+
+/**
+ * \~English
+ * The entity exists already.
+ */
 #define ELAERR_ALREADY_EXIST                        0x0C
+
+/**
+ * \~English
+ * There are no matched requests.
+ */
 #define ELAERR_NO_MATCHED_REQUEST                   0x0D
+
+/**
+ * \~English
+ * User ID is invalid.
+ */
 #define ELAERR_INVALID_USERID                       0x0E
+
+/**
+ * \~English
+ * Node ID is invalid.
+ */
 #define ELAERR_INVALID_NODEID                       0x0F
+
+/**
+ * \~English
+ * APP ID is invalid.
+ */
 #define ELAERR_INVALID_APPID                        0x10
+
+/**
+ * \~English
+ * Descriptor is invalid.
+ */
 #define ELAERR_INVALID_DESCRIPTOR                   0x11
+
+/**
+ * \~English
+ * Failed because wrong state.
+ */
 #define ELAERR_WRONG_STATE                          0x12
+
+/**
+ * \~English
+ * Stream busy.
+ */
 #define ELAERR_BUSY                                 0x13
+
+/**
+ * \~English
+ * Language binding error.
+ */
 #define ELAERR_LANGUAGE_BINDING                     0x14
+
+/**
+ * \~English
+ * Encryption failed.
+ */
 #define ELAERR_ENCRYPT                              0x15
+
+/**
+ * \~English
+ * The content size of SDP is too long.
+ */
 #define ELAERR_SDP_TOO_LONG                         0x16
+
+/**
+ * \~English
+ * Bad SDP information format.
+ */
 #define ELAERR_INVALID_SDP                          0x17
+
+/**
+ * \~English
+ * Not implemented yet.
+ */
 #define ELAERR_NOT_IMPLEMENTED                      0x18
+
+/**
+ * \~English
+ * Limits are exceeded.
+ */
 #define ELAERR_LIMIT_EXCEEDED                       0x19
+
+/**
+ * \~English
+ * Allocate port unsuccessfully.
+ */
 #define ELAERR_PORT_ALLOC                           0x1A
+
+/**
+ * \~English
+ * Invalid proxy type.
+ */
 #define ELAERR_BAD_PROXY_TYPE                       0x1B
+
+/**
+ * \~English
+ * Invalid proxy host.
+ */
 #define ELAERR_BAD_PROXY_HOST                       0x1C
+
+/**
+ * \~English
+ * Invalid proxy port.
+ */
 #define ELAERR_BAD_PROXY_PORT                       0x1D
+
+/**
+ * \~English
+ * Proxy is not available.
+ */
 #define ELAERR_PROXY_NOT_AVAILABLE                  0x1E
+
+/**
+ * \~English
+ * Persistent data is encrypted, load failed.
+ */
 #define ELAERR_ENCRYPTED_PERSISTENT_DATA            0x1F
+
+/**
+ * \~English
+ * Invalid bootstrap host.
+ */
 #define ELAERR_BAD_BOOTSTRAP_HOST                   0x20
+
+/**
+ * \~English
+ * Invalid bootstrap port.
+ */
 #define ELAERR_BAD_BOOTSTRAP_PORT                   0x21
+
+/**
+ * \~English
+ * Data is too long.
+ */
 #define ELAERR_TOO_LONG                             0x22
+
+/**
+ * \~English
+ * Could not friend yourself.
+ */
 #define ELAERR_ADD_SELF                             0x23
+
+/**
+ * \~English
+ * Invalid address.
+ */
 #define ELAERR_BAD_ADDRESS                          0x24
+
+/**
+ * \~English
+ * Friend is offline.
+ */
 #define ELAERR_FRIEND_OFFLINE                       0x25
+
+/**
+ * \~English
+ * Unknown error.
+ */
 #define ELAERR_UNKNOWN                              0xFF
 
 #define ELA_MK_ERROR(facility, code)  (0x80000000 | ((facility) << 24) | \

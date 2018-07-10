@@ -3,21 +3,18 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "MasterWalletManager.h"
-
-using namespace Elastos::ElaWallet;
+#include "Elastos.Wallet.h"
 
 #define  CLASS_MASTERWALLET   "com/elastos/spvcore/IMasterWallet"
 #define  FIELD_MASTERWALLET   "mMasterProxy"
-
-extern const char* ToStringFromJson(const nlohmann::json& jsonValue);
-extern nlohmann::json ToJosnFromString(const char* str);
 
 static jlong JNICALL nativeInitMasterWalletManager(JNIEnv *env, jobject clazz, jstring jrootPath)
 {
     const char* rootPath = env->GetStringUTFChars(jrootPath, NULL);
 
-    MasterWalletManager* walletManager = new MasterWalletManager(rootPath);
+    IMasterWalletManager* walletManager;
+    CMasterWalletManager::New(String(rootPath), &walletManager);
+    walletManager->AddRef();
 
     env->ReleaseStringUTFChars(jrootPath, rootPath);
     return (jlong)walletManager;
@@ -25,8 +22,8 @@ static jlong JNICALL nativeInitMasterWalletManager(JNIEnv *env, jobject clazz, j
 
 static void JNICALL nativeDisposeNative(JNIEnv *env, jobject clazz, jlong jWalletMgr)
 {
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
-    delete walletManager;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
+    walletManager->Release();
 }
 
 //"(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)J"
@@ -39,11 +36,12 @@ static jlong JNICALL nativeCreateMasterWallet(JNIEnv *env, jobject clazz, jlong 
     const char* payPassword = env->GetStringUTFChars(jpayPassword, NULL);
     const char* language = env->GetStringUTFChars(jlanguage, NULL);
 
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
-    IMasterWallet* masterWallet = NULL;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
+    IMasterWallet* masterWallet;
 
     try {
-        masterWallet = walletManager->CreateMasterWallet(masterWalletId, mnemonic, phrasePassword, payPassword,language);
+        walletManager->CreateMasterWallet(String(masterWalletId), String(mnemonic), String(phrasePassword), String(payPassword)
+                , String(language), &masterWallet);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -70,11 +68,11 @@ static void JNICALL nativeDestroyWallet(JNIEnv *env, jobject clazz, jlong jWalle
 {
     const char* masterWalletId = env->GetStringUTFChars(jmasterWalletId, NULL);
 
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
     LOGD("FUNC=[%s]===================LINE=[%d], masterWalletId=[%s], walletManager=[%p]", __FUNCTION__, __LINE__, masterWalletId, walletManager);
 
     try {
-        walletManager->DestroyWallet(masterWalletId);
+        walletManager->DestroyWallet(String(masterWalletId));
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -103,11 +101,12 @@ static jlong JNICALL nativeImportWalletWithKeystore(JNIEnv *env, jobject clazz, 
     const char* payPassword = env->GetStringUTFChars(jpayPassword, NULL);
     const char* phrasePassword = env->GetStringUTFChars(jphrasePassword, NULL);
 
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
     IMasterWallet* masterWallet = NULL;
 
     try {
-        masterWallet = walletManager->ImportWalletWithKeystore(masterWalletId, ToJosnFromString(keystoreContent), backupPassword, payPassword, phrasePassword);
+        walletManager->ImportWalletWithKeystore(String(masterWalletId), String(keystoreContent), String(backupPassword)
+                , String(payPassword), String(phrasePassword), &masterWallet);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -139,11 +138,12 @@ static jlong JNICALL nativeImportWalletWithMnemonic(JNIEnv *env, jobject clazz, 
     const char* payPassword = env->GetStringUTFChars(jpayPassword, NULL);
     const char* language = env->GetStringUTFChars(jlanguage, NULL);
 
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
     IMasterWallet* masterWallet = NULL;
 
     try {
-        masterWallet = walletManager->ImportWalletWithMnemonic(masterWalletId, mnemonic, phrasePassword, payPassword, language);
+        walletManager->ImportWalletWithMnemonic(String(masterWalletId), String(mnemonic), String(phrasePassword)
+                    , String(payPassword), String(language), &masterWallet);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -176,11 +176,11 @@ static jstring JNICALL nativeExportWalletWithKeystore(JNIEnv *env, jobject clazz
     long masterProxy = GetJavaLongField(env, cls, jmasterWallet, FIELD_MASTERWALLET);
     CheckErrorAndLog(env, "nativeExportWalletWithKeystore", __LINE__);
     IMasterWallet* masterWallet = (IMasterWallet*)masterProxy;
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
-    nlohmann::json result;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
+    String result;
 
     try {
-        result = walletManager->ExportWalletWithKeystore(masterWallet, backupPassword, payPassword);
+        walletManager->ExportWalletWithKeystore(masterWallet, String(backupPassword), String(payPassword), &result);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -197,7 +197,7 @@ static jstring JNICALL nativeExportWalletWithKeystore(JNIEnv *env, jobject clazz
 
     env->ReleaseStringUTFChars(jbackupPassword, backupPassword);
     env->ReleaseStringUTFChars(jpayPassword, payPassword);
-    return env->NewStringUTF(ToStringFromJson(result));
+    return env->NewStringUTF(result.string());
 }
 
 static jstring JNICALL nativeExportWalletWithMnemonic(JNIEnv *env, jobject clazz, jlong jWalletMgr,
@@ -210,11 +210,11 @@ static jstring JNICALL nativeExportWalletWithMnemonic(JNIEnv *env, jobject clazz
 
     const char* payPassword = env->GetStringUTFChars(jpayPassword, NULL);
 
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
-    std::string str;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
+    String result;
 
     try {
-        str = walletManager->ExportWalletWithMnemonic(masterWallet, payPassword);
+        walletManager->ExportWalletWithMnemonic(masterWallet, String(payPassword), &result);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -230,17 +230,18 @@ static jstring JNICALL nativeExportWalletWithMnemonic(JNIEnv *env, jobject clazz
     }
 
     env->ReleaseStringUTFChars(jpayPassword, payPassword);
-    return env->NewStringUTF(str.c_str());
+    return env->NewStringUTF(result.string());
 }
 
 //"(J)[J"
 static jlongArray JNICALL nativeGetAllMasterWallets(JNIEnv *env, jobject clazz, jlong jWalletMgr)
 {
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
-    std::vector<IMasterWallet *> array;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
+    LOGD("FUNC=[%s]===================LINE=[%d]", __FUNCTION__, __LINE__);
+    AutoPtr<ArrayOf<IMasterWallet*> > array;
 
     try {
-        array = walletManager->GetAllMasterWallets();
+        walletManager->GetAllMasterWallets((ArrayOf<IMasterWallet*>**)&array);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -255,17 +256,19 @@ static jlongArray JNICALL nativeGetAllMasterWallets(JNIEnv *env, jobject clazz, 
         ThrowWalletException(env, e.what());
     }
 
-    const int length = array.size();
-    if (length > 0) {
-        jlong* proxies = new jlong[length];
-        for (int i = 0; i < length; ++i) {
-            proxies[i] = (jlong)array[i];
+    if (array != NULL) {
+        const int length = array->GetLength();
+        if (length > 0) {
+            jlong* proxies = new jlong[length];
+            for (int i = 0; i < length; ++i) {
+                IMasterWallet* masterWallet = (*array)[i];
+                proxies[i] = (jlong)masterWallet;
+            }
+            jlongArray jarray = env->NewLongArray(length);
+            env->SetLongArrayRegion(jarray, 0, length, proxies);
+            delete[] proxies;
+            return jarray;
         }
-
-        jlongArray jarray = env->NewLongArray(length);
-        env->SetLongArrayRegion(jarray, 0, length, proxies);
-        delete[] proxies;
-        return jarray;
     }
 
     return NULL;
@@ -274,12 +277,12 @@ static jlongArray JNICALL nativeGetAllMasterWallets(JNIEnv *env, jobject clazz, 
 //"(JLjava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeGenerateMnemonic(JNIEnv *env, jobject clazz, jlong jWalletMgr, jstring jlanguage)
 {
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
     const char* language = env->GetStringUTFChars(jlanguage, NULL);
-    std::string mnemonic;
+    String mnemonic;
 
     try {
-        mnemonic = walletManager->GenerateMnemonic(language);
+        walletManager->GenerateMnemonic(String(language), &mnemonic);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -295,13 +298,13 @@ static jstring JNICALL nativeGenerateMnemonic(JNIEnv *env, jobject clazz, jlong 
     }
 
     env->ReleaseStringUTFChars(jlanguage, language);
-    return env->NewStringUTF(mnemonic.c_str());
+    return env->NewStringUTF(mnemonic.string());
 }
 
 //"()V"
 static void JNICALL nativeSaveConfigs(JNIEnv *env, jobject clazz, jlong jWalletMgr)
 {
-    MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
+    IMasterWalletManager* walletManager = (IMasterWalletManager*)jWalletMgr;
     walletManager->SaveConfigs();
 }
 

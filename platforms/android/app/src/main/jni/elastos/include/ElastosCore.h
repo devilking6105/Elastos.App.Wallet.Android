@@ -100,6 +100,10 @@ interface IServiceManager;
 #define E_CARRIER_NOT_READY 0x81010000
 #endif
 
+#ifndef E_CARRIER_ERROR
+#define E_CARRIER_ERROR 0x81010001
+#endif
+
 
 #ifndef __ENUM_WaitResult__
 #define __ENUM_WaitResult__
@@ -2529,7 +2533,8 @@ ICarrier : public IInterface
 
     virtual CARAPI AddFriend(
         /* [in] */ const _ELASTOS String& friendAddress,
-        /* [in] */ const _ELASTOS String& hello) = 0;
+        /* [in] */ const _ELASTOS String& hello,
+        /* [out] */ _ELASTOS String * friendId) = 0;
 
     virtual CARAPI RemoveFriend(
         /* [in] */ IFriend * _friend) = 0;

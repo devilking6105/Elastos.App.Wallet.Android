@@ -23,7 +23,12 @@ public class IMasterWallet {
         long[] subWalletProxies = nativeGetAllSubWallets(mMasterProxy);
         ArrayList<ISubWallet> list = new ArrayList<ISubWallet>();
         for (int i = 0; i < subWalletProxies.length; i++) {
-            list.add(new ISubWallet(subWalletProxies[i]));
+            if (i == 0) {
+                list.add(new IMainchainSubWallet(subWalletProxies[i]));
+            }
+            else {
+                list.add(new IIdChainSubWallet(subWalletProxies[i]));
+            }
         }
         return list;
     }
@@ -32,22 +37,34 @@ public class IMasterWallet {
         if ((!CHAINID.MAIN.equals(chainID)) && (!CHAINID.ID.equals(chainID))) {
             throw new WalletException("Not support the other sidechain now.");
         }
+        Log.i("JS-Wallet-IMasterWallet", "CreateSubWallet==================0, chainID=["+chainID+"]");
 
         long subProxy = nativeCreateSubWallet(mMasterProxy, chainID, payPassword, singleAddress, feePerKb);
         if (CHAINID.MAIN.equals(chainID)) {
+            Log.i("JS-Wallet-IMasterWallet", "CreateSubWallet==================0, chainID=["+chainID+"]====1");
             return new IMainchainSubWallet(subProxy);
         }
         else if (CHAINID.ID.equals(chainID)) {
+            Log.i("JS-Wallet-IMasterWallet", "CreateSubWallet==================0, chainID=["+chainID+"]====2");
             return new IIdChainSubWallet(subProxy);
         }
 
+        Log.i("JS-Wallet-IMasterWallet", "CreateSubWallet==================0, chainID=["+chainID+"]====3");
         throw new WalletException("Not support the other sidechain now..");
         // return new ISubWallet(subProxy);
     }
 
     public ISubWallet RecoverSubWallet(String chainID, String payPassword, boolean singleAddress, int limitGap, long feePerKb) throws WalletException {
         long subProxy = nativeRecoverSubWallet(mMasterProxy, chainID, payPassword, singleAddress, limitGap, feePerKb);
-        return new ISubWallet(subProxy);
+        if (CHAINID.MAIN.equals(chainID)) {
+            Log.i("JS-Wallet-IMasterWallet", "RecoverSubWallet==================0, chainID=["+chainID+"]====1");
+            return new IMainchainSubWallet(subProxy);
+        }
+        else if (CHAINID.ID.equals(chainID)) {
+            Log.i("JS-Wallet-IMasterWallet", "RecoverSubWallet==================0, chainID=["+chainID+"]====2");
+            return new IIdChainSubWallet(subProxy);
+        }
+        throw new WalletException("Not support the other sidechain now..");
     }
 
     public void DestroyWallet(ISubWallet wallet)
@@ -88,10 +105,6 @@ public class IMasterWallet {
         nativeChangePassword(mMasterProxy, oldPassword, newPassword);
     }
 
-    public void ResetAddressCache(String payPassword) {
-        nativeResetAddressCache(mMasterProxy, payPassword);
-    }
-
     private native String nativeGetId(long masterProxy);
     private native long[] nativeGetAllSubWallets(long masterProxy);
     private native long nativeCreateSubWallet(long masterProxy, String chainID, String payPassword, boolean singleAddress, long feePerKb);
@@ -103,5 +116,4 @@ public class IMasterWallet {
     private native boolean nativeIsAddressValid(long masterProxy, String address);
     private native String[] nativeGetSupportedChains(long masterProxy);
     private native void nativeChangePassword(long proxy, String oldPassword, String newPassword);
-    private native void nativeResetAddressCache(long proxy, String payPassword);
 }

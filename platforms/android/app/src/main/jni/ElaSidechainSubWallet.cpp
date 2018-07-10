@@ -3,13 +3,8 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "ISidechainSubWallet.h"
-#include "nlohmann/json.hpp"
+#include "Elastos.Wallet.h"
 
-using namespace Elastos::ElaWallet;
-
-extern const char* ToStringFromJson(const nlohmann::json& jsonValue);
-extern nlohmann::json ToJosnFromString(const char* str);
 
 //"(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeCreateWithdrawTransaction(JNIEnv *env, jobject clazz, jlong jSideSubWalletProxy, jstring jfromAddress
@@ -33,52 +28,29 @@ static jstring JNICALL nativeCreateWithdrawTransaction(JNIEnv *env, jobject claz
     LOGD("FUNC=[%s]=========================line=[%d], memo=[%s]", __FUNCTION__, __LINE__, memo);
     LOGD("FUNC=[%s]=========================line=[%d], remark=[%s]", __FUNCTION__, __LINE__, remark);
 
-    ISidechainSubWallet* wallet = (ISidechainSubWallet*)jSideSubWalletProxy;
-    nlohmann::json result;
-    jstring retValue = NULL;
+    ISubWallet* base = (ISubWallet*)jSideSubWalletProxy;
+    ISidechainSubWallet* wallet = ISidechainSubWallet::Probe((ISubWallet*)jSideSubWalletProxy);
+    // ISidechainSubWallet* wallet = (ISidechainSubWallet*)jSideSubWalletProxy;
+    String result;
 
-    // try {
-        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
-        result = wallet->CreateWithdrawTransaction(fromAddress, toAddress, amount
-                , ToJosnFromString(mainchainAccounts), ToJosnFromString(mainchainAmounts)
-                , ToJosnFromString(mainchainIndexs), fee, memo, remark);
 
-        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
-        retValue = env->NewStringUTF(ToStringFromJson(result));
-        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
-    // }
-    // catch (std::invalid_argument& e) {
-    //     ThrowWalletException(env, e.what());
-    // }
-    // catch (std::logic_error& e) {
-    //     ThrowWalletException(env, e.what());
-    // }
-    // catch (std::runtime_error& e) {
-    //     ThrowWalletException(env, e.what());
-    // }
-    // catch (std::exception& e) {
-    //     ThrowWalletException(env, e.what());
-    // }
-
-    env->ReleaseStringUTFChars(jfromAddress, fromAddress);
-    env->ReleaseStringUTFChars(jtoAddress, toAddress);
-    env->ReleaseStringUTFChars(jmainchainAccounts, mainchainAccounts);
-    env->ReleaseStringUTFChars(jmainchainAmounts, mainchainAmounts);
-    env->ReleaseStringUTFChars(jmainchainIndexs, mainchainIndexs);
-    env->ReleaseStringUTFChars(jmemo, memo);
-    env->ReleaseStringUTFChars(jremark, remark);
-    LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
-    return retValue;
+{
+    // String id;
+    // base->GetChainId(&id);
+    // LOGD("FUNC=[%s]=========================line=[%d], base=[%p], idptr=[%p], wallet=[%p], id=[%s]"
+    //     , __FUNCTION__, __LINE__, base, IIdChainSubWallet::Probe(base), ISidechainSubWallet::Probe(base), id.string());
 }
 
-//"(J)Ljava/lang/String;"
-static jstring JNICALL nativeGetGenesisAddress(JNIEnv *env, jobject clazz, jlong jSideSubWalletProxy)
-{
-    ISidechainSubWallet* wallet = (ISidechainSubWallet*)jSideSubWalletProxy;
-    std::string address;
 
     try {
-        address = wallet->GetGenesisAddress();
+        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
+        wallet->CreateWithdrawTransaction(String(fromAddress), String(toAddress), amount
+                , String(mainchainAccounts), String(mainchainAmounts)
+                , String(mainchainIndexs), fee, String(memo), String(remark), &result);
+
+        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
+        return env->NewStringUTF(result.string());
+        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -93,7 +65,40 @@ static jstring JNICALL nativeGetGenesisAddress(JNIEnv *env, jobject clazz, jlong
         ThrowWalletException(env, e.what());
     }
 
-    return env->NewStringUTF(address.c_str());
+    env->ReleaseStringUTFChars(jfromAddress, fromAddress);
+    env->ReleaseStringUTFChars(jtoAddress, toAddress);
+    env->ReleaseStringUTFChars(jmainchainAccounts, mainchainAccounts);
+    env->ReleaseStringUTFChars(jmainchainAmounts, mainchainAmounts);
+    env->ReleaseStringUTFChars(jmainchainIndexs, mainchainIndexs);
+    env->ReleaseStringUTFChars(jmemo, memo);
+    env->ReleaseStringUTFChars(jremark, remark);
+    LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
+    return NULL;
+}
+
+//"(J)Ljava/lang/String;"
+static jstring JNICALL nativeGetGenesisAddress(JNIEnv *env, jobject clazz, jlong jSideSubWalletProxy)
+{
+    ISidechainSubWallet* wallet = (ISidechainSubWallet*)jSideSubWalletProxy;
+    String address;
+
+    try {
+        wallet->GetGenesisAddress(&address);
+    }
+    catch (std::invalid_argument& e) {
+        ThrowWalletException(env, e.what());
+    }
+    catch (std::logic_error& e) {
+        ThrowWalletException(env, e.what());
+    }
+    catch (std::runtime_error& e) {
+        ThrowWalletException(env, e.what());
+    }
+    catch (std::exception& e) {
+        ThrowWalletException(env, e.what());
+    }
+
+    return env->NewStringUTF(address.string());
 }
 
 

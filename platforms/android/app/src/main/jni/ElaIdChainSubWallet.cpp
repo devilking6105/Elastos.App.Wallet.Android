@@ -3,13 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "IIdChainSubWallet.h"
-#include "nlohmann/json.hpp"
-
-using namespace Elastos::ElaWallet;
-
-extern const char* ToStringFromJson(const nlohmann::json& jsonValue);
-extern nlohmann::json ToJosnFromString(const char* str);
+#include "Elastos.Wallet.h"
 
 //"(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeCreateIdTransaction(JNIEnv *env, jobject clazz, jlong jIdSubWalletProxy, jstring jfromAddress,
@@ -29,12 +23,12 @@ static jstring JNICALL nativeCreateIdTransaction(JNIEnv *env, jobject clazz, jlo
     LOGD("FUNC=[%s]=========================line=[%d], memo=[%s]", __FUNCTION__, __LINE__, memo);
     LOGD("FUNC=[%s]=========================line=[%d], remark=[%s]", __FUNCTION__, __LINE__, remark);
 
-    IIdChainSubWallet* wallet = (IIdChainSubWallet*)jIdSubWalletProxy;
-    nlohmann::json txidJson;
+    IIdChainSubWallet* wallet = IIdChainSubWallet::Probe((ISubWallet*)jIdSubWalletProxy);
+    String txidJson;
 
     try {
-        txidJson = wallet->CreateIdTransaction(fromAddress, toAddress, amount , ToJosnFromString(payloadJson)
-                    , ToJosnFromString(programJson), fee, memo, remark);
+        wallet->CreateIdTransaction(String(fromAddress), String(toAddress), amount , String(payloadJson)
+                    , String(programJson), fee, String(memo), String(remark), &txidJson);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -56,10 +50,8 @@ static jstring JNICALL nativeCreateIdTransaction(JNIEnv *env, jobject clazz, jlo
     env->ReleaseStringUTFChars(jmemo, memo);
     env->ReleaseStringUTFChars(jremark, remark);
 
-    std::stringstream ss;
-    ss << txidJson;
-    LOGD("FUNC=[%s]===================LINE=[%d], keys=[%s]", __FUNCTION__, __LINE__, txidJson.dump().c_str());
-    return stringTojstring(env, ss.str());
+    LOGD("FUNC=[%s]===================LINE=[%d], keys=[%s]", __FUNCTION__, __LINE__, txidJson.string());
+    return stringTojstring(env, txidJson.string());
 }
 
 
