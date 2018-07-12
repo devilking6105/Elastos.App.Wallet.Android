@@ -8,6 +8,7 @@ public class ISidechainSubWallet extends ISubWallet {
 
     public String CreateWithdrawTransaction(String fromAddress, String toAddress, long amount, String mainchainAccounts,
                 String mainchainAmounts, String mainchainIndexs, long fee, String memo, String remark) throws WalletException {
+
         return nativeCreateWithdrawTransaction(mSidechainProxy, fromAddress, toAddress, amount, mainchainAccounts, mainchainAmounts,
                     mainchainIndexs, fee, memo, remark);
     }

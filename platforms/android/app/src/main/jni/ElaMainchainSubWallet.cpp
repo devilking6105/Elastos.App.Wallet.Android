@@ -26,16 +26,11 @@ static jstring JNICALL nativeCreateDepositTransaction(JNIEnv *env, jobject clazz
     LOGD("FUNC=[%s]=========================line=[%d], sidechainAccounts=[%s]", __FUNCTION__, __LINE__, sidechainAccounts);
     LOGD("FUNC=[%s]=========================line=[%d], sidechainAmounts=[%s]", __FUNCTION__, __LINE__, sidechainAmounts);
     LOGD("FUNC=[%s]=========================line=[%d], sidechainIndexs=[%s]", __FUNCTION__, __LINE__, sidechainIndexs);
-    LOGD("FUNC=[%s]=========================line=[%d], memo=[%s]", __FUNCTION__, __LINE__, memo);
-    LOGD("FUNC=[%s]=========================line=[%d], remark=[%s]", __FUNCTION__, __LINE__, remark);
 
     try {
-        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
         wallet->CreateDepositTransaction(String(fromAddress), String(toAddress), amount , String(sidechainAccounts)
             , String(sidechainAmounts), String(sidechainIndexs), fee, String(memo), String(remark), &txidJson);
-        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
         return env->NewStringUTF(txidJson.string());
-        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -57,7 +52,6 @@ static jstring JNICALL nativeCreateDepositTransaction(JNIEnv *env, jobject clazz
     env->ReleaseStringUTFChars(jsidechainIndexs, sidechainIndexs);
     env->ReleaseStringUTFChars(jmemo, memo);
     env->ReleaseStringUTFChars(jremark, remark);
-    LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
     return NULL;
 }
 

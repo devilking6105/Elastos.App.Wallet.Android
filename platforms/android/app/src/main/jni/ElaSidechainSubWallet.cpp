@@ -5,13 +5,11 @@
 #include "ElaUtils.h"
 #include "Elastos.Wallet.h"
 
-
 //"(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeCreateWithdrawTransaction(JNIEnv *env, jobject clazz, jlong jSideSubWalletProxy, jstring jfromAddress
         , jstring jtoAddress, jlong amount, jstring jmainchainAccounts, jstring jmainchainAmounts,
         jstring jmainchainIndexs, jlong fee, jstring jmemo, jstring jremark)
 {
-    LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
     const char* fromAddress = env->GetStringUTFChars(jfromAddress, NULL);
     const char* toAddress = env->GetStringUTFChars(jtoAddress, NULL);
     const char* mainchainAccounts = env->GetStringUTFChars(jmainchainAccounts, NULL);
@@ -25,32 +23,15 @@ static jstring JNICALL nativeCreateWithdrawTransaction(JNIEnv *env, jobject claz
     LOGD("FUNC=[%s]=========================line=[%d], mainchainAccounts=[%s]", __FUNCTION__, __LINE__, mainchainAccounts);
     LOGD("FUNC=[%s]=========================line=[%d], mainchainAmounts=[%s]", __FUNCTION__, __LINE__, mainchainAmounts);
     LOGD("FUNC=[%s]=========================line=[%d], mainchainIndexs=[%s]", __FUNCTION__, __LINE__, mainchainIndexs);
-    LOGD("FUNC=[%s]=========================line=[%d], memo=[%s]", __FUNCTION__, __LINE__, memo);
-    LOGD("FUNC=[%s]=========================line=[%d], remark=[%s]", __FUNCTION__, __LINE__, remark);
 
-    ISubWallet* base = (ISubWallet*)jSideSubWalletProxy;
     ISidechainSubWallet* wallet = ISidechainSubWallet::Probe((ISubWallet*)jSideSubWalletProxy);
-    // ISidechainSubWallet* wallet = (ISidechainSubWallet*)jSideSubWalletProxy;
     String result;
 
-
-{
-    // String id;
-    // base->GetChainId(&id);
-    // LOGD("FUNC=[%s]=========================line=[%d], base=[%p], idptr=[%p], wallet=[%p], id=[%s]"
-    //     , __FUNCTION__, __LINE__, base, IIdChainSubWallet::Probe(base), ISidechainSubWallet::Probe(base), id.string());
-}
-
-
     try {
-        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
         wallet->CreateWithdrawTransaction(String(fromAddress), String(toAddress), amount
                 , String(mainchainAccounts), String(mainchainAmounts)
                 , String(mainchainIndexs), fee, String(memo), String(remark), &result);
-
-        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
         return env->NewStringUTF(result.string());
-        LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
     }
     catch (std::invalid_argument& e) {
         ThrowWalletException(env, e.what());
@@ -72,7 +53,6 @@ static jstring JNICALL nativeCreateWithdrawTransaction(JNIEnv *env, jobject claz
     env->ReleaseStringUTFChars(jmainchainIndexs, mainchainIndexs);
     env->ReleaseStringUTFChars(jmemo, memo);
     env->ReleaseStringUTFChars(jremark, remark);
-    LOGD("FUNC=[%s]=========================line=[%d]", __FUNCTION__, __LINE__);
     return NULL;
 }
 

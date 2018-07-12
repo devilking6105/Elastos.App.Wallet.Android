@@ -5,7 +5,6 @@
 #include "ElaUtils.h"
 #include "Elastos.Wallet.h"
 
-
 //"(J)Ljava/lang/String;"
 static jstring JNICALL nativeGetId(JNIEnv *env, jobject clazz, jlong jMasterProxy)
 {
@@ -26,8 +25,8 @@ static jlongArray JNICALL nativeGetAllSubWallets(JNIEnv *env, jobject clazz, jlo
         const int length = array->GetLength();
         jlong* proxies = new jlong[length];
         for (int i = 0; i < length; ++i) {
-            AutoPtr<ISubWallet> subWallet = (*array)[i];
-            proxies[i] = (jlong)subWallet.Get();
+            ISubWallet* subWallet = (*array)[i];
+            proxies[i] = (jlong)subWallet;
         }
 
         jlongArray jarray = env->NewLongArray(length);
@@ -66,7 +65,6 @@ static jlong JNICALL nativeCreateSubWallet(JNIEnv *env, jobject clazz, jlong jMa
 
     env->ReleaseStringUTFChars(jChainID, chainID);
     env->ReleaseStringUTFChars(jpayPassword, payPassword);
-    LOGD("FUNC=[%s]========================LINE=[%d], wallet=[%p], long=[0x%08x]", __FUNCTION__, __LINE__, subWallet, ((jlong)subWallet));
     return (jlong)subWallet;
 }
 

@@ -124,7 +124,6 @@ static jstring JNICALL nativeCreateTransaction(JNIEnv *env, jobject clazz, jlong
     const char* remark = env->GetStringUTFChars(jremark, NULL);
 
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    LOGD("nativeCreateTransaction == fromAddress=[%s], to=[%s], amount=[%lld], fee=[%lld], memo=[%s]", fromAddress, toAddress, amount, fee, memo);
 
     String result;
     try {
@@ -205,9 +204,6 @@ static jstring JNICALL nativeSendRawTransaction(JNIEnv *env, jobject clazz, jlon
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
     String result;
 
-    LOGD("FUNC=[%s]=========================line=[%d], transactionJson=[%s]", __FUNCTION__, __LINE__, transactionJson);
-    LOGD("FUNC=[%s]=========================line=[%d], signJson=[%s]", __FUNCTION__, __LINE__, signJson);
-
     try {
         subWallet->SendRawTransaction(String(transactionJson), jfee, String(signJson), &result);
         env->ReleaseStringUTFChars(jtransactionJson, transactionJson);
@@ -238,15 +234,11 @@ static jstring JNICALL nativeGetAllTransaction(JNIEnv *env, jobject clazz, jlong
     const char* addressOrTxid = env->GetStringUTFChars(jaddressOrTxid, NULL);
 
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-    LOGD("Func=[%s]===Line=[%d]", __FUNCTION__, __LINE__);
     String result;
     subWallet->GetAllTransaction(start, count, String(addressOrTxid), &result);
 
-    LOGD("Func=[%s]===Line=[%d]", __FUNCTION__, __LINE__);
     env->ReleaseStringUTFChars(jaddressOrTxid, addressOrTxid);
-    jstring value = env->NewStringUTF(result.string());
-    LOGD("Func=[%s]===Line=[%d]", __FUNCTION__, __LINE__);
-    return value;
+    return env->NewStringUTF(result.string());
 }
 
 
@@ -399,7 +391,8 @@ ECode ElaSubWalletListener::OnTransactionStatusChanged(
     /* [in] */ Int32 confirms)
 {
     JNIEnv* env = GetEnv();
-    LOGD("FUNC=[%s]========================LINE=[%d]", __FUNCTION__, __LINE__);
+    LOGD("FUNC=[%s]========================LINE=[%d], txid=[%s], status=[%s], desc=[%s]", __FUNCTION__, __LINE__,
+                txid.string(), status.string(), desc.string());
 
     jclass clazz = env->GetObjectClass(mObj);
     //"(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V"
