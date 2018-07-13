@@ -14,4 +14,5 @@ platforms/android/gradlew
 platforms/android/gradlew.bat
 .vscode/
 platforms/android/.idea/
-
+*.iml
+platforms/android/local.properties
