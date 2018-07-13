@@ -1,6 +1,7 @@
 package io.ionic.starter;
 
 import android.app.Application;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,56 +16,80 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import android.content.Context;
-import android.content.Intent;
 
-import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
+
 
 import cn.jpush.android.api.JPushInterface;
 
 /**
  * For developer startup JPush SDK
- *
+ * <p>
  * 一般建议在自定义 Application 类里初始化。也可以在主 Activity 里。
  */
 public class MyApplication extends Application {
-    private static final String TAG = "MyApplication";
+  private static final String TAG = "MyApplication";
 
-    @Override
-    public void onCreate() {
-    	 Log.d(TAG, "[MyApplication] onCreate");
-       super.onCreate();
-       String sdpath = getStoragePaths();
-       if(sdpath != null || sdpath.length() > 0) {
-         File file = new File(sdpath + "/elastos/");
-         if (!file.exists()) {
-           try {
-             unZip(this, "assets.zip", getStoragePaths() + "/elastos/", false);
-           } catch (IOException e) {
-             e.printStackTrace();
-           }
-         }
-       }
+  @Override
+  public void onCreate() {
+    Log.d(TAG, "[MyApplication] onCreate");
+    super.onCreate();
+    int appversionCode = 1;
+    int oldappversionCode = 0;
+    PackageManager manager = this.getPackageManager();
+    try {
+      PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
+      appversionCode = info.versionCode; //版本号
+    } catch (PackageManager.NameNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    SharedPreferences mPerferences = PreferenceManager
+      .getDefaultSharedPreferences(this);
+
+    oldappversionCode = mPerferences.getInt("versionCode", 0);
+
+    Log.d(TAG, "[MyApplication] appversionCode"+ appversionCode + "  " + oldappversionCode);
+    if (appversionCode > oldappversionCode) {
+      SharedPreferences.Editor mEditor = mPerferences.edit();
+
+      mEditor.putInt("versionCode", appversionCode);
+      mEditor.commit();
+
+      String sdpath = getStoragePaths();
+      if (sdpath != null || sdpath.length() > 0) {
+          try {
+            unZip(this, "assets.zip", getStoragePaths() + "/elastos/", false);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+      }
+    }
 
 //         JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
 //         JPushInterface.init(this);     		// 初始化 JPush
-    }
+  }
 
 
-  private String  getStoragePaths() {
+  private String getStoragePaths() {
     try {
       Object sm = this.getSystemService("storage");
       Method getVolumePathsMethod = Class.forName("android.os.storage.StorageManager").getMethod("getVolumePaths", new Class[0]);
       String[] m_Paths = (String[]) getVolumePathsMethod.invoke(sm, new Object[]{});
-      Log.d(TAG,"length: " + m_Paths.length);
+      Log.d(TAG, "length: " + m_Paths.length);
       if (m_Paths == null || m_Paths.length <= 0) {
-        m_Paths  = new String[]{"", ""};
+        m_Paths = new String[]{"", ""};
       }
-      Log.d(TAG,"Path0: " + m_Paths[0]);
-       return  m_Paths[0];
+      Log.d(TAG, "Path0: " + m_Paths[0]);
+      return m_Paths[0];
     } catch (Exception e) {
-      Log.d(TAG,"getStoragePaths() failed" + e);
+      Log.d(TAG, "getStoragePaths() failed" + e);
     }
     return "";
   }
