@@ -8,7 +8,7 @@ export class AppConfig {
    */
   public static appName = "elastos";
 
-  private static storageKeyAppList = appName + "_appList";
+  private static storageKeyAppList = AppConfig.appName + "_appList";
 
   private static currentDate = new Date();
 
@@ -21,6 +21,12 @@ export class AppConfig {
       path: "../wallet/www/assets/images/logo.png",
       name: "Wallet",
       url: "wallet/www/index.html",
+      size: "1 MB",
+      date: AppConfig.currentDateYYYYMMDD
+    }, {
+      path: "../blank/www/assets/images/logo.png",
+      name: "blank",
+      url: "blank/www/index.html",
       size: "1 MB",
       date: AppConfig.currentDateYYYYMMDD
     }, {

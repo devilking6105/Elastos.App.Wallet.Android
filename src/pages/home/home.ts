@@ -62,7 +62,7 @@ export class HomePage {
     if(this.checked) {
       return false;
     } else {
-      cordova.plugins.TestPlugin.coolMethod(item.url,function(data){},function(error){});
+      cordova.plugins.TestPlugin.coolMethod(item.url + "?timestamp=" + new Date().getTime(),function(data){},function(error){});
     }
   }
 }
