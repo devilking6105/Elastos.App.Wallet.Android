@@ -8,6 +8,8 @@ export class AppConfig {
    */
   public static appName = "elastos";
 
+  private static storageKeyAppList = appName + "_appList";
+
   private static currentDate = new Date();
 
   private static currentDateYYYYMMDD = AppConfig.currentDate.getFullYear()  + "."
@@ -49,17 +51,17 @@ export class AppConfig {
   ];
 
   public static initAppListData() {
-    if(null == window.localStorage.getItem('appList')) {
+    if(null == window.localStorage.getItem(AppConfig.storageKeyAppList)) {
       AppConfig.saveAppListData(AppConfig.initAppList);
     }
   }
 
   public static getAppListData() {
-    return JSON.parse(window.localStorage.getItem('appList'));
+    return JSON.parse(window.localStorage.getItem(AppConfig.storageKeyAppList));
   }
 
   public static saveAppListData(appList) {
-    window.localStorage.setItem('appList', JSON.stringify(appList));
+    window.localStorage.setItem(AppConfig.storageKeyAppList, JSON.stringify(appList));
   }
 
   // /*
