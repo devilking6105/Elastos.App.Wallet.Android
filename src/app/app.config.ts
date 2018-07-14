@@ -24,12 +24,6 @@ export class AppConfig {
       size: "1 MB",
       date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "../blank/www/assets/images/logo.png",
-      name: "blank",
-      url: "blank/www/index.html",
-      size: "1 MB",
-      date: AppConfig.currentDateYYYYMMDD
-    }, {
       path: "../todo/www/assets/imgs/logo.png",
       name: "ToDO",
       url: "todo/www/index.html",
