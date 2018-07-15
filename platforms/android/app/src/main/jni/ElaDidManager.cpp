@@ -3,18 +3,17 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "ididManager.h"
-
-using namespace Elastos::DID;
-
-extern const char* ToStringFromJson(const nlohmann::json& jsonValue);
+#include "Elastos.DID.h"
+#include "elastos/core/Object.h"
+#include <map>
 
 //"(JLjava/lang/String;)J"
 static jlong JNICALL nativeCreateDID(JNIEnv *env, jobject clazz, jlong jDidMgrProxy, jstring jpassword)
 {
     const char* password = env->GetStringUTFChars(jpassword, NULL);
     IDIDManager* didMgr = (IDIDManager*)jDidMgrProxy;
-    IDID* did = didMgr->CreateDID(password);
+    IDID* did = NULL;
+    didMgr->CreateDID(String(password), &did);
     env->ReleaseStringUTFChars(jpassword, password);
     return (jlong)did;
 }
@@ -24,7 +23,8 @@ static jlong JNICALL nativeGetDID(JNIEnv *env, jobject clazz, jlong jDidMgrProxy
 {
     const char* didName = env->GetStringUTFChars(jdidName, NULL);
     IDIDManager* didMgr = (IDIDManager*)jDidMgrProxy;
-    IDID* did = didMgr->GetDID(didName);
+    IDID* did = NULL;
+    didMgr->GetDID(String(didName), &did);
     env->ReleaseStringUTFChars(jdidName, didName);
     return (jlong)did;
 }
@@ -33,9 +33,10 @@ static jlong JNICALL nativeGetDID(JNIEnv *env, jobject clazz, jlong jDidMgrProxy
 static /*nlohmann::json*/ jstring JNICALL nativeGetDIDList(JNIEnv *env, jobject clazz, jlong jDidMgrProxy)
 {
     IDIDManager* didMgr = (IDIDManager*)jDidMgrProxy;
-    nlohmann::json jsonValue = didMgr->GetDIDList();
-    LOGD("FUNC=[%s]========================value=[%s]", __FUNCTION__, ToStringFromJson(jsonValue));
-    return env->NewStringUTF(ToStringFromJson(jsonValue));
+    String jsonValue;
+    didMgr->GetDIDList(&jsonValue);
+    LOGD("FUNC=[%s]========================value=[%s]", __FUNCTION__, jsonValue.string());
+    return env->NewStringUTF(jsonValue.string());
 }
 
 //"(JLjava/lang/String;)V"
@@ -43,24 +44,28 @@ static void JNICALL nativeDestoryDID(JNIEnv *env, jobject clazz, jlong jDidMgrPr
 {
     const char* didName = env->GetStringUTFChars(jdidName, NULL);
     IDIDManager* didMgr = (IDIDManager*)jDidMgrProxy;
-    didMgr->DestoryDID(didName);
+    didMgr->DestoryDID(String(didName));
     env->ReleaseStringUTFChars(jdidName, didName);
 }
 
 
-class ElaIdManagerCallback: public IIdManagerCallback
+class ElaIdManagerCallback
+    : public Object
+    , public IDIDManagerCallback
 {
 public:
-    virtual void OnIdStatusChanged(
-        const std::string &id,
-        const std::string &path,
-        const nlohmann::json &value);
+    CAR_INTERFACE_DECL()
 
     ElaIdManagerCallback(
         /* [in] */ JNIEnv* env,
         /* [in] */ jobject jobj);
 
     ~ElaIdManagerCallback();
+
+    ECode OnIdStatusChanged(
+        /* [in] */ const String& id,
+        /* [in] */ const String& path,
+        /* [in] */ const String& valueJson);
 
 private:
     JNIEnv* GetEnv();
@@ -78,10 +83,11 @@ static jboolean JNICALL nativeRegisterCallback(JNIEnv *env, jobject clazz, jlong
     const char* didName = env->GetStringUTFChars(jdidName, NULL);
     ElaIdManagerCallback* idCallback = new ElaIdManagerCallback(env, jidCallback);
     IDIDManager* didMgr = (IDIDManager*)jDidMgrProxy;
-    didMgr->RegisterCallback(didName, idCallback);
+    Boolean status = didMgr->RegisterCallback(String(didName), idCallback);
     sIdCallbackMap[jdidName] = idCallback;
 
     env->ReleaseStringUTFChars(jdidName, didName);
+    return (jboolean)status;
 }
 
 static jboolean JNICALL nativeUnregisterCallback(JNIEnv *env, jobject clazz, jlong jDidMgrProxy, jstring jdidName)
@@ -90,9 +96,10 @@ static jboolean JNICALL nativeUnregisterCallback(JNIEnv *env, jobject clazz, jlo
 
     IDIDManager* didMgr = (IDIDManager*)jDidMgrProxy;
     std::map<jstring, ElaIdManagerCallback*>::iterator it;
+    Boolean status = FALSE;
     for (it = sIdCallbackMap.begin(); it != sIdCallbackMap.end(); it++) {
         if (jdidName == it->first) {
-            didMgr->UnregisterCallback(didName);
+            status = didMgr->UnregisterCallback(String(didName));
             delete it->second;
             sIdCallbackMap.erase(it);
             break;
@@ -100,6 +107,7 @@ static jboolean JNICALL nativeUnregisterCallback(JNIEnv *env, jobject clazz, jlo
     }
 
     env->ReleaseStringUTFChars(jdidName, didName);
+    return (jboolean)status;
 }
 
 static const JNINativeMethod gMethods[] = {
@@ -117,6 +125,7 @@ jint register_elastos_spv_IDidManager(JNIEnv *env)
         gMethods, NELEM(gMethods));
 }
 
+CAR_INTERFACE_IMPL(ElaIdManagerCallback, Object, IDIDManagerCallback)
 ElaIdManagerCallback::ElaIdManagerCallback(
     /* [in] */ JNIEnv* env,
     /* [in] */ jobject jobj)
@@ -148,8 +157,10 @@ void ElaIdManagerCallback::Detach()
     mVM->DetachCurrentThread();
 }
 
-void ElaIdManagerCallback::OnIdStatusChanged(const std::string &id,
-    const std::string &path, const nlohmann::json &value)
+ECode ElaIdManagerCallback::OnIdStatusChanged(
+    /* [in] */ const String& id,
+    /* [in] */ const String& path,
+    /* [in] */ const String& valueJson)
 {
     JNIEnv* env = GetEnv();
     LOGD("FUNC=[%s]========================LINE=[%d]", __FUNCTION__, __LINE__);
@@ -157,11 +168,12 @@ void ElaIdManagerCallback::OnIdStatusChanged(const std::string &id,
     jclass clazz = env->GetObjectClass(mObj);
     //"(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V"
     jmethodID methodId = env->GetMethodID(clazz, "OnIdStatusChanged","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
-    jstring jid = env->NewStringUTF(id.c_str());
-    jstring jpath = env->NewStringUTF(path.c_str());
-    jstring jvalue = env->NewStringUTF(ToStringFromJson(value));
+    jstring jid = env->NewStringUTF(id.string());
+    jstring jpath = env->NewStringUTF(path.string());
+    jstring jvalue = env->NewStringUTF(valueJson.string());
 
     env->CallVoidMethod(mObj, methodId, jid, jpath, jvalue);
 
     Detach();
+    return NOERROR;
 }

@@ -3,20 +3,15 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "idid.h"
-#include "nlohmann/json.hpp"
-
-using namespace Elastos::DID;
-
-extern const char* ToStringFromJson(const nlohmann::json& jsonValue);
-extern nlohmann::json ToJosnFromString(const char* str);
+#include "Elastos.DID.h"
 
 //"(J)Ljava/lang/String;"
 static jstring JNICALL nativeGetDIDName(JNIEnv *env, jobject clazz, jlong jDidProxy)
 {
     IDID* did = (IDID*)jDidProxy;
-    std::string value = did->GetDIDName();
-    return env->NewStringUTF(value.c_str());
+    String value;
+    did->GetDIDName(&value);
+    return env->NewStringUTF(value.string());
 }
 
 //"(JLjava/lang/String;Ljava/lang/String;)V"
@@ -26,7 +21,7 @@ static void JNICALL nativeSetValue(JNIEnv *env, jobject clazz, jlong jDidProxy, 
     const char* valueJson = env->GetStringUTFChars(jvalueJson, NULL);
     IDID* did = (IDID*)jDidProxy;
     LOGD("FUNC=[%s]===================LINE=[%d], p=[%s], v=[%s]", __FUNCTION__, __LINE__, keyPath, valueJson);
-    did->SetValue(keyPath, ToJosnFromString(valueJson));
+    did->SetValue(String(keyPath), String(valueJson));
     env->ReleaseStringUTFChars(jkeyPath, keyPath);
     env->ReleaseStringUTFChars(jvalueJson, valueJson);
 }
@@ -36,11 +31,12 @@ static /*nlohmann::json*/ jstring JNICALL nativeGetValue(JNIEnv *env, jobject cl
 {
     const char* path = env->GetStringUTFChars(jpath, NULL);
     IDID* did = (IDID*)jDidProxy;
-    nlohmann::json jsonValue = did->GetValue(path);
+    String value;
+    did->GetValue(String(path), &value);
     env->ReleaseStringUTFChars(jpath, path);
 
-    LOGD("FUNC=[%s]===================LINE=[%d], p=[%s], v=[%s]", __FUNCTION__, __LINE__, path, ToStringFromJson(jsonValue));
-    return env->NewStringUTF(ToStringFromJson(jsonValue));
+    LOGD("FUNC=[%s]===================LINE=[%d], p=[%s], v=[%s]", __FUNCTION__, __LINE__, path, value.string());
+    return env->NewStringUTF(value.string());
 }
 
 //"(JLjava/lang/String;)Ljava/lang/String;"
@@ -48,20 +44,20 @@ static /*nlohmann::json*/ jstring JNICALL nativeGetHistoryValue(JNIEnv *env, job
 {
     const char* keyPath = env->GetStringUTFChars(jkeyPath, NULL);
     IDID* did = (IDID*)jDidProxy;
-    nlohmann::json jsonValue = did->GetHistoryValue(keyPath);
+    String value;
+    did->GetHistoryValue(String(keyPath), &value);
     env->ReleaseStringUTFChars(jkeyPath, keyPath);
-    return env->NewStringUTF(ToStringFromJson(jsonValue));
+    return env->NewStringUTF(value.string());
 }
 
 //"(JII)Ljava/lang/String;"
 static /*nlohmann::json*/ jstring JNICALL nativeGetAllKeys(JNIEnv *env, jobject clazz, jlong jDidProxy, jint jstart, jint jcount)
 {
     IDID* did = (IDID*)jDidProxy;
-    nlohmann::json jsonValue = did->GetAllKeys(jstart, jcount);
-    std::stringstream ss;
-    ss << jsonValue;
-    LOGD("FUNC=[%s]===================LINE=[%d], keys=[%s]", __FUNCTION__, __LINE__, ss.str().c_str());
-    return stringTojstring(env, ss.str());
+    String value;
+    did->GetAllKeys(jstart, jcount, &value);
+    LOGD("FUNC=[%s]===================LINE=[%d], keys=[%s]", __FUNCTION__, __LINE__, value.string());
+    return stringTojstring(env, value.string());
 }
 
 //"(JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
@@ -70,10 +66,11 @@ static jstring JNICALL nativeSign(JNIEnv *env, jobject clazz, jlong jDidProxy, j
     const char* message = env->GetStringUTFChars(jmessage, NULL);
     const char* password = env->GetStringUTFChars(jpassword, NULL);
     IDID* did = (IDID*)jDidProxy;
-    std::string value = did->Sign(message, password);
+    String value;
+    did->Sign(String(message), String(password), &value);
     env->ReleaseStringUTFChars(jmessage, message);
     env->ReleaseStringUTFChars(jpassword, password);
-    return env->NewStringUTF(value.c_str());
+    return env->NewStringUTF(value.string());
 }
 
 //"(JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
@@ -83,19 +80,21 @@ static /*nlohmann::json*/ jstring JNICALL nativeCheckSign(JNIEnv *env, jobject c
     const char* message = env->GetStringUTFChars(jmessage, NULL);
     const char* signature = env->GetStringUTFChars(jsignature, NULL);
     IDID* did = (IDID*)jDidProxy;
-    nlohmann::json jsonValue = did->CheckSign(message, signature);
+    String jsonValue;
+    did->CheckSign(String(message), String(signature), &jsonValue);
     env->ReleaseStringUTFChars(jmessage, message);
     env->ReleaseStringUTFChars(jsignature, signature);
 
-    return env->NewStringUTF(ToStringFromJson(jsonValue));
+    return env->NewStringUTF(jsonValue.string());
 }
 
 //"(J)Ljava/lang/String;"
 static jstring JNICALL nativeGetPublicKey(JNIEnv *env, jobject clazz, jlong jDidProxy)
 {
     IDID* did = (IDID*)jDidProxy;
-    std::string value = did->GetPublicKey();
-    return env->NewStringUTF(value.c_str());
+    String value;
+    did->GetPublicKey(&value);
+    return env->NewStringUTF(value.string());
 }
 
 //"(JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
@@ -104,10 +103,11 @@ static jstring JNICALL nativeGenerateProgram(JNIEnv *env, jobject clazz, jlong j
     const char* message = env->GetStringUTFChars(jmessage, NULL);
     const char* password = env->GetStringUTFChars(jpassword, NULL);
     IDID* did = (IDID*)jDidProxy;
-    nlohmann::json jsonValue = did->GenerateProgram(message, password);
+    String jsonValue;
+    did->GenerateProgram(String(message), String(password), &jsonValue);
     env->ReleaseStringUTFChars(jmessage, message);
     env->ReleaseStringUTFChars(jpassword, password);
-    return env->NewStringUTF(ToStringFromJson(jsonValue));
+    return env->NewStringUTF(jsonValue.string());
 }
 
 static const JNINativeMethod gMethods[] = {

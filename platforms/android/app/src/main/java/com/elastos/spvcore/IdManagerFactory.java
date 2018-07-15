@@ -8,5 +8,10 @@ public class IdManagerFactory {
         return new IDidManager(didManagerProxy);
     }
 
+    public static void Destroy(long didManagerProxy) {
+        nativeDestroy(didManagerProxy);
+    }
+
     private static native long nativeCreateIdManager(long masterWalletProxy, String rootPath);
+    private static native void nativeDestroy(long didManagerProxy);
 }

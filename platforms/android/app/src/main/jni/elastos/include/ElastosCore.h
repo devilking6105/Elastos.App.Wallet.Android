@@ -104,6 +104,22 @@ interface IServiceManager;
 #define E_CARRIER_ERROR 0x81010001
 #endif
 
+#ifndef E_INVITE
+#define E_INVITE 0x81010002
+#endif
+
+#ifndef E_CLOSE_PORT_FORWARDING
+#define E_CLOSE_PORT_FORWARDING 0x81010003
+#endif
+
+#ifndef E_REMOVE_STREAM
+#define E_REMOVE_STREAM 0x81010004
+#endif
+
+#ifndef E_INCORRECT_STATE
+#define E_INCORRECT_STATE 0x81010005
+#endif
+
 
 #ifndef __ENUM_WaitResult__
 #define __ENUM_WaitResult__
@@ -2458,7 +2474,7 @@ IFriend : public IInterface
         /* [out] */ _ELASTOS Boolean * online) = 0;
 
 };
-CAR_INTERFACE("D4F15233-0312-3512-6AB0-B89FF1FE0FA6")
+CAR_INTERFACE("5FC58523-0312-3512-6AB0-B89FF1FE0FA6")
 ICarrierListener : public IInterface
 {
     virtual CARAPI_(PInterface) Probe(
@@ -2481,6 +2497,8 @@ ICarrierListener : public IInterface
         return NULL;
     }
 
+    virtual CARAPI OnIdle() = 0;
+
     virtual CARAPI OnConnectionChanged(
         /* [in] */ _ELASTOS Boolean online) = 0;
 
@@ -2494,8 +2512,19 @@ ICarrierListener : public IInterface
         /* [in] */ const _ELASTOS String& uid,
         /* [in] */ _ELASTOS Boolean online) = 0;
 
+    virtual CARAPI OnPortForwardingRequest(
+        /* [in] */ const _ELASTOS String& uid,
+        /* [in] */ const _ELASTOS String& servicePort,
+        /* [out] */ _ELASTOS Boolean * accept) = 0;
+
+    virtual CARAPI OnPortForwardingResult(
+        /* [in] */ const _ELASTOS String& uid,
+        /* [in] */ const _ELASTOS String& localPort,
+        /* [in] */ const _ELASTOS String& remotePort,
+        /* [in] */ _ELASTOS ECode code) = 0;
+
 };
-CAR_INTERFACE("9C89B33F-0312-3512-6AB0-B8FF43B5EB0D")
+CAR_INTERFACE("75A9D839-0312-3512-6AB0-B8FF43B5EB0D")
 ICarrier : public IInterface
 {
     virtual CARAPI_(PInterface) Probe(
@@ -2563,6 +2592,16 @@ ICarrier : public IInterface
 
     virtual CARAPI GetUerid(
         /* [out] */ _ELASTOS String * myUid) = 0;
+
+    virtual CARAPI OpenPortForwarding(
+        /* [in] */ const _ELASTOS String& uid,
+        /* [in] */ const _ELASTOS String& localPort,
+        /* [in] */ const _ELASTOS String& remotePort) = 0;
+
+    virtual CARAPI ClosePortForwarding(
+        /* [in] */ const _ELASTOS String& uid,
+        /* [in] */ const _ELASTOS String& localPort,
+        /* [in] */ const _ELASTOS String& remotePort) = 0;
 
 };
 CAR_INTERFACE("21022438-E652-3F95-8C64-269719000000")
