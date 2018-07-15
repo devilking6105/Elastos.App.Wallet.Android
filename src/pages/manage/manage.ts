@@ -30,8 +30,7 @@ export class ManagePage {
               public file: File,
               public fileChooser: FileChooser,
               public filePath: FilePath,
-              public zip: Zip
-  ) {
+              public zip: Zip) {
     AppConfig.initAppListData();
     this.appList = AppConfig.getAppListData();
   }
@@ -55,7 +54,7 @@ export class ManagePage {
     } else {
       this.checkIndex.splice(this.checkIndex.indexOf(item), 1)
     }
-    if(this.checkIndex.length > 0) {
+    if (this.checkIndex.length > 0) {
       this.isShow = true
     } else {
       this.isShow = false
@@ -75,7 +74,7 @@ export class ManagePage {
       // remove dir & info
       that.file.removeRecursively(path, dir)
         .then(result => {
-          if(result) {
+          if (result) {
             that.appList.splice(that.appList.indexOf(item), 1);
             AppConfig.saveAppListData(that.appList);
           } else {
@@ -151,7 +150,7 @@ export class ManagePage {
                                 name: info.name,
                                 url: fileName + '/www/index.html',
                                 size: fileSize,
-                                date: currentDate.getFullYear()  + "." + currentMM  + "." + currentDD
+                                date: currentDate.getFullYear() + "." + currentMM + "." + currentDD
                               });
                               // save app list
                               AppConfig.saveAppListData(this.appList);

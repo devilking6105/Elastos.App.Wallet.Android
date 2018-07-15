@@ -8,7 +8,7 @@
   <ion-navbar>
     <ion-title>manage</ion-title>
 
-    <ion-buttons end>
+    <!-- <ion-buttons end>
       <button ion-button icon-only>
         <ion-icon>
           <img class="icon-right" src="assets/imgs/switch.png" alt="">
@@ -17,19 +17,21 @@
     </ion-buttons>
     <ion-buttons end>
       <button ion-button icon-only>
-        <ion-icon><img class="icon-right" src="assets/imgs/shut.png" alt=""></ion-icon>
+        <ion-icon>
+          <img class="icon-right" src="assets/imgs/shut.png" alt="">
+        </ion-icon>
       </button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-navbar>
 </ion-header>
 
 <ion-content overflow-scroll="true">
   <ion-card class="import-box">
     <button ion-button icon-only (click)="importFromEpk()">
-        <ion-icon>
-          <img class="icon-right" src="assets/imgs/add.png" alt="">
-        </ion-icon>
-      </button>
+      <ion-icon>
+        <img class="icon-right" src="assets/imgs/add.png" alt="">
+      </ion-icon>
+    </button>
     <ion-card-content>
       <div class="title">Import from Local file</div>
     </ion-card-content>
@@ -37,34 +39,36 @@
 
   <ion-list no-lines>
     <ion-item *ngFor="let item of appList, let i = index">
-      <ion-checkbox color="dark" ng-checked="checked" (click) = 'checkApp(item)'></ion-checkbox>
-      <ion-thumbnail item-start>
+      <ion-checkbox color="dark" ng-checked="checked" (click)='checkApp(item)'></ion-checkbox>
+      <ion-thumbnail item-start (click)="goInfo(i)">
         <img src={{item.path}} alt="">
       </ion-thumbnail>
-      <ion-thumbnail item-start>
-          <h2>{{item.name}}</h2>
-          <p>{{item.size}}</p>
-          <p>Added {{item.date}}</p>
-        </ion-thumbnail>
-        <button ion-button clear item-end  (click)="goInfo(i)">
-            <img class="right_arrow" src="assets/imgs/arrow.png">
-        </button>
+      <ion-thumbnail item-start (click)="goInfo(i)">
+        <h2>{{item.name}}</h2>
+        <p>{{item.size}}</p>
+        <p>Added {{item.date}}</p>
+      </ion-thumbnail>
+      <button ion-button clear item-end (click)="goInfo(i)">
+        <img class="right_arrow" src="assets/imgs/arrow.png">
+      </button>
     </ion-item>
   </ion-list>
 </ion-content>
 
-<ion-footer *ngIf="isShow">
+<!-- <ion-footer *ngIf="isShow"> -->
+<div class="footer" *ngIf="isShow">
   <ion-row>
-    <ion-col col-6>
-        <ion-card class="card-box card-export">
-            Export
-        </ion-card>
-    </ion-col>
-    <ion-col col-6>
-        <ion-card class="card-box card-delete" (click)="doDel()">
-            Delete
-        </ion-card>
+    <!-- <ion-col col-6>
+      <ion-card class="card-box card-export">
+        Export
+      </ion-card>
+    </ion-col> -->
+    <ion-col col-12>
+      <ion-card class="card-box card-delete" (click)="doDel()">
+        Delete
+      </ion-card>
     </ion-col>
   </ion-row>
-</ion-footer>
+</div>
 
+<!-- </ion-footer> -->
