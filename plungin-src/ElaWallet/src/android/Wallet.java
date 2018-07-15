@@ -42,7 +42,7 @@ public class Wallet extends CordovaPlugin {
     private static final String TAG = "Wallet.JNI";
     private IMasterWallet mCurrentMasterWallet;
     private MasterWalletManager mWalletManager;
-    private ArrayList<IMasterWallet> mMasterWalletList;
+    private ArrayList<IMasterWallet> mMasterWalletList = new ArrayList<IMasterWallet>();
     private IDidManager mDidManager = null;
     private Map<String, ISubWallet> mSubWalletMap = new HashMap<String, ISubWallet>();
     private String mRootPath = null;
@@ -62,7 +62,7 @@ public class Wallet extends CordovaPlugin {
         if (mMasterWalletList != null) {
             mCurrentMasterWallet = mMasterWalletList.get(0);
             if (mCurrentMasterWallet != null) {
-                // mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
+                mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
             }
         }
         else {
@@ -74,7 +74,7 @@ public class Wallet extends CordovaPlugin {
       Log.d("JS-Wallet", "initDidManager=========1====mRootPath="+mRootPath);
         if (mDidManager == null && mCurrentMasterWallet != null) {
             Log.d("JS-Wallet", "initDidManager=========2====mRootPath="+mRootPath);
-            // mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
+            mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
         }
     }
 
