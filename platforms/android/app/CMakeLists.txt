@@ -55,6 +55,7 @@ target_link_libraries( # Specifies the target library.
                        Elastos.Runtime_static
                        Elastos.CoreLibrary
                        Elastos.Wallet
+                       Elastos.DID
                        idchain
 
                        # Links the target library to the log library

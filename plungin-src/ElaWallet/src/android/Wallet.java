@@ -621,6 +621,7 @@ public class Wallet extends CordovaPlugin {
 
         String allTransaction = subWallet.GetAllTransaction(args.getInt(1), args.getInt(2), args.getString(3));
         callbackContext.success(parseOneParam("allTransaction", allTransaction));
+        Log.i("JS-Wallet", "getAllTransaction==================allTransaction=["+allTransaction+"]");
     }
 
     public void registerWalletListener(JSONArray args, CallbackContext callbackContext) throws JSONException {
