@@ -36,6 +36,7 @@ public class MainActivity extends CordovaActivity
         System.loadLibrary("Elastos.Runtime");
         System.loadLibrary("Elastos.CoreLibrary");
         System.loadLibrary("Elastos.Wallet");
+        System.loadLibrary("Elastos.Did");
         System.loadLibrary("elastoswallet");
     }
 

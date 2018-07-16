@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "ElaUtils.h"
-#include "Elastos.DID.h"
+#include "Elastos.Did.h"
 #include "elastos/core/Object.h"
 #include <map>
 
