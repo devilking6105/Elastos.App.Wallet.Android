@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.elastos.spvcore.MasterWalletManager;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -77,26 +78,26 @@ public class MyUtil {
 
     // 取得版本号
     public static String GetVersion(Context context) {
-		try {
-			PackageInfo manager = context.getPackageManager().getPackageInfo(
-					context.getPackageName(), 0);
-			return manager.versionName;
-		} catch (NameNotFoundException e) {
-			return "Unknown";
-		}
-	}
+        try {
+            PackageInfo manager = context.getPackageManager().getPackageInfo(
+                    context.getPackageName(), 0);
+            return manager.versionName;
+        } catch (NameNotFoundException e) {
+            return "Unknown";
+        }
+    }
 
     public static void showToast(final String toast, final Context context)
     {
-    	new Thread(new Runnable() {
+        new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				Looper.prepare();
-				Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
-				Looper.loop();
-			}
-		}).start();
+            @Override
+            public void run() {
+                Looper.prepare();
+                Toast.makeText(context, toast, Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+        }).start();
     }
 
     public static boolean isConnected(Context context) {
@@ -105,9 +106,9 @@ public class MyUtil {
         return (info != null && info.isConnected());
     }
 
-	public static String getImei(Context context, String imei) {
+    public static String getImei(Context context, String imei) {
         String ret = null;
-		try {
+        try {
 
 //            int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE);
 //
@@ -117,17 +118,17 @@ public class MyUtil {
 //                //TODO
 //            }
 
-			TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             ret = telephonyManager.getDeviceId();
-		} catch (Exception e) {
-			Logger.e(MyUtil.class.getSimpleName(), e.getMessage());
-		}
-		if (isReadableASCII(ret)){
+        } catch (Exception e) {
+            Logger.e(MyUtil.class.getSimpleName(), e.getMessage());
+        }
+        if (isReadableASCII(ret)){
             return ret;
         } else {
             return imei;
         }
-	}
+    }
 
     private static boolean isReadableASCII(CharSequence string){
         if (TextUtils.isEmpty(string)) return false;
@@ -150,6 +151,14 @@ public class MyUtil {
 
     public static String getRootPath() {
         return sApplicationContext.getFilesDir().getParent();
+    }
+
+    private static MasterWalletManager mCurrentMasterWalletManager = null;
+    public static void SetCurrentMasterWalletManager(MasterWalletManager currentMasterWalletManager) {
+        mCurrentMasterWalletManager = currentMasterWalletManager;
+    }
+    public static MasterWalletManager GetCurrentMasterWalletManager() {
+        return mCurrentMasterWalletManager;
     }
 
     public static void moveConfigFiles2RootPath(Context context) {

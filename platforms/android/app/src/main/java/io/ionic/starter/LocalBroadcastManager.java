@@ -16,6 +16,7 @@ import java.util.Set;
  * Created by efan on 2017/4/14.
  */
 
+@SuppressWarnings("unchecked")
 public final class LocalBroadcastManager {
     private static final String TAG = "JIGUANG-Example";
     private static final boolean DEBUG = false;

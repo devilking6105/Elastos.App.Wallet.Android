@@ -163,8 +163,8 @@ android {
 
     ndk {
      abiFilters 'armeabi-v7a'//'armeabi'// 'arm64-v8a'
-      //moduleName "elastoswallet"
-      //ldLibs "log"
+//      moduleName "elastoswallet"
+//      ldLibs "log"
     }
 
       externalNativeBuild {
@@ -177,10 +177,16 @@ android {
   }
 
   externalNativeBuild {
-   // cmake {
-   //   path "CMakeLists.txt"
-   // }
+    cmake {
+      path "CMakeLists.txt"
+    }
   }
+
+//  sourceSets {
+//    main {
+//      jniLibs.srcDirs = ['jniLib11s']
+//    }
+//  }
 
   lintOptions {
     abortOnError false;
@@ -234,6 +240,7 @@ android {
         storePassword = "__unset"
       }
     }
+
     buildTypes {
       release {
         signingConfig signingConfigs.release
