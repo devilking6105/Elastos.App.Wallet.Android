@@ -236,6 +236,7 @@ static jstring JNICALL nativeGetAllTransaction(JNIEnv *env, jobject clazz, jlong
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
     String result;
     subWallet->GetAllTransaction(start, count, String(addressOrTxid), &result);
+    LOGD("Func=[%s]====Line=[%d]====================result=[%s]", __FUNCTION__, __LINE__, result.string());
 
     env->ReleaseStringUTFChars(jaddressOrTxid, addressOrTxid);
     return env->NewStringUTF(result.string());

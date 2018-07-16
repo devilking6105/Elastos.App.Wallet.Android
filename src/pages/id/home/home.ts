@@ -1,5 +1,7 @@
 import { Component,OnInit } from '@angular/core';
 import {BaseComponent} from "./../../../app/BaseComponent";
+import {Config} from '../../../providers/Config';
+import {IdCreateComponent} from "../../../pages/id/create/create";
 import {IdImportComponent} from "../../../pages/id/import/import";
 import {IdManagerComponent} from "../../../pages/id/manager/manager";
 import {IdAppListComponent} from "../../../pages/id/app-list/app-list";
@@ -34,8 +36,8 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
     }
   }
 
-  onItem(id){
-    this.Go(IdAppListComponent,{"id":id});
+  onItem(item){
+    this.Go(IdAppListComponent,{"idObj":item});
   }
 
   createDID(){

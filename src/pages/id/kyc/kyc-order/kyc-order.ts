@@ -7,14 +7,6 @@ import {BaseComponent} from "../../../../app/BaseComponent";
 export class KycOrderPage  extends BaseComponent implements OnInit{
 
   ngOnInit(){
-     this.setTitleByAssets("text-id-kyc-order-list");
-  }
 
-  onNext(type) {
-    if (type === 1) {
-
-    } else {
-
-    }
   }
 }
