@@ -46,6 +46,9 @@
     },
     "cordova-plugin-zip": {
       "PACKAGE_NAME": "com.elastos.desktop"
+    },
+    "cordova-plugin-filepath": {
+      "PACKAGE_NAME": "com.elastos.desktop"
     }
   },
   "dependent_plugins": {

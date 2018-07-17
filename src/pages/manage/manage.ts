@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Zip } from '@ionic-native/zip';
-import { File } from '@ionic-native/file';
-import { FileChooser } from '@ionic-native/file-chooser';
-import { FilePath } from "@ionic-native/file-path";
+import {Component} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {File} from '@ionic-native/file';
+import {FileChooser} from '@ionic-native/file-chooser';
+import {FilePath} from "@ionic-native/file-path";
+import {Zip} from '@ionic-native/zip';
 
-import { InfoPage } from '../info/info';
-import { AppConfig } from "../../app/app.config";
+import {InfoPage} from '../info/info';
+import {AppConfig} from "../../app/app.config";
 
 /**
  * Generated class for the ManagePage page.
@@ -21,26 +21,18 @@ import { AppConfig } from "../../app/app.config";
   templateUrl: 'manage.html',
 })
 export class ManagePage {
-  public appManageList = []
-  public checkIndex = []
-  public checked = false
+  public checkIndex = []; // 复选框选中的应用集合
+  public isShow = false
+  public appList = []; // 应用列表
 
-  constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    public zip: Zip,
-    public file: File,
-    public fileChooser: FileChooser,
-    public filePath: FilePath
-  ) {
-    if(null == window.localStorage.getItem('appList')) {
-      window.localStorage.setItem('appList', JSON.stringify(AppConfig.initAppList));
-    }
-    this.appManageList = JSON.parse(window.localStorage.getItem('appList'));
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ManagePage');
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public file: File,
+              public fileChooser: FileChooser,
+              public filePath: FilePath,
+              public zip: Zip) {
+    AppConfig.initAppListData();
+    this.appList = AppConfig.getAppListData();
   }
 
   /**
@@ -53,19 +45,44 @@ export class ManagePage {
 
   /**
    *
-   * @desc   列表选中
+   * @desc 列表选中
    */
-  checkApp(item, index) {
-    item.checked = !item.checked
-    if (item.checked) {
-      if (this.checkIndex.indexOf(index) < 0) {
-        this.checkIndex.push(index)
-      }
+  checkApp(item) {
+    item.checked = !item.checked;
+    if (this.checkIndex.indexOf(item) < 0) {
+      this.checkIndex.push(item);
     } else {
-      if (this.checkIndex.indexOf(index) > 0) {
-        this.checkIndex.splice(index, 1)
-      }
+      this.checkIndex.splice(this.checkIndex.indexOf(item), 1)
     }
+    if (this.checkIndex.length > 0) {
+      this.isShow = true
+    } else {
+      this.isShow = false
+    }
+  }
+
+  /**
+   *
+   * @desc   删除操作
+   */
+  doDel() {
+    let that = this;
+    this.checkIndex.forEach(function (item) {
+      let path = that.file.externalRootDirectory + AppConfig.appName + "/";
+      let dir = item.url.substr(0, item.url.lastIndexOf("/www/index.html"));
+
+      // remove dir & info
+      that.file.removeRecursively(path, dir)
+        .then(result => {
+          if (result) {
+            that.appList.splice(that.appList.indexOf(item), 1);
+            AppConfig.saveAppListData(that.appList);
+          } else {
+            alert("remove this app " + item.name + " failed!");
+          }
+        }).catch(err => alert(JSON.stringify(err)));
+    });
+    this.checkIndex = [];
   }
 
   /**
@@ -73,7 +90,7 @@ export class ManagePage {
    * @desc 添加应用
    */
   importFromEpk() {
-    let destDir = this.file.externalRootDirectory + "/elastos/";
+    let destDir = this.file.externalRootDirectory + AppConfig.appName + "/";
 
     // choose *.epk
     this.fileChooser.open()
@@ -88,14 +105,13 @@ export class ManagePage {
             fileEntry.getMetadata(
               function (metadata) {
                 // fileSize = this.fileTurnSize(metadata.size);
-                fileSize = metadata.size >= 1048576 ? (metadata.size/1048576).toFixed(2) + "MB" : (metadata.size/1024).toFixed(2) + "KB";
+                fileSize = metadata.size >= 1048576 ? (metadata.size / 1048576).toFixed(2) + " MB" : (metadata.size / 1024).toFixed(2) + " KB";
               },
               function (error) {
                 alert(error.message);
               }
             );
-          })
-          .catch(err => alert(err.toString()));
+          }).catch(err => alert(JSON.stringify(err)));
 
         // get file path
         this.filePath.resolveNativePath(chooseFile)
@@ -105,83 +121,50 @@ export class ManagePage {
             let fileType = fileFullPath.substr(fileFullPath.lastIndexOf(".")).toLowerCase();
 
             // check the file type
-            if(fileType != ".epk") {
+            if (fileType != ".epk") {
               alert("please choose epk file formats!");
             } else {
               // unzip *.epk to sdcard
               this.zip.unzip(fileFullPath, destDir)
                 .then((unzipResult) => {
-                  if(unzipResult === -1) {
+                  if (unzipResult === -1) {
                     alert("unzip this file failed!");
-                  } else if(unzipResult === 0) {
+                  } else if (unzipResult === 0) {
                     let infoFilePath = destDir + fileName + "/www/";
                     let infoFileFullName = "manifest.json";
                     // check if there exists info file
                     this.file.checkFile(infoFilePath, infoFileFullName)
                       .then(isFileExists => {
-                        if(isFileExists) {
+                        if (isFileExists) {
                           // read the info file
                           this.file.readAsText(infoFilePath, infoFileFullName)
                             .then(jsonString => {
+                              // yyyy.MM.dd format date
+                              let currentDate = new Date();
+                              let currentMM = currentDate.getMonth() < 9 ? "0" + (currentDate.getMonth() + 1) : (currentDate.getMonth() + 1);
+                              let currentDD = currentDate.getDay() < 9 ? "0" + (currentDate.getDay() + 1) : (currentDate.getDay() + 1);
                               // analyse the app info
                               let info = JSON.parse(jsonString);
-                              this.appManageList.push({
-                                path: infoFilePath + info.icons[0].src,
+                              this.appList.push({
+                                path: "../" + fileName + "/www/" + info.icons[0].src,
                                 name: info.name,
-                                url: infoFilePath + 'index.html',
+                                url: fileName + '/www/index.html',
                                 size: fileSize,
-                                date: new Date().toISOString()
+                                date: currentDate.getFullYear() + "." + currentMM + "." + currentDD
                               });
                               // save app list
-                              window.localStorage.setItem('appList', JSON.stringify(this.appManageList));
-                            }).catch(err => alert(err.toString()));
+                              AppConfig.saveAppListData(this.appList);
+                            }).catch(err => alert(JSON.stringify(err)));
                         } else {
                           alert("this file is broken!");
                         }
-                      }).catch(err => alert(err.toString()));
+                      }).catch(err => alert(JSON.stringify(err)));
                   }
-                }).catch(err => alert(err.toString()));
+                }).catch(err => alert(JSON.stringify(err)));
             }
-          })
-          .catch(err => alert(err.toString()));
+          }).catch(err => alert(JSON.stringify(err)));
 
-      }).catch(err => alert(err.toString()));
+      }).catch(err => alert(JSON.stringify(err)));
   }
 
-   /**
-   *
-   * @desc   删除操作
-   */
-  doDel() {
-    var that = this
-    this.checkIndex.forEach(function(item) {
-      that.appManageList.splice(item, 1)
-    })
-    this.checkIndex = []
-  }
-
-  /**
-   * @desc 获取便于阅读的文件大小
-   * @param limit
-   * @returns {string}
-   */
-  fileTurnSize(limit) {
-    var size = "";
-    if( limit < 0.1 * 1024 ){ //如果小于0.1KB转化成B
-      size = limit.toFixed(2) + "B";
-    }else if(limit < 0.1 * 1024 * 1024 ){//如果小于0.1MB转化成KB
-      size = (limit / 1024).toFixed(2) + "KB";
-    }else if(limit < 0.1 * 1024 * 1024 * 1024){ //如果小于0.1GB转化成MB
-      size = (limit / (1024 * 1024)).toFixed(2) + "MB";
-    }else{ //其他转化成GB
-      size = (limit / (1024 * 1024 * 1024)).toFixed(2) + "GB";
-    }
-    var sizestr = size + "";
-    var len = sizestr.indexOf("\.");
-    var dec = sizestr.substr(len + 1, 2);
-    if(dec == "00"){//当小数点后为00时 去掉小数部分
-      return sizestr.substring(0,len) + sizestr.substr(len + 3,2);
-    }
-    return sizestr;
-  }
 }

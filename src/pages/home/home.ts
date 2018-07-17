@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {NavController} from 'ionic-angular';
+import {File} from '@ionic-native/file';
 
-import { ManagePage } from '../manage/manage';
-import { AppConfig } from "../../app/app.config";
-
+import {ManagePage} from '../manage/manage';
+import {AppConfig} from "../../app/app.config";
 
 declare let cordova: any;
 
@@ -12,17 +12,15 @@ declare let cordova: any;
   templateUrl: 'home.html'
 })
 export class HomePage {
-  public checked = false;
-  public manageStatus = true;
-  public  appList = [];
-  
-  constructor(
-    public navCtrl: NavController
-  ) {
-    if(null == window.localStorage.getItem('appList')) {
-      window.localStorage.setItem('appList', JSON.stringify(AppConfig.initAppList));
-    }
-    this.appList = JSON.parse(window.localStorage.getItem('appList'));
+  public checked = false; // 删除按钮是否激活，激活时隐去跳转管理页面的按钮
+
+  constructor(public navCtrl: NavController,
+              public file: File) {
+    AppConfig.initAppListData();
+  }
+
+  getAppList() {
+    return AppConfig.getAppListData();
   }
 
   goManage() {
@@ -30,22 +28,41 @@ export class HomePage {
   }
 
   pressEvent() {
-    this.checked = true
-    this.manageStatus = false
+    this.checked = true;
   }
 
   delEvent(index) {
-    this.appList.splice(index,1);
-    window.localStorage.setItem('appList', JSON.stringify(this.appList));
+    let appList = AppConfig.getAppListData();
+    let item = appList[index];
+
+    let path = this.file.externalRootDirectory + AppConfig.appName + "/";
+    let dir = item.url.substr(0, item.url.lastIndexOf("/www/index.html"));
+
+    // remove dir & info
+    this.file.removeRecursively(path, dir)
+      .then(result => {
+        if (result) {
+          appList.splice(index, 1);
+          AppConfig.saveAppListData(appList);
+        } else {
+          alert("remove this app " + item.name + " failed!");
+        }
+      }).catch(err => alert(JSON.stringify(err)));
+
     this.checked = false;
-    this.manageStatus = true;
+  }
+
+  tapEvent() {
+    this.checked = false;
   }
 
   onClick(item) {
-    if(this.checked) {
+    if (this.checked) {
       return false;
     } else {
-      cordova.plugins.TestPlugin.coolMethod(item.url,function(data){},function(error){});
+      cordova.plugins.TestPlugin.coolMethod(item.url + "?timestamp=" + new Date().getTime(), function (data) {
+      }, function (error) {
+      });
     }
   }
 }

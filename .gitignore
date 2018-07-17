@@ -1,7 +1,6 @@
 node_modules/
 package-lock.json
 .sourcemaps/main.js.map
-www/build
 platforms/android/.gradle/
 .idea/
 plugins/ElaWallet/
@@ -15,5 +14,4 @@ platforms/android/gradlew
 platforms/android/gradlew.bat
 .vscode/
 platforms/android/.idea/
-www/assets/
 

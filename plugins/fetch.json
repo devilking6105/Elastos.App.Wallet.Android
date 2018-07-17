@@ -42,7 +42,7 @@
   "cordova-sqlite-storage": {
     "source": {
       "type": "registry",
-      "id": "cordova-sqlite-storage"
+      "id": "cordova-sqlite-storage@^2.3.1"
     },
     "is_top_level": true,
     "variables": {}
@@ -109,6 +109,14 @@
       "id": "cordova-plugin-file@>=2.0.0"
     },
     "is_top_level": false,
+    "variables": {}
+  },
+  "cordova-plugin-filepath": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-filepath"
+    },
+    "is_top_level": true,
     "variables": {}
   }
 }

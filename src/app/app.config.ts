@@ -1,38 +1,85 @@
-export class AppConfig {
-	
+// import {File} from '@ionic-native/file';
+// import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
-  static initAppList = [
+export class AppConfig {
+
+  /*
+  app info
+   */
+  public static appName = "elastos";
+
+  private static storageKeyAppList = AppConfig.appName + "_appList";
+
+  private static currentDate = new Date();
+
+  private static currentDateYYYYMMDD = AppConfig.currentDate.getFullYear()  + "."
+    + (AppConfig.currentDate.getMonth() < 9 ? "0" + (AppConfig.currentDate.getMonth() + 1) : (AppConfig.currentDate.getMonth() + 1)) + "."
+    + (AppConfig.currentDate.getDay() < 9 ? "0" + (AppConfig.currentDate.getDay() + 1) : (AppConfig.currentDate.getDay() + 1));
+
+  private static initAppList = [
     {
       path: "../wallet/www/assets/images/logo.png",
       name: "Wallet",
       url: "wallet/www/index.html",
-      size: "1MB",
-      date: new Date()
+      size: "1 MB",
+      date: AppConfig.currentDateYYYYMMDD
     }, {
       path: "../todo/www/assets/imgs/logo.png",
       name: "ToDO",
       url: "todo/www/index.html",
-      size: "2MB",
-      date: new Date()
+      size: "2 MB",
+      date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "../www/assets/imgs/slice2.png",
+      path: "../CarTest/www/assets/imgs/logo.png",
       name: "CarTest",
-      url: "hello/www/index.html",
-      size: "666KB",
-      date: new Date()
+      url: "CarTest/www/index.html",
+      size: "666 KB",
+      date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "assets/imgs/slice2.png",
+      path: "../dApp4/www/assets/imgs/logo.png",
       name: "dApp4",
-      url: "hello/www/index.html",
-      size: "888KB",
-      date: new Date()
+      url: "dApp4/www/index.html",
+      size: "888 KB",
+      date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "assets/imgs/slice2.png",
+      path: "../dApp5/www/assets/imgs/logo.png",
       name: "dApp5",
-      url: "hello/www/index.html",
-      size: "999KB",
-      date: new Date()
+      url: "dApp5/www/index.html",
+      size: "999 KB",
+      date: AppConfig.currentDateYYYYMMDD
     }
   ];
+
+  public static initAppListData() {
+    if(null == window.localStorage.getItem(AppConfig.storageKeyAppList)) {
+      AppConfig.saveAppListData(AppConfig.initAppList);
+    }
+  }
+
+  public static getAppListData() {
+    return JSON.parse(window.localStorage.getItem(AppConfig.storageKeyAppList));
+  }
+
+  public static saveAppListData(appList) {
+    window.localStorage.setItem(AppConfig.storageKeyAppList, JSON.stringify(appList));
+  }
+
+  // /*
+  // db info
+  //  */
+  // private static sqlite = new SQLite();
+  //
+  // private static dbName = AppConfig.appName + ".db";
+  //
+  // private static dbLocation = "default";
+  //
+  // private static initDB() {
+  //   AppConfig.sqlite.create({
+  //     name: AppConfig.dbName,
+  //     location: AppConfig.dbLocation
+  //   }).then((db: SQLiteObject) => {
+  //     db.executeSql("CREATE TABLE IF NOT EXISTS appList(id INT, appInfo VARCHAR(320));");
+  //   }).catch(err => alert(JSON.stringify(err)));
+  // }
 
 }

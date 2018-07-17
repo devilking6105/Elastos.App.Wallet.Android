@@ -9,12 +9,13 @@ import { HomePage } from '../pages/home/home';
 import { ManagePage } from '../pages/manage/manage';
 import { InfoPage } from '../pages/info/info';
 
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { Zip } from '@ionic-native/zip';
 import { File } from '@ionic-native/file';
 import { FileChooser } from "@ionic-native/file-chooser";
 import { FilePath } from "@ionic-native/file-path";
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { SQLite } from '@ionic-native/sqlite';
+import { StatusBar } from '@ionic-native/status-bar';
+import { Zip } from '@ionic-native/zip';
 
 @NgModule({
   declarations: [
@@ -40,12 +41,13 @@ import { FilePath } from "@ionic-native/file-path";
     InfoPage
   ],
   providers: [
-    StatusBar,
-    SplashScreen,
-    Zip,
     File,
     FileChooser,
     FilePath,
+    SplashScreen,
+    SQLite,
+    StatusBar,
+    Zip,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

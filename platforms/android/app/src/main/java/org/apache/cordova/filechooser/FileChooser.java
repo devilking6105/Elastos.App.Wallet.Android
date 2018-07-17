@@ -1,4 +1,4 @@
-package com.megster.cordova;
+package org.apache.cordova.filechooser;
 
 import android.app.Activity;
 import android.content.Intent;

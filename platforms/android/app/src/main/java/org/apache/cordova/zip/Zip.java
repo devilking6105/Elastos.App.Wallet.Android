@@ -1,4 +1,4 @@
-package org.apache.cordova;
+package org.apache.cordova.zip;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -12,7 +12,9 @@ import java.util.zip.ZipInputStream;
 
 import android.net.Uri;
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaResourceApi;
 import org.apache.cordova.CordovaResourceApi.OpenForReadResult;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;

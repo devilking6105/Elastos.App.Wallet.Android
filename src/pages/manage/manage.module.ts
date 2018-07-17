@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
-import { ManagePage } from './manage';
+import {NgModule} from '@angular/core';
+import {IonicPageModule} from 'ionic-angular';
+import {ManagePage} from './manage';
 
 @NgModule({
 
@@ -8,4 +8,5 @@ import { ManagePage } from './manage';
     IonicPageModule.forChild(ManagePage),
   ],
 })
-export class ManagePageModule {}
+export class ManagePageModule {
+}
