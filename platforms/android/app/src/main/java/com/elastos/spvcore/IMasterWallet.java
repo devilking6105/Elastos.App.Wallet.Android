@@ -22,14 +22,17 @@ public class IMasterWallet {
     public ArrayList<ISubWallet> GetAllSubWallets() {
         long[] subWalletProxies = nativeGetAllSubWallets(mMasterProxy);
         ArrayList<ISubWallet> list = new ArrayList<ISubWallet>();
-        for (int i = 0; i < subWalletProxies.length; i++) {
-            if (i == 0) {
-                list.add(new IMainchainSubWallet(subWalletProxies[i]));
-            }
-            else {
-                list.add(new IIdChainSubWallet(subWalletProxies[i]));
+        if (subWalletProxies != null) {
+            for (int i = 0; i < subWalletProxies.length; i++) {
+                if (i == 0) {
+                    list.add(new IMainchainSubWallet(subWalletProxies[i]));
+                }
+                else {
+                    list.add(new IIdChainSubWallet(subWalletProxies[i]));
+                }
             }
         }
+
         return list;
     }
 
