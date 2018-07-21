@@ -58,7 +58,7 @@ public class MainActivity extends CordovaActivity
         // Set by <content src="index.html" /> in config.xml
         //loadUrl(launchUrl);
 
-        String sdurl = "file://" + getStoragePaths()+"/abc/www/index.html"; // ?name=zhouxin send parameter to index.html of ionic
+        String sdurl = "file://" + getStoragePaths()+"/elastos/www/index.html"; // ?name=zhouxin send parameter to index.html of ionic
         Log.e(TAG, sdurl);
         loadUrl(sdurl);
 
