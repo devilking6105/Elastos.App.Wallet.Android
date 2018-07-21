@@ -12,12 +12,14 @@ page-home {
     }
     .app-title {
       max-width: 120px;
-      color: #ccc;
+      font-family: 'FiraSans-Bold';
+      color: #ffffff;
       text-align: center;
       padding: 10px 0;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+      font-size: 10px;
     }
     .item-ios {
       background-color: #eef5f9;

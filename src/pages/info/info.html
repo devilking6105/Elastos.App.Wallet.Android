@@ -4,12 +4,12 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>info</ion-title>
+<ion-header no-border>
+  <ion-navbar transparent>
+      <button ion-button clear small navPop style="padding: 0;">
+        <img src="assets/imgs/arrows-left.png" alt="back">
+      </button>
   </ion-navbar>
-
 </ion-header>
 
 <ion-content>
@@ -35,8 +35,8 @@
           <ion-thumbnail item-start>
             <img src="assets/imgs/camera.png" alt="">
           </ion-thumbnail>
-          <ion-thumbnail item-start>
-            <h2>My Neighbor Totoro</h2>
+          <ion-thumbnail item-start class="app-info">
+            <h4>My Neighbor Totoro</h4>
             <p>Hayao Miyazaki • 1988</p>
           </ion-thumbnail>
         </ion-item>
@@ -46,8 +46,8 @@
           <ion-thumbnail item-start>
             <img src="assets/imgs/camera.png">
           </ion-thumbnail>
-          <ion-thumbnail item-start>
-            <h2>My Neighbor Totoro</h2>
+          <ion-thumbnail item-start class="app-info">
+            <h4>My Neighbor Totoro</h4>
             <p>Hayao Miyazaki • 1988</p>
           </ion-thumbnail>
         </ion-item>
@@ -57,8 +57,8 @@
           <ion-thumbnail item-start>
             <img src="assets/imgs/id.png">
           </ion-thumbnail>
-          <ion-thumbnail item-start>
-            <h2>My Neighbor Totoro</h2>
+          <ion-thumbnail item-start class="app-info">
+            <h4>My Neighbor Totoro</h4>
             <p>Hayao Miyazaki • 1988</p>
           </ion-thumbnail>
         </ion-item>
@@ -74,8 +74,10 @@
           </ion-thumbnail>
         </ion-item>
       </ion-row>
-      <ion-list-header>Infomation</ion-list-header>
-
+      <ion-list-header class="hide">Infomation</ion-list-header>
+      <div class="desc hide">
+        <p class="">This is a description</p>
+      </div>
     </ion-list>
   </ion-grid>
 </ion-content>

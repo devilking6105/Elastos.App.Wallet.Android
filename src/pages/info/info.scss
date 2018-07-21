@@ -3,29 +3,137 @@ page-info {
     border: none;
     background-color: #eef5f9;
   }
-  .icon-right {
-    width: 24px;
+  .toolbar-content-md {
+    position: absolute;
   }
-  .content-ios, .content-md {
-    background-color: #eef5f9;
-    .item-ios {
-      background-color: #eef5f9;
-      img {
-        width: 56px;
-        height: inherit;
-      }
-      .checkbox-ios {
-        .checkbox-icon {
-          border: none;
-          background: url(../assets/imgs/check.png) 100% 100% no-repeat;
-          border-radius: 0;
-          background-size: 21px;
-        }
-        .checkbox-checked {
-          background: url(../assets/imgs/checked.png) 100% 100% no-repeat;
-          background-size: 21px;
+  .toolbar {
+    .button-inner {
+      display: none;
+    }
+    .toolbar-content {
+      .button-inner {
+        display: inline-block;
+        padding-left: 8px;
+        img {
+          height: 24px;
         }
       }
     }
+  }
+
+  .content-ios, .content-md {
+    background-color: #eef5f9;
+    .list-ios, .list-md {
+      margin:  0;
+    }
+    .item-ios, .item-md{
+      background-color: #eef5f9;
+      .up-app img {
+        width: 56px;
+        padding: 0;
+        height: inherit;
+      }
+      .label {
+        font-size: 16px;
+        color: #000;
+        font-weight: 700;
+      }
+      ion-thumbnail {
+        img {
+          width: 56px;
+          padding: 14px;
+        }
+      }
+      .checkbox-icon {
+        border: none;
+        background: url(/assets/imgs/radio-check.png) 100% 100% no-repeat;
+        border-radius: 0;
+        background-size: 21px;
+      }
+      .checkbox-checked {
+        background: url(/assets/imgs/radio-checked.png) 100% 100% no-repeat;
+        background-size: 21px;
+      }
+      .app-info {
+        padding: 10px 0;
+        color: #000;
+        h4 {
+          font-size: 14px;
+        }
+        p {
+          font-size: 10px;
+        }
+      }
+    }
+    .desc {
+      display: block;
+      margin: 0 16px;
+      color: #000;
+      font-size: 12px;
+      font-family: 'FiraSans-Bold';
+      p {
+        margin: 0;
+      }
+    }
+  }
+  .content-md {
+    background-color: #eef5f9;
+    .list-ios {
+      margin:  0;
+    }
+    .item-ios {
+      background-color: #eef5f9;
+      .up-app img {
+        width: 56px;
+        padding: 0;
+        height: inherit;
+      }
+      .label {
+        font-size: 16px;
+        color: #000;
+        font-weight: 700;
+      }
+      ion-thumbnail {
+        img {
+          width: 56px;
+          padding: 14px;
+        }
+      }
+      .checkbox-icon {
+        border: none;
+        background: url(/assets/imgs/radio-check.png) 100% 100% no-repeat;
+        border-radius: 0;
+        background-size: 21px;
+        width: 21px;
+      }
+      .checkbox-checked {
+        background: url(/assets/imgs/radio-checked.png) 100% 100% no-repeat;
+        background-size: 21px;
+        width: 21px;
+      }
+      .app-info {
+        padding: 10px 0;
+        color: #000;
+        h4 {
+          font-size: 14px;
+        }
+        p {
+          font-size: 10px;
+        }
+      }
+    }
+    .desc {
+      display: block;
+      margin: 0 16px;
+      color: #000;
+      font-size: 12px;
+      font-family: 'FiraSans-Bold';
+      p {
+        margin: 0;
+      }
+    }
+  }
+  .hide {
+    display: none;
   }
 }
