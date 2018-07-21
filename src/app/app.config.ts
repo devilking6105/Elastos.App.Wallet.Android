@@ -36,15 +36,15 @@ export class AppConfig {
       size: "666 KB",
       date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "../dApp4/www/assets/imgs/logo.png",
-      name: "dApp4",
-      url: "dApp4/www/index.html",
+      path: "assets/imgs/logo.png",
+      name: "Vote",
+      url: "https://vote.elastos.org/",
       size: "888 KB",
       date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "../dApp5/www/assets/imgs/logo.png",
-      name: "dApp5",
-      url: "dApp5/www/index.html",
+      path: "../sample/www/assets/imgs/logo.png",
+      name: "Sample",
+      url: "sample/www/index.html",
       size: "999 KB",
       date: AppConfig.currentDateYYYYMMDD
     }
