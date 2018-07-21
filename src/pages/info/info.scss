@@ -7,6 +7,7 @@ page-info {
     position: absolute;
   }
   .toolbar {
+    padding: 5px 16px;
     .button-inner {
       display: none;
     }
@@ -23,6 +24,10 @@ page-info {
 
   .content-ios, .content-md {
     background-color: #eef5f9;
+    .checkbox-icon {
+      width: 21px;
+      height: 21px;
+    }
     .list-ios, .list-md {
       margin:  0;
     }
@@ -39,8 +44,10 @@ page-info {
         font-weight: 700;
       }
       ion-thumbnail {
+        min-height: auto;
         img {
           width: 56px;
+          height: 56px;
           padding: 14px;
         }
       }
@@ -53,63 +60,6 @@ page-info {
       .checkbox-checked {
         background: url(/assets/imgs/radio-checked.png) 100% 100% no-repeat;
         background-size: 21px;
-      }
-      .app-info {
-        padding: 10px 0;
-        color: #000;
-        h4 {
-          font-size: 14px;
-        }
-        p {
-          font-size: 10px;
-        }
-      }
-    }
-    .desc {
-      display: block;
-      margin: 0 16px;
-      color: #000;
-      font-size: 12px;
-      font-family: 'FiraSans-Bold';
-      p {
-        margin: 0;
-      }
-    }
-  }
-  .content-md {
-    background-color: #eef5f9;
-    .list-ios {
-      margin:  0;
-    }
-    .item-ios {
-      background-color: #eef5f9;
-      .up-app img {
-        width: 56px;
-        padding: 0;
-        height: inherit;
-      }
-      .label {
-        font-size: 16px;
-        color: #000;
-        font-weight: 700;
-      }
-      ion-thumbnail {
-        img {
-          width: 56px;
-          padding: 14px;
-        }
-      }
-      .checkbox-icon {
-        border: none;
-        background: url(/assets/imgs/radio-check.png) 100% 100% no-repeat;
-        border-radius: 0;
-        background-size: 21px;
-        width: 21px;
-      }
-      .checkbox-checked {
-        background: url(/assets/imgs/radio-checked.png) 100% 100% no-repeat;
-        background-size: 21px;
-        width: 21px;
       }
       .app-info {
         padding: 10px 0;

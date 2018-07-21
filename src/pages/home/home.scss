@@ -1,4 +1,7 @@
 page-home {
+  .scroll-content {
+    overflow: hidden;
+  }
   .content-ios, .content-md {
     background: url(../assets/imgs/bg.jpg) center center no-repeat;
     background-size: 100% 100%;
