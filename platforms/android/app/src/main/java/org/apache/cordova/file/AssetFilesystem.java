@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
-
+@SuppressWarnings("unchecked")
 public class AssetFilesystem extends Filesystem {
 
     private final AssetManager assetManager;

@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.Iterator;
 import android.util.Log;
 
 import io.ionic.starter.MyUtil;
@@ -40,7 +42,7 @@ public class Wallet extends CordovaPlugin {
     private static final String TAG = "Wallet.JNI";
     private IMasterWallet mCurrentMasterWallet;
     private MasterWalletManager mWalletManager;
-    private ArrayList<IMasterWallet> mMasterWalletList;
+    private ArrayList<IMasterWallet> mMasterWalletList = new ArrayList<IMasterWallet>();
     private IDidManager mDidManager = null;
     private Map<String, ISubWallet> mSubWalletMap = new HashMap<String, ISubWallet>();
     private String mRootPath = null;
@@ -69,7 +71,7 @@ public class Wallet extends CordovaPlugin {
     }
 
     private void initDidManager() {
-      Log.d("JS-Wallet", "initDidManager=========1====mRootPath="+mRootPath);
+        Log.d("JS-Wallet", "initDidManager=========1====mRootPath="+mRootPath);
         if (mDidManager == null && mCurrentMasterWallet != null) {
             Log.d("JS-Wallet", "initDidManager=========2====mRootPath="+mRootPath);
             mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
@@ -80,164 +82,164 @@ public class Wallet extends CordovaPlugin {
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
         Log.i("JS-Wallet", "execute=============action="+action);
         try {
-          switch (action) {
-              case "coolMethod":
-                  String message = args.getString(0);
-                  this.coolMethod(message, callbackContext);
-                  return true;
-              case "print":
-                  this.print(args.getString(0), callbackContext);
-                  return true;
-              case "createSubWallet":
-                  this.createSubWallet(args, callbackContext);
-                  return true;
-              case "getPublicKey":
-                  this.getPublicKey(args, callbackContext);
-                  return true;
-              case "createMasterWallet":
-                  this.createMasterWallet(args, callbackContext);
-                  return true;
-              case "recoverSubWallet":
-                  this.recoverSubWallet(args, callbackContext);
-                  return true;
-              case "importWalletWithKeystore":
-                  this.importWalletWithKeystore(args, callbackContext);
-                  return true;
-              case "importWalletWithMnemonic":
-                  this.importWalletWithMnemonic(args, callbackContext);
-                  return true;
-              case "exportWalletWithKeystore":
-                  this.exportWalletWithKeystore(args, callbackContext);
-                  return true;
-              case "exportWalletWithMnemonic":
-                  this.exportWalletWithMnemonic(args, callbackContext);
-                  return true;
-              case "getBalanceInfo":
-                  this.getBalanceInfo(args, callbackContext);
-                  return true;
-              case "getBalance":
-                  this.getBalance(args, callbackContext);
-                  return true;
-              case "createAddress":
-                  this.createAddress(args, callbackContext);
-                  return true;
-              case "getAllAddress":
-                  this.getAllAddress(args, callbackContext);
-                  return true;
-              case "getBalanceWithAddress":
-                  this.getBalanceWithAddress(args, callbackContext);
-                  return true;
-              case "createTransaction":
-                  this.createTransaction(args, callbackContext);
-                  return true;
-              case "createMultiSignTransaction":
-                  this.createMultiSignTransaction(args, callbackContext);
-                  return true;
-              case "createMultiSignAddress":
-                  this.createMultiSignAddress(args, callbackContext);
-                  return true;
-              case "getAllTransaction":
-                  this.getAllTransaction(args, callbackContext);
-                  return true;
-              case "sign":
-                  this.sign(args, callbackContext);
-                  return true;
-              case "checkSign":
-                  this.checkSign(args, callbackContext);
-                  return true;
-              case "registerWalletListener":
-                  this.registerWalletListener(args, callbackContext);
-                  return true;
-              case "getAllMasterWallets":
-                  this.getAllMasterWallets(args, callbackContext);
-                  return true;
-              case "getAllSubWallets":
-                  this.getAllSubWallets(args, callbackContext);
-                  return true;
-              case "getAllChainIds":
-                  this.getAllChainIds(args, callbackContext);
-                  return true;
-              case "getWalletId":
-                  this.getWalletId(args, callbackContext);
-                  return true;
-              case "saveConfigs":
-                  this.saveConfigs(args, callbackContext);
-                  return true;
-              case "isAddressValid":
-                  this.isAddressValid(args, callbackContext);
-                  return true;
-              case "generateMnemonic":
-                  this.generateMnemonic(args, callbackContext);
-                  return true;
-              case "destroyWallet":
-                  this.destroyWallet(args, callbackContext);
-                  return true;
-              case "getSupportedChains":
-                  this.getSupportedChains(args, callbackContext);
-                  return true;
-              case "changePassword":
-                  this.changePassword(args, callbackContext);
-                  return true;
-              case "resetAddressCache":
-                  this.resetAddressCache(args, callbackContext);
-                  return true;
-              case "sendRawTransaction":
-                  this.sendRawTransaction(args, callbackContext);
-                  return true;
-              case "calculateTransactionFee":
-                  this.calculateTransactionFee(args, callbackContext);
-                  return true;
-              case "createIdTransaction":
-                  this.createIdTransaction(args, callbackContext);
-                  return true;
-              case "createDepositTransaction":
-                  this.createDepositTransaction(args, callbackContext);
-                  return true;
+            switch (action) {
+                case "coolMethod":
+                    String message = args.getString(0);
+                    this.coolMethod(message, callbackContext);
+                    return true;
+                case "print":
+                    this.print(args.getString(0), callbackContext);
+                    return true;
+                case "createSubWallet":
+                    this.createSubWallet(args, callbackContext);
+                    return true;
+                case "getPublicKey":
+                    this.getPublicKey(args, callbackContext);
+                    return true;
+                case "createMasterWallet":
+                    this.createMasterWallet(args, callbackContext);
+                    return true;
+                case "recoverSubWallet":
+                    this.recoverSubWallet(args, callbackContext);
+                    return true;
+                case "importWalletWithKeystore":
+                    this.importWalletWithKeystore(args, callbackContext);
+                    return true;
+                case "getAllCreatedSubWallets":
+                    this.getAllCreatedSubWallets(args, callbackContext);
+                    return true;
+                case "importWalletWithMnemonic":
+                    this.importWalletWithMnemonic(args, callbackContext);
+                    return true;
+                case "exportWalletWithKeystore":
+                    this.exportWalletWithKeystore(args, callbackContext);
+                    return true;
+                case "exportWalletWithMnemonic":
+                    this.exportWalletWithMnemonic(args, callbackContext);
+                    return true;
+                case "getBalanceInfo":
+                    this.getBalanceInfo(args, callbackContext);
+                    return true;
+                case "getBalance":
+                    this.getBalance(args, callbackContext);
+                    return true;
+                case "createAddress":
+                    this.createAddress(args, callbackContext);
+                    return true;
+                case "getAllAddress":
+                    this.getAllAddress(args, callbackContext);
+                    return true;
+                case "getBalanceWithAddress":
+                    this.getBalanceWithAddress(args, callbackContext);
+                    return true;
+                case "createTransaction":
+                    this.createTransaction(args, callbackContext);
+                    return true;
+                case "createMultiSignTransaction":
+                    this.createMultiSignTransaction(args, callbackContext);
+                    return true;
+                case "createMultiSignAddress":
+                    this.createMultiSignAddress(args, callbackContext);
+                    return true;
+                case "getAllTransaction":
+                    this.getAllTransaction(args, callbackContext);
+                    return true;
+                case "sign":
+                    this.sign(args, callbackContext);
+                    return true;
+                case "checkSign":
+                    this.checkSign(args, callbackContext);
+                    return true;
+                case "registerWalletListener":
+                    this.registerWalletListener(args, callbackContext);
+                    return true;
+                case "getAllMasterWallets":
+                    this.getAllMasterWallets(args, callbackContext);
+                    return true;
+                case "getAllSubWallets":
+                    this.getAllSubWallets(args, callbackContext);
+                    return true;
+                case "getAllChainIds":
+                    this.getAllChainIds(args, callbackContext);
+                    return true;
+                case "getWalletId":
+                    this.getWalletId(args, callbackContext);
+                    return true;
+                case "saveConfigs":
+                    this.saveConfigs(args, callbackContext);
+                    return true;
+                case "isAddressValid":
+                    this.isAddressValid(args, callbackContext);
+                    return true;
+                case "generateMnemonic":
+                    this.generateMnemonic(args, callbackContext);
+                    return true;
+                case "destroyWallet":
+                    this.destroyWallet(args, callbackContext);
+                    return true;
+                case "getSupportedChains":
+                    this.getSupportedChains(args, callbackContext);
+                    return true;
+                case "changePassword":
+                    this.changePassword(args, callbackContext);
+                    return true;
+                case "sendRawTransaction":
+                    this.sendRawTransaction(args, callbackContext);
+                    return true;
+                case "calculateTransactionFee":
+                    this.calculateTransactionFee(args, callbackContext);
+                    return true;
+                case "createIdTransaction":
+                    this.createIdTransaction(args, callbackContext);
+                    return true;
+                case "createDepositTransaction":
+                    this.createDepositTransaction(args, callbackContext);
+                    return true;
 
-              //did
-              case "createDID":
-                  this.createDID(args, callbackContext);
-                  return true;
-              case "didGenerateProgram":
-                  this.didGenerateProgram(args, callbackContext);
-                  return true;
-              case "getDIDList":
-                  this.getDIDList(args, callbackContext);
-                  return true;
-              case "destoryDID":
-                  this.destoryDID(args, callbackContext);
-                  return true;
-              case "didSetValue":
-                  this.didSetValue(args, callbackContext);
-                  return true;
-              case "didGetValue":
-                  this.didGetValue(args, callbackContext);
-                  return true;
-              case "didGetHistoryValue":
-                  this.didGetHistoryValue(args, callbackContext);
-                  return true;
-              case "didGetAllKeys":
-                  this.didGetAllKeys(args, callbackContext);
-                  return true;
-              case "didSign":
-                  this.didSign(args, callbackContext);
-                  return true;
-              case "didCheckSign":
-                  this.didCheckSign(args, callbackContext);
-                  return true;
-              case "didGetPublicKey":
-                  this.didGetPublicKey(args, callbackContext);
-                  return true;
-              case "registerIdListener":
-                  this.registerIdListener(args, callbackContext);
-                  return true;
-              case "createWithdrawTransaction":
-                  this.createWithdrawTransaction(args, callbackContext);
-                  return true;
-              case "getGenesisAddress":
-                  this.getGenesisAddress(args, callbackContext);
-                  return true;
-          }
+                //did
+                case "createDID":
+                    this.createDID(args, callbackContext);
+                    return true;
+                case "didGenerateProgram":
+                    this.didGenerateProgram(args, callbackContext);
+                    return true;
+                case "getDIDList":
+                    this.getDIDList(args, callbackContext);
+                    return true;
+                case "destoryDID":
+                    this.destoryDID(args, callbackContext);
+                    return true;
+                case "didSetValue":
+                    this.didSetValue(args, callbackContext);
+                    return true;
+                case "didGetValue":
+                    this.didGetValue(args, callbackContext);
+                    return true;
+                case "didGetHistoryValue":
+                    this.didGetHistoryValue(args, callbackContext);
+                    return true;
+                case "didGetAllKeys":
+                    this.didGetAllKeys(args, callbackContext);
+                    return true;
+                case "didSign":
+                    this.didSign(args, callbackContext);
+                    return true;
+                case "didCheckSign":
+                    this.didCheckSign(args, callbackContext);
+                    return true;
+                case "didGetPublicKey":
+                    this.didGetPublicKey(args, callbackContext);
+                    return true;
+                case "registerIdListener":
+                    this.registerIdListener(args, callbackContext);
+                    return true;
+                case "createWithdrawTransaction":
+                    this.createWithdrawTransaction(args, callbackContext);
+                    return true;
+                case "getGenesisAddress":
+                    this.getGenesisAddress(args, callbackContext);
+                    return true;
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             callbackContext.error("json parse error");
@@ -256,7 +258,7 @@ public class Wallet extends CordovaPlugin {
             if (subWallet != null) {
                 mSubWalletMap.put(args.getString(0), subWallet);
                 callbackContext.success(args.getString(0));
-                Log.i("JS-Wallet", "createSubWallet==============2");
+                Log.i("JS-Wallet", "createSubWallet==============2, subWallet============["+subWallet+"]");
             }
             else {
                 callbackContext.error("CreateSubWallet failed.");
@@ -398,6 +400,7 @@ public class Wallet extends CordovaPlugin {
         }
 
         if (mCurrentMasterWallet != null) {
+            if (mMasterWalletList == null) mMasterWalletList = new ArrayList<IMasterWallet>();
             mMasterWalletList.add(mCurrentMasterWallet);
             initDidManager();
             callbackContext.success();
@@ -425,28 +428,6 @@ public class Wallet extends CordovaPlugin {
     public void importWalletWithKeystore(JSONArray args, CallbackContext callbackContext) throws JSONException {
         try {
             mCurrentMasterWallet = mWalletManager.ImportWalletWithKeystore(args.getString(0), args.getString(1), args.getString(2)
-                      , args.getString(3), args.getString(4));
-        }
-        catch (WalletException e) {
-            e.printStackTrace();
-            callbackContext.success(parseOneParam(ERRORCODE, e.GetErrorInfo()));
-            return;
-        }
-
-        if (mCurrentMasterWallet != null) {
-            mMasterWalletList.add(mCurrentMasterWallet);
-            initDidManager();
-            callbackContext.success();
-        }
-        else {
-            callbackContext.error("ImportWalletWithKeystore failed.");
-        }
-    }
-
-    //ImportWalletWithMnemonic(String masterWalletId, String mnemonic, String phrasePassword ,String payPassWord, String language)
-    public void importWalletWithMnemonic(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        try {
-            mCurrentMasterWallet = mWalletManager.ImportWalletWithMnemonic(args.getString(0), args.getString(1), args.getString(2)
                     , args.getString(3), args.getString(4));
         }
         catch (WalletException e) {
@@ -457,6 +438,72 @@ public class Wallet extends CordovaPlugin {
 
         if (mCurrentMasterWallet != null) {
             mMasterWalletList.add(mCurrentMasterWallet);
+
+            mSubWalletMap.clear();
+            ArrayList<ISubWallet> list = mCurrentMasterWallet.GetAllSubWallets();
+            Log.i("JS-Wallet", "importWalletWithKeystore==============1, subwallet.list.size="+list.size());
+            for (int i = 0; i < list.size(); i++) {
+                ISubWallet subWallet = list.get(i);
+                if (subWallet != null) {
+                    mSubWalletMap.put(subWallet.GetChainId(), subWallet);
+                }
+            }
+
+            initDidManager();
+            callbackContext.success();
+        }
+        else {
+            callbackContext.error("ImportWalletWithKeystore failed.");
+        }
+    }
+
+    public void getAllCreatedSubWallets(JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if (mCurrentMasterWallet != null) {
+            Set<String> keys = mSubWalletMap.keySet();
+            Iterator<String> iter = keys.iterator();
+
+            JSONObject jsonObject = new JSONObject();
+            while(iter.hasNext()){
+                String chainID = iter.next();
+                Log.i("JS-Wallet", "getAllCreatedSubWallets=========================chainID=["+chainID+"]");
+                jsonObject.put(chainID, chainID);
+            }
+
+            callbackContext.success(jsonObject);
+            return;
+        }
+
+        callbackContext.success(parseOneParam("createdSubWallets", null));
+    }
+
+    //ImportWalletWithMnemonic(String masterWalletId, String mnemonic, String phrasePassword ,String payPassWord, String language)
+    public void importWalletWithMnemonic(JSONArray args, CallbackContext callbackContext) throws JSONException {
+        try {
+            Log.i("JS-Wallet", "importWalletWithMnemonic======================================1");
+            mCurrentMasterWallet = mWalletManager.ImportWalletWithMnemonic(args.getString(0), args.getString(1), args.getString(2)
+                    , args.getString(3), args.getString(4));
+        }
+        catch (WalletException e) {
+            e.printStackTrace();
+            callbackContext.success(parseOneParam(ERRORCODE, e.GetErrorInfo()));
+            return;
+        }
+
+        Log.i("JS-Wallet", "importWalletWithMnemonic======================================2");
+        if (mCurrentMasterWallet != null) {
+            Log.i("JS-Wallet", "importWalletWithMnemonic======================================3");
+            mMasterWalletList.add(mCurrentMasterWallet);
+
+            mSubWalletMap.clear();
+            ArrayList<ISubWallet> list = mCurrentMasterWallet.GetAllSubWallets();
+            Log.i("JS-Wallet", "importWalletWithMnemonic==============1, subwallet.list.size="+list.size());
+            for (int i = 0; i < list.size(); i++) {
+                ISubWallet subWallet = list.get(i);
+                if (subWallet != null) {
+                    mSubWalletMap.put(subWallet.GetChainId(), subWallet);
+                }
+            }
+
             initDidManager();
             callbackContext.success();
         }
@@ -508,7 +555,7 @@ public class Wallet extends CordovaPlugin {
         String transactionId = null;
         try {
             transactionId = subWallet.CreateTransaction(args.getString(1), args.getString(2), args.getLong(3),
-                                    args.getLong(4), args.getString(5), args.getString(6));
+                    args.getLong(4), args.getString(5), args.getString(6));
             if (transactionId != null) {
                 callbackContext.success(parseOneParam("transactionId", transactionId));
             }
@@ -549,7 +596,7 @@ public class Wallet extends CordovaPlugin {
 
         try {
             String result = subWallet.CreateMultiSignTransaction(args.getString(1), args.getString(2), args.getLong(3),
-                        args.getLong(4), args.getString(5));
+                    args.getLong(4), args.getString(5));
 
             if (result != null) {
                 callbackContext.success(parseOneParam("result", result));
@@ -704,6 +751,7 @@ public class Wallet extends CordovaPlugin {
     public void sendRawTransaction(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
         ISubWallet subWallet = mSubWalletMap.get(args.getString(0));
+        Log.i("JS-Wallet", "sendRawTransaction==============1, id="+args.getString(0));
         if (subWallet == null) {
             callbackContext.error("Don't have the subWallet: ["+args.getString(0)+"], please check.");
             return;
@@ -756,7 +804,7 @@ public class Wallet extends CordovaPlugin {
             Log.i("JS-Wallet", "createIdTransaction not instanceof IIdChainSubWallet 1, id="+args.getString(0));
             return ;
         }
-       // IIdChainSubWallet subWallet = (IIdChainSubWallet)mSubWalletMap.get(args.getString(0));
+        // IIdChainSubWallet subWallet = (IIdChainSubWallet)mSubWalletMap.get(args.getString(0));
         if (subWallet == null) {
             callbackContext.error("Don't have the subWallet: ["+args.getString(0)+"], please check.");
             return;
@@ -765,7 +813,7 @@ public class Wallet extends CordovaPlugin {
         String json = null;
         try {
             json = subWallet.CreateIdTransaction(args.getString(1), args.getString(2), args.getLong(3),
-                     args.getString(4), args.getString(5), args.getLong(6), args.getString(7), args.getString(8));
+                    args.getString(4), args.getString(5), args.getLong(6), args.getString(7), args.getString(8));
             if (json != null) {
                 callbackContext.success(parseOneParam("json", json));
             }
@@ -786,21 +834,8 @@ public class Wallet extends CordovaPlugin {
             callbackContext.success(parseOneParam(ERRORCODE, "The chainID must be ELA."));
             return;
         }
-                                //mSubWalletMap.get(args.getString(0))
-        ISubWallet baseWallet = mSubWalletMap.get(args.getString(0));
-        IMainchainSubWallet subWallet;
-        
-        if(baseWallet instanceof IMainchainSubWallet){
-            subWallet = (IMainchainSubWallet)baseWallet;
-            Log.i("JS-Wallet", "Elastos createDepositTransaction instanceof IMainchainSubWallet 1, id="+args.getString(0));
-        }else{
-            Log.i("JS-Wallet", "Elastos createDepositTransaction not instanceof IMainchainSubWallet 1, id="+args.getString(0));
-            return ;
-        }
 
-        //IMainchainSubWallet subWallet = (IMainchainSubWallet)mSubWalletMap.get(args.getString(0));
-
-
+        IMainchainSubWallet subWallet = (IMainchainSubWallet)mSubWalletMap.get(args.getString(0));
         if (subWallet == null) {
             callbackContext.error("Don't have the subWallet: ["+args.getString(0)+"], please check.");
             return;
@@ -867,16 +902,6 @@ public class Wallet extends CordovaPlugin {
             e.printStackTrace();
             callbackContext.success(parseOneParam(ERRORCODE, e.GetErrorInfo()));
         }
-    }
-
-    public void resetAddressCache(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (mCurrentMasterWallet != null) {
-//            mCurrentMasterWallet.ResetAddressCache(args.getString(0));
-            callbackContext.success();
-            return;
-        }
-
-        callbackContext.success(parseOneParam("changePassword", null));
     }
 
     private JSONObject parseOneParam(String key, Object value) throws JSONException {
@@ -1109,8 +1134,8 @@ public class Wallet extends CordovaPlugin {
         String json = null;
         try {
             json = subWallet.CreateWithdrawTransaction(args.getString(1), args.getString(2), args.getLong(3),
-                     args.getString(4), args.getString(5), args.getString(6)
-                     , args.getLong(7), args.getString(8), args.getString(9));
+                    args.getString(4), args.getString(5), args.getString(6)
+                    , args.getLong(7), args.getString(8), args.getString(9));
             if (json != null) {
                 callbackContext.success(parseOneParam("json", json));
             }

@@ -27,6 +27,9 @@ import org.apache.cordova.*;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+
+import com.elastos.spvcore.MasterWalletManager;
+
 import java.lang.reflect.Method;
 
 import cn.jpush.android.api.JPushInterface;
@@ -60,6 +63,16 @@ public class MainActivity extends CordovaActivity
         loadUrl(sdurl);
 
         initJG();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        MasterWalletManager walletManager = MyUtil.GetCurrentMasterWalletManager();
+        if (walletManager != null) {
+//            walletManager.SaveConfigs();
+        }
     }
 
   private String  getStoragePaths() {

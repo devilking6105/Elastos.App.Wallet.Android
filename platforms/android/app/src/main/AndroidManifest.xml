@@ -58,7 +58,7 @@
                 <action android:name="cn.jpush.android.intent.PUSH_TIME" />
             </intent-filter>
         </service>
-        <provider android:authorities="io.ionic.starter.DataProvider" android:exported="false" android:name="cn.jpush.android.service.DataProvider" />
+        <provider android:authorities="com.elastos.desktop.DataProvider" android:exported="false" android:name="cn.jpush.android.service.DataProvider" />
         <service android:enabled="true" android:exported="true" android:name="cn.jpush.android.service.DaemonService">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.DaemonService" />

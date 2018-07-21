@@ -218,8 +218,8 @@ static jstring JNICALL nativeSendRawTransaction(JNIEnv *env, jobject clazz, jlon
     ISubWallet* subWallet = (ISubWallet*)jSubProxy;
     nlohmann::json result;
 
-    LOGD("FUNC=[%s]=========================line=[%d], transactionJson=[%s]", __FUNCTION__, __LINE__, transactionJson);
-    LOGD("FUNC=[%s]=========================line=[%d], signJson=[%s]", __FUNCTION__, __LINE__, signJson);
+    LOGE("FUNC=[%s]=========================line=[%d], transactionJson=[%s]", __FUNCTION__, __LINE__, transactionJson);
+    LOGE("FUNC=[%s]=========================line=[%d], signJson=[%s]", __FUNCTION__, __LINE__, signJson);
 
     try {
         result = subWallet->SendRawTransaction(ToJosnFromString(transactionJson), jfee, signJson);
@@ -228,15 +228,19 @@ static jstring JNICALL nativeSendRawTransaction(JNIEnv *env, jobject clazz, jlon
         return env->NewStringUTF(ToStringFromJson(result));
     }
     catch (std::invalid_argument& e) {
+        LOGE("1");
         ThrowWalletException(env, e.what());
     }
     catch (std::logic_error& e) {
+        LOGE("2");
         ThrowWalletException(env, e.what());
     }
     catch (std::runtime_error& e) {
+        LOGE("3");
         ThrowWalletException(env, e.what());
     }
     catch (std::exception& e) {
+        LOGE("4");
         ThrowWalletException(env, e.what());
     }
 

@@ -16,3 +16,4 @@ platforms/android/gradlew.bat
 platforms/android/.idea/
 *.iml
 platforms/android/local.properties
+.DS_Store
