@@ -47,15 +47,13 @@
       <ion-checkbox color="dark" ng-checked="checked" (click)='checkApp(item)'></ion-checkbox>
       <ion-thumbnail item-start (click)="goInfo(i)">
         <img src={{item.path}} alt="">
-      </ion-thumbnail>
-      <ion-thumbnail item-start (click)="goInfo(i)">
-        <h2>{{item.name}}</h2>
-        <p>{{item.size}}</p>
-        <p>Added {{item.date}}</p>
-      </ion-thumbnail>
-      <button ion-button clear item-end (click)="goInfo(i)">
+        <div class="thum-inner">
+            <h2>{{item.name}}</h2>
+            <p>{{item.size}}</p>
+            <p>Added {{item.date}}</p>
+        </div>
         <img class="right_arrow" src="assets/imgs/arrow.png">
-      </button>
+      </ion-thumbnail>
     </ion-item>
   </ion-list>
 </ion-content>

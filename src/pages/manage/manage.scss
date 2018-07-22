@@ -48,7 +48,11 @@ page-manage {
     background: #eef5f9;
     width: 100%;
     ion-thumbnail {
-      width: 25%;
+      display: flex;
+      width: 80%;
+      .thum-inner {
+        padding: 10px;
+      }
       h2, p {
         white-space: nowrap;
       }
@@ -69,15 +73,26 @@ page-manage {
         }
       }
       .right_arrow {
+        position: absolute;
+        right: 25px;
+        top: 40%;
         width: 12px;
+        height: 20px;
       }
+    }
+    .item-inner {
+      display: none;
     }
   }
   .content-md {
     background: #eef5f9;
     width: 100%;
     ion-thumbnail {
-      width: 25%;
+      display: flex;
+      width: 80%;
+      .thum-inner {
+        padding: 10px;
+      }
       h2, p {
         white-space: nowrap;
       }
@@ -98,8 +113,15 @@ page-manage {
         }
       }
       .right_arrow {
+        position: absolute;
+        right: 25px;
+        top: 40%;
         width: 12px;
+        height: 20px;
       }
+    }
+    .item-inner {
+      display: none;
     }
   }
   .icon-right {
