@@ -41,7 +41,7 @@ static jlong JNICALL nativeCreateMasterWallet(JNIEnv *env, jobject clazz, jlong 
 
     MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
     IMasterWallet* masterWallet = NULL;
-    LOGD("%s | %s | %s | %s | %s", masterWalletId, mnemonic, phrasePassword, payPassword, language);
+
     try {
         masterWallet = walletManager->CreateMasterWallet(masterWalletId, mnemonic, phrasePassword, payPassword,language);
     }
@@ -57,7 +57,6 @@ static jlong JNICALL nativeCreateMasterWallet(JNIEnv *env, jobject clazz, jlong 
     catch (std::exception& e) {
         ThrowWalletException(env, e.what());
     }
-
 
     env->ReleaseStringUTFChars(jmasterWalletId, masterWalletId);
     env->ReleaseStringUTFChars(jmnemonic, mnemonic);
@@ -111,19 +110,15 @@ static jlong JNICALL nativeImportWalletWithKeystore(JNIEnv *env, jobject clazz, 
         masterWallet = walletManager->ImportWalletWithKeystore(masterWalletId, ToJosnFromString(keystoreContent), backupPassword, payPassword, phrasePassword);
     }
     catch (std::invalid_argument& e) {
-        LOGE("111 - %s", e.what());
         ThrowWalletException(env, e.what());
     }
     catch (std::logic_error& e) {
-        LOGE("222 - %s", e.what());
         ThrowWalletException(env, e.what());
     }
     catch (std::runtime_error& e) {
-        LOGE("333 - %s", e.what());
         ThrowWalletException(env, e.what());
     }
     catch (std::exception& e) {
-        LOGE("444 - %s", e.what());
         ThrowWalletException(env, e.what());
     }
 

@@ -23,6 +23,9 @@ buildscript {
         jcenter()
     }
 
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.1.2'
+    }
 }
 
 // Allow plugins to declare Maven dependencies via build-extras.gradle.
@@ -34,7 +37,7 @@ allprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.1.0'
+    gradleVersion = '4.4.0'
 }
 
 // Configuration properties. Set these via environment variables, build-extras.gradle, or gradle.properties.
@@ -164,8 +167,8 @@ android {
 
         ndk {
             abiFilters 'armeabi-v7a'//'armeabi'// 'arm64-v8a'
-//            moduleName "elastoswallet"
-//            ldLibs "log"
+            moduleName "elastoswallet"
+            ldLibs "log"
         }
 
         externalNativeBuild {

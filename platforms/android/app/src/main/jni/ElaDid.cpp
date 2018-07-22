@@ -22,19 +22,13 @@ static jstring JNICALL nativeGetDIDName(JNIEnv *env, jobject clazz, jlong jDidPr
 //"(JLjava/lang/String;Ljava/lang/String;)V"
 static void JNICALL nativeSetValue(JNIEnv *env, jobject clazz, jlong jDidProxy, jstring jkeyPath, jstring jvalueJson)
 {
-
     const char* keyPath = env->GetStringUTFChars(jkeyPath, NULL);
-
     const char* valueJson = env->GetStringUTFChars(jvalueJson, NULL);
-
     IDID* did = (IDID*)jDidProxy;
-    LOGE("FUNC=[%s]===================LINE=[%d], p=[%s], v=[%s]", __FUNCTION__, __LINE__, keyPath, valueJson);
+    LOGD("FUNC=[%s]===================LINE=[%d], p=[%s], v=[%s]", __FUNCTION__, __LINE__, keyPath, valueJson);
     did->SetValue(keyPath, ToJosnFromString(valueJson));
-    LOGE("111111111111");
     env->ReleaseStringUTFChars(jkeyPath, keyPath);
-    LOGE("222222");
     env->ReleaseStringUTFChars(jvalueJson, valueJson);
-    LOGE("333333");
 }
 
 //"(JLjava/lang/String;)Ljava/lang/String;"
@@ -45,7 +39,7 @@ static /*nlohmann::json*/ jstring JNICALL nativeGetValue(JNIEnv *env, jobject cl
     nlohmann::json jsonValue = did->GetValue(path);
     env->ReleaseStringUTFChars(jpath, path);
 
-    LOGE("FUNC=[%s]===================LINE=[%d], p=[%s], v=[%s]", __FUNCTION__, __LINE__, path, ToStringFromJson(jsonValue));
+    LOGD("FUNC=[%s]===================LINE=[%d], p=[%s], v=[%s]", __FUNCTION__, __LINE__, path, ToStringFromJson(jsonValue));
     return env->NewStringUTF(ToStringFromJson(jsonValue));
 }
 
