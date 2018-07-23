@@ -31,14 +31,18 @@ import java.lang.reflect.Method;
 import io.ionic.starter.Logger;
 
 
-public class AppActivity extends CordovaActivity
+public class WalletAppActivity extends CordovaActivity
 {
 
-  public String TAG = "Elastos";
+  public String TAG = "Wallet";
   static {
 //    System.loadLibrary("spvsdk");
+//    System.loadLibrary("idchain");
+//    System.loadLibrary("Elastos.Runtime");
+//    System.loadLibrary("Elastos.CoreLibrary");
+//    System.loadLibrary("Elastos.Wallet");
+//    System.loadLibrary("Elastos.DID");
 //    System.loadLibrary("elastoswallet");
-
   }
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -66,7 +70,7 @@ public class AppActivity extends CordovaActivity
         if (null != data) {
           scheme = data.getScheme();
           host = data.getHost();
-          if (scheme.equals("elastos") && host.equals("elastos")) {
+          if (scheme.equals("wallet") && host.equals("wallet")) {
 
             String path = data.toString();
             int urlindex = path.indexOf("url=");
@@ -77,6 +81,7 @@ public class AppActivity extends CordovaActivity
             if(!url.startsWith("file://")) {
               sdcardurl = "file:///" + getStoragePaths() + "/elastos/" + url;
             }
+
             Log.e(TAG, "loadUrl: " + sdcardurl);
             loadUrl(sdcardurl);
           } else {

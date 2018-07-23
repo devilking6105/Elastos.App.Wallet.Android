@@ -32,7 +32,11 @@ public class TestPlugin extends CordovaPlugin {
             public void run() {
               Intent mIntent = new Intent();
               mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-              mIntent.setData(Uri.parse("elastos://elastos?action=27&url="+ message));
+              if(message.contains("wallet")) {
+                mIntent.setData(Uri.parse("wallet://wallet?action=20&url=" + message));
+              }else {
+                mIntent.setData(Uri.parse("elastos://elastos?action=21&url=" + message));
+              }
               mIntent.setPackage("com.elastos.desktop");
               cordova.getActivity().startActivity(mIntent);
             }
