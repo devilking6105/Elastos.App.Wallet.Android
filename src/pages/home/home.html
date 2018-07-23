@@ -8,7 +8,7 @@
       </ion-col>
       <ion-col col-21 (tap)="tapEvent($event)"></ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row class="main-contain">
       <ion-col class="main-section" col-3 *ngFor="let item of getAppList(), let i = index" (press)="pressEvent()"
                (click)="onClick(item)">
         <img src={{item.path}} alt="">

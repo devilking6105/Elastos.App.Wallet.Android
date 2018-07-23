@@ -4,9 +4,14 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-  <ion-navbar>
-    <ion-title>manage</ion-title>
+<ion-header no-border>
+  <ion-navbar transparent>
+    <ion-buttons start class="man-title">
+        Management
+    </ion-buttons>
+    <ion-buttons end (click)="goToIndex(i)" style="z-index: 999;">
+        <img class="icon-right" src="assets/imgs/man-del.png" alt="Delete" (click)="goToIndex()">
+    </ion-buttons>
 
     <!-- <ion-buttons end>
       <button ion-button icon-only>
@@ -42,15 +47,13 @@
       <ion-checkbox color="dark" ng-checked="checked" (click)='checkApp(item)'></ion-checkbox>
       <ion-thumbnail item-start (click)="goInfo(i)">
         <img src={{item.path}} alt="">
-      </ion-thumbnail>
-      <ion-thumbnail item-start (click)="goInfo(i)">
-        <h2>{{item.name}}</h2>
-        <p>{{item.size}}</p>
-        <p>Added {{item.date}}</p>
-      </ion-thumbnail>
-      <button ion-button clear item-end (click)="goInfo(i)">
+        <div class="thum-inner">
+            <h2>{{item.name}}</h2>
+            <p>{{item.size}}</p>
+            <p>Added {{item.date}}</p>
+        </div>
         <img class="right_arrow" src="assets/imgs/arrow.png">
-      </button>
+      </ion-thumbnail>
     </ion-item>
   </ion-list>
 </ion-content>

@@ -4,21 +4,55 @@ page-manage {
     background-color: #eef5f9;
   }
   .card-ios {
+    margin: 10px 20px;
+    width: calc(100% - 40px);
     background-color: #eef5f9;
+    .title {
+      font-family: 'FiraSans-Medium';
+      font-size: 15px;
+    }
+  }
+  .card-md {
+    margin: 10px 20px;
+    width: calc(100% - 40px);
+    background-color: #eef5f9;
+    .title {
+      font-family: 'FiraSans-Medium';
+      font-size: 15px;
+    }
   }
 
   .toolbar {
-    /* opacity: 0; */
-    // background: rgba(red, green, blue, 0)
-    .icon-right {
-      width: 24px;
+    padding: 5px 16px;
+    .button-inner {
+      display: none;
+    }
+    .back-button {
+      position: absolute;
+      right: 0;
+    }
+    .bar-button-ios {
+      padding: 0;
+    }
+    .man-title {
+      position: absolute;
+      text-transform: capitalize;
+      font-family: 'FiraSans-Bold';
+      display: inline-block;
+      font-size: 24px;
+      color: #000000; 
+      font-weight: 700;
     }
   }
   .content-ios, .content-md {
     background: #eef5f9;
     width: 100%;
     ion-thumbnail {
-      width: 25%;
+      display: flex;
+      width: 80%;
+      .thum-inner {
+        padding: 10px;
+      }
       h2, p {
         white-space: nowrap;
       }
@@ -39,15 +73,26 @@ page-manage {
         }
       }
       .right_arrow {
+        position: absolute;
+        right: 25px;
+        top: 40%;
         width: 12px;
+        height: 20px;
       }
+    }
+    .item-inner {
+      display: none;
     }
   }
   .content-md {
     background: #eef5f9;
     width: 100%;
     ion-thumbnail {
-      width: 25%;
+      display: flex;
+      width: 80%;
+      .thum-inner {
+        padding: 10px;
+      }
       h2, p {
         white-space: nowrap;
       }
@@ -68,8 +113,15 @@ page-manage {
         }
       }
       .right_arrow {
+        position: absolute;
+        right: 25px;
+        top: 40%;
         width: 12px;
+        height: 20px;
       }
+    }
+    .item-inner {
+      display: none;
     }
   }
   .icon-right {
@@ -103,7 +155,19 @@ page-manage {
     text-align: center;
     font-size: 22px;
     color: #fff;
+    padding-top: 16px;
     border-radius: 10px;
+    .card-content {
+      padding-top: 0px;
+    }
+    .button {
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+    }
+    .button-inner {
+      background-color: transparent;
+    }
     .button-ios {
       background-color: #0064D7;
     }

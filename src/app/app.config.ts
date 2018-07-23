@@ -18,7 +18,7 @@ export class AppConfig {
 
   private static initAppList = [
     {
-      path: "../wallet/www/assets/images/logo.png",
+      path: "../wallet/www/assets/images/logo.jpg",
       name: "Wallet",
       url: "wallet/www/index.html",
       size: "1 MB",
@@ -34,18 +34,6 @@ export class AppConfig {
       name: "CarTest",
       url: "CarTest/www/index.html",
       size: "666 KB",
-      date: AppConfig.currentDateYYYYMMDD
-    }, {
-      path: "../dApp4/www/assets/imgs/logo.png",
-      name: "dApp4",
-      url: "dApp4/www/index.html",
-      size: "888 KB",
-      date: AppConfig.currentDateYYYYMMDD
-    }, {
-      path: "../dApp5/www/assets/imgs/logo.png",
-      name: "dApp5",
-      url: "dApp5/www/index.html",
-      size: "999 KB",
       date: AppConfig.currentDateYYYYMMDD
     }
   ];

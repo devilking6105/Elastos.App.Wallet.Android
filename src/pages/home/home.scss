@@ -1,4 +1,10 @@
 page-home {
+  .scroll-content {
+    overflow: hidden;
+  }
+  .main-contain {
+    margin-top: 10px;
+  }
   .content-ios, .content-md {
     background: url(../assets/imgs/bg.jpg) center center no-repeat;
     background-size: 100% 100%;
@@ -12,12 +18,14 @@ page-home {
     }
     .app-title {
       max-width: 120px;
-      color: #ccc;
+      font-family: 'FiraSans-Bold';
+      color: #ffffff;
       text-align: center;
       padding: 10px 0;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+      font-size: 10px;
     }
     .item-ios {
       background-color: #eef5f9;

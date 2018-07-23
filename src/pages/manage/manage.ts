@@ -1,12 +1,13 @@
-import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
-import {File} from '@ionic-native/file';
-import {FileChooser} from '@ionic-native/file-chooser';
-import {FilePath} from "@ionic-native/file-path";
-import {Zip} from '@ionic-native/zip';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { File } from '@ionic-native/file';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { FilePath } from "@ionic-native/file-path";
+import { Zip } from '@ionic-native/zip';
 
-import {InfoPage} from '../info/info';
-import {AppConfig} from "../../app/app.config";
+import { HomePage } from '../home/home';
+import { InfoPage } from '../info/info';
+import { AppConfig } from "../../app/app.config";
 
 /**
  * Generated class for the ManagePage page.
@@ -26,18 +27,26 @@ export class ManagePage {
   public appList = []; // 应用列表
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              public file: File,
-              public fileChooser: FileChooser,
-              public filePath: FilePath,
-              public zip: Zip) {
+    public navParams: NavParams,
+    public file: File,
+    public fileChooser: FileChooser,
+    public filePath: FilePath,
+    public zip: Zip) {
     AppConfig.initAppListData();
     this.appList = AppConfig.getAppListData();
   }
 
   /**
+  *
+  * @desc  页面跳转到首页
+  */
+  goToIndex(index) {
+    this.navCtrl.push(HomePage)
+  }
+
+  /**
    *
-   * @desc  页面跳转
+   * @desc  页面跳转到详情
    */
   goInfo(index) {
     this.navCtrl.push(InfoPage)
