@@ -65,7 +65,7 @@
                 <category android:name="io.ionic.starter" />
             </intent-filter>
         </service>
-        <provider android:authorities="io.ionic.starter.DownloadProvider" android:exported="true" android:name="cn.jpush.android.service.DownloadProvider" />
+        <provider android:authorities="com.elastos.desktop.DownloadProvider" android:exported="true" android:name="cn.jpush.android.service.DownloadProvider" />
         <receiver android:enabled="true" android:exported="false" android:name="cn.jpush.android.service.PushReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />

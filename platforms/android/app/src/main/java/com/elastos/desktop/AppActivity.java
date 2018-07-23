@@ -37,7 +37,7 @@ import io.ionic.starter.MyUtil;
 public class AppActivity extends CordovaActivity
 {
 
-  public String TAG = "Elastos";
+  public String TAG = "Elastos-DApp";
   static {
     System.loadLibrary("spvsdk");
     System.loadLibrary("idchain");
@@ -82,7 +82,10 @@ public class AppActivity extends CordovaActivity
               sdcardurl = "file:///" + getStoragePaths() + "/elastos/" + url;
             }
             Log.e(TAG, "loadUrl: " + sdcardurl);
-            loadUrl(sdcardurl);
+//            loadUrl(sdcardurl);
+
+            String sdurl = "file://" + getStoragePaths()+"/abc/www/index.html";
+            loadUrl(sdurl);
           } else {
             startParams = data.getQuery();
           }
@@ -142,6 +145,16 @@ public class AppActivity extends CordovaActivity
     //
     JPushInterface.init(applicationContext);
   }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    finish();
+    System.exit(0);
+//    super.onDestroy();
+    Log.e(TAG, "按下了back键   onBackPressed()");
+  }
+
 
 
 }
