@@ -40,6 +40,7 @@
     "android-versions": "^1.3.0",
     "angular2-uuid": "^1.1.1",
     "angularx-qrcode": "^1.1.5",
+    "appmanager": "file:appmanager",
     "bootstrap": "^4.1.0",
     "cordova-android": "^7.0.0",
     "cordova-clipboard": "^1.2.1",
@@ -64,13 +65,12 @@
     "jsonfile": "^4.0.0",
     "lodash": "^4.17.5",
     "ngx-weui": "^3.0.0",
-    "phonegap-plugin-barcodescanner": "^7.1.2",
+    "phonegap-plugin-barcodescanner": "^8.0.0",
     "properties-parser": "^0.3.1",
     "q": "^1.5.1",
     "rxjs": "5.5.10",
     "secp256k1": "^3.5.0",
     "sw-toolbox": "3.6.0",
-    "testplugin": "file:TestPlugin",
     "universalify": "^0.1.1",
     "weui": "^1.1.2",
     "zip": "^1.2.0",
@@ -89,16 +89,16 @@
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
       "cordova-sqlite-storage": {},
-      "phonegap-plugin-barcodescanner": {
-        "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      },
       "cordova-plugin-filechooser": {},
       "cordova-clipboard": {},
       "ElaWallet": {},
-      "com.plugin.testPlugin": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-zip": {},
-      "cordova-plugin-filepath": {}
+      "cordova-plugin-filepath": {},
+      "phonegap-plugin-barcodescanner": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
+      "com.plugin.appmanager": {}
     },
     "platforms": [
       "android"

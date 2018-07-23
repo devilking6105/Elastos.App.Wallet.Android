@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<manifest android:hardwareAccelerated="true" android:versionCode="10006" android:versionName="1.0.6" package="org.elastos.desktop" xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest android:hardwareAccelerated="true" android:versionCode="10007" android:versionName="1.0.7" package="org.elastos.desktop" xmlns:android="http://schemas.android.com/apk/res/android">
     <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:resizeable="true" android:smallScreens="true" android:xlargeScreens="true" />
     <uses-permission android:name="android.permission.INTERNET" />
     <permission android:name="io.ionic.starter.permission.JPUSH_MESSAGE" android:protectionLevel="signature" />
@@ -38,16 +38,14 @@
                 <data android:host="elastos" android:scheme="elastos" />
             </intent-filter>
         </activity>
-      <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:label="@string/WalletApp_activity_name" android:launchMode="singleTop" android:name="org.elastos.desktop.WalletAppActivity" android:process=":wallet"  android:theme="@android:style/Theme.DeviceDefault.NoActionBar"  android:windowSoftInputMode="adjustResize">
-        <intent-filter>
-          <action android:name="android.intent.action.VIEW" />
-          <category android:name="android.intent.category.BROWSABLE" />
-          <category android:name="android.intent.category.DEFAULT" />
-          <data android:host="wallet" android:scheme="wallet" />
-        </intent-filter>
-      </activity>
-        <activity android:clearTaskOnLaunch="true" android:configChanges="orientation|keyboardHidden|screenSize" android:exported="false" android:name="com.google.zxing.client.android.CaptureActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:label="Share" android:name="com.google.zxing.client.android.encode.EncodeActivity" />
+        <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:label="@string/WalletApp_activity_name" android:launchMode="singleTop" android:name="org.elastos.desktop.WalletAppActivity" android:process=":wallet" android:theme="@android:style/Theme.DeviceDefault.NoActionBar" android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:host="wallet" android:scheme="wallet" />
+            </intent-filter>
+        </activity>
         <activity android:exported="false" android:name="cn.jpush.android.ui.PopWinActivity" android:theme="@style/MyDialogStyle">
         </activity>
         <activity android:configChanges="orientation|keyboardHidden" android:exported="false" android:name="cn.jpush.android.ui.PushActivity" android:theme="@android:style/Theme.NoTitleBar">
@@ -134,6 +132,8 @@
         <service android:exported="false" android:isolatedProcess="false" android:name="org.chromium.content.app.PrivilegedProcessService2" android:process=":privileged_process2" />
         <meta-data android:name="org.chromium.content.browser.SMART_CLIP_PROVIDER" android:value="org.chromium.content.browser.SmartClipProvider" />
         <meta-data android:name="android.arch.lifecycle.VERSION" android:value="27.0.0-SNAPSHOT" />
+        <activity android:clearTaskOnLaunch="true" android:configChanges="orientation|keyboardHidden|screenSize" android:exported="false" android:name="com.google.zxing.client.android.CaptureActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:label="Share" android:name="com.google.zxing.client.android.encode.EncodeActivity" />
     </application>
     <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="21" />
     <uses-permission android:name="android.permission.CAMERA" />
