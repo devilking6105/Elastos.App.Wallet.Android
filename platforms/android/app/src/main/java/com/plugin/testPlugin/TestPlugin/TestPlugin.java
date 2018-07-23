@@ -37,7 +37,7 @@ public class TestPlugin extends CordovaPlugin {
               }else {
                 mIntent.setData(Uri.parse("elastos://elastos?action=21&url=" + message));
               }
-              mIntent.setPackage("com.elastos.desktop");
+              mIntent.setPackage("org.elastos.desktop");
               cordova.getActivity().startActivity(mIntent);
             }
           });

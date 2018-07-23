@@ -38,7 +38,7 @@
                 <data android:host="elastos" android:scheme="elastos" />
             </intent-filter>
         </activity>
-      <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:label="@string/App_activity_name" android:launchMode="singleTop" android:name="org.elastos.desktop.WalletAppActivity" android:process=":wallet"  android:theme="@android:style/Theme.DeviceDefault.NoActionBar"  android:windowSoftInputMode="adjustResize">
+      <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:label="@string/WalletApp_activity_name" android:launchMode="singleTop" android:name="org.elastos.desktop.WalletAppActivity" android:process=":wallet"  android:theme="@android:style/Theme.DeviceDefault.NoActionBar"  android:windowSoftInputMode="adjustResize">
         <intent-filter>
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.BROWSABLE" />

@@ -17,7 +17,7 @@
        under the License.
  */
 
-package com.elastos.desktop;
+package org.elastos.desktop;
 
 import android.content.Intent;
 import android.net.Uri;
