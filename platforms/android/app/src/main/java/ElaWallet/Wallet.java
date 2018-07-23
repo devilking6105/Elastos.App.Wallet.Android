@@ -398,6 +398,9 @@ public class Wallet extends CordovaPlugin {
         }
 
         if (mCurrentMasterWallet != null) {
+            if(mMasterWalletList == null){
+                mMasterWalletList = new ArrayList<IMasterWallet>();
+            }
             mMasterWalletList.add(mCurrentMasterWallet);
             initDidManager();
             callbackContext.success();
