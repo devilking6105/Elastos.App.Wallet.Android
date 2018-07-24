@@ -103,8 +103,11 @@ static jstring JNICALL nativeGenerateProgram(JNIEnv *env, jobject clazz, jlong j
 {
     const char* message = env->GetStringUTFChars(jmessage, NULL);
     const char* password = env->GetStringUTFChars(jpassword, NULL);
+    LOGE("1111");
     IDID* did = (IDID*)jDidProxy;
+    LOGE("2222 - %s - %s", message, password);
     nlohmann::json jsonValue = did->GenerateProgram(message, password);
+    LOGE("3333");
     env->ReleaseStringUTFChars(jmessage, message);
     env->ReleaseStringUTFChars(jpassword, password);
     return env->NewStringUTF(ToStringFromJson(jsonValue));

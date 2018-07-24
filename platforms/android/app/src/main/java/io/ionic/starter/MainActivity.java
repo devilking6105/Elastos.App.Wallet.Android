@@ -71,7 +71,7 @@ public class MainActivity extends CordovaActivity
 
         MasterWalletManager walletManager = MyUtil.GetCurrentMasterWalletManager();
         if (walletManager != null) {
-//            walletManager.SaveConfigs();
+            walletManager.SaveConfigs();
         }
     }
 
