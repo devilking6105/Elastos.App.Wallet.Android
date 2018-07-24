@@ -58,7 +58,8 @@ public class MainActivity extends CordovaActivity
         Log.e(TAG, sdurl);
         loadUrl(sdurl);
 
-        initJG();
+         MyUtil.moveConfigFiles2RootPath(this);
+//        initJG();
     }
 
   private String  getStoragePaths() {
@@ -79,8 +80,6 @@ public class MainActivity extends CordovaActivity
   }
 
     private void initJG(){
-        MyUtil.moveConfigFiles2RootPath(this);
-
         Context applicationContext = getApplicationContext();
         MyUtil.setApplicationContext(applicationContext);
 
