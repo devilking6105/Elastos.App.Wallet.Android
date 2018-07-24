@@ -34,7 +34,7 @@ export class TransferComponent extends BaseComponent implements OnInit {
   rawTransaction: '';
 
   SELA = Config.SELA;
-  type:string="";
+  appType:string="";
   selectType:string="";
   parms:any;
   txId:string;
@@ -42,13 +42,14 @@ export class TransferComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     this.setTitleByAssets('text-transfer');
     let transferObj =this.getNavParams().data;
+    console.log("=====pf==="+JSON.stringify(transferObj));
     this.chianId = transferObj["chianId"];
     this.transfer.toAddress = transferObj["addr"] || "";
     this.transfer.amount = transferObj["money"] || "";
-    this.type = transferObj["type"] || "";
+    this.appType = transferObj["appType"] || "";
     this.selectType = transferObj["selectType"] || "";
     this.parms = transferObj["parms"] || "";
-    this.did = transferObj["did"];
+    this.did = transferObj["did"] || "";
     this.initData();
 
     this.setRightIcon('./assets/images/icon/ico-scan.svg', () => {
@@ -127,7 +128,6 @@ export class TransferComponent extends BaseComponent implements OnInit {
     this.walletManager.createTransaction(this.chianId, "",
       this.transfer.toAddress,
       this.transfer.amount*Config.SELA,
-      this.transfer.fee,
       this.transfer.memo,
       this.transfer.remark,
       (data)=>{
@@ -150,7 +150,7 @@ export class TransferComponent extends BaseComponent implements OnInit {
     }
 
     this.walletManager.sendRawTransaction(this.chianId, this.rawTransaction, this.transfer.fee, this.transfer.payPassword, (data) => {
-      this.txId = data["json"]["txHash"];
+      this.txId = JSON.parse(data["json"])["TxHash"];
       if (data['ERRORCODE'] == undefined) {
         this.walletManager.registerWalletListener(this.chianId, (data) => {
           if (data['confirms'] == 1) {
@@ -158,10 +158,10 @@ export class TransferComponent extends BaseComponent implements OnInit {
             });
           }
         });
-        if(this.isNull(this.type)){
+        if(this.isNull(this.appType)){
           this.toast('send-raw-transaction');
           this.Go(TabsComponent);
-        }else if(this.type === "kyc"){
+        }else if(this.appType === "kyc"){
              if(this.selectType === "company"){
                   this.company();
              }else if(this.selectType === "person"){
@@ -189,10 +189,16 @@ export class TransferComponent extends BaseComponent implements OnInit {
     let checksum = IDManager.getCheckSum(params,"asc");
     params["checksum"] = checksum;
     this.getHttp().postByAuth(ApiUrl.AUTH,params).toPromise().then(data => {
-         let authData= JSON.parse(data["_body"])
-         this.localStorage.add("kyc",{id:this.did,status:0,'serialNum':authData['serialNum'],'vtoken':authData['vtoken'],'txHash':this.txId,'parms':this.parms}).then(()=>{
-                    this.Go(IdResultComponent,{'status':'0'});
-         });
+         if(data["status"] === 200){
+          let authData= JSON.parse(data["_body"]);
+          alert('---authData---'+JSON.stringify(authData));
+          if(authData["errorCode"] === "0"){
+               let serialNum = authData["serialNum"];
+               this.saveKycSerialNum(serialNum);
+          }else{
+              alert("错误码:"+authData["errorCode"]);
+          }
+         }
 
     }).catch(error => {
          this.Go(IdResultComponent,{'status':'1'});
@@ -207,12 +213,50 @@ sendPersonAuth(parms){
       parms["checksum"] = checksum;
       this.getHttp().postByAuth(ApiUrl.AUTH,parms).toPromise().then(data=>{
         if(data["status"] === 200){
-          this.Go(IdResultComponent,{'status':'0'});
+          let authData= JSON.parse(data["_body"])
+          alert('---authData---'+JSON.stringify(authData));
+          if(authData["errorCode"] === "0"){
+               let serialNum = authData["serialNum"];
+               this.saveKycSerialNum(serialNum);
+          }else{
+              alert("错误码:"+authData["errorCode"]);
+          }
          }
       }).catch(error => {
 
       });
       this.Go(IdResultComponent,{'status':'0'});
+}
+
+saveKycSerialNum(serialNum){
+// let parm ={};
+// parm[this.did] ={};
+// alert("=====1"+JSON.stringify(parm));
+// let appType = "kyc";
+// parm[this.did][this.appType ] ={};
+// alert("=====2"+JSON.stringify(parm));
+// parm[this.did][this.appType ][this.selectType] ={};
+// alert("=====3"+JSON.stringify(parm));
+// let sparms ={};
+// sparms[serialNum] = {txHash:this.txId,serialNum:serialNum};
+// parm[this.did][this.appType][this.selectType]["order"] =sparms;
+// alert("=====4"+JSON.stringify(parm));
+
+//   // let id = this.did+"-"+serialNum+"-"+this.selectType;
+//   this.localStorage.addKyc("kyc",parm).then((val)=>{
+//        this.Go(IdResultComponent,{'status':'0',id:this.did,appType:this.appType,selectType:this.selectType});
+//   });
+     this.localStorage.get("kycId").then((val)=>{
+         let idsObj = JSON.parse(val);
+         let order = idsObj[this.did]["kyc"][this.selectType];
+         if(this.isNull(order["order"])){
+             order["order"] = {};
+         }
+         order["order"][serialNum] = {txHash:this.txId,serialNum:serialNum};
+         this.localStorage.set("kycId",idsObj).then((newVal)=>{
+          this.Go(IdResultComponent,{'status':'0',id:this.did,appType:this.appType,type:this.selectType});
+         });
+     })
 }
 
 }

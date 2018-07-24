@@ -62,7 +62,7 @@ public class Wallet extends CordovaPlugin {
         if (mMasterWalletList != null) {
             mCurrentMasterWallet = mMasterWalletList.get(0);
             if (mCurrentMasterWallet != null) {
-                // mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
+                mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
             }
         }
         else {
@@ -74,7 +74,7 @@ public class Wallet extends CordovaPlugin {
       Log.d("JS-Wallet", "initDidManager=========1====mRootPath="+mRootPath);
         if (mDidManager == null && mCurrentMasterWallet != null) {
             Log.d("JS-Wallet", "initDidManager=========2====mRootPath="+mRootPath);
-            // mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
+            mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
         }
     }
 
@@ -543,7 +543,7 @@ public class Wallet extends CordovaPlugin {
         }
     }
 
-    // String CreateTransaction(String fromAddress, String toAddress, long amount, long fee, String memo)
+    // String CreateTransaction(String fromAddress, String toAddress, long amount, String memo)
     public void createTransaction(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
         ISubWallet subWallet = mSubWalletMap.get(args.getString(0));
@@ -555,7 +555,7 @@ public class Wallet extends CordovaPlugin {
         String transactionId = null;
         try {
             transactionId = subWallet.CreateTransaction(args.getString(1), args.getString(2), args.getLong(3),
-                                    args.getLong(4), args.getString(5), args.getString(6));
+                              args.getString(4), args.getString(5));
             if (transactionId != null) {
                 callbackContext.success(parseOneParam("transactionId", transactionId));
             }
@@ -595,8 +595,7 @@ public class Wallet extends CordovaPlugin {
         }
 
         try {
-            String result = subWallet.CreateMultiSignTransaction(args.getString(1), args.getString(2), args.getLong(3),
-                        args.getLong(4), args.getString(5));
+            String result = subWallet.CreateMultiSignTransaction(args.getString(1), args.getString(2), args.getLong(3), args.getString(4));
 
             if (result != null) {
                 callbackContext.success(parseOneParam("result", result));
@@ -622,7 +621,6 @@ public class Wallet extends CordovaPlugin {
 
         String allTransaction = subWallet.GetAllTransaction(args.getInt(1), args.getInt(2), args.getString(3));
         callbackContext.success(parseOneParam("allTransaction", allTransaction));
-        Log.i("JS-Wallet", "getAllTransaction==================allTransaction=["+allTransaction+"]");
     }
 
     public void registerWalletListener(JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -638,12 +636,61 @@ public class Wallet extends CordovaPlugin {
             @Override
             public void OnTransactionStatusChanged(String txId, String status, String desc, int confirms) {
                 JSONObject jsonObject = new JSONObject();
-                Log.i("JS-Wallet", "registerWalletListener==================2");
+                Log.i("JS-Wallet", "OnTransactionStatusChanged==================1");
                 try {
                     jsonObject.put("txId", txId);
                     jsonObject.put("status", status);
                     jsonObject.put("desc", desc);
                     jsonObject.put("confirms", confirms);
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();;
+                }
+
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK,jsonObject);
+                pluginResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(pluginResult);
+            }
+
+            @Override
+            public void OnBlockSyncStarted() {
+                JSONObject jsonObject = new JSONObject();
+                Log.i("JS-Wallet", "OnBlockSyncStarted==================1");
+                try {
+                    jsonObject.put("OnBlockSyncStarted", "OnBlockSyncStarted");
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();;
+                }
+
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK,jsonObject);
+                pluginResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(pluginResult);
+            }
+
+            @Override
+            public void OnBlockHeightIncreased(int currentBlockHeight, double progress) {
+                JSONObject jsonObject = new JSONObject();
+                Log.i("JS-Wallet", "OnBlockHeightIncreased==================1");
+                try {
+                    jsonObject.put("currentBlockHeight", currentBlockHeight);
+                    jsonObject.put("progress", progress);
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();;
+                }
+
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK,jsonObject);
+                pluginResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(pluginResult);
+            }
+
+            @Override
+            public void OnBlockSyncStopped() {
+                JSONObject jsonObject = new JSONObject();
+                Log.i("JS-Wallet", "OnBlockSyncStopped==================1");
+                try {
+                    jsonObject.put("OnBlockSyncStopped", "OnBlockSyncStopped");
                 }
                 catch (JSONException e) {
                     e.printStackTrace();;
@@ -788,7 +835,7 @@ public class Wallet extends CordovaPlugin {
         }
     }
 
-    //String CreateIdTransaction(fromAddress, toAddress, long amount, payloadJson, programJson, long fee, memo, remark)
+    //String CreateIdTransaction(fromAddress, payloadJson, programJson, memo, remark)
     public void createIdTransaction(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
         Log.i("JS-Wallet", "createIdTransaction==================1, id="+args.getString(0));
@@ -813,8 +860,7 @@ public class Wallet extends CordovaPlugin {
 
         String json = null;
         try {
-            json = subWallet.CreateIdTransaction(args.getString(1), args.getString(2), args.getLong(3),
-                     args.getString(4), args.getString(5), args.getLong(6), args.getString(7), args.getString(8));
+            json = subWallet.CreateIdTransaction(args.getString(1), args.getString(2), args.getString(3), args.getString(4), args.getString(5));
             if (json != null) {
                 callbackContext.success(parseOneParam("json", json));
             }
@@ -846,7 +892,7 @@ public class Wallet extends CordovaPlugin {
         try {
             json = subWallet.CreateDepositTransaction(args.getString(1), args.getString(2), args.getLong(3)
                     , args.getString(4), args.getString(5), args.getString(6)
-                    , args.getLong(7), args.getString(8), args.getString(9));
+                    , args.getString(7), args.getString(8));
             if (json != null) {
                 callbackContext.success(parseOneParam("json", json));
             }
@@ -1117,7 +1163,7 @@ public class Wallet extends CordovaPlugin {
     // SidechainSubWallet
 
     // String CreateWithdrawTransaction(String fromAddress, String toAddress, long amount, String mainchainAccounts,
-    //             String mainchainAmounts, String mainchainIndexs, long fee, String memo, String remark)
+    //             String mainchainAmounts, String mainchainIndexs, String memo, String remark)
     public void createWithdrawTransaction(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
         Log.i("JS-Wallet", "createWithdrawTransaction==================1, id="+args.getString(0));
@@ -1136,7 +1182,7 @@ public class Wallet extends CordovaPlugin {
         try {
             json = subWallet.CreateWithdrawTransaction(args.getString(1), args.getString(2), args.getLong(3),
                      args.getString(4), args.getString(5), args.getString(6)
-                     , args.getLong(7), args.getString(8), args.getString(9));
+                     , args.getString(7), args.getString(8));
             if (json != null) {
                 callbackContext.success(parseOneParam("json", json));
             }
