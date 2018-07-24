@@ -84,7 +84,7 @@ static jstring JNICALL nativeGetGenesisAddress(JNIEnv *env, jobject clazz, jlong
 
 static const JNINativeMethod gMethods[] = {
     {"nativeCreateWithdrawTransaction",
-    "(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    "(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
             , (void*)nativeCreateWithdrawTransaction},
     {"nativeGetGenesisAddress", "(J)Ljava/lang/String;", (void*)nativeGetGenesisAddress},
 };
