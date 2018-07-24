@@ -23,9 +23,6 @@ buildscript {
         jcenter()
     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
-    }
 }
 
 // Allow plugins to declare Maven dependencies via build-extras.gradle.
@@ -37,7 +34,7 @@ allprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.4.0'
+    gradleVersion = '4.1.0'
 }
 
 // Configuration properties. Set these via environment variables, build-extras.gradle, or gradle.properties.
@@ -154,9 +151,6 @@ task cdvPrintProps << {
 
 android {
 
-//    dexOptions {
-//        preDexLibraries = false
-//    }
     defaultConfig {
         versionCode cdvVersionCode ?: new BigInteger("" + privateHelpers.extractIntFromManifest("versionCode"))
         applicationId privateHelpers.extractStringFromManifest("package")
@@ -167,8 +161,8 @@ android {
 
         ndk {
             abiFilters 'armeabi-v7a'//'armeabi'// 'arm64-v8a'
-            moduleName "elastoswallet"
-            ldLibs "log"
+            //moduleName "elastoswallet"
+            //ldLibs "log"
         }
 
         externalNativeBuild {
@@ -181,9 +175,9 @@ android {
     }
 
     externalNativeBuild {
-         cmake {
-           path "CMakeLists.txt"
-         }
+//         cmake {
+//           path "CMakeLists.txt"
+//         }
     }
 
     lintOptions {
@@ -192,10 +186,6 @@ android {
 
     compileSdkVersion 26
     buildToolsVersion '27.0.3'
-
-//    packagingOptions {//加上这写代码
-//        pickFirst 'META-INF/*'
-//    }
 
     //This code exists for Crosswalk and other Native APIs.
     //By default, we multiply the existing version code in the Android Manifest by 10 and
@@ -265,8 +255,6 @@ dependencies {
     implementation fileTree(include: '*.jar', dir: 'libs')
     // SUB-PROJECT DEPENDENCIES START
     implementation(project(path: ":CordovaLib"))
-//    compile "com.android.support:support-v4:27.+"
-//    implementation 'com.google.code.gson:gson:2.8.4'
 }
 
 def promptForReleaseKeyPassword() {
