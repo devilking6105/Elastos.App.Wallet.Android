@@ -35,14 +35,11 @@ public class WalletAppActivity extends CordovaActivity
 {
 
   public String TAG = "Wallet";
+
   static {
-//    System.loadLibrary("spvsdk");
-//    System.loadLibrary("idchain");
-//    System.loadLibrary("Elastos.Runtime");
-//    System.loadLibrary("Elastos.CoreLibrary");
-//    System.loadLibrary("Elastos.Wallet");
-//    System.loadLibrary("Elastos.DID");
-//    System.loadLibrary("elastoswallet");
+    System.loadLibrary("spvsdk");
+    System.loadLibrary("idchain");
+    System.loadLibrary("elastoswallet");
   }
     @Override
     public void onCreate(Bundle savedInstanceState)

@@ -58,7 +58,7 @@ public class MainActivity extends CordovaActivity
         Log.e(TAG, sdurl);
         loadUrl(sdurl);
 
-        //initJG();
+        initJG();
     }
 
   private String  getStoragePaths() {
