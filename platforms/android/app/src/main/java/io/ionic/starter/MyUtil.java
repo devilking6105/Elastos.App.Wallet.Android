@@ -20,7 +20,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.elastos.spvcore.MasterWalletManager;
 
-import cn.jpush.android.api.JPushInterface;
 
 public class MyUtil {
   public static final String PREFS_NAME = "JPUSH_EXAMPLE";
@@ -140,9 +139,9 @@ public class MyUtil {
     }
   }
 
-  public static String getDeviceId(Context context) {
-    return JPushInterface.getUdid(context);
-  }
+//  public static String getDeviceId(Context context) {
+//    return JPushInterface.getUdid(context);
+//  }
 
   private static Context sApplicationContext = null;
   public static void setApplicationContext(Context context) {

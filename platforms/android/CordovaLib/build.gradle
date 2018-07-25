@@ -37,8 +37,8 @@ apply plugin: 'com.jfrog.bintray'
 group = 'org.apache.cordova'
 version = '7.0.0'
 android {
-  compileSdkVersion 26
-  buildToolsVersion '27.0.3'
+  compileSdkVersion cdvCompileSdkVersion
+  buildToolsVersion cdvBuildToolsVersion
   publishNonDefault true
 
   compileOptions {
@@ -124,5 +124,7 @@ bintray {
   }
 }
 dependencies {
-  implementation files('libs/elastos_webrt_java.jar')
+  implementation files('libs/elastos_webrt_java.jar') {
+    //exclude group: 'android.support'
+  }
 }
