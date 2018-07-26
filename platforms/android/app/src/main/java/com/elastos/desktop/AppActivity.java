@@ -36,24 +36,29 @@ import io.ionic.starter.MyUtil;
 import com.elastos.carrier.Carrier;
 
 
-public class AppActivity extends CordovaActivity
-{
-  private Carrier carrier = new Carrier();
+public class AppActivity extends CordovaActivity {
+  private Carrier carrier;
 
   public String TAG = "Elastos-DApp";
+
+  private static Context mContext;
+
   static {
     System.loadLibrary("spvsdk");
     System.loadLibrary("idchain");
     System.loadLibrary("elastoswallet");
 
-    System.loadLibrary("elacarrier");
-    System.loadLibrary("elacommon");
-    System.loadLibrary("elasession");
+//    System.loadLibrary("elacarrier");
+//    System.loadLibrary("elacommon");
+//    System.loadLibrary("elasession");
   }
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        mContext = getApplicationContext();
+        carrier = new Carrier();
 
         // enable Cordova apps to be started in the background
         Bundle extras = getIntent().getExtras();
@@ -106,13 +111,12 @@ public class AppActivity extends CordovaActivity
       }
 
       initJG();
-      initCarrier();
     }
 
 
   private String  getStoragePaths() {
     try {
-      Object sm = this.getSystemService("storage");
+      Object sm = this.getSystemService(Context.STORAGE_SERVICE);
       Method getVolumePathsMethod = Class.forName("android.os.storage.StorageManager").getMethod("getVolumePaths", new Class[0]);
       String[] m_Paths = (String[]) getVolumePathsMethod.invoke(sm, new Object[]{});
       Logger.d(TAG,"length: " + m_Paths.length);
@@ -133,37 +137,25 @@ public class AppActivity extends CordovaActivity
     Context applicationContext = getApplicationContext();
     MyUtil.setApplicationContext(applicationContext);
 
-//    String udid =  MyUtil.getImei(applicationContext, "");
-//    if (null != udid) Log.w("xxl-jg","Imei uuid is " + udid);
-//
-//    String appKey = MyUtil.getAppKey(applicationContext);
-//    if (null == appKey) appKey = "AppKey异常";
-//    Log.w("xxl-jg","AppKey " + appKey);
-//
-//    String packageName =  getPackageName();
-//    Log.w("xxl-jg","PackageName " + packageName);
-//
-//    String deviceId = MyUtil.getDeviceId(applicationContext);
-//    Log.w("xxl-jg","deviceId " + deviceId);
-//
-//    String versionName =  MyUtil.GetVersion(applicationContext);
-//    Log.w("xxl-jg","versionName " + versionName);
-//
-//    //
-//    JPushInterface.init(applicationContext);
   }
 
   @Override
   public void onBackPressed() {
     super.onBackPressed();
+
+    if(carrier != null){
+      carrier.close();
+    }
     finish();
     System.exit(0);
 //    super.onDestroy();
     Log.e(TAG, "按下了back键   onBackPressed()");
   }
 
-  private void initCarrier(){
-//    carrier.init();
+
+
+  public static Context getContext(){
+    return mContext;
   }
 
 

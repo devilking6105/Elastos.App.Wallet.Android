@@ -65,6 +65,14 @@ module.exports = [
     ]
   },
   {
+    "id": "Elastos.Carrier",
+    "file": "plugins/ElaCarrier/www/ElaCarrier.js",
+    "pluginId": "ElaCarrier",
+    "clobbers": [
+      "cordova.plugins.ElaCarrier"
+    ]
+  },
+  {
     "id": "com.plugin.testPlugin.TestPlugin",
     "file": "plugins/com.plugin.testPlugin/www/TestPlugin.js",
     "pluginId": "com.plugin.testPlugin",
@@ -298,6 +306,7 @@ module.exports.metadata =
     "cordova-plugin-filechooser": "1.0.1",
     "cordova-clipboard": "1.2.1",
     "ElaWallet": "1.0.0",
+    "ElaCarrier": "1.0.0",
     "cordova-plugin-statusbar": "2.4.2",
     "cordova-plugin-file": "6.0.1",
     "cordova-plugin-zip": "3.1.0",

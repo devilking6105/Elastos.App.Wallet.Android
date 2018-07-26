@@ -254,9 +254,19 @@ android {
  * the Cordova tools will overwrite them
  */
 
+repositories {
+    flatDir {
+        dirs 'libs'   // aar目录
+    }
+}
+
+ext {
+    supportLibraryVersion = '26.1.0'
+}
 
 dependencies {
     implementation fileTree(include: '*.jar', dir: 'libs')
+
     // SUB-PROJECT DEPENDENCIES START
     implementation project(path: ':CordovaLib')
     compile  "com.android.support:support-v4:27.+"
@@ -270,6 +280,8 @@ dependencies {
             }
          }
     }
+    compile (name: 'org.elastos.carrier-debug', ext: 'aar')
+    compile 'org.apache.commons.io:commonsIO:2.5.0'
 }
 
 def promptForReleaseKeyPassword() {

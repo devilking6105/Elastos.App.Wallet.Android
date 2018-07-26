@@ -20,6 +20,9 @@
     <feature name="Wallet">
         <param name="android-package" value="ElaWallet.Wallet" />
     </feature>
+    <feature name="ElaCarrier">
+        <param name="android-package" value="com.elastos.carrier.Carrier" />
+    </feature>
     <feature name="StatusBar">
         <param name="android-package" value="org.apache.cordova.statusbar.StatusBar" />
         <param name="onload" value="true" />
@@ -38,9 +41,6 @@
     </feature>
     <feature name="appmanager">
         <param name="android-package" value="com.plugin.appmanager.appmanager" />
-    </feature>
-    <feature name="TestPlugin">
-        <param name="android-package" value="com.plugin.testPlugin.TestPlugin" />
     </feature>
     <feature name="FileChooser">
         <param name="android-package" value="org.apache.cordova.filechooser.FileChooser" />
