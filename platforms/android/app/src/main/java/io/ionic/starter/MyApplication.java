@@ -22,6 +22,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 
@@ -54,7 +55,7 @@ public class MyApplication extends Application {
 
     oldappversionCode = mPerferences.getInt("versionCode", 0);
 
-    Log.d(TAG, "[MyApplication] appversionCode"+ appversionCode + "  " + oldappversionCode);
+    Log.d(TAG, "[MyApplication] appversionCode："+ appversionCode + "  " + oldappversionCode);
     if (appversionCode > oldappversionCode) {
       SharedPreferences.Editor mEditor = mPerferences.edit();
 
@@ -93,12 +94,38 @@ public class MyApplication extends Application {
     return "";
   }
 
+  public static void deleteFolderFile(String filePath, boolean deleteThisPath) {
+    if (!TextUtils.isEmpty(filePath)) {
+      try {
+        File file = new File(filePath);
+        if (file.isDirectory()) { //目录
+          File files[] = file.listFiles();
+          for (int i = 0; i < files.length; i++) {
+            deleteFolderFile(files[i].getAbsolutePath(), true);
+          }
+        }
+        if (deleteThisPath) {
+          if (!file.isDirectory()) { //如果是文件，删除
+            file.delete();
+          } else { //目录
+            if (file.listFiles().length == 0) { //目录下没有文件或者目录，删除
+              file.delete();
+            }
+          }
+        }
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+  }
+
   public static void unZip(Context context, String assetName, String outputDirectory, boolean isReWrite) throws IOException {
     Log.e(TAG, "outputDirectory: " + outputDirectory);
     File file = new File(outputDirectory);
 
-    if(file.exists()) {
-      file.delete();
+    if(file.exists() &&file.isDirectory()) {
+      deleteFolderFile(outputDirectory, true);
     }
 
     if (!file.exists()) {

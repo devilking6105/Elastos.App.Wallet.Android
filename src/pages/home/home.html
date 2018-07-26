@@ -1,10 +1,8 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col col-3 class="manage-box">
-        <button ion-button clear>
+      <ion-col col-2 class="manage-box">
           <img *ngIf="!checked" (click)="goManage()" class="manage-btn" src="assets/imgs/manage.png" alt="">
-        </button>
       </ion-col>
       <ion-col col-21 (tap)="tapEvent($event)"></ion-col>
     </ion-row>

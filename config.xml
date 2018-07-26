@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.elastos.desktop" version="1.0.9" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.elastos.desktop" version="1.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>elastos</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
@@ -74,8 +74,8 @@
     <plugin name="cordova-sqlite-storage" spec="^2.3.1" />
     <plugin name="ElaWallet" spec="ElaWallet" />
     <plugin name="com.plugin.appmanager" spec="D:\project\Elastos.ORG.Wallet.Mobile\appmanager" />
-    <engine name="android" spec="^7.0.0" />
     <plugin name="phonegap-plugin-barcodescanner" spec="^8.0.0">
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
     </plugin>
+    <engine name="android" spec="^7.0.0" />
 </widget>
