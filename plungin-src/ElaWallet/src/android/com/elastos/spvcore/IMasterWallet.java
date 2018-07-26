@@ -37,19 +37,15 @@ public class IMasterWallet {
         if ((!CHAINID.MAIN.equals(chainID)) && (!CHAINID.ID.equals(chainID))) {
             throw new WalletException("Not support the other sidechain now.");
         }
-        Log.i("JS-Wallet-IMasterWallet", "CreateSubWallet==================0, chainID=["+chainID+"]");
 
         long subProxy = nativeCreateSubWallet(mMasterProxy, chainID, payPassword, singleAddress, feePerKb);
         if (CHAINID.MAIN.equals(chainID)) {
-            Log.i("JS-Wallet-IMasterWallet", "CreateSubWallet==================0, chainID=["+chainID+"]====1");
             return new IMainchainSubWallet(subProxy);
         }
         else if (CHAINID.ID.equals(chainID)) {
-            Log.i("JS-Wallet-IMasterWallet", "CreateSubWallet==================0, chainID=["+chainID+"]====2");
             return new IIdChainSubWallet(subProxy);
         }
 
-        Log.i("JS-Wallet-IMasterWallet", "CreateSubWallet==================0, chainID=["+chainID+"]====3");
         throw new WalletException("Not support the other sidechain now..");
         // return new ISubWallet(subProxy);
     }

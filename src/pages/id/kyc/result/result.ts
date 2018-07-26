@@ -72,11 +72,11 @@ export class IdKycResultComponent extends BaseComponent implements OnInit{
   getCompany(){
     let adata = this.idObj["adata"][0];
     let companyObj = adata["retdata"];
-    this.message["Path"] = companyObj["type"];
-    this.approdType = companyObj["type"];
+    this.message["Path"] = adata["type"];
+    this.approdType = adata["type"];
     this.businessObj["word"] = companyObj["word"];
     this.businessObj["legalPerson"] = companyObj["legalPerson"];
-    this.businessObj["registrationNum"] = companyObj["registrationNum"];
+    this.businessObj["registrationNum"] = companyObj["RegistrationNum"];
     this.signature = companyObj["signature"];
   }
 
@@ -84,8 +84,8 @@ export class IdKycResultComponent extends BaseComponent implements OnInit{
     let index = this.idObj["adata"].length-1;
     let adata = this.idObj["adata"][index];
     let pesronObj = adata["retdata"];
-    this.message["Path"] = pesronObj["type"];
-    this.approdType =  pesronObj["type"];
+    this.message["Path"] = adata["type"];
+    this.approdType =  adata["type"];
     if(this.message["Path"] === "identityCard"){
          this.personObj["fullName"] = pesronObj["fullName"];
          this.personObj["identityNumber"] = pesronObj["identityNumber"];
@@ -118,9 +118,13 @@ export class IdKycResultComponent extends BaseComponent implements OnInit{
     alert("didGenerateProgram message"+ JSON.stringify(this.message));
     alert("didGenerateProgram passworld"+ this.passworld);
     console.log("---didGenerateProgram----"+"did="+this.did+"message="+JSON.stringify(this.message)+"passworld"+this.passworld);
+
+
     this.walletManager.didGenerateProgram(this.did,JSON.stringify(this.message),this.passworld,(result)=>{
                    this.programJson  = result.value;
                    alert("====didGenerateProgram===="+JSON.stringify(this.programJson));
+
+                   console.log("ElastosJs didGenerateProgram programJson "+JSON.stringify(this.programJson));
                    this.createfromAddress();
     });
   }
