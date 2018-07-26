@@ -174,6 +174,10 @@ android {
         }
     }
 
+    packagingOptions {
+        pickFirst 'META-INF/*'
+    }
+
     externalNativeBuild {
 //         cmake {
 //           path "CMakeLists.txt"
@@ -184,8 +188,8 @@ android {
         abortOnError false;
     }
 
-    compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    compileSdkVersion cdvCompileSdkVersion
+    buildToolsVersion cdvBuildToolsVersion
 
     //This code exists for Crosswalk and other Native APIs.
     //By default, we multiply the existing version code in the Android Manifest by 10 and
@@ -254,7 +258,18 @@ android {
 dependencies {
     implementation fileTree(include: '*.jar', dir: 'libs')
     // SUB-PROJECT DEPENDENCIES START
-    implementation(project(path: ":CordovaLib"))
+    implementation project(path: ':CordovaLib')
+    compile  "com.android.support:support-v4:27.+"
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == 'com.android.support') {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion '27.1.1'
+                }
+            }
+         }
+    }
 }
 
 def promptForReleaseKeyPassword() {

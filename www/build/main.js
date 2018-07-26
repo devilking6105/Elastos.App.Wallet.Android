@@ -1,1 +1,676 @@
-webpackJsonp([2],{138:function(l,n){function u(l){return Promise.resolve().then(function(){throw new Error("Cannot find module '"+l+"'.")})}u.keys=function(){return[]},u.resolve=u,l.exports=u,u.id=138},166:function(l,n,u){function a(l){var n=t[l];return n?u.e(n[1]).then(function(){return u(n[0])}):Promise.reject(new Error("Cannot find module '"+l+"'."))}var t={"../pages/info/info.module.ngfactory":[242,1],"../pages/manage/manage.module.ngfactory":[243,0]};a.keys=function(){return Object.keys(t)},a.id=166,l.exports=a},193:function(l,n,u){"use strict";u.d(n,"a",function(){return a});var a=function(){function l(){}return l.initAppListData=function(){null==window.localStorage.getItem(l.storageKeyAppList)&&l.saveAppListData(l.initAppList)},l.getAppListData=function(){return JSON.parse(window.localStorage.getItem(l.storageKeyAppList))},l.saveAppListData=function(n){window.localStorage.setItem(l.storageKeyAppList,JSON.stringify(n))},l.appName="elastos",l.storageKeyAppList=l.appName+"_appList",l.currentDate=new Date,l.currentDateYYYYMMDD=l.currentDate.getFullYear()+"."+(l.currentDate.getMonth()<9?"0"+(l.currentDate.getMonth()+1):l.currentDate.getMonth()+1)+"."+(l.currentDate.getDay()<9?"0"+(l.currentDate.getDay()+1):l.currentDate.getDay()+1),l.initAppList=[{path:"../wallet/www/assets/images/logo.png",name:"Wallet",url:"wallet/www/index.html",size:"1 MB",date:l.currentDateYYYYMMDD},{path:"../todo/www/assets/imgs/logo.png",name:"ToDO",url:"todo/www/index.html",size:"2 MB",date:l.currentDateYYYYMMDD},{path:"../CarTest/www/assets/imgs/logo.png",name:"CarTest",url:"CarTest/www/index.html",size:"666 KB",date:l.currentDateYYYYMMDD},{path:"../dApp4/www/assets/imgs/logo.png",name:"dApp4",url:"dApp4/www/index.html",size:"888 KB",date:l.currentDateYYYYMMDD},{path:"../dApp5/www/assets/imgs/logo.png",name:"dApp5",url:"dApp5/www/index.html",size:"999 KB",date:l.currentDateYYYYMMDD}],l}()},205:function(l,n,u){"use strict";function a(l){return e._19(0,[(l()(),e.Z(0,0,null,null,26,"ion-item",[["class","item item-block"]],null,null,null,i.b,i.a)),e.Y(1,1097728,null,3,o.a,[c.a,r.a,e.j,e.z,[2,s.a]],null,null),e._16(335544320,7,{contentLabel:0}),e._16(603979776,8,{_buttons:1}),e._16(603979776,9,{_icons:1}),e.Y(5,16384,null,0,_.a,[],null,null),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(7,0,null,0,2,"ion-checkbox",[["checked","true"],["color","dark"]],[[2,"checkbox-disabled",null]],[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==e._11(l,9)._click(u)&&a}return a},p.b,p.a)),e._14(5120,null,f.e,function(l){return[l]},[d.a]),e.Y(9,1228800,null,0,d.a,[r.a,c.a,[2,o.a],e.j,e.z],{color:[0,"color"],checked:[1,"checked"]},null),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(11,0,null,0,4,"ion-thumbnail",[["item-start",""]],null,null,null,null,null)),e.Y(12,16384,null,0,h.a,[],null,null),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(14,0,null,null,0,"img",[["alt",""],["src","assets/imgs/camera.png"]],null,null,null,null,null)),(l()(),e._18(-1,null,["\n          "])),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(17,0,null,0,8,"ion-thumbnail",[["item-start",""]],null,null,null,null,null)),e.Y(18,16384,null,0,h.a,[],null,null),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(20,0,null,null,1,"h2",[],null,null,null,null,null)),(l()(),e._18(-1,null,["My Neighbor Totoro"])),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(23,0,null,null,1,"p",[],null,null,null,null,null)),(l()(),e._18(-1,null,["Hayao Miyazaki • 1988"])),(l()(),e._18(-1,null,["\n          "])),(l()(),e._18(-1,2,["\n        "]))],function(l,n){l(n,9,0,"dark","true")},function(l,n){l(n,7,0,e._11(n,9)._disabled)})}function t(l){return e._19(0,[(l()(),e._18(-1,null,["\n"])),(l()(),e.Z(1,0,null,null,10,"ion-header",[],null,null,null,null,null)),e.Y(2,16384,null,0,m.a,[r.a,e.j,e.z,[2,g.a]],null,null),(l()(),e._18(-1,null,["\n\n  "])),(l()(),e.Z(4,0,null,null,6,"ion-navbar",[["class","toolbar"]],[[8,"hidden",0],[2,"statusbar-padding",null]],null,null,b.b,b.a)),e.Y(5,49152,null,0,k.a,[Y.a,[2,g.a],[2,Z.a],r.a,e.j,e.z],null,null),(l()(),e._18(-1,3,["\n    "])),(l()(),e.Z(7,0,null,3,2,"ion-title",[],null,null,null,w.b,w.a)),e.Y(8,49152,null,0,y.a,[r.a,e.j,e.z,[2,v.a],[2,k.a]],null,null),(l()(),e._18(-1,0,["info"])),(l()(),e._18(-1,3,["\n  "])),(l()(),e._18(-1,null,["\n\n"])),(l()(),e._18(-1,null,["\n\n"])),(l()(),e.Z(13,0,null,null,148,"ion-content",[],[[2,"statusbar-padding",null],[2,"has-refresher",null]],null,null,x.b,x.a)),e.Y(14,4374528,null,0,D.a,[r.a,z.a,j.a,e.j,e.z,Y.a,L.a,e.u,[2,g.a],[2,Z.a]],null,null),(l()(),e._18(-1,1,["\n  "])),(l()(),e.Z(16,0,null,1,144,"ion-grid",[["class","grid"]],null,null,null,null,null)),e.Y(17,16384,null,0,M.a,[],null,null),(l()(),e._18(-1,null,["\n    "])),(l()(),e.Z(19,0,null,null,37,"ion-list",[["no-lines",""]],null,null,null,null,null)),e.Y(20,16384,null,0,I.a,[r.a,e.j,e.z,z.a,O.l,j.a],null,null),(l()(),e._18(-1,null,["\n      "])),(l()(),e.Z(22,0,null,null,25,"ion-row",[["class","row"]],null,null,null,null,null)),e.Y(23,16384,null,0,A.a,[],null,null),(l()(),e._18(-1,null,["\n        "])),(l()(),e.Z(25,0,null,null,21,"ion-item",[["class","item item-block"]],null,null,null,i.b,i.a)),e.Y(26,1097728,null,3,o.a,[c.a,r.a,e.j,e.z,[2,s.a]],null,null),e._16(335544320,1,{contentLabel:0}),e._16(603979776,2,{_buttons:1}),e._16(603979776,3,{_icons:1}),e.Y(30,16384,null,0,_.a,[],null,null),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(32,0,null,0,4,"ion-thumbnail",[["class","up-app"],["item-start",""]],null,null,null,null,null)),e.Y(33,16384,null,0,h.a,[],null,null),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(35,0,null,null,0,"img",[["src","assets/imgs/slice2.png"]],null,null,null,null,null)),(l()(),e._18(-1,null,["\n          "])),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(38,0,null,2,1,"h2",[],null,null,null,null,null)),(l()(),e._18(-1,null,["My Neighbor Totoro"])),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(41,0,null,2,1,"p",[],null,null,null,null,null)),(l()(),e._18(-1,null,["My Neighbor Totoro"])),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(44,0,null,2,1,"p",[],null,null,null,null,null)),(l()(),e._18(-1,null,["Hayao Miyazaki • 1988"])),(l()(),e._18(-1,2,["\n        "])),(l()(),e._18(-1,null,["\n      "])),(l()(),e._18(-1,null,["\n      "])),(l()(),e.Z(49,0,null,null,6,"ion-list-header",[["class","item"]],null,null,null,i.b,i.a)),e.Y(50,1097728,null,3,o.a,[c.a,r.a,e.j,e.z,[2,s.a]],null,null),e._16(335544320,4,{contentLabel:0}),e._16(603979776,5,{_buttons:1}),e._16(603979776,6,{_icons:1}),e.Y(54,16384,null,0,N.a,[r.a,e.z,e.j,[8,null]],null,null),(l()(),e._18(-1,2,["Permissions"])),(l()(),e._18(-1,null,["\n\n    "])),(l()(),e._18(-1,null,["\n    "])),(l()(),e.Z(58,0,null,null,101,"ion-list",[["no-lines",""]],null,null,null,null,null)),e.Y(59,16384,null,0,I.a,[r.a,e.j,e.z,z.a,O.l,j.a],null,null),(l()(),e._18(-1,null,["\n      "])),(l()(),e.Z(61,0,null,null,89,"ion-row",[["class","row"]],null,null,null,null,null)),e.Y(62,16384,null,0,A.a,[],null,null),(l()(),e._18(-1,null,["\n        "])),(l()(),e.U(16777216,null,null,1,null,a)),e.Y(65,802816,null,0,F.h,[e.I,e.F,e.p],{ngForOf:[0,"ngForOf"]},null),(l()(),e._18(-1,null,["\n\n        "])),(l()(),e.Z(67,0,null,null,26,"ion-item",[["class","item item-block"]],null,null,null,i.b,i.a)),e.Y(68,1097728,null,3,o.a,[c.a,r.a,e.j,e.z,[2,s.a]],null,null),e._16(335544320,10,{contentLabel:0}),e._16(603979776,11,{_buttons:1}),e._16(603979776,12,{_icons:1}),e.Y(72,16384,null,0,_.a,[],null,null),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(74,0,null,0,2,"ion-checkbox",[["checked","true"],["color","dark"]],[[2,"checkbox-disabled",null]],[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==e._11(l,76)._click(u)&&a}return a},p.b,p.a)),e._14(5120,null,f.e,function(l){return[l]},[d.a]),e.Y(76,1228800,null,0,d.a,[r.a,c.a,[2,o.a],e.j,e.z],{color:[0,"color"],checked:[1,"checked"]},null),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(78,0,null,0,4,"ion-thumbnail",[["item-start",""]],null,null,null,null,null)),e.Y(79,16384,null,0,h.a,[],null,null),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(81,0,null,null,0,"img",[["src","assets/imgs/camera.png"]],null,null,null,null,null)),(l()(),e._18(-1,null,["\n          "])),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(84,0,null,0,8,"ion-thumbnail",[["item-start",""]],null,null,null,null,null)),e.Y(85,16384,null,0,h.a,[],null,null),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(87,0,null,null,1,"h2",[],null,null,null,null,null)),(l()(),e._18(-1,null,["My Neighbor Totoro"])),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(90,0,null,null,1,"p",[],null,null,null,null,null)),(l()(),e._18(-1,null,["Hayao Miyazaki • 1988"])),(l()(),e._18(-1,null,["\n          "])),(l()(),e._18(-1,2,["\n        "])),(l()(),e._18(-1,null,["\n\n        "])),(l()(),e.Z(95,0,null,null,26,"ion-item",[["class","item item-block"]],null,null,null,i.b,i.a)),e.Y(96,1097728,null,3,o.a,[c.a,r.a,e.j,e.z,[2,s.a]],null,null),e._16(335544320,13,{contentLabel:0}),e._16(603979776,14,{_buttons:1}),e._16(603979776,15,{_icons:1}),e.Y(100,16384,null,0,_.a,[],null,null),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(102,0,null,0,2,"ion-checkbox",[["checked","true"],["color","dark"]],[[2,"checkbox-disabled",null]],[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==e._11(l,104)._click(u)&&a}return a},p.b,p.a)),e._14(5120,null,f.e,function(l){return[l]},[d.a]),e.Y(104,1228800,null,0,d.a,[r.a,c.a,[2,o.a],e.j,e.z],{color:[0,"color"],checked:[1,"checked"]},null),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(106,0,null,0,4,"ion-thumbnail",[["item-start",""]],null,null,null,null,null)),e.Y(107,16384,null,0,h.a,[],null,null),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(109,0,null,null,0,"img",[["src","assets/imgs/id.png"]],null,null,null,null,null)),(l()(),e._18(-1,null,["\n          "])),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(112,0,null,0,8,"ion-thumbnail",[["item-start",""]],null,null,null,null,null)),e.Y(113,16384,null,0,h.a,[],null,null),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(115,0,null,null,1,"h2",[],null,null,null,null,null)),(l()(),e._18(-1,null,["My Neighbor Totoro"])),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(118,0,null,null,1,"p",[],null,null,null,null,null)),(l()(),e._18(-1,null,["Hayao Miyazaki • 1988"])),(l()(),e._18(-1,null,["\n          "])),(l()(),e._18(-1,2,["\n        "])),(l()(),e._18(-1,null,["\n\n        "])),(l()(),e.Z(123,0,null,null,26,"ion-item",[["class","item item-block"]],null,null,null,i.b,i.a)),e.Y(124,1097728,null,3,o.a,[c.a,r.a,e.j,e.z,[2,s.a]],null,null),e._16(335544320,16,{contentLabel:0}),e._16(603979776,17,{_buttons:1}),e._16(603979776,18,{_icons:1}),e.Y(128,16384,null,0,_.a,[],null,null),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(130,0,null,0,2,"ion-checkbox",[["checked","true"],["color","dark"]],[[2,"checkbox-disabled",null]],[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==e._11(l,132)._click(u)&&a}return a},p.b,p.a)),e._14(5120,null,f.e,function(l){return[l]},[d.a]),e.Y(132,1228800,null,0,d.a,[r.a,c.a,[2,o.a],e.j,e.z],{color:[0,"color"],checked:[1,"checked"]},null),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(134,0,null,0,4,"ion-thumbnail",[["item-start",""]],null,null,null,null,null)),e.Y(135,16384,null,0,h.a,[],null,null),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(137,0,null,null,0,"img",[["src","assets/imgs/speaker.png"]],null,null,null,null,null)),(l()(),e._18(-1,null,["\n          "])),(l()(),e._18(-1,2,["\n          "])),(l()(),e.Z(140,0,null,0,8,"ion-thumbnail",[["item-start",""]],null,null,null,null,null)),e.Y(141,16384,null,0,h.a,[],null,null),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(143,0,null,null,1,"h2",[],null,null,null,null,null)),(l()(),e._18(-1,null,["My Neighbor Totoro"])),(l()(),e._18(-1,null,["\n            "])),(l()(),e.Z(146,0,null,null,1,"p",[],null,null,null,null,null)),(l()(),e._18(-1,null,["Hayao Miyazaki • 1988"])),(l()(),e._18(-1,null,["\n          "])),(l()(),e._18(-1,2,["\n        "])),(l()(),e._18(-1,null,["\n      "])),(l()(),e._18(-1,null,["\n      "])),(l()(),e.Z(152,0,null,null,6,"ion-list-header",[["class","item"]],null,null,null,i.b,i.a)),e.Y(153,1097728,null,3,o.a,[c.a,r.a,e.j,e.z,[2,s.a]],null,null),e._16(335544320,19,{contentLabel:0}),e._16(603979776,20,{_buttons:1}),e._16(603979776,21,{_icons:1}),e.Y(157,16384,null,0,N.a,[r.a,e.z,e.j,[8,null]],null,null),(l()(),e._18(-1,2,["Infomation"])),(l()(),e._18(-1,null,["\n\n    "])),(l()(),e._18(-1,null,["\n  "])),(l()(),e._18(-1,1,["\n"])),(l()(),e._18(-1,null,["\n\n\n"]))],function(l,n){l(n,65,0,n.component.appManageList);l(n,76,0,"dark","true");l(n,104,0,"dark","true");l(n,132,0,"dark","true")},function(l,n){l(n,4,0,e._11(n,5)._hidden,e._11(n,5)._sbPadding);l(n,13,0,e._11(n,14).statusbarPadding,e._11(n,14)._hasRefresher);l(n,74,0,e._11(n,76)._disabled);l(n,102,0,e._11(n,104)._disabled);l(n,130,0,e._11(n,132)._disabled)})}u.d(n,"a",function(){return T});var e=u(0),i=u(105),o=u(17),c=u(12),r=u(1),s=u(37),_=u(56),p=u(168),f=u(13),d=u(52),h=u(79),m=u(80),g=u(5),b=u(169),k=u(26),Y=u(8),Z=u(19),w=u(170),y=u(59),v=u(39),x=u(106),D=u(21),z=u(4),j=u(9),L=u(22),M=u(69),I=u(46),O=u(6),A=u(55),N=u(71),F=u(11),P=u(86),C=u(10),S=e.X({encapsulation:2,styles:[],data:{}}),T=e.V("page-info",P.a,function(l){return e._19(0,[(l()(),e.Z(0,0,null,null,1,"page-info",[],null,null,null,t,S)),e.Y(1,49152,null,0,P.a,[Z.a,C.a],null,null)],null,null)},{},{},[])},206:function(l,n,u){"use strict";function a(l){return i._19(0,[(l()(),i.Z(0,0,null,null,35,"ion-item",[["class","item item-block"]],null,null,null,o.b,o.a)),i.Y(1,1097728,null,3,c.a,[r.a,s.a,i.j,i.z,[2,_.a]],null,null),i._16(335544320,1,{contentLabel:0}),i._16(603979776,2,{_buttons:1}),i._16(603979776,3,{_icons:1}),i.Y(5,16384,null,0,p.a,[],null,null),(l()(),i._18(-1,2,["\n      "])),(l()(),i.Z(7,0,null,0,2,"ion-checkbox",[["color","dark"],["ng-checked","checked"]],[[2,"checkbox-disabled",null]],[[null,"click"]],function(l,n,u){var a=!0,t=l.component;if("click"===n){a=!1!==i._11(l,9)._click(u)&&a}if("click"===n){a=!1!==t.checkApp(l.context.$implicit)&&a}return a},f.b,f.a)),i._14(5120,null,d.e,function(l){return[l]},[h.a]),i.Y(9,1228800,null,0,h.a,[s.a,r.a,[2,c.a],i.j,i.z],{color:[0,"color"]},null),(l()(),i._18(-1,2,["\n      "])),(l()(),i.Z(11,0,null,0,4,"ion-thumbnail",[["item-start",""]],null,[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==l.component.goInfo(l.context.index)&&a}return a},null,null)),i.Y(12,16384,null,0,m.a,[],null,null),(l()(),i._18(-1,null,["\n        "])),(l()(),i.Z(14,0,null,null,0,"img",[["alt",""]],[[8,"src",4]],null,null,null,null)),(l()(),i._18(-1,null,["\n      "])),(l()(),i._18(-1,2,["\n      "])),(l()(),i.Z(17,0,null,0,11,"ion-thumbnail",[["item-start",""]],null,[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==l.component.goInfo(l.context.index)&&a}return a},null,null)),i.Y(18,16384,null,0,m.a,[],null,null),(l()(),i._18(-1,null,["\n        "])),(l()(),i.Z(20,0,null,null,1,"h2",[],null,null,null,null,null)),(l()(),i._18(21,null,["",""])),(l()(),i._18(-1,null,["\n        "])),(l()(),i.Z(23,0,null,null,1,"p",[],null,null,null,null,null)),(l()(),i._18(24,null,["",""])),(l()(),i._18(-1,null,["\n        "])),(l()(),i.Z(26,0,null,null,1,"p",[],null,null,null,null,null)),(l()(),i._18(27,null,["Added ",""])),(l()(),i._18(-1,null,["\n      "])),(l()(),i._18(-1,2,["\n      "])),(l()(),i.Z(30,0,null,4,4,"button",[["clear",""],["ion-button",""],["item-end",""]],null,[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==l.component.goInfo(l.context.index)&&a}return a},g.b,g.a)),i.Y(31,1097728,[[2,4]],0,b.a,[[8,""],s.a,i.j,i.z],{clear:[0,"clear"]},null),(l()(),i._18(-1,0,["\n        "])),(l()(),i.Z(33,0,null,0,0,"img",[["class","right_arrow"],["src","assets/imgs/arrow.png"]],null,null,null,null,null)),(l()(),i._18(-1,0,["\n      "])),(l()(),i._18(-1,2,["\n    "]))],function(l,n){l(n,9,0,"dark");l(n,31,0,"")},function(l,n){l(n,7,0,i._11(n,9)._disabled);l(n,14,0,i._2(1,"",n.context.$implicit.path,""));l(n,21,0,n.context.$implicit.name);l(n,24,0,n.context.$implicit.size);l(n,27,0,n.context.$implicit.date)})}function t(l){return i._19(0,[(l()(),i.Z(0,0,null,null,14,"div",[["class","footer"]],null,null,null,null,null)),(l()(),i._18(-1,null,["\n  "])),(l()(),i.Z(2,0,null,null,11,"ion-row",[["class","row"]],null,null,null,null,null)),i.Y(3,16384,null,0,k.a,[],null,null),(l()(),i._18(-1,null,["\n    "])),(l()(),i._18(-1,null,["\n    "])),(l()(),i.Z(6,0,null,null,6,"ion-col",[["class","col"],["col-12",""]],null,null,null,null,null)),i.Y(7,16384,null,0,Y.a,[],null,null),(l()(),i._18(-1,null,["\n      "])),(l()(),i.Z(9,0,null,null,2,"ion-card",[["class","card-box card-delete"]],null,[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==l.component.doDel()&&a}return a},null,null)),i.Y(10,16384,null,0,Z.a,[s.a,i.j,i.z],null,null),(l()(),i._18(-1,null,["\n        Delete\n      "])),(l()(),i._18(-1,null,["\n    "])),(l()(),i._18(-1,null,["\n  "])),(l()(),i._18(-1,null,["\n"]))],null,null)}function e(l){return i._19(0,[(l()(),i._18(-1,null,["\n"])),(l()(),i.Z(1,0,null,null,11,"ion-header",[],null,null,null,null,null)),i.Y(2,16384,null,0,w.a,[s.a,i.j,i.z,[2,y.a]],null,null),(l()(),i._18(-1,null,["\n  "])),(l()(),i.Z(4,0,null,null,7,"ion-navbar",[["class","toolbar"]],[[8,"hidden",0],[2,"statusbar-padding",null]],null,null,v.b,v.a)),i.Y(5,49152,null,0,x.a,[D.a,[2,y.a],[2,z.a],s.a,i.j,i.z],null,null),(l()(),i._18(-1,3,["\n    "])),(l()(),i.Z(7,0,null,3,2,"ion-title",[],null,null,null,j.b,j.a)),i.Y(8,49152,null,0,L.a,[s.a,i.j,i.z,[2,M.a],[2,x.a]],null,null),(l()(),i._18(-1,0,["manage"])),(l()(),i._18(-1,3,["\n\n    "])),(l()(),i._18(-1,3,["\n  "])),(l()(),i._18(-1,null,["\n"])),(l()(),i._18(-1,null,["\n\n"])),(l()(),i.Z(14,0,null,null,30,"ion-content",[["overflow-scroll","true"]],[[2,"statusbar-padding",null],[2,"has-refresher",null]],null,null,I.b,I.a)),i.Y(15,4374528,null,0,O.a,[s.a,A.a,N.a,i.j,i.z,D.a,F.a,i.u,[2,y.a],[2,z.a]],null,null),(l()(),i._18(-1,1,["\n  "])),(l()(),i.Z(17,0,null,1,19,"ion-card",[["class","import-box"]],null,null,null,null,null)),i.Y(18,16384,null,0,Z.a,[s.a,i.j,i.z],null,null),(l()(),i._18(-1,null,["\n    "])),(l()(),i.Z(20,0,null,null,8,"button",[["icon-only",""],["ion-button",""]],null,[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==l.component.importFromEpk()&&a}return a},g.b,g.a)),i.Y(21,1097728,null,0,b.a,[[8,""],s.a,i.j,i.z],null,null),(l()(),i._18(-1,0,["\n      "])),(l()(),i.Z(23,0,null,0,4,"ion-icon",[["role","img"]],[[2,"hide",null]],null,null,null,null)),i.Y(24,147456,null,0,P.a,[s.a,i.j,i.z],null,null),(l()(),i._18(-1,null,["\n        "])),(l()(),i.Z(26,0,null,null,0,"img",[["alt",""],["class","icon-right"],["src","assets/imgs/add.png"]],null,null,null,null,null)),(l()(),i._18(-1,null,["\n      "])),(l()(),i._18(-1,0,["\n    "])),(l()(),i._18(-1,null,["\n    "])),(l()(),i.Z(30,0,null,null,5,"ion-card-content",[],null,null,null,null,null)),i.Y(31,16384,null,0,C.a,[s.a,i.j,i.z],null,null),(l()(),i._18(-1,null,["\n      "])),(l()(),i.Z(33,0,null,null,1,"div",[["class","title"]],null,null,null,null,null)),(l()(),i._18(-1,null,["Import from Local file"])),(l()(),i._18(-1,null,["\n    "])),(l()(),i._18(-1,null,["\n  "])),(l()(),i._18(-1,1,["\n\n  "])),(l()(),i.Z(38,0,null,1,5,"ion-list",[["no-lines",""]],null,null,null,null,null)),i.Y(39,16384,null,0,S.a,[s.a,i.j,i.z,A.a,T.l,N.a],null,null),(l()(),i._18(-1,null,["\n    "])),(l()(),i.U(16777216,null,null,1,null,a)),i.Y(42,802816,null,0,E.h,[i.I,i.F,i.p],{ngForOf:[0,"ngForOf"]},null),(l()(),i._18(-1,null,["\n  "])),(l()(),i._18(-1,1,["\n"])),(l()(),i._18(-1,null,["\n\n"])),(l()(),i._18(-1,null,["\n"])),(l()(),i.U(16777216,null,null,1,null,t)),i.Y(48,16384,null,0,E.i,[i.I,i.F],{ngIf:[0,"ngIf"]},null),(l()(),i._18(-1,null,["\n\n"])),(l()(),i._18(-1,null,["\n"]))],function(l,n){var u=n.component;l(n,42,0,u.appList);l(n,48,0,u.isShow)},function(l,n){l(n,4,0,i._11(n,5)._hidden,i._11(n,5)._sbPadding);l(n,14,0,i._11(n,15).statusbarPadding,i._11(n,15)._hasRefresher);l(n,23,0,i._11(n,24)._hidden)})}u.d(n,"a",function(){return V});var i=u(0),o=u(105),c=u(17),r=u(12),s=u(1),_=u(37),p=u(56),f=u(168),d=u(13),h=u(52),m=u(79),g=u(23),b=u(16),k=u(55),Y=u(68),Z=u(99),w=u(80),y=u(5),v=u(169),x=u(26),D=u(8),z=u(19),j=u(170),L=u(59),M=u(39),I=u(106),O=u(21),A=u(4),N=u(9),F=u(22),P=u(33),C=u(64),S=u(46),T=u(6),E=u(11),J=u(87),B=u(10),H=u(47),R=u(81),K=u(82),U=u(83),$=i.X({encapsulation:2,styles:[],data:{}}),V=i.V("page-manage",J.a,function(l){return i._19(0,[(l()(),i.Z(0,0,null,null,1,"page-manage",[],null,null,null,e,$)),i.Y(1,49152,null,0,J.a,[z.a,B.a,H.a,R.a,K.a,U.a],null,null)],null,null)},{},{},[])},207:function(l,n,u){"use strict";function a(l){return s._19(0,[(l()(),s._18(-1,null,["\n"])),(l()(),s._18(-1,null,["\n"])),(l()(),s._18(-1,null,["\n\n"])),(l()(),s.Z(3,0,null,null,19,"div",[],null,null,null,null,null)),(l()(),s._18(-1,null,["\n  "])),(l()(),s.Z(5,0,null,null,8,"button",[["icon-only",""],["ion-button",""]],null,null,null,F.b,F.a)),s.Y(6,1097728,null,0,P.a,[[8,""],C.a,s.j,s.z],null,null),(l()(),s._18(-1,0,["\n    "])),(l()(),s.Z(8,0,null,0,4,"ion-icon",[["role","img"]],[[2,"hide",null]],null,null,null,null)),s.Y(9,147456,null,0,S.a,[C.a,s.j,s.z],null,null),(l()(),s._18(-1,null,["\n      "])),(l()(),s.Z(11,0,null,null,0,"img",[["alt",""],["class","icon-right"],["src","../../assets/imgs/add.png"]],null,null,null,null,null)),(l()(),s._18(-1,null,["\n    "])),(l()(),s._18(-1,0,["\n  "])),(l()(),s._18(-1,null,["\n  "])),(l()(),s.Z(15,0,null,null,6,"ion-card-content",[],null,null,null,null,null)),s.Y(16,16384,null,0,T.a,[C.a,s.j,s.z],null,null),(l()(),s._18(-1,null,["\n    "])),(l()(),s._18(-1,null,["\n    "])),(l()(),s.Z(19,0,null,null,1,"div",[["class","title"]],null,null,null,null,null)),(l()(),s._18(-1,null,["Import from Local file"])),(l()(),s._18(-1,null,["\n  "])),(l()(),s._18(-1,null,["\n"])),(l()(),s._18(-1,null,["\n"]))],null,function(l,n){l(n,8,0,s._11(n,9)._hidden)})}function t(l){return s._19(0,[(l()(),s.Z(0,0,null,null,2,"ion-nav",[],null,null,null,B.b,B.a)),s._14(6144,null,H.a,null,[R.a]),s.Y(2,4374528,null,0,R.a,[[2,K.a],[2,U.a],$.a,C.a,V.a,s.j,s.u,s.z,s.i,X.l,q.a,[2,W.a],G.a,s.k],{root:[0,"root"]},null),(l()(),s._18(-1,null,["\n"]))],function(l,n){l(n,2,0,n.component.rootPage)},null)}function e(l){return s._19(0,[(l()(),s.Z(0,0,null,null,0,"img",[["alt",""],["class","manage-btn"],["src","assets/imgs/manage.png"]],null,[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==l.component.goManage()&&a}return a},null,null))],null,null)}function i(l){return s._19(0,[(l()(),s.Z(0,0,null,null,0,"span",[["class","del-ioc"]],null,[[null,"click"]],function(l,n,u){var a=!0;if("click"===n){a=!1!==l.component.delEvent(l.parent.context.index)&&a}return a},null,null))],null,null)}function o(l){return s._19(0,[(l()(),s.Z(0,0,null,null,10,"ion-col",[["class","main-section col"],["col-3",""]],null,[[null,"press"],[null,"click"]],function(l,n,u){var a=!0,t=l.component;if("press"===n){a=!1!==t.pressEvent()&&a}if("click"===n){a=!1!==t.onClick(l.context.$implicit)&&a}return a},null,null)),s.Y(1,16384,null,0,nl.a,[],null,null),(l()(),s._18(-1,null,["\n        "])),(l()(),s.Z(3,0,null,null,0,"img",[["alt",""]],[[8,"src",4]],null,null,null,null)),(l()(),s._18(-1,null,["\n        "])),(l()(),s.U(16777216,null,null,1,null,i)),s.Y(6,16384,null,0,ul.i,[s.I,s.F],{ngIf:[0,"ngIf"]},null),(l()(),s._18(-1,null,["\n        "])),(l()(),s.Z(8,0,null,null,1,"div",[["class","app-title"]],null,null,null,null,null)),(l()(),s._18(9,null,["",""])),(l()(),s._18(-1,null,["\n      "]))],function(l,n){l(n,6,0,n.component.checked)},function(l,n){l(n,3,0,s._2(1,"",n.context.$implicit.path,""));l(n,9,0,n.context.$implicit.name)})}function c(l){return s._19(0,[(l()(),s.Z(0,0,null,null,34,"ion-content",[],[[2,"statusbar-padding",null],[2,"has-refresher",null]],null,null,al.b,al.a)),s.Y(1,4374528,null,0,tl.a,[C.a,V.a,G.a,s.j,s.z,$.a,el.a,s.u,[2,K.a],[2,U.a]],null,null),(l()(),s._18(-1,1,["\n  "])),(l()(),s.Z(3,0,null,1,27,"ion-grid",[["class","grid"]],null,null,null,null,null)),s.Y(4,16384,null,0,il.a,[],null,null),(l()(),s._18(-1,null,["\n    "])),(l()(),s.Z(6,0,null,null,16,"ion-row",[["class","row"]],null,null,null,null,null)),s.Y(7,16384,null,0,ol.a,[],null,null),(l()(),s._18(-1,null,["\n      "])),(l()(),s.Z(9,0,null,null,9,"ion-col",[["class","manage-box col"],["col-3",""]],null,null,null,null,null)),s.Y(10,16384,null,0,nl.a,[],null,null),(l()(),s._18(-1,null,["\n        "])),(l()(),s.Z(12,0,null,null,5,"button",[["clear",""],["ion-button",""]],null,null,null,F.b,F.a)),s.Y(13,1097728,null,0,P.a,[[8,""],C.a,s.j,s.z],{clear:[0,"clear"]},null),(l()(),s._18(-1,0,["\n          "])),(l()(),s.U(16777216,null,0,1,null,e)),s.Y(16,16384,null,0,ul.i,[s.I,s.F],{ngIf:[0,"ngIf"]},null),(l()(),s._18(-1,0,["\n        "])),(l()(),s._18(-1,null,["\n      "])),(l()(),s._18(-1,null,["\n      "])),(l()(),s.Z(20,0,null,null,1,"ion-col",[["class","col"],["col-21",""]],null,[[null,"tap"]],function(l,n,u){var a=!0;if("tap"===n){a=!1!==l.component.tapEvent(u)&&a}return a},null,null)),s.Y(21,16384,null,0,nl.a,[],null,null),(l()(),s._18(-1,null,["\n    "])),(l()(),s._18(-1,null,["\n    "])),(l()(),s.Z(24,0,null,null,5,"ion-row",[["class","row"]],null,null,null,null,null)),s.Y(25,16384,null,0,ol.a,[],null,null),(l()(),s._18(-1,null,["\n      "])),(l()(),s.U(16777216,null,null,1,null,o)),s.Y(28,802816,null,0,ul.h,[s.I,s.F,s.p],{ngForOf:[0,"ngForOf"]},null),(l()(),s._18(-1,null,["\n    "])),(l()(),s._18(-1,null,["\n  "])),(l()(),s._18(-1,1,["\n  "])),(l()(),s.Z(32,0,null,1,1,"ion-grid",[["class","grid-down grid"]],null,[[null,"tap"]],function(l,n,u){var a=!0;if("tap"===n){a=!1!==l.component.tapEvent(u)&&a}return a},null,null)),s.Y(33,16384,null,0,il.a,[],null,null),(l()(),s._18(-1,1,["\n"])),(l()(),s._18(-1,null,["\n"]))],function(l,n){var u=n.component;l(n,13,0,"");l(n,16,0,!u.checked);l(n,28,0,u.getAppList())},function(l,n){l(n,0,0,s._11(n,1).statusbarPadding,s._11(n,1)._hasRefresher)})}Object.defineProperty(n,"__esModule",{value:!0});var r=u(27),s=u(0),_=(u(3),u(41),u(84)),p=u(85),f=u(47),d=u(87),h=u(193),m=function(){function l(l,n){this.navCtrl=l,this.file=n,this.checked=!1,h.a.initAppListData()}return l.prototype.getAppList=function(){return h.a.getAppListData()},l.prototype.goManage=function(){this.navCtrl.push(d.a)},l.prototype.pressEvent=function(){this.checked=!0},l.prototype.delEvent=function(l){var n=h.a.getAppListData(),u=n[l],a=this.file.externalRootDirectory+h.a.appName+"/",t=u.url.substr(0,u.url.lastIndexOf("/www/index.html"));this.file.removeRecursively(a,t).then(function(a){a?(n.splice(l,1),h.a.saveAppListData(n)):alert("remove this app "+u.name+" failed!")}).catch(function(l){return alert(JSON.stringify(l))}),this.checked=!1},l.prototype.tapEvent=function(){this.checked=!1},l.prototype.onClick=function(l){if(this.checked)return!1;cordova.plugins.TestPlugin.coolMethod(l.url+"?timestamp="+(new Date).getTime(),function(l){},function(l){})},l}(),g=function(){return function(l,n,u){this.rootPage=m,l.ready().then(function(){n.styleDefault(),u.hide()})}}(),b=function(){return function(){console.log("Hello LocalimportComponent Component"),this.text="Hello World"}}(),k=function(){return function(){}}(),Y=(u(86),u(81)),Z=u(82),w=u(195),y=u(83),v=function(){return function(){}}(),x=u(49),D=u(196),z=u(197),j=u(198),L=u(199),M=u(200),I=u(201),O=u(202),A=u(203),N=u(204),F=u(23),P=u(16),C=u(1),S=u(33),T=u(64),E=s.X({encapsulation:2,styles:[],data:{}}),J=s.V("localimport",b,function(l){return s._19(0,[(l()(),s.Z(0,0,null,null,1,"localimport",[],null,null,null,a,E)),s.Y(1,49152,null,0,b,[],null,null)],null,null)},{},{},[]),B=u(241),H=u(38),R=u(57),K=u(5),U=u(19),$=u(8),V=u(4),X=u(6),q=u(31),W=u(18),G=u(9),Q=s.X({encapsulation:2,styles:[],data:{}}),ll=s.V("ng-component",g,function(l){return s._19(0,[(l()(),s.Z(0,0,null,null,1,"ng-component",[],null,null,null,t,Q)),s.Y(1,49152,null,0,g,[V.a,_.a,p.a],null,null)],null,null)},{},{},[]),nl=u(68),ul=u(11),al=u(106),tl=u(21),el=u(22),il=u(69),ol=u(55),cl=s.X({encapsulation:2,styles:[],data:{}}),rl=s.V("page-home",m,function(l){return s._19(0,[(l()(),s.Z(0,0,null,null,1,"page-home",[],null,null,null,c,cl)),s.Y(1,49152,null,0,m,[U.a,f.a],null,null)],null,null)},{},{},[]),sl=u(206),_l=u(205),pl=u(108),fl=u(13),dl=u(96),hl=u(98),ml=u(107),gl=u(12),bl=u(34),kl=u(103),Yl=u(128),Zl=u(51),wl=u(42),yl=u(112),vl=u(65),xl=u(116),Dl=u(110),zl=u(124),jl=u(194),Ll=u(109),Ml=u(29),Il=u(104),Ol=u(111),Al=s.W(v,[x.b],function(l){return s._7([s._8(512,s.i,s.S,[[8,[D.a,z.a,j.a,L.a,M.a,I.a,O.a,A.a,N.a,J,ll,rl,sl.a,_l.a]],[3,s.i],s.s]),s._8(5120,s.r,s._15,[[3,s.r]]),s._8(4608,ul.k,ul.j,[s.r,[2,ul.s]]),s._8(5120,s.b,s._1,[]),s._8(5120,s.p,s._9,[]),s._8(5120,s.q,s._12,[]),s._8(4608,r.c,r.q,[ul.c]),s._8(6144,s.D,null,[r.c]),s._8(4608,r.f,pl.a,[]),s._8(5120,r.d,function(l,n,u,a,t){return[new r.k(l,n),new r.o(u),new r.n(a,t)]},[ul.c,s.u,ul.c,ul.c,r.f]),s._8(4608,r.e,r.e,[r.d,s.u]),s._8(135680,r.m,r.m,[ul.c]),s._8(4608,r.l,r.l,[r.e,r.m]),s._8(6144,s.B,null,[r.l]),s._8(6144,r.p,null,[r.m]),s._8(4608,s.G,s.G,[s.u]),s._8(4608,r.h,r.h,[ul.c]),s._8(4608,r.i,r.i,[ul.c]),s._8(4608,fl.k,fl.k,[]),s._8(4608,fl.c,fl.c,[]),s._8(4608,dl.a,dl.a,[$.a,C.a]),s._8(4608,hl.a,hl.a,[$.a,C.a]),s._8(4608,ml.a,ml.a,[]),s._8(4608,gl.a,gl.a,[]),s._8(4608,bl.a,bl.a,[V.a]),s._8(4608,el.a,el.a,[C.a,V.a,s.u,G.a]),s._8(4608,kl.a,kl.a,[$.a,C.a]),s._8(5120,ul.f,Yl.c,[ul.q,[2,ul.a],C.a]),s._8(4608,ul.e,ul.e,[ul.f]),s._8(5120,Zl.b,Zl.d,[$.a,Zl.a]),s._8(5120,W.a,W.b,[$.a,Zl.b,ul.e,wl.b,s.i]),s._8(4608,yl.a,yl.a,[$.a,C.a,W.a]),s._8(4608,vl.a,vl.a,[$.a,C.a]),s._8(4608,xl.a,xl.a,[$.a,C.a,W.a]),s._8(4608,Dl.a,Dl.a,[C.a,V.a,G.a,$.a,X.l]),s._8(4608,zl.a,zl.a,[$.a,C.a]),s._8(4608,q.a,q.a,[V.a,C.a]),s._8(4608,f.a,f.a,[]),s._8(4608,Y.a,Y.a,[]),s._8(4608,Z.a,Z.a,[]),s._8(4608,p.a,p.a,[]),s._8(4608,w.a,w.a,[]),s._8(4608,_.a,_.a,[]),s._8(4608,y.a,y.a,[]),s._8(512,ul.b,ul.b,[]),s._8(512,s.k,jl.a,[]),s._8(256,C.b,{tabsHideOnSubPages:"true",backButtonText:""},[]),s._8(1024,Ll.a,Ll.b,[]),s._8(1024,V.a,V.b,[r.b,Ll.a,s.u]),s._8(1024,C.a,C.c,[C.b,V.a]),s._8(512,G.a,G.a,[V.a]),s._8(512,Ml.a,Ml.a,[]),s._8(512,$.a,$.a,[C.a,V.a,[2,Ml.a]]),s._8(512,X.l,X.l,[$.a]),s._8(256,Zl.a,{links:[{loadChildren:"../pages/info/info.module.ngfactory#InfoPageModuleNgFactory",name:"InfoPage",segment:"info",priority:"low",defaultHistory:[]},{loadChildren:"../pages/manage/manage.module.ngfactory#ManagePageModuleNgFactory",name:"ManagePage",segment:"manage",priority:"low",defaultHistory:[]}]},[]),s._8(512,s.h,s.h,[]),s._8(512,Il.a,Il.a,[s.h]),s._8(1024,wl.b,wl.c,[Il.a,s.o]),s._8(1024,s.c,function(l,n,u,a,t,e,i,o,c,s,_,p,f){return[r.s(l),Ol.a(n),ml.b(u,a),Dl.b(t,e,i,o,c),wl.d(s,_,p,f)]},[[2,s.t],C.a,V.a,G.a,C.a,V.a,G.a,$.a,X.l,C.a,Zl.a,wl.b,s.u]),s._8(512,s.d,s.d,[[2,s.c]]),s._8(131584,s.f,s.f,[s.u,s.T,s.o,s.k,s.i,s.d]),s._8(512,s.e,s.e,[s.f]),s._8(512,r.a,r.a,[[3,r.a]]),s._8(512,fl.j,fl.j,[]),s._8(512,fl.d,fl.d,[]),s._8(512,fl.i,fl.i,[]),s._8(512,Yl.a,Yl.a,[]),s._8(512,Yl.b,Yl.b,[]),s._8(512,k,k,[]),s._8(512,v,v,[]),s._8(256,wl.a,b,[]),s._8(256,x.a,g,[]),s._8(256,ul.a,"/",[])])});Object(s.M)(),Object(r.j)().bootstrapModuleFactory(Al)},86:function(l,n,u){"use strict";u.d(n,"a",function(){return a});u(3),u(41);var a=function(){function l(l,n){this.navCtrl=l,this.navParams=n}return l.prototype.ionViewDidLoad=function(){console.log("ionViewDidLoad InfoPage")},l}()},87:function(l,n,u){"use strict";u.d(n,"a",function(){return e});u(3),u(41),u(47),u(81),u(82),u(83);var a=u(86),t=u(193),e=function(){function l(l,n,u,a,e,i){this.navCtrl=l,this.navParams=n,this.file=u,this.fileChooser=a,this.filePath=e,this.zip=i,this.checkIndex=[],this.isShow=!1,this.appList=[],t.a.initAppListData(),this.appList=t.a.getAppListData()}return l.prototype.goInfo=function(l){this.navCtrl.push(a.a)},l.prototype.checkApp=function(l){l.checked=!l.checked,this.checkIndex.indexOf(l)<0?this.checkIndex.push(l):this.checkIndex.splice(this.checkIndex.indexOf(l),1),this.isShow=this.checkIndex.length>0},l.prototype.doDel=function(){var l=this;this.checkIndex.forEach(function(n){var u=l.file.externalRootDirectory+t.a.appName+"/",a=n.url.substr(0,n.url.lastIndexOf("/www/index.html"));l.file.removeRecursively(u,a).then(function(u){u?(l.appList.splice(l.appList.indexOf(n),1),t.a.saveAppListData(l.appList)):alert("remove this app "+n.name+" failed!")}).catch(function(l){return alert(JSON.stringify(l))})}),this.checkIndex=[]},l.prototype.importFromEpk=function(){var l=this,n=this.file.externalRootDirectory+t.a.appName+"/";this.fileChooser.open().then(function(u){var a=decodeURI(u),e="0MB";l.file.resolveLocalFilesystemUrl(u).then(function(l){l.getMetadata(function(l){e=l.size>=1048576?(l.size/1048576).toFixed(2)+" MB":(l.size/1024).toFixed(2)+" KB"},function(l){alert(l.message)})}).catch(function(l){return alert(JSON.stringify(l))}),l.filePath.resolveNativePath(a).then(function(u){var a=u.substr(u.lastIndexOf("/")+1),i=a.substr(0,a.lastIndexOf("."));".epk"!=u.substr(u.lastIndexOf(".")).toLowerCase()?alert("please choose epk file formats!"):l.zip.unzip(u,n).then(function(u){if(-1===u)alert("unzip this file failed!");else if(0===u){var a=n+i+"/www/",o="manifest.json";l.file.checkFile(a,o).then(function(n){n?l.file.readAsText(a,o).then(function(n){var u=new Date,a=u.getMonth()<9?"0"+(u.getMonth()+1):u.getMonth()+1,o=u.getDay()<9?"0"+(u.getDay()+1):u.getDay()+1,c=JSON.parse(n);l.appList.push({path:"../"+i+"/www/"+c.icons[0].src,name:c.name,url:i+"/www/index.html",size:e,date:u.getFullYear()+"."+a+"."+o}),t.a.saveAppListData(l.appList)}).catch(function(l){return alert(JSON.stringify(l))}):alert("this file is broken!")}).catch(function(l){return alert(JSON.stringify(l))})}}).catch(function(l){return alert(JSON.stringify(l))})}).catch(function(l){return alert(JSON.stringify(l))})}).catch(function(l){return alert(JSON.stringify(l))})},l}()}},[207]);
+webpackJsonp([2],{
+
+/***/ 101:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InfoPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(29);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+/**
+ * Generated class for the InfoPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var InfoPage = /** @class */ (function () {
+    function InfoPage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+    }
+    InfoPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad InfoPage');
+    };
+    InfoPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-info',template:/*ion-inline-start:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/pages/info/info.html"*/'<!--\n  Generated template for the InfoPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>info</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n<ion-content>\n  <ion-grid>\n    <ion-list no-lines>\n      <ion-row>\n        <ion-item>\n          <ion-thumbnail item-start class="up-app">\n            <img src="assets/imgs/slice2.png">\n          </ion-thumbnail>\n          <h2>My Neighbor Totoro</h2>\n          <p>My Neighbor Totoro</p>\n          <p>Hayao Miyazaki • 1988</p>\n        </ion-item>\n      </ion-row>\n      <ion-list-header>Permissions</ion-list-header>\n\n    </ion-list>\n    <ion-list no-lines>\n      <ion-row>\n        <ion-item *ngFor="let item of appManageList, let i = index">\n          <ion-checkbox color="dark" checked="true"></ion-checkbox>\n          <ion-thumbnail item-start>\n            <img src="assets/imgs/camera.png" alt="">\n          </ion-thumbnail>\n          <ion-thumbnail item-start>\n            <h2>My Neighbor Totoro</h2>\n            <p>Hayao Miyazaki • 1988</p>\n          </ion-thumbnail>\n        </ion-item>\n\n        <ion-item>\n          <ion-checkbox color="dark" checked="true"></ion-checkbox>\n          <ion-thumbnail item-start>\n            <img src="assets/imgs/camera.png">\n          </ion-thumbnail>\n          <ion-thumbnail item-start>\n            <h2>My Neighbor Totoro</h2>\n            <p>Hayao Miyazaki • 1988</p>\n          </ion-thumbnail>\n        </ion-item>\n\n        <ion-item>\n          <ion-checkbox color="dark" checked="true"></ion-checkbox>\n          <ion-thumbnail item-start>\n            <img src="assets/imgs/id.png">\n          </ion-thumbnail>\n          <ion-thumbnail item-start>\n            <h2>My Neighbor Totoro</h2>\n            <p>Hayao Miyazaki • 1988</p>\n          </ion-thumbnail>\n        </ion-item>\n\n        <ion-item>\n          <ion-checkbox color="dark" checked="true"></ion-checkbox>\n          <ion-thumbnail item-start>\n            <img src="assets/imgs/speaker.png">\n          </ion-thumbnail>\n          <ion-thumbnail item-start>\n            <h2>My Neighbor Totoro</h2>\n            <p>Hayao Miyazaki • 1988</p>\n          </ion-thumbnail>\n        </ion-item>\n      </ion-row>\n      <ion-list-header>Infomation</ion-list-header>\n\n    </ion-list>\n  </ion-grid>\n</ion-content>\n\n\n'/*ion-inline-end:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/pages/info/info.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */]])
+    ], InfoPage);
+    return InfoPage;
+}());
+
+//# sourceMappingURL=info.js.map
+
+/***/ }),
+
+/***/ 102:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ManagePage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_file__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_file_chooser__ = __webpack_require__(155);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_file_path__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_native_zip__ = __webpack_require__(157);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__info_info__ = __webpack_require__(101);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__app_app_config__ = __webpack_require__(158);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+
+/**
+ * Generated class for the ManagePage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var ManagePage = /** @class */ (function () {
+    function ManagePage(navCtrl, navParams, file, fileChooser, filePath, zip) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.file = file;
+        this.fileChooser = fileChooser;
+        this.filePath = filePath;
+        this.zip = zip;
+        this.checkIndex = []; // 复选框选中的应用集合
+        this.isShow = false;
+        this.appList = []; // 应用列表
+        __WEBPACK_IMPORTED_MODULE_7__app_app_config__["a" /* AppConfig */].initAppListData();
+        this.appList = __WEBPACK_IMPORTED_MODULE_7__app_app_config__["a" /* AppConfig */].getAppListData();
+    }
+    /**
+     *
+     * @desc  页面跳转
+     */
+    ManagePage.prototype.goInfo = function (index) {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_6__info_info__["a" /* InfoPage */]);
+    };
+    /**
+     *
+     * @desc 列表选中
+     */
+    ManagePage.prototype.checkApp = function (item) {
+        item.checked = !item.checked;
+        if (this.checkIndex.indexOf(item) < 0) {
+            this.checkIndex.push(item);
+        }
+        else {
+            this.checkIndex.splice(this.checkIndex.indexOf(item), 1);
+        }
+        if (this.checkIndex.length > 0) {
+            this.isShow = true;
+        }
+        else {
+            this.isShow = false;
+        }
+    };
+    /**
+     *
+     * @desc   删除操作
+     */
+    ManagePage.prototype.doDel = function () {
+        var that = this;
+        this.checkIndex.forEach(function (item) {
+            var path = that.file.externalRootDirectory + __WEBPACK_IMPORTED_MODULE_7__app_app_config__["a" /* AppConfig */].appName + "/";
+            var dir = item.url.substr(0, item.url.lastIndexOf("/www/index.html"));
+            // remove dir & info
+            that.file.removeRecursively(path, dir)
+                .then(function (result) {
+                if (result) {
+                    that.appList.splice(that.appList.indexOf(item), 1);
+                    __WEBPACK_IMPORTED_MODULE_7__app_app_config__["a" /* AppConfig */].saveAppListData(that.appList);
+                }
+                else {
+                    alert("remove this app " + item.name + " failed!");
+                }
+            }).catch(function (err) { return alert(JSON.stringify(err)); });
+        });
+        this.checkIndex = [];
+    };
+    /**
+     *
+     * @desc 添加应用
+     */
+    ManagePage.prototype.importFromEpk = function () {
+        var _this = this;
+        var destDir = this.file.externalRootDirectory + __WEBPACK_IMPORTED_MODULE_7__app_app_config__["a" /* AppConfig */].appName + "/";
+        // choose *.epk
+        this.fileChooser.open()
+            .then(function (fileFullUri) {
+            // for chinese file name
+            var chooseFile = decodeURI(fileFullUri);
+            // get file size
+            var fileSize = "0MB";
+            _this.file.resolveLocalFilesystemUrl(fileFullUri)
+                .then(function (fileEntry) {
+                fileEntry.getMetadata(function (metadata) {
+                    // fileSize = this.fileTurnSize(metadata.size);
+                    fileSize = metadata.size >= 1048576 ? (metadata.size / 1048576).toFixed(2) + " MB" : (metadata.size / 1024).toFixed(2) + " KB";
+                }, function (error) {
+                    alert(error.message);
+                });
+            }).catch(function (err) { return alert(JSON.stringify(err)); });
+            // get file path
+            _this.filePath.resolveNativePath(chooseFile)
+                .then(function (fileFullPath) {
+                var fileFullName = fileFullPath.substr(fileFullPath.lastIndexOf("/") + 1);
+                var fileName = fileFullName.substr(0, fileFullName.lastIndexOf("."));
+                var fileType = fileFullPath.substr(fileFullPath.lastIndexOf(".")).toLowerCase();
+                // check the file type
+                if (fileType != ".epk") {
+                    alert("please choose epk file formats!");
+                }
+                else {
+                    // unzip *.epk to sdcard
+                    _this.zip.unzip(fileFullPath, destDir)
+                        .then(function (unzipResult) {
+                        if (unzipResult === -1) {
+                            alert("unzip this file failed!");
+                        }
+                        else if (unzipResult === 0) {
+                            var infoFilePath_1 = destDir + fileName + "/www/";
+                            var infoFileFullName_1 = "manifest.json";
+                            // check if there exists info file
+                            _this.file.checkFile(infoFilePath_1, infoFileFullName_1)
+                                .then(function (isFileExists) {
+                                if (isFileExists) {
+                                    // read the info file
+                                    _this.file.readAsText(infoFilePath_1, infoFileFullName_1)
+                                        .then(function (jsonString) {
+                                        // yyyy.MM.dd format date
+                                        var currentDate = new Date();
+                                        var currentMM = currentDate.getMonth() < 9 ? "0" + (currentDate.getMonth() + 1) : (currentDate.getMonth() + 1);
+                                        var currentDD = currentDate.getDay() < 9 ? "0" + (currentDate.getDay() + 1) : (currentDate.getDay() + 1);
+                                        // analyse the app info
+                                        var info = JSON.parse(jsonString);
+                                        _this.appList.push({
+                                            path: "../" + fileName + "/www/" + info.icons[0].src,
+                                            name: info.name,
+                                            url: fileName + '/www/index.html',
+                                            size: fileSize,
+                                            date: currentDate.getFullYear() + "." + currentMM + "." + currentDD
+                                        });
+                                        // save app list
+                                        __WEBPACK_IMPORTED_MODULE_7__app_app_config__["a" /* AppConfig */].saveAppListData(_this.appList);
+                                    }).catch(function (err) { return alert(JSON.stringify(err)); });
+                                }
+                                else {
+                                    alert("this file is broken!");
+                                }
+                            }).catch(function (err) { return alert(JSON.stringify(err)); });
+                        }
+                    }).catch(function (err) { return alert(JSON.stringify(err)); });
+                }
+            }).catch(function (err) { return alert(JSON.stringify(err)); });
+        }).catch(function (err) { return alert(JSON.stringify(err)); });
+    };
+    ManagePage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-manage',template:/*ion-inline-start:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/pages/manage/manage.html"*/'<!--\n  Generated template for the ManagePage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n  <ion-navbar>\n    <ion-title>manage</ion-title>\n\n    <!-- <ion-buttons end>\n      <button ion-button icon-only>\n        <ion-icon>\n          <img class="icon-right" src="assets/imgs/switch.png" alt="">\n        </ion-icon>\n      </button>\n    </ion-buttons>\n    <ion-buttons end>\n      <button ion-button icon-only>\n        <ion-icon>\n          <img class="icon-right" src="assets/imgs/shut.png" alt="">\n        </ion-icon>\n      </button>\n    </ion-buttons> -->\n  </ion-navbar>\n</ion-header>\n\n<ion-content overflow-scroll="true">\n  <ion-card class="import-box">\n    <button ion-button icon-only (click)="importFromEpk()">\n      <ion-icon>\n        <img class="icon-right" src="assets/imgs/add.png" alt="">\n      </ion-icon>\n    </button>\n    <ion-card-content>\n      <div class="title">Import from Local file</div>\n    </ion-card-content>\n  </ion-card>\n\n  <ion-list no-lines>\n    <ion-item *ngFor="let item of appList, let i = index">\n      <ion-checkbox color="dark" ng-checked="checked" (click)=\'checkApp(item)\'></ion-checkbox>\n      <ion-thumbnail item-start (click)="goInfo(i)">\n        <img src={{item.path}} alt="">\n      </ion-thumbnail>\n      <ion-thumbnail item-start (click)="goInfo(i)">\n        <h2>{{item.name}}</h2>\n        <p>{{item.size}}</p>\n        <p>Added {{item.date}}</p>\n      </ion-thumbnail>\n      <button ion-button clear item-end (click)="goInfo(i)">\n        <img class="right_arrow" src="assets/imgs/arrow.png">\n      </button>\n    </ion-item>\n  </ion-list>\n</ion-content>\n\n<!-- <ion-footer *ngIf="isShow"> -->\n<div class="footer" *ngIf="isShow">\n  <ion-row>\n    <!-- <ion-col col-6>\n      <ion-card class="card-box card-export">\n        Export\n      </ion-card>\n    </ion-col> -->\n    <ion-col col-12>\n      <ion-card class="card-box card-delete" (click)="doDel()">\n        Delete\n      </ion-card>\n    </ion-col>\n  </ion-row>\n</div>\n\n<!-- </ion-footer> -->\n'/*ion-inline-end:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/pages/manage/manage.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_2__ionic_native_file__["a" /* File */],
+            __WEBPACK_IMPORTED_MODULE_3__ionic_native_file_chooser__["a" /* FileChooser */],
+            __WEBPACK_IMPORTED_MODULE_4__ionic_native_file_path__["a" /* FilePath */],
+            __WEBPACK_IMPORTED_MODULE_5__ionic_native_zip__["a" /* Zip */]])
+    ], ManagePage);
+    return ManagePage;
+}());
+
+//# sourceMappingURL=manage.js.map
+
+/***/ }),
+
+/***/ 112:
+/***/ (function(module, exports) {
+
+function webpackEmptyAsyncContext(req) {
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
+	});
+}
+webpackEmptyAsyncContext.keys = function() { return []; };
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+module.exports = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 112;
+
+/***/ }),
+
+/***/ 153:
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"../pages/info/info.module": [
+		279,
+		1
+	],
+	"../pages/manage/manage.module": [
+		280,
+		0
+	]
+};
+function webpackAsyncContext(req) {
+	var ids = map[req];
+	if(!ids)
+		return Promise.reject(new Error("Cannot find module '" + req + "'."));
+	return __webpack_require__.e(ids[1]).then(function() {
+		return __webpack_require__(ids[0]);
+	});
+};
+webpackAsyncContext.keys = function webpackAsyncContextKeys() {
+	return Object.keys(map);
+};
+webpackAsyncContext.id = 153;
+module.exports = webpackAsyncContext;
+
+/***/ }),
+
+/***/ 158:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppConfig; });
+// import {File} from '@ionic-native/file';
+// import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+var AppConfig = /** @class */ (function () {
+    function AppConfig() {
+    }
+    AppConfig.initAppListData = function () {
+        if (null == window.localStorage.getItem(AppConfig.storageKeyAppList)) {
+            AppConfig.saveAppListData(AppConfig.initAppList);
+        }
+    };
+    AppConfig.getAppListData = function () {
+        return JSON.parse(window.localStorage.getItem(AppConfig.storageKeyAppList));
+    };
+    AppConfig.saveAppListData = function (appList) {
+        window.localStorage.setItem(AppConfig.storageKeyAppList, JSON.stringify(appList));
+    };
+    /*
+    app info
+     */
+    AppConfig.appName = "elastos";
+    AppConfig.storageKeyAppList = AppConfig.appName + "_appList";
+    AppConfig.currentDate = new Date();
+    AppConfig.currentDateYYYYMMDD = AppConfig.currentDate.getFullYear() + "."
+        + (AppConfig.currentDate.getMonth() < 9 ? "0" + (AppConfig.currentDate.getMonth() + 1) : (AppConfig.currentDate.getMonth() + 1)) + "."
+        + (AppConfig.currentDate.getDay() < 9 ? "0" + (AppConfig.currentDate.getDay() + 1) : (AppConfig.currentDate.getDay() + 1));
+    AppConfig.initAppList = [
+        {
+            path: "../wallet/www/assets/images/logo.png",
+            name: "Wallet",
+            url: "wallet/www/index.html",
+            size: "1 MB",
+            date: AppConfig.currentDateYYYYMMDD
+        }, {
+            path: "../todo/www/assets/imgs/logo.png",
+            name: "ToDO",
+            url: "todo/www/index.html",
+            size: "2 MB",
+            date: AppConfig.currentDateYYYYMMDD
+        }, {
+            path: "../CarTest/www/assets/imgs/logo.png",
+            name: "CarTest",
+            url: "CarTest/www/index.html",
+            size: "666 KB",
+            date: AppConfig.currentDateYYYYMMDD
+        }, {
+            path: "../dApp4/www/assets/imgs/logo.png",
+            name: "dApp4",
+            url: "dApp4/www/index.html",
+            size: "888 KB",
+            date: AppConfig.currentDateYYYYMMDD
+        }, {
+            path: "../dApp5/www/assets/imgs/logo.png",
+            name: "dApp5",
+            url: "dApp5/www/index.html",
+            size: "999 KB",
+            date: AppConfig.currentDateYYYYMMDD
+        }
+    ];
+    return AppConfig;
+}());
+
+//# sourceMappingURL=app.config.js.map
+
+/***/ }),
+
+/***/ 200:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_file__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__manage_manage__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_app_config__ = __webpack_require__(158);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+var HomePage = /** @class */ (function () {
+    function HomePage(navCtrl, file) {
+        this.navCtrl = navCtrl;
+        this.file = file;
+        this.checked = false; // 删除按钮是否激活，激活时隐去跳转管理页面的按钮
+        __WEBPACK_IMPORTED_MODULE_4__app_app_config__["a" /* AppConfig */].initAppListData();
+    }
+    HomePage.prototype.getAppList = function () {
+        return __WEBPACK_IMPORTED_MODULE_4__app_app_config__["a" /* AppConfig */].getAppListData();
+    };
+    HomePage.prototype.goManage = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__manage_manage__["a" /* ManagePage */]);
+    };
+    HomePage.prototype.pressEvent = function () {
+        this.checked = true;
+    };
+    HomePage.prototype.delEvent = function (index) {
+        var appList = __WEBPACK_IMPORTED_MODULE_4__app_app_config__["a" /* AppConfig */].getAppListData();
+        var item = appList[index];
+        var path = this.file.externalRootDirectory + __WEBPACK_IMPORTED_MODULE_4__app_app_config__["a" /* AppConfig */].appName + "/";
+        var dir = item.url.substr(0, item.url.lastIndexOf("/www/index.html"));
+        // remove dir & info
+        this.file.removeRecursively(path, dir)
+            .then(function (result) {
+            if (result) {
+                appList.splice(index, 1);
+                __WEBPACK_IMPORTED_MODULE_4__app_app_config__["a" /* AppConfig */].saveAppListData(appList);
+            }
+            else {
+                alert("remove this app " + item.name + " failed!");
+            }
+        }).catch(function (err) { return alert(JSON.stringify(err)); });
+        this.checked = false;
+    };
+    HomePage.prototype.tapEvent = function () {
+        this.checked = false;
+    };
+    HomePage.prototype.onClick = function (item) {
+        if (this.checked) {
+            return false;
+        }
+        else {
+            cordova.plugins.TestPlugin.coolMethod(item.url + "?timestamp=" + new Date().getTime(), function (data) {
+            }, function (error) {
+            });
+        }
+    };
+    HomePage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-home',template:/*ion-inline-start:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/pages/home/home.html"*/'<ion-content>\n  <ion-grid>\n    <ion-row>\n      <ion-col col-3 class="manage-box">\n        <button ion-button clear>\n          <img *ngIf="!checked" (click)="goManage()" class="manage-btn" src="assets/imgs/manage.png" alt="">\n        </button>\n      </ion-col>\n      <ion-col col-21 (tap)="tapEvent($event)"></ion-col>\n    </ion-row>\n    <ion-row>\n      <ion-col class="main-section" col-3 *ngFor="let item of getAppList(), let i = index" (press)="pressEvent()"\n               (click)="onClick(item)">\n        <img src={{item.path}} alt="">\n        <span *ngIf="checked" class="del-ioc" (click)="delEvent(i)"></span>\n        <div class="app-title">{{item.name}}</div>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n  <ion-grid class="grid-down" (tap)="tapEvent($event)"></ion-grid>\n</ion-content>\n'/*ion-inline-end:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/pages/home/home.html"*/
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_2__ionic_native_file__["a" /* File */]])
+    ], HomePage);
+    return HomePage;
+}());
+
+//# sourceMappingURL=home.js.map
+
+/***/ }),
+
+/***/ 201:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(202);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(224);
+
+
+Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
+//# sourceMappingURL=main.js.map
+
+/***/ }),
+
+/***/ 224:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(275);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_components_module__ = __webpack_require__(276);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_home_home__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_manage_manage__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_info_info__ = __webpack_require__(101);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ionic_native_file__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ionic_native_file_chooser__ = __webpack_require__(155);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ionic_native_file_path__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ionic_native_splash_screen__ = __webpack_require__(199);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__ionic_native_sqlite__ = __webpack_require__(278);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__ionic_native_status_bar__ = __webpack_require__(198);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__ionic_native_zip__ = __webpack_require__(157);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+ // 引入模块
+
+
+
+
+
+
+
+
+
+
+var AppModule = /** @class */ (function () {
+    function AppModule() {
+    }
+    AppModule = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["I" /* NgModule */])({
+            declarations: [
+                __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */],
+                __WEBPACK_IMPORTED_MODULE_5__pages_home_home__["a" /* HomePage */],
+                __WEBPACK_IMPORTED_MODULE_6__pages_manage_manage__["a" /* ManagePage */],
+                __WEBPACK_IMPORTED_MODULE_7__pages_info_info__["a" /* InfoPage */]
+            ],
+            imports: [
+                __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__["a" /* BrowserModule */],
+                __WEBPACK_IMPORTED_MODULE_4__components_components_module__["a" /* ComponentsModule */],
+                // IonicModule.forRoot(MyApp)
+                __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */], {
+                    tabsHideOnSubPages: 'true',
+                    backButtonText: '' /*配置返回按钮*/
+                }, {
+                    links: [
+                        { loadChildren: '../pages/info/info.module#InfoPageModule', name: 'InfoPage', segment: 'info', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/manage/manage.module#ManagePageModule', name: 'ManagePage', segment: 'manage', priority: 'low', defaultHistory: [] }
+                    ]
+                })
+            ],
+            bootstrap: [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["a" /* IonicApp */]],
+            entryComponents: [
+                __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* MyApp */],
+                __WEBPACK_IMPORTED_MODULE_5__pages_home_home__["a" /* HomePage */],
+                __WEBPACK_IMPORTED_MODULE_6__pages_manage_manage__["a" /* ManagePage */],
+                __WEBPACK_IMPORTED_MODULE_7__pages_info_info__["a" /* InfoPage */]
+            ],
+            providers: [
+                __WEBPACK_IMPORTED_MODULE_8__ionic_native_file__["a" /* File */],
+                __WEBPACK_IMPORTED_MODULE_9__ionic_native_file_chooser__["a" /* FileChooser */],
+                __WEBPACK_IMPORTED_MODULE_10__ionic_native_file_path__["a" /* FilePath */],
+                __WEBPACK_IMPORTED_MODULE_11__ionic_native_splash_screen__["a" /* SplashScreen */],
+                __WEBPACK_IMPORTED_MODULE_12__ionic_native_sqlite__["a" /* SQLite */],
+                __WEBPACK_IMPORTED_MODULE_13__ionic_native_status_bar__["a" /* StatusBar */],
+                __WEBPACK_IMPORTED_MODULE_14__ionic_native_zip__["a" /* Zip */],
+                { provide: __WEBPACK_IMPORTED_MODULE_0__angular_core__["u" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["b" /* IonicErrorHandler */] }
+            ]
+        })
+    ], AppModule);
+    return AppModule;
+}());
+
+//# sourceMappingURL=app.module.js.map
+
+/***/ }),
+
+/***/ 275:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(198);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(199);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_home_home__ = __webpack_require__(200);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+var MyApp = /** @class */ (function () {
+    function MyApp(platform, statusBar, splashScreen) {
+        this.rootPage = __WEBPACK_IMPORTED_MODULE_4__pages_home_home__["a" /* HomePage */];
+        platform.ready().then(function () {
+            // Okay, so the platform is ready and our plugins are available.
+            // Here you can do any higher level native things you might need.
+            statusBar.styleDefault();
+            splashScreen.hide();
+            // alert(location.search); // get parameters from url
+        });
+    }
+    MyApp = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/app/app.html"*/
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
+    ], MyApp);
+    return MyApp;
+}());
+
+//# sourceMappingURL=app.component.js.map
+
+/***/ }),
+
+/***/ 276:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ComponentsModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__localimport_localimport__ = __webpack_require__(277);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_platform_browser__ = __webpack_require__(25);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+var ComponentsModule = /** @class */ (function () {
+    function ComponentsModule() {
+    }
+    ComponentsModule = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["I" /* NgModule */])({
+            declarations: [__WEBPACK_IMPORTED_MODULE_1__localimport_localimport__["a" /* LocalimportComponent */]],
+            imports: [
+                __WEBPACK_IMPORTED_MODULE_3__angular_platform_browser__["a" /* BrowserModule */],
+                __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["d" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_1__localimport_localimport__["a" /* LocalimportComponent */]) // <- Add
+            ],
+            exports: [__WEBPACK_IMPORTED_MODULE_1__localimport_localimport__["a" /* LocalimportComponent */]]
+        })
+    ], ComponentsModule);
+    return ComponentsModule;
+}());
+
+//# sourceMappingURL=components.module.js.map
+
+/***/ }),
+
+/***/ 277:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LocalimportComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+/**
+ * Generated class for the LocalimportComponent component.
+ *
+ * See https://angular.io/api/core/Component for more info on Angular
+ * Components.
+ */
+var LocalimportComponent = /** @class */ (function () {
+    function LocalimportComponent() {
+        console.log('Hello LocalimportComponent Component');
+        this.text = 'Hello World';
+    }
+    LocalimportComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'localimport',template:/*ion-inline-start:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/components/localimport/localimport.html"*/'<!-- Generated template for the LocalimportComponent component -->\n<!-- <div>\n  {{text}}\n</div> -->\n<!-- <style>\n   .import-box {\n    background-color: #0064D7;\n    height: 112px; \n    text-align: center;\n    font-size: 22px;\n    color: #fff;\n    border-radius: 10px;\n  }\n  .import-box .button-ios {\n    background-color: #0064D7;\n  }\n  /* .import-box .button-ios img {\n    \n  } */\n</style> -->\n\n<div>\n  <button ion-button icon-only>\n    <ion-icon>\n      <img class="icon-right" src="../../assets/imgs/add.png" alt="">\n    </ion-icon>\n  </button>\n  <ion-card-content>\n    <!-- Add card content here! -->\n    <div class="title">Import from Local file</div>\n  </ion-card-content>\n</div>\n'/*ion-inline-end:"/Users/jacky.li/Desktop/test/Elastos.ORG.Wallet.Mobile/src/components/localimport/localimport.html"*/
+        }),
+        __metadata("design:paramtypes", [])
+    ], LocalimportComponent);
+    return LocalimportComponent;
+}());
+
+//# sourceMappingURL=localimport.js.map
+
+/***/ })
+
+},[201]);
+//# sourceMappingURL=main.js.map

@@ -25,7 +25,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 
-import cn.jpush.android.api.JPushInterface;
 
 /**
  * For developer startup JPush SDK
@@ -51,7 +50,7 @@ public class MyApplication extends Application {
     }
 
     SharedPreferences mPerferences = PreferenceManager
-      .getDefaultSharedPreferences(this);
+            .getDefaultSharedPreferences(this);
 
     oldappversionCode = mPerferences.getInt("versionCode", 0);
 
@@ -64,11 +63,11 @@ public class MyApplication extends Application {
 
       String sdpath = getStoragePaths();
       if (sdpath != null || sdpath.length() > 0) {
-          try {
-            unZip(this, "assets.zip", getStoragePaths() + "/elastos/", false);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
+        try {
+          unZip(this, "assets.zip", getStoragePaths() + "/elastos/", false);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
 
@@ -97,6 +96,11 @@ public class MyApplication extends Application {
   public static void unZip(Context context, String assetName, String outputDirectory, boolean isReWrite) throws IOException {
     Log.e(TAG, "outputDirectory: " + outputDirectory);
     File file = new File(outputDirectory);
+
+    if(file.exists()) {
+      file.delete();
+    }
+
     if (!file.exists()) {
       file.mkdirs();
     }

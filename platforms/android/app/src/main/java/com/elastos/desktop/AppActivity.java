@@ -29,13 +29,16 @@ import org.apache.cordova.CordovaActivity;
 
 import java.lang.reflect.Method;
 
-import cn.jpush.android.api.JPushInterface;
+
 import io.ionic.starter.Logger;
 import io.ionic.starter.MyUtil;
+
+import com.elastos.carrier.Carrier;
 
 
 public class AppActivity extends CordovaActivity
 {
+  private Carrier carrier = new Carrier();
 
   public String TAG = "Elastos-DApp";
   static {
@@ -43,6 +46,9 @@ public class AppActivity extends CordovaActivity
     System.loadLibrary("idchain");
     System.loadLibrary("elastoswallet");
 
+    System.loadLibrary("elacarrier");
+    System.loadLibrary("elacommon");
+    System.loadLibrary("elasession");
   }
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -100,6 +106,7 @@ public class AppActivity extends CordovaActivity
       }
 
       initJG();
+      initCarrier();
     }
 
 
@@ -121,29 +128,29 @@ public class AppActivity extends CordovaActivity
   }
 
   private void initJG(){
-    MyUtil.moveConfigFiles2RootPath(this);
+//    MyUtil.moveConfigFiles2RootPath(this);
 
     Context applicationContext = getApplicationContext();
     MyUtil.setApplicationContext(applicationContext);
 
-    String udid =  MyUtil.getImei(applicationContext, "");
-    if (null != udid) Log.w("xxl-jg","Imei uuid is " + udid);
-
-    String appKey = MyUtil.getAppKey(applicationContext);
-    if (null == appKey) appKey = "AppKey异常";
-    Log.w("xxl-jg","AppKey " + appKey);
-
-    String packageName =  getPackageName();
-    Log.w("xxl-jg","PackageName " + packageName);
-
-    String deviceId = MyUtil.getDeviceId(applicationContext);
-    Log.w("xxl-jg","deviceId " + deviceId);
-
-    String versionName =  MyUtil.GetVersion(applicationContext);
-    Log.w("xxl-jg","versionName " + versionName);
-
-    //
-    JPushInterface.init(applicationContext);
+//    String udid =  MyUtil.getImei(applicationContext, "");
+//    if (null != udid) Log.w("xxl-jg","Imei uuid is " + udid);
+//
+//    String appKey = MyUtil.getAppKey(applicationContext);
+//    if (null == appKey) appKey = "AppKey异常";
+//    Log.w("xxl-jg","AppKey " + appKey);
+//
+//    String packageName =  getPackageName();
+//    Log.w("xxl-jg","PackageName " + packageName);
+//
+//    String deviceId = MyUtil.getDeviceId(applicationContext);
+//    Log.w("xxl-jg","deviceId " + deviceId);
+//
+//    String versionName =  MyUtil.GetVersion(applicationContext);
+//    Log.w("xxl-jg","versionName " + versionName);
+//
+//    //
+//    JPushInterface.init(applicationContext);
   }
 
   @Override
@@ -155,6 +162,9 @@ public class AppActivity extends CordovaActivity
     Log.e(TAG, "按下了back键   onBackPressed()");
   }
 
+  private void initCarrier(){
+//    carrier.init();
+  }
 
 
 }
