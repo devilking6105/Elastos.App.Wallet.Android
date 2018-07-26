@@ -203,5 +203,20 @@ export const zh = {
   'text-id-kyc-import-text-del-message':"删除id成功",
   'text-id-kyc-import-text-del-please-message':'请选择要删除的ID',
   'text-id-kyc-auth-query-timeout':'付费查询失败',
-  'text-id-kyc-auth-fee-fail':'付款失败'
+  'text-id-kyc-auth-fee-fail':'付款失败',
+  'text-input-please':'请输入',
+  'text-debitCard-message-1':'银行卡号不能为空',
+  'text-debitCard-message-2':'银行卡号不合法',
+  'text-cardNo-message-1':'身份证不能为空',
+  'text-cardNo-message-2':'身份证不合法',
+  'text-phone-message-1':'手机号不能为空',
+  'text-phone-message-2':'手机号不合法',
+  'text-sendcode-message-1':'验证码不能为空',
+  'text-word-message':'请输入企业全称',
+  'text-legalPerson-message':'请输入企业法人',
+  'text-registrationN-message':'社会信用代码',
+  'text-id-kyc-prompt-title':'确认',
+  'text-id-kyc-prompt-password':'输入钱包支付密码',
+  'Ok':'确定',
+  'text-id-kyc-cochain':'上链需要花费'
 };

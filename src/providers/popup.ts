@@ -96,4 +96,67 @@ export class PopupProvider {
       prompt.present();
     });
   }
+
+  presentPrompt() {
+    return new Promise((resolve, reject) => {
+      let alert = this.alertCtrl.create({
+        title: this.translate.instant("text-id-kyc-prompt-title"),
+        inputs: [
+          {
+            name: 'password',
+            placeholder: this.translate.instant("text-id-kyc-prompt-password"),
+            type: 'password'
+          }
+        ],
+        buttons: [
+          {
+            text: this.translate.instant('cancel'),
+            role: 'cancel',
+            handler: data => {
+              console.log('Cancel clicked');
+              reject(null);
+            }
+          },
+          {
+            text: this.translate.instant('Ok'),
+            handler: data => {
+              resolve(data.password);
+            }
+          }
+        ]
+      });
+      alert.present();
+    });
+  }
+
+  presentConfirm(price){
+
+    return new Promise((resolve, reject) => {
+
+      let alert = this.alertCtrl.create({
+        title: this.translate.instant("text-id-kyc-prompt-title"),
+        message: this.translate.instant('text-id-kyc-cochain')+price+"ELA",
+        buttons: [
+          {
+            text: this.translate.instant('cancel'),
+            role: 'cancel',
+            handler: () => {
+              reject();
+            }
+          },
+          {
+            text: this.translate.instant('Ok'),
+            handler: () => {
+              resolve();
+            }
+          }
+        ]
+      });
+      alert.present();
+
+
+    });
+
+  }
+
 }
