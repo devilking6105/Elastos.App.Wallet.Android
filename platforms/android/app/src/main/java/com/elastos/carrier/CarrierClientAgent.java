@@ -181,14 +181,17 @@ public class CarrierClientAgent extends AbstractCarrierHandler {
 
     this.kill();
 
-    util.log("Carrier node was killed");
+
   }
 
   public void kill() {
-
-    for(CarrierClient server: mServerList){
-      server.close();
-    }
+//    try{
+//      for(CarrierClient server: mServerList){
+//        server.close();
+//      }
+//    }catch(Exception e){
+//      util.error(e.toString());
+//    }
 
     mServerList.clear();
     mServerMap.clear();
@@ -199,6 +202,7 @@ public class CarrierClientAgent extends AbstractCarrierHandler {
     }
 
     carrierClientAgentInstance = null;
+    util.log("Carrier node was killed");
   }
 
   public List<CarrierClient> getServerList() {

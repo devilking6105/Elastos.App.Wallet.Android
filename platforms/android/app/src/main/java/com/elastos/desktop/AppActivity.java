@@ -58,7 +58,7 @@ public class AppActivity extends CordovaActivity {
         super.onCreate(savedInstanceState);
 
         mContext = getApplicationContext();
-        carrier = new Carrier();
+//        carrier = new Carrier();
 
         // enable Cordova apps to be started in the background
         Bundle extras = getIntent().getExtras();
@@ -93,10 +93,10 @@ public class AppActivity extends CordovaActivity {
               sdcardurl = "file:///" + getStoragePaths() + "/elastos/" + url;
             }
             Log.e(TAG, "loadUrl: " + sdcardurl);
-//            loadUrl(sdcardurl);
+            loadUrl(sdcardurl);
 
-            String sdurl = "file://" + getStoragePaths()+"/abc/www/index.html";
-            loadUrl(sdurl);
+//            String sdurl = "file://" + getStoragePaths()+"/abc/www/index.html";
+//            loadUrl(sdurl);
           } else {
             startParams = data.getQuery();
           }
@@ -143,12 +143,11 @@ public class AppActivity extends CordovaActivity {
   public void onBackPressed() {
     super.onBackPressed();
 
-    if(carrier != null){
-      carrier.close();
-    }
+    Carrier.close();
     finish();
+    super.onDestroy();
     System.exit(0);
-//    super.onDestroy();
+//
     Log.e(TAG, "按下了back键   onBackPressed()");
   }
 

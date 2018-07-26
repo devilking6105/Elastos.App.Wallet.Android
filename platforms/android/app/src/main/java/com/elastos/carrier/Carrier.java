@@ -58,8 +58,9 @@ public class Carrier extends CordovaPlugin {
     util.log("start connect carrier service, address="+address+" -- password="+password);
   }
 
-  public void close(){
-    CarrierClientAgent.singleton().kill();
+  public static void close(){
+
+    CarrierClientAgent.singleton().logout();
   }
 
 }
