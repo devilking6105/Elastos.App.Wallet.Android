@@ -8,52 +8,52 @@
   },
   "installed_plugins": {
     "cordova-plugin-device": {
-      "PACKAGE_NAME": "com.elastos.desktop"
+      "PACKAGE_NAME": "org.elastos.desktop"
     },
     "cordova-plugin-ionic-keyboard": {
-      "PACKAGE_NAME": "com.elastos.desktop"
+      "PACKAGE_NAME": "org.elastos.desktop"
     },
     "cordova-plugin-ionic-webview": {
-      "PACKAGE_NAME": "com.elastos.desktop"
+      "PACKAGE_NAME": "org.elastos.desktop"
     },
     "cordova-plugin-splashscreen": {
-      "PACKAGE_NAME": "com.elastos.desktop"
+      "PACKAGE_NAME": "org.elastos.desktop"
     },
     "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "com.elastos.desktop"
+      "PACKAGE_NAME": "org.elastos.desktop"
     },
     "cordova-sqlite-storage": {
-      "PACKAGE_NAME": "com.elastos.desktop"
+      "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "cordova-plugin-filechooser": {
+      "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "cordova-clipboard": {
+      "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "ElaWallet": {
+      "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "cordova-plugin-zip": {
+      "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "cordova-plugin-filepath": {
+      "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "com.plugin.appmanager": {
+      "PACKAGE_NAME": "org.elastos.desktop"
     },
     "phonegap-plugin-barcodescanner": {
       "ANDROID_SUPPORT_V4_VERSION": "27.+",
-      "PACKAGE_NAME": "com.elastos.desktop"
-    },
-    "cordova-plugin-filechooser": {
-      "PACKAGE_NAME": "com.elastos.desktop"
-    },
-    "cordova-clipboard": {
-      "PACKAGE_NAME": "com.elastos.desktop"
-    },
-    "ElaWallet": {
-      "PACKAGE_NAME": "com.elastos.desktop"
-    },
-    "com.plugin.testPlugin": {
-      "PACKAGE_NAME": "com.elastos.desktop"
-    },
-    "cordova-plugin-statusbar": {
-      "PACKAGE_NAME": "com.elastos.desktop"
-    },
-    "cordova-plugin-zip": {
-      "PACKAGE_NAME": "com.elastos.desktop"
-    },
-    "cordova-plugin-filepath": {
-      "PACKAGE_NAME": "com.elastos.desktop"
+      "PACKAGE_NAME": "org.elastos.desktop"
     }
   },
   "dependent_plugins": {
     "cordova-plugin-file": {
-      "PACKAGE_NAME": "com.elastos.desktop"
+      "PACKAGE_NAME": "org.elastos.desktop"
     }
   }
 }

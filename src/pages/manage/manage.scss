@@ -49,12 +49,20 @@ page-manage {
     width: 100%;
     ion-thumbnail {
       display: flex;
-      width: 80%;
+      width: 85%;
+      img {
+        margin: 10px;
+        height: 60px;
+        width: 60px;
+      }
       .thum-inner {
+        width: calc(100% - 80px);
         padding: 10px;
       }
       h2, p {
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
     .item {
@@ -173,6 +181,6 @@ page-manage {
     }
   }
   .item-cover {
-    width: 20%
+    width: 15%
   }
 }

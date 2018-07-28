@@ -47,14 +47,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "phonegap-plugin-barcodescanner": {
-    "source": {
-      "type": "registry",
-      "id": "phonegap-plugin-barcodescanner@7.1.2"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "cordova-plugin-filechooser": {
     "source": {
       "type": "registry",
@@ -74,15 +66,7 @@
   "ElaWallet": {
     "source": {
       "type": "local",
-      "path": "/Users/free/Desktop/Elastos.ORG.Wallet.Mobile/node_modules/ElaWallet"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
-  "com.plugin.testPlugin": {
-    "source": {
-      "type": "local",
-      "path": "D:\\localproject\\Elastos.ORG.Wallet.Mobile\\node_modules\\testplugin"
+      "path": "D:\\project\\Elastos.ORG.Wallet.Mobile\\node_modules\\ElaWallet"
     },
     "is_top_level": true,
     "variables": {}
@@ -115,6 +99,22 @@
     "source": {
       "type": "registry",
       "id": "cordova-plugin-filepath"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "com.plugin.appmanager": {
+    "source": {
+      "type": "local",
+      "path": "D:\\project\\Elastos.ORG.Wallet.Mobile\\node_modules\\appmanager"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "phonegap-plugin-barcodescanner": {
+    "source": {
+      "type": "registry",
+      "id": "phonegap-plugin-barcodescanner@8.0.0"
     },
     "is_top_level": true,
     "variables": {}

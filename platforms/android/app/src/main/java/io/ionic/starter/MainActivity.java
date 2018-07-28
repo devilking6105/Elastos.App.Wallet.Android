@@ -29,17 +29,12 @@ import android.net.Uri;
 import android.os.Environment;
 import java.lang.reflect.Method;
 
-import cn.jpush.android.api.JPushInterface;
 
 public class MainActivity extends CordovaActivity
 {
 
   public String TAG = "MainActivity";
-  static {
-//    System.loadLibrary("spvsdk");
-//    System.loadLibrary("elastoswallet");
 
-  }
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -58,7 +53,8 @@ public class MainActivity extends CordovaActivity
         Log.e(TAG, sdurl);
         loadUrl(sdurl);
 
-        //initJG();
+         MyUtil.moveConfigFiles2RootPath(this);
+//        initJG();
     }
 
   private String  getStoragePaths() {
@@ -77,30 +73,4 @@ public class MainActivity extends CordovaActivity
     }
     return "";
   }
-
-    private void initJG(){
-        MyUtil.moveConfigFiles2RootPath(this);
-
-        Context applicationContext = getApplicationContext();
-        MyUtil.setApplicationContext(applicationContext);
-
-        String udid =  MyUtil.getImei(applicationContext, "");
-        if (null != udid) Log.w("xxl-jg","Imei uuid is " + udid);
-
-        String appKey = MyUtil.getAppKey(applicationContext);
-        if (null == appKey) appKey = "AppKey异常";
-        Log.w("xxl-jg","AppKey " + appKey);
-
-        String packageName =  getPackageName();
-        Log.w("xxl-jg","PackageName " + packageName);
-
-        String deviceId = MyUtil.getDeviceId(applicationContext);
-        Log.w("xxl-jg","deviceId " + deviceId);
-
-        String versionName =  MyUtil.GetVersion(applicationContext);
-        Log.w("xxl-jg","versionName " + versionName);
-
-        //
-        JPushInterface.init(applicationContext);
-    }
 }

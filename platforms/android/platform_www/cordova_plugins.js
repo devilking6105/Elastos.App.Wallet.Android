@@ -33,14 +33,6 @@ module.exports = [
     ]
   },
   {
-    "id": "phonegap-plugin-barcodescanner.BarcodeScanner",
-    "file": "plugins/phonegap-plugin-barcodescanner/www/barcodescanner.js",
-    "pluginId": "phonegap-plugin-barcodescanner",
-    "clobbers": [
-      "cordova.plugins.barcodeScanner"
-    ]
-  },
-  {
     "id": "cordova-plugin-filechooser.FileChooser",
     "file": "plugins/cordova-plugin-filechooser/www/fileChooser.js",
     "pluginId": "cordova-plugin-filechooser",
@@ -62,14 +54,6 @@ module.exports = [
     "pluginId": "ElaWallet",
     "clobbers": [
       "cordova.plugins.Wallet"
-    ]
-  },
-  {
-    "id": "com.plugin.testPlugin.TestPlugin",
-    "file": "plugins/com.plugin.testPlugin/www/TestPlugin.js",
-    "pluginId": "com.plugin.testPlugin",
-    "clobbers": [
-      "cordova.plugins.TestPlugin"
     ]
   },
   {
@@ -268,6 +252,22 @@ module.exports = [
     "clobbers": [
       "window.FilePath"
     ]
+  },
+  {
+    "id": "phonegap-plugin-barcodescanner.BarcodeScanner",
+    "file": "plugins/phonegap-plugin-barcodescanner/www/barcodescanner.js",
+    "pluginId": "phonegap-plugin-barcodescanner",
+    "clobbers": [
+      "cordova.plugins.barcodeScanner"
+    ]
+  },
+  {
+    "id": "com.plugin.appmanager.appmanager",
+    "file": "plugins/com.plugin.appmanager/www/appmanager.js",
+    "pluginId": "com.plugin.appmanager",
+    "clobbers": [
+      "cordova.plugins.appmanager"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -279,15 +279,15 @@ module.exports.metadata =
   "cordova-plugin-splashscreen": "5.0.2",
   "cordova-plugin-whitelist": "1.3.3",
   "cordova-sqlite-storage": "2.3.1",
-  "phonegap-plugin-barcodescanner": "7.1.2",
   "cordova-plugin-filechooser": "1.0.1",
   "cordova-clipboard": "1.2.1",
   "ElaWallet": "1.0.0",
-  "com.plugin.testPlugin": "1.0.0",
   "cordova-plugin-statusbar": "2.4.2",
   "cordova-plugin-file": "6.0.1",
   "cordova-plugin-zip": "3.1.0",
-  "cordova-plugin-filepath": "1.0.2"
+  "cordova-plugin-filepath": "1.0.2",
+  "phonegap-plugin-barcodescanner": "8.0.0",
+  "com.plugin.appmanager": "1.0.0"
 };
 // BOTTOM OF METADATA
 });

@@ -21,6 +21,10 @@ page-info {
       }
     }
   }
+  
+  .list-header .label{
+    margin: 13px 8px 0 0;
+  }
 
   .content-ios, .content-md {
     background-color: #eef5f9;
@@ -43,12 +47,16 @@ page-info {
         color: #000;
         font-weight: 700;
       }
+      .checkbox-md {
+        margin: 9px 18px 9px 4px;
+      }
       ion-thumbnail {
         min-height: auto;
+        min-width: auto;
+        margin: 6px 18px 6px 0;
         img {
-          width: 56px;
-          height: 56px;
-          padding: 14px;
+          width: 27.5px;
+          height: 27.5px;
         }
       }
       .checkbox-icon {

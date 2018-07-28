@@ -3,7 +3,14 @@ page-home {
     overflow: hidden;
   }
   .main-contain {
-    margin-top: 10px;
+    margin-top: 7px;
+    .col {
+      text-align: center;
+      img {
+        height: 60px;
+        width: auto;
+      }
+    }
   }
   .content-ios, .content-md {
     background: url(../assets/imgs/bg.jpg) center center no-repeat;
@@ -18,10 +25,10 @@ page-home {
     }
     .app-title {
       max-width: 120px;
-      font-family: 'FiraSans-Bold';
+      font-family: 'FiraSans-Regular';
       color: #ffffff;
       text-align: center;
-      padding: 10px 0;
+      padding-top: 0;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -32,14 +39,15 @@ page-home {
       z-index: 9999;
     }
     [col-3] {
-      padding: 22px 11px 0;
+      margin-top: 6px;
     }
     .manage-btn {
       height: 18px;
+      margin: 30px 0 0 20px;
     }
-    //   .manage-box .button-ios{
-    //     padding: 22px 11px 0 0;
-    //   }
+    .manage-box {
+      height: 60px;
+    }
     .manage-box button {
       padding: 0 0;
       margin: 0.4rem 0;
@@ -50,7 +58,7 @@ page-home {
       width: 20px;
       height: 20px;
       line-height: 20px;
-      top: 16px;
+      top: -4px;
       color: #fff;
       font-size: 20px;
       background: url(../assets/imgs/del.png) center center no-repeat;
@@ -60,9 +68,7 @@ page-home {
       z-index: 99999;
     }
   }
-  .main-section img {
-    width: 120px;
-  }
+
   .grid-down {
     height: 100%;
     z-index: -1;

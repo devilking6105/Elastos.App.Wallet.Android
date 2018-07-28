@@ -18,7 +18,7 @@ export class AppConfig {
 
   private static initAppList = [
     {
-      path: "../wallet/www/assets/images/logo.jpg",
+      path: "../wallet/www/assets/imgs/logo.png",
       name: "Wallet",
       url: "wallet/www/index.html",
       size: "1 MB",
