@@ -893,6 +893,7 @@ public class Wallet extends CordovaPlugin {
             json = subWallet.CreateDepositTransaction(args.getString(1), args.getString(2), args.getLong(3)
                     , args.getString(4), args.getString(5), args.getString(6)
                     , args.getString(7), args.getString(8));
+
             if (json != null) {
                 callbackContext.success(parseOneParam("json", json));
             }

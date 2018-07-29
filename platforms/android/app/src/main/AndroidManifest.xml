@@ -2,8 +2,8 @@
 <manifest android:hardwareAccelerated="true" android:versionCode="10009" android:versionName="1.0.9" package="com.elastos.desktop" xmlns:android="http://schemas.android.com/apk/res/android">
     <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:resizeable="true" android:smallScreens="true" android:xlargeScreens="true" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <permission android:name="io.ionic.starter.permission.JPUSH_MESSAGE" android:protectionLevel="signature" />
-    <uses-permission android:name="io.ionic.starter.permission.JPUSH_MESSAGE" />
+    <permission android:name="com.elastos.desktop.permission.JPUSH_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.elastos.desktop.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -61,14 +61,14 @@
         <service android:enabled="true" android:exported="true" android:name="cn.jpush.android.service.DaemonService">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.DaemonService" />
-                <category android:name="io.ionic.starter" />
+                <category android:name="com.elastos.desktop" />
             </intent-filter>
         </service>
         <provider android:authorities="com.elastos.desktop.DownloadProvider" android:exported="true" android:name="cn.jpush.android.service.DownloadProvider" />
         <receiver android:enabled="true" android:exported="false" android:name="cn.jpush.android.service.PushReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
-                <category android:name="io.ionic.starter" />
+                <category android:name="com.elastos.desktop" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -88,15 +88,15 @@
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
                 <action android:name="cn.jpush.android.intent.CONNECTION" />
-                <category android:name="io.ionic.starter" />
+                <category android:name="com.elastos.desktop" />
             </intent-filter>
         </receiver>
-        <receiver android:name="io.ionic.starter.MyJPushMessageReceiver">
-            <intent-filter>
-                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
-                <category android:name="io.ionic.starter" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name="io.ionic.starter.MyJPushMessageReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />-->
+                <!--<category android:name="io.ionic.starter" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
         <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default" />
         <meta-data android:name="JPUSH_APPKEY" android:value="ce32fee188af2d3284b0c24e" />
         <meta-data android:name="org.chromium.content.browser.NUM_SANDBOXED_SERVICES" android:value="20" />
