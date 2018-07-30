@@ -16,17 +16,15 @@ $gn args out/arm
 ```
 target_os="android"
 target_cpu = "arm"
+is_debug=false
 symbol_level=1
-is_component_build=false
-is_official_build=false
+is_official_build=true
 is_chrome_branded=false
 use_official_google_api_keys=false
 enable_resource_whitelist_generation=false
 ffmpeg_branding="Chrome"
 proprietary_codecs=true
-enable_remoting=false
-debuggable_apks=true
-
+enable_remoting=true
 ```
 
 ## 编译
@@ -74,7 +72,8 @@ git clone git@github.com:elastos/Elastos.ORG.Wallet.Mobile.git wallet
 ## 如果修改了Java文件，需要替换jar包和assets下的资源文件，并且需要按照前面chromium编译的方式处理
     b. 将elastos_webrt_java.jar拷贝到platforms/android/CordovaLib/libs目录；
 
-    c. 将ElastosWebRT.apk中assets目录下的icudtl.dat,natives_blob.bin,snapshot_blob_32.bin,content_shell.pak文件拷贝到platforms/android/app/src/main/assets目录。
+    c. 将ElastosWebRT.apk中assets目录下的icudtl.dat,natives_blob.bin,snapshot_blob_32.bin,content_shell.pak文件拷贝到
+       platforms/android/app/src/main/assets目录。
        在platforms/android/app/build.gradle 中添加如下几行
          aaptOptions {
              noCompress 'dat', 'bin', 'pak'
