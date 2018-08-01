@@ -219,6 +219,8 @@ public class CordovaActivity extends Activity {
         appView.getView().setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
+        //沉浸式状态栏
+        appView.getView().setFitsSystemWindows(true);
 
         setContentView(appView.getView());
 

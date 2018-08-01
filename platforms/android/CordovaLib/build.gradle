@@ -124,7 +124,5 @@ bintray {
   }
 }
 dependencies {
-  implementation files('libs/elastos_webrt_java.jar') {
-    //exclude group: 'android.support'
-  }
+  implementation files('libs/elastos_webrt_java.jar')
 }
