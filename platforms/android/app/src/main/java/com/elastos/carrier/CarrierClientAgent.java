@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@SuppressWarnings("unchecked")
 public class CarrierClientAgent extends AbstractCarrierHandler {
 
 
@@ -175,7 +176,7 @@ public class CarrierClientAgent extends AbstractCarrierHandler {
     if (elaCarrierDir.exists()) {
       File[] files = elaCarrierDir.listFiles();
       for (File file : files) {
-        file.delete();
+//        file.delete();
       }
     }
 

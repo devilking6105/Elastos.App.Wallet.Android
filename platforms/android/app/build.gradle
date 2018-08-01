@@ -161,8 +161,8 @@ android {
 
         ndk {
             abiFilters 'armeabi-v7a'//'armeabi'// 'arm64-v8a'
-            //moduleName "elastoswallet"
-            //ldLibs "log"
+            moduleName "elastoswallet"
+            ldLibs "log"
         }
 
         externalNativeBuild {
@@ -179,9 +179,9 @@ android {
     }
 
     externalNativeBuild {
-//         cmake {
-//           path "CMakeLists.txt"
-//         }
+         cmake {
+           path "CMakeLists.txt"
+         }
     }
 
     lintOptions {

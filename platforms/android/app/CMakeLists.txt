@@ -10,8 +10,6 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI})
-
 include_directories(src/main/jni/did/include)
 include_directories(src/main/jni/wallet/include)
 link_directories(src/main/jni/did/lib)
