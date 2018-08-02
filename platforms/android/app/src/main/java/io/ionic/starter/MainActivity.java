@@ -20,6 +20,7 @@
 package io.ionic.starter;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -28,6 +29,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
@@ -39,6 +41,12 @@ public class MainActivity extends CordovaActivity {
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
+    if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT) {
+      //透明状态栏
+      getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+      //透明导航栏
+      getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+    }
     super.onCreate(savedInstanceState);
 
     // enable Cordova apps to be started in the background

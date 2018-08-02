@@ -1,4 +1,10 @@
 page-info {
+  ion-header {
+    padding-top: 48px;
+  }
+  .scroll-content {
+    margin-top: 92px;
+  }
   .header-ios .toolbar-background-ios, .footer-ios .toolbar-background-ios {
     border: none;
     background-color: #eef5f9;
