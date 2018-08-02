@@ -156,6 +156,7 @@ public class ShellWebViewEngine implements CordovaWebViewEngine {
 
     @Override
     public boolean goBack() {
+        Log.e(TAG,"goBack");
         // Check webview first to see if there is a history
         // This is needed to support curPage#diffLink, since they are added to parentEngine's history, but not our history url array (JQMobile behavior)
         if (webView.canGoBack()) {

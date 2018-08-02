@@ -67,7 +67,7 @@ import org.chromium.content_public.browser.JavaScriptCallback;
 import org.chromium.content_public.browser.JavascriptInjector;
 
 @JNINamespace("content")
-class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.EngineView {
+class ShellWebView extends FrameLayout implements CordovaWebViewEngine.EngineView {
     private static final String TAG = "ShellWebView";
 
     private static final int WARN = 1;
@@ -81,8 +81,9 @@ class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.Engine
     private ContentViewRenderView mContentViewRenderView;
     private ContentView mContentView;
     private ViewAndroidDelegate mViewAndroidDelegate;
+    private ShellWebViewEngine parentEngine;
 
-    private FrameLayout mContentViewHolder;
+    //private FrameLayout mContentViewHolder;
     private long mNativeShellWebView;
 
     private boolean finishInitialized = false;
@@ -94,7 +95,7 @@ class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.Engine
     private CordovaContentsClientBridge mBridge;
 
     public View getContainerView(){
-        return mContentViewHolder;
+        return this;
     }
 
     public ViewGroup getContentView() {
@@ -104,7 +105,6 @@ class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.Engine
 
     public ShellWebView(Context context) {
         super(context, null);
-        mContentViewHolder = new FrameLayout(context);
     }
 
     public void init(ShellWebViewEngine parentEngine){
@@ -121,6 +121,7 @@ class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.Engine
 
     private void setupClient(ShellWebViewEngine parentEngine){
         mBridge = new CordovaContentsClientBridge(getContext(), new ShellWebViewClient(parentEngine));
+        this.parentEngine = parentEngine;
     }
 
     private JavascriptInjector getJavascriptInjector() {
@@ -222,12 +223,12 @@ class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.Engine
         mWebContents = webContents;
         mNavigationController = mWebContents.getNavigationController();
         if (getParent() != null) mWebContents.onShow();
-        mContentViewHolder.addView(mContentViewRenderView,
+        addView(mContentViewRenderView,
                     new FrameLayout.LayoutParams(
                             FrameLayout.LayoutParams.MATCH_PARENT,
                             FrameLayout.LayoutParams.MATCH_PARENT));
 
-        mContentViewHolder.addView(mContentView,
+        addView(mContentView,
                 new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT));
@@ -255,6 +256,7 @@ class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.Engine
     }
 
     public boolean canGoBack() {
+        Log.e(TAG,"canGoBack" + mNavigationController.canGoBack());
         return isDestroyed(WARN) ? false : mNavigationController.canGoBack();
     }
 
@@ -293,6 +295,16 @@ class ShellWebView extends AbsoluteLayout implements CordovaWebViewEngine.Engine
         mContentViewRenderView.destroy();
         mContentViewRenderView = null;
         mContentViewCore.destroy();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        Log.e(TAG, "dispatchKeyEvent event=" + event);
+        Boolean ret = parentEngine.client.onDispatchKeyEvent(event);
+        if (ret != null) {
+            return ret.booleanValue();
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     private static native long nativeInit();
