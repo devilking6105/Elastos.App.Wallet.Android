@@ -12,18 +12,23 @@ import {LauncherComponent} from "../pages/launcher/launcher.component";
 //import {ReceiveComponent} from "../pages/coin/receive/receive.component";
 //import {TransferComponent} from "../pages/coin/transfer/transfer.component";
 //import {CoinComponent} from "../pages/coin/coin.component";
-import {CoinListComponent} from "../pages/coin/coin-list/coin-list.component";
+//import {CoinListComponent} from "../pages/coin/coin-list/coin-list.component";
 //import {RecordinfoComponent} from "../pages/coin/recordinfo/recordinfo.component";
 //import {RecordComponent} from "../pages/coin/record/record.component";
 //import {TestJniComponent} from '../pages/testjni/testjni.component';
 //import { AddressComponent } from '../pages/wallet/address/address.component'
 import {TabsComponent} from '../pages/tabs/tabs.component';
 import {LocalStorage} from "../providers/Localstorage";
+import { Config } from '../providers/Config';
+//add for plugin
+declare var cordova: any;
 
 @Component({
   selector: 'app',
   templateUrl: 'app.html',
 })
+
+
 export class AppComponent {
   rootPage: any;
 
@@ -34,6 +39,27 @@ export class AppComponent {
       statusBar.styleDefault();
       splashScreen.hide();
 
+      //init java 2 js plugin
+      cordova.plugins.Java2JSBridge.init(this);
+
+
+      //cordova.plugins.Java2JSBridge.getDeviceID();
+
+    //  cordova.plugins.Java2JSBridge.getDeviceID(succeedCallback);
+    //  function succeedCallback(message){
+    //   //alert(message);
+    //   console.log("-----setDeviceID------"+message);
+    //   Config.setDeviceID(message);
+    // }
+    //alert(devideID);
+
+      cordova.plugins.Java2JSBridge.getRegistrationID(succeedCallback);
+      function succeedCallback(message){
+        alert(message);
+        console.log("-----setDeviceID------"+message);
+        Config.setDeviceID(message);
+      }
+
       localStorage.getWallet().then((val) => {
         if (val) {
           this.rootPage = TabsComponent;
@@ -43,5 +69,11 @@ export class AppComponent {
       });
     });
   }
+
+    //
+    onReceiveJG(param) {
+      alert(param);
+    }
+
 }
 
