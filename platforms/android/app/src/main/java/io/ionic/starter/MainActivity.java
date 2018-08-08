@@ -28,6 +28,8 @@ import org.apache.cordova.*;
 import cn.jpush.android.api.JPushInterface;
 import com.elastos.spvcore.MasterWalletManager;
 
+import ElaJava2JSBridge.Java2JSBridge;
+
 public class MainActivity extends CordovaActivity
 {
     static {
@@ -85,11 +87,18 @@ public class MainActivity extends CordovaActivity
 
         String deviceId = MyUtil.getDeviceId(applicationContext);
         Log.w("xxl-jg","deviceId " + deviceId);
+        Java2JSBridge.deviceID = deviceId;
 
         String versionName =  MyUtil.GetVersion(applicationContext);
         Log.w("xxl-jg","versionName " + versionName);
 
+
+        String regID=JPushInterface.getRegistrationID(MainActivity.this);
+        Log.w("xxl-jg","rid " + regID);
+        Java2JSBridge.getRegistrationID = regID;
         //
+
         JPushInterface.init(applicationContext);
     }
+
 }

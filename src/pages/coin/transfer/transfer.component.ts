@@ -154,7 +154,7 @@ export class TransferComponent extends BaseComponent implements OnInit {
       if (data['ERRORCODE'] == undefined) {
         this.walletManager.registerWalletListener(this.chianId, (data) => {
           if (data['confirms'] == 1) {
-            alert("转账： " + JSON.stringify(data));
+            //alert("转账： " + JSON.stringify(data));
             this.popupProvider.ionicAlert('confirmTitle', 'confirmTransaction').then((data) => {
             });
           }
@@ -195,7 +195,15 @@ export class TransferComponent extends BaseComponent implements OnInit {
           let authData= JSON.parse(data["_body"]);
           if(authData["errorCode"] === "0"){
                let serialNum = authData["serialNum"];
-               this.saveKycSerialNum(serialNum);
+               let serIds = Config.getSerIds();
+                   serIds[serialNum] = {
+                    "id":this.did,
+                    "appName": "kyc",
+                    "appr": "company",
+                    "txHash":this.txId
+                   }
+              Config.setSerIds(serIds);
+              this.saveKycSerialNum(serialNum);
           }else{
               alert("错误码:"+authData["errorCode"]);
           }
@@ -220,6 +228,13 @@ sendPersonAuth(parms){
           console.log('---authData---'+JSON.stringify(authData));
           if(authData["errorCode"] === "0"){
                let serialNum = authData["serialNum"];
+               let serIds = Config.getSerIds();
+               serIds[serialNum] = {
+                "id":this.did,
+                "appName": "kyc",
+                "appr": "person"
+               }
+               Config.setSerIds(serIds);
                this.saveKycSerialNum(serialNum);
           }else{
               alert("错误码:"+authData["errorCode"]);
