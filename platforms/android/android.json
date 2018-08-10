@@ -29,10 +29,6 @@
               "count": 1
             },
             {
-              "xml": "<feature name=\"Wallet\"><param name=\"android-package\" value=\"ElaWallet.Wallet\" /></feature>",
-              "count": 1
-            },
-            {
               "xml": "<feature name=\"StatusBar\"><param name=\"android-package\" value=\"org.apache.cordova.statusbar.StatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
               "count": 1
             },
@@ -54,6 +50,10 @@
             },
             {
               "xml": "<feature name=\"appmanager\"><param name=\"android-package\" value=\"com.plugin.appmanager.appmanager\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"Wallet\"><param name=\"android-package\" value=\"ElaWallet.Wallet\" /></feature>",
               "count": 1
             }
           ],
@@ -144,9 +144,6 @@
     "cordova-clipboard": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
-    "ElaWallet": {
-      "PACKAGE_NAME": "io.ionic.starter"
-    },
     "cordova-plugin-statusbar": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
@@ -164,6 +161,9 @@
       "PACKAGE_NAME": "org.elastos.desktop"
     },
     "com.plugin.appmanager": {
+      "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "ElaWallet": {
       "PACKAGE_NAME": "org.elastos.desktop"
     }
   },
@@ -215,14 +215,6 @@
       "pluginId": "cordova-clipboard",
       "clobbers": [
         "cordova.plugins.clipboard"
-      ]
-    },
-    {
-      "id": "ElaWallet.Wallet",
-      "file": "plugins/ElaWallet/www/Wallet.js",
-      "pluginId": "ElaWallet",
-      "clobbers": [
-        "cordova.plugins.Wallet"
       ]
     },
     {
@@ -437,6 +429,14 @@
       "clobbers": [
         "cordova.plugins.appmanager"
       ]
+    },
+    {
+      "id": "ElaWallet.Wallet",
+      "file": "plugins/ElaWallet/www/Wallet.js",
+      "pluginId": "ElaWallet",
+      "clobbers": [
+        "cordova.plugins.Wallet"
+      ]
     }
   ],
   "plugin_metadata": {
@@ -448,12 +448,12 @@
     "cordova-sqlite-storage": "2.3.1",
     "cordova-plugin-filechooser": "1.0.1",
     "cordova-clipboard": "1.2.1",
-    "ElaWallet": "1.0.0",
     "cordova-plugin-statusbar": "2.4.2",
     "cordova-plugin-file": "6.0.1",
     "cordova-plugin-zip": "3.1.0",
     "cordova-plugin-filepath": "1.0.2",
     "phonegap-plugin-barcodescanner": "8.0.0",
-    "com.plugin.appmanager": "1.0.0"
+    "com.plugin.appmanager": "1.0.0",
+    "ElaWallet": "1.0.0"
   }
 }

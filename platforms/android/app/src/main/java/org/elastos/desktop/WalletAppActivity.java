@@ -23,8 +23,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
 import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.LOG;
 
 import java.lang.reflect.Method;
 
@@ -34,7 +37,7 @@ import io.ionic.starter.Logger;
 public class WalletAppActivity extends CordovaActivity
 {
 
-  public String TAG = "Wallet";
+  public String TAG = "Elastos.WalletAppActivity";
 
   static {
     System.loadLibrary("spvsdk");
@@ -54,8 +57,6 @@ public class WalletAppActivity extends CordovaActivity
 
         // Set by <content src="index.html" /> in config.xml
         //loadUrl(launchUrl);
-        Log.e(TAG, launchUrl);
-
       String scheme = "";
       String host = "";
       String startParams= "";
@@ -63,7 +64,6 @@ public class WalletAppActivity extends CordovaActivity
       Log.e(TAG, "intent: " + intent);
       if (null != intent) {
         Uri data = intent.getData();
-        Log.e(TAG, "data: " + data);
         if (null != data) {
           scheme = data.getScheme();
           host = data.getHost();
@@ -72,14 +72,11 @@ public class WalletAppActivity extends CordovaActivity
             String path = data.toString();
             int urlindex = path.indexOf("url=");
             String url = path.substring(urlindex + 4);
-            Log.e(TAG, "url: " + url);
-//            String sdcardurl = url.replace("android_asset", getStoragePaths()+"/elastos");
             String sdcardurl = url;
             if(!url.startsWith("file://")) {
               sdcardurl = "file:///" + getStoragePaths() + "/elastos/" + url;
             }
-
-            Log.e(TAG, "loadUrl: " + sdcardurl);
+            Log.e(TAG, "ProcessID=" + android.os.Process.myPid() +  "WalletAppActivity= " + this + "  loadUrl: " + sdcardurl);
             loadUrl(sdcardurl);
           } else {
             startParams = data.getQuery();
@@ -114,5 +111,30 @@ public class WalletAppActivity extends CordovaActivity
     return "";
   }
 
+  private long exitTime = 0;
 
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    Log.d(TAG, "onKeyDown() " + keyCode);
+    if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+      if ((System.currentTimeMillis() - exitTime) > 2000) {
+        Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+        exitTime = System.currentTimeMillis();
+      } else {
+        finish();
+        System.exit(0);
+      }
+      return true;
+    }
+    return super.onKeyDown(keyCode, event);
+  }
+
+  @Override
+  public void onDestroy() {
+    LOG.d(TAG, "CordovaActivity.onDestroy()");
+    super.onDestroy();
+
+    //finish();
+    //System.exit(0);
+  }
 }

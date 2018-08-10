@@ -49,14 +49,6 @@ module.exports = [
     ]
   },
   {
-    "id": "ElaWallet.Wallet",
-    "file": "plugins/ElaWallet/www/Wallet.js",
-    "pluginId": "ElaWallet",
-    "clobbers": [
-      "cordova.plugins.Wallet"
-    ]
-  },
-  {
     "id": "cordova-plugin-statusbar.statusbar",
     "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
     "pluginId": "cordova-plugin-statusbar",
@@ -268,6 +260,14 @@ module.exports = [
     "clobbers": [
       "cordova.plugins.appmanager"
     ]
+  },
+  {
+    "id": "ElaWallet.Wallet",
+    "file": "plugins/ElaWallet/www/Wallet.js",
+    "pluginId": "ElaWallet",
+    "clobbers": [
+      "cordova.plugins.Wallet"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -281,13 +281,13 @@ module.exports.metadata =
   "cordova-sqlite-storage": "2.3.1",
   "cordova-plugin-filechooser": "1.0.1",
   "cordova-clipboard": "1.2.1",
-  "ElaWallet": "1.0.0",
   "cordova-plugin-statusbar": "2.4.2",
   "cordova-plugin-file": "6.0.1",
   "cordova-plugin-zip": "3.1.0",
   "cordova-plugin-filepath": "1.0.2",
   "phonegap-plugin-barcodescanner": "8.0.0",
-  "com.plugin.appmanager": "1.0.0"
+  "com.plugin.appmanager": "1.0.0",
+  "ElaWallet": "1.0.0"
 };
 // BOTTOM OF METADATA
 });

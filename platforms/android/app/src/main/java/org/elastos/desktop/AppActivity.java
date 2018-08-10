@@ -23,8 +23,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
 import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.LOG;
 
 import java.lang.reflect.Method;
 
@@ -34,12 +37,8 @@ import io.ionic.starter.Logger;
 public class AppActivity extends CordovaActivity
 {
 
-  public String TAG = "Elastos";
-  static {
-//    System.loadLibrary("spvsdk");
-//    System.loadLibrary("elastoswallet");
+  public String TAG = "Elastos.AppActivity";
 
-  }
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -53,35 +52,23 @@ public class AppActivity extends CordovaActivity
 
         // Set by <content src="index.html" /> in config.xml
         //loadUrl(launchUrl);
-        Log.e(TAG, launchUrl);
-
-      String scheme = "";
-      String host = "";
-      String startParams= "";
-      Intent intent = getIntent();
-      Log.e(TAG, "intent: " + intent);
-      if (null != intent) {
-        Uri data = intent.getData();
-        Log.e(TAG, "data: " + data);
-        if (null != data) {
-          scheme = data.getScheme();
-          host = data.getHost();
-          if (scheme.equals("elastos") && host.equals("elastos")) {
-
-            String path = data.toString();
-            int urlindex = path.indexOf("url=");
-            String url = path.substring(urlindex + 4);
-            Log.e(TAG, "url: " + url);
-//            String sdcardurl = url.replace("android_asset", getStoragePaths()+"/elastos");
-            String sdcardurl = url;
-            if(!url.startsWith("file://")) {
-              sdcardurl = "file:///" + getStoragePaths() + "/elastos/" + url;
-            }
-            // for wallet
-            if(url.contains("wallet")){
-                  System.loadLibrary("spvsdk");
-                  System.loadLibrary("elastoswallet");
-            }
+        String scheme = "";
+        String host = "";
+        String startParams= "";
+        Intent intent = getIntent();
+        if (null != intent) {
+          Uri data = intent.getData();
+          if (null != data) {
+            scheme = data.getScheme();
+            host = data.getHost();
+            if (scheme.equals("elastos") && host.equals("elastos")) {
+              String path = data.toString();
+              int urlindex = path.indexOf("url=");
+              String url = path.substring(urlindex + 4);
+              String sdcardurl = url;
+              if(!url.startsWith("file://")) {
+                sdcardurl = "file:///" + getStoragePaths() + "/elastos/" + url;
+              }
 
             Log.e(TAG, "loadUrl: " + sdcardurl);
             loadUrl(sdcardurl);
@@ -100,13 +87,11 @@ public class AppActivity extends CordovaActivity
 
     }
 
-
   private String  getStoragePaths() {
     try {
       Object sm = this.getSystemService("storage");
       Method getVolumePathsMethod = Class.forName("android.os.storage.StorageManager").getMethod("getVolumePaths", new Class[0]);
       String[] m_Paths = (String[]) getVolumePathsMethod.invoke(sm, new Object[]{});
-      Logger.d(TAG,"length: " + m_Paths.length);
       if (m_Paths == null || m_Paths.length <= 0) {
         m_Paths  = new String[]{"", ""};
       }
@@ -117,6 +102,29 @@ public class AppActivity extends CordovaActivity
     }
     return "";
   }
+  private long exitTime = 0;
 
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    Log.d(TAG, "onKeyDown() " + keyCode);
+    if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+      if ((System.currentTimeMillis() - exitTime) > 2000) {
+        Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+        exitTime = System.currentTimeMillis();
+      } else {
+        finish();
+        System.exit(0);
+      }
+      return true;
+    }
+    return super.onKeyDown(keyCode, event);
+  }
+  @Override
+  public void onDestroy() {
+    LOG.d(TAG, "CordovaActivity.onDestroy()");
+    super.onDestroy();
 
+    //finish();
+    //System.exit(0);
+  }
 }

@@ -81,7 +81,7 @@ import android.content.pm.PackageManager;
  *
  */
 public class CordovaActivity extends Activity {
-    public static String TAG = "CordovaActivity";
+    public static String TAG = "Elastos.CordovaActivity";
 
     // The webview for our app
     protected CordovaWebView appView;

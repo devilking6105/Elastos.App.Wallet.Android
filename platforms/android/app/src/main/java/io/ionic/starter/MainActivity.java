@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
 
 public class MainActivity extends CordovaActivity {
 
-  public String TAG = "MainActivity";
+  public String TAG = "Elastos.MainActivity";
 
   @Override
   public void onCreate(Bundle savedInstanceState) {

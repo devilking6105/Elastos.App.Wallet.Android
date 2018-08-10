@@ -152,13 +152,13 @@ public class MyUtil {
     return sApplicationContext.getFilesDir().getParent();
   }
 
-  private static MasterWalletManager mCurrentMasterWalletManager = null;
-  public static void SetCurrentMasterWalletManager(MasterWalletManager currentMasterWalletManager) {
-    mCurrentMasterWalletManager = currentMasterWalletManager;
-  }
-  public static MasterWalletManager GetCurrentMasterWalletManager() {
-    return mCurrentMasterWalletManager;
-  }
+//  private static MasterWalletManager mCurrentMasterWalletManager = null;
+//  public static void SetCurrentMasterWalletManager(MasterWalletManager currentMasterWalletManager) {
+//    mCurrentMasterWalletManager = currentMasterWalletManager;
+//  }
+//  public static MasterWalletManager GetCurrentMasterWalletManager() {
+//    return mCurrentMasterWalletManager;
+//  }
 
   public static void moveConfigFiles2RootPath(Context context) {
     String rootPath = context.getFilesDir().getParent();
