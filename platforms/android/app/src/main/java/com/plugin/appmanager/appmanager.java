@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 
 /**
@@ -27,9 +28,11 @@ public class appmanager extends CordovaPlugin {
     }
 
     private void StartApp(String message, CallbackContext callbackContext) {
+         Log.e("Elastos", message);
         if (message != null && message.length() > 0) {
           cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
+
               Intent mIntent = new Intent();
               mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
               if(message.contains("wallet")) {
@@ -41,7 +44,7 @@ public class appmanager extends CordovaPlugin {
               cordova.getActivity().startActivity(mIntent);
             }
           });
-			callbackContext.success(message);
+			      callbackContext.success(message);
         } else {
             callbackContext.error("Expected one non-empty string argument.");
         }

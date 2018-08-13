@@ -31,9 +31,6 @@
     "cordova-clipboard": {
       "PACKAGE_NAME": "org.elastos.desktop"
     },
-    "ElaWallet": {
-      "PACKAGE_NAME": "org.elastos.desktop"
-    },
     "cordova-plugin-statusbar": {
       "PACKAGE_NAME": "org.elastos.desktop"
     },
@@ -48,6 +45,9 @@
     },
     "phonegap-plugin-barcodescanner": {
       "ANDROID_SUPPORT_V4_VERSION": "27.+",
+      "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "ElaWallet": {
       "PACKAGE_NAME": "org.elastos.desktop"
     }
   },

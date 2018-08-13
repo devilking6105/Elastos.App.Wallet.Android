@@ -20,12 +20,7 @@ public class MasterWalletManager {
     public IMasterWallet CreateMasterWallet(String masterWalletId, String mnemonic, String phrasePassword, String payPassword
             , String language) throws WalletException
     {
-//      Log.d("MasterWalletManager", masterWalletId);
-//      Log.d("MasterWalletManager", mnemonic);
-//      Log.d("MasterWalletManager", phrasePassword);
-//      Log.d("MasterWalletManager", payPassword);
-//      Log.d("MasterWalletManager", language);
-      long masterProxy = nativeCreateMasterWallet(mManagerProxy, masterWalletId, mnemonic, phrasePassword, payPassword, language);
+        long masterProxy = nativeCreateMasterWallet(mManagerProxy, masterWalletId, mnemonic, phrasePassword, payPassword, language);
         return new IMasterWallet(masterProxy);
     }
 

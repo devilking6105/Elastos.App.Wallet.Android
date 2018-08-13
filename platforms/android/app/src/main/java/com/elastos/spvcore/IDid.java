@@ -2,6 +2,8 @@
 package com.elastos.spvcore;
 
 
+import android.util.Log;
+
 public class IDid {
     private long mDidProxy = 0;
 
@@ -30,6 +32,7 @@ public class IDid {
     }
 
     public String Sign(String message, String password) {
+        Log.d("IDid", "IDid" + mDidProxy + " " + message+ " " + password);
         return nativeSign(mDidProxy, message, password);
     }
 

@@ -81,7 +81,7 @@ import android.content.pm.PackageManager;
  *
  */
 public class CordovaActivity extends Activity {
-    public static String TAG = "CordovaActivity";
+    public static String TAG = "Elastos.CordovaActivity";
 
     // The webview for our app
     protected CordovaWebView appView;
@@ -219,8 +219,7 @@ public class CordovaActivity extends Activity {
         appView.getView().setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        //沉浸式状态栏
-        appView.getView().setFitsSystemWindows(true);
+
 
         setContentView(appView.getView());
 
