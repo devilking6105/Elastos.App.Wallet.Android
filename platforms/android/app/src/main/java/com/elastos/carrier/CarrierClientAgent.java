@@ -170,13 +170,29 @@ public class CarrierClientAgent extends AbstractCarrierHandler {
     }
   }
 
+  public void restart(){
+    if(serverPassword == null || serverAddress == null){
+      return;
+    }
+
+    try {
+      if (mCarrier == null) {
+        checkLogin();
+      }
+
+      mCarrier.start(50);
+    } catch (ElastosException e) {
+      util.log(String.format("checkLogin error (0x%x)", e.getErrorCode()));
+    }
+  }
+
   public void logout() {
     String elaCarrierPath = util.getCarrierFilePath();
     File elaCarrierDir = new File(elaCarrierPath);
     if (elaCarrierDir.exists()) {
       File[] files = elaCarrierDir.listFiles();
       for (File file : files) {
-//        file.delete();
+        file.delete();
       }
     }
 

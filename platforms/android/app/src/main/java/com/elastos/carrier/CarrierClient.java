@@ -203,6 +203,7 @@ public class CarrierClient extends AbstractStreamHandler implements SessionReque
         case Error:
           util.log("Stream error");
           close();
+          CarrierClientAgent.singleton().restart();
           break;
       }
     } catch (ElastosException e) {
