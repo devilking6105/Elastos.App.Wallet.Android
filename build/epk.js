@@ -20,6 +20,9 @@ if (process.argv.length > 2) {
 	 
 	 archive.pipe(output);
 	 archive.directory('platforms/android/app/src/main/assets/www/', process.argv[2] + '/www');
+	 if (!fs.existsSync('platforms/android/app/src/main/assets/www/manifest.json'))  {
+		 archive.file('src/manifest.json', { name: process.argv[2] + '/www/manifest.json'});
+	 }
 	 archive.finalize();
 }
  
