@@ -3,6 +3,7 @@ import {BaseComponent} from "../../../app/BaseComponent";
 import {IdImportComponent} from "../../../pages/id/import/import";
 import {IdHomeComponent} from "../../../pages/id/home/home";
 import {Config} from "../../../providers/Config";
+import { DidLoginComponent } from '../../third-party/did-login/did-login.component';
 
 @Component({
   selector: 'id-launcher',
@@ -60,7 +61,14 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
 
           });
           this.localStorage.add("kycId",idObj).then(()=>{
-               this.Go(IdHomeComponent);
+            this.localStorage.get('did_login').then((val)=>{
+              if (val) {
+                this.localStorage.remove('did_login');
+                this.Go(DidLoginComponent, JSON.parse(val));
+              } else {
+                this.Go(IdHomeComponent);
+              }
+            });
           });
     })
   }
