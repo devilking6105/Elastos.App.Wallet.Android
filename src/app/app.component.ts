@@ -76,6 +76,11 @@ export class AppComponent {
               this.rootPage = PaymentConfirmComponent;
               break;
             case "did_login":
+              let message = this.GetQueryString("message");
+              let payment_params = {
+                message: message
+              }
+              localStorage.set('did_login', payment_params);
               this.rootPage = DidLoginComponent;
               break;
             default:
@@ -93,13 +98,6 @@ export class AppComponent {
               memo: memo
             }
             localStorage.set('payment', payment_params);
-          }
-          if (type == 'did_login') {
-            let message = this.GetQueryString("message");
-            let payment_params = {
-              message: message
-            }
-            localStorage.set('did_login', payment_params);
           }
           this.rootPage = LauncherComponent;
         }
