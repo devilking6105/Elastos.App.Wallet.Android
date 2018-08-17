@@ -42,11 +42,11 @@ export class PaymentConfirmComponent extends BaseComponent implements OnInit {
     this.subPopup.config = {cancel:'',confirm:'',backdrop:false,is_full:false};
 
     this.getAllMasterWallets();
-    let account = this.GetQueryString("account") || this.getNavParams().get("account");
+    let amount = this.GetQueryString("amount") || this.getNavParams().get("amount");
     let toAddress = this.GetQueryString("address") || this.getNavParams().get("address");
     let memo = this.GetQueryString("memo") || this.getNavParams().get("memo");
     let information = this.GetQueryString("information");
-    this.transfer.amount = account;
+    this.transfer.amount = amount;
     this.transfer.toAddress = toAddress;
     this.transfer.memo = memo;
     this.information = information;

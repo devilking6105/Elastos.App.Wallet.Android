@@ -84,11 +84,11 @@ export class AppComponent {
           }
         } else {
           if (type == 'payment') {
-            let account = this.GetQueryString("account");
+            let amount = this.GetQueryString("amount");
             let toAddress = this.GetQueryString("address");
             let memo = this.GetQueryString("memo");
             let payment_params = {
-              account: account,
+              amount: amount,
               toAddress: toAddress,
               memo: memo
             }
