@@ -133,8 +133,33 @@ public class WalletAppActivity extends CordovaActivity
   public void onDestroy() {
     LOG.d(TAG, "CordovaActivity.onDestroy()");
     super.onDestroy();
-
-    //finish();
+    //android.os.Process.killProcess(android.os.Process.myPid());
     //System.exit(0);
   }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    LOG.d(TAG, "onNewIntent the activity.");
+    //Forward to plugins
+    Intent tempintent = getIntent();
+    Log.e(TAG, "intent: " + tempintent);
+    if (null != tempintent) {
+      Uri data = tempintent.getData();
+      if (null != data) {
+        String scheme = data.getScheme();
+        String host = data.getHost();
+        if (scheme.equals("wallet") && host.equals("wallet")) {
+
+          String path = data.toString();
+          int urlindex = path.indexOf("url=");
+          String url = path.substring(urlindex + 4);
+          String jsargs = "OnPlugInMessage("+ url +")";
+          Log.e(TAG, "intent: " + jsargs);
+          loadUrl("javascript:" + jsargs);
+        }
+      }
+    }
+  }
+
 }

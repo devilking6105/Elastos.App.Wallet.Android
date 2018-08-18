@@ -296,6 +296,7 @@ public class CordovaActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+         LOG.d(TAG, "onNewIntent the activity.");
         //Forward to plugins
         if (this.appView != null)
             this.appView.onNewIntent(intent);

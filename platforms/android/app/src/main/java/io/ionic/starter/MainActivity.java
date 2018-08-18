@@ -59,7 +59,8 @@ public class MainActivity extends CordovaActivity {
     //loadUrl(launchUrl);
 
     String sdurl = "file://" + getStoragePaths() + "/elastos/www/index.html"; // ?name=zhouxin send parameter to index.html of ionic
-    Log.e(TAG, sdurl);
+    Log.e(TAG, "ProcessID=" + android.os.Process.myPid() +  "MainActivity= " + this + "  loadUrl: " + sdurl);
+    //Log.e(TAG, sdurl);
     loadUrl(sdurl);
 
     MyUtil.moveConfigFiles2RootPath(this);

@@ -70,7 +70,8 @@ public class AppActivity extends CordovaActivity
                 sdcardurl = "file:///" + getStoragePaths() + "/elastos/" + url;
               }
 
-            Log.e(TAG, "loadUrl: " + sdcardurl);
+           // Log.e(TAG, "loadUrl: " + sdcardurl);
+            Log.e(TAG, "ProcessID=" + android.os.Process.myPid() +  "AppActivity= " + this + "  loadUrl: " + sdcardurl);
             loadUrl(sdcardurl);
           } else {
             startParams = data.getQuery();

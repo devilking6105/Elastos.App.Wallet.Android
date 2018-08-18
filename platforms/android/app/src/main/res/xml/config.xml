@@ -36,6 +36,9 @@
     <feature name="appmanager">
         <param name="android-package" value="com.plugin.appmanager.appmanager" />
     </feature>
+    <feature name="Wallet">
+        <param name="android-package" value="ElaWallet.Wallet" />
+    </feature>
     <feature name="FileChooser">
         <param name="android-package" value="org.apache.cordova.filechooser.FileChooser" />
     </feature>
@@ -69,7 +72,4 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
-    <feature name="Wallet">
-        <param name="android-package" value="ElaWallet.Wallet" />
-    </feature>
 </widget>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<manifest android:hardwareAccelerated="true" android:versionCode="10106" android:versionName="1.1.6" package="org.elastos.desktop" xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest android:hardwareAccelerated="true" android:versionCode="10105" android:versionName="1.1.5" package="org.elastos.desktop" xmlns:android="http://schemas.android.com/apk/res/android">
     <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:resizeable="true" android:smallScreens="true" android:xlargeScreens="true" />
     <uses-permission android:name="android.permission.INTERNET" />
     <permission android:name="io.ionic.starter.permission.JPUSH_MESSAGE" android:protectionLevel="signature" />
@@ -38,7 +38,7 @@
                 <data android:host="elastos" android:scheme="elastos" />
             </intent-filter>
         </activity>
-        <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:label="@string/WalletApp_activity_name" android:launchMode="singleTop" android:name="org.elastos.desktop.WalletAppActivity" android:process=":wallet" android:theme="@android:style/Theme.DeviceDefault.NoActionBar" android:windowSoftInputMode="adjustResize">
+        <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" android:label="@string/WalletApp_activity_name" android:launchMode="singleTask" android:name="org.elastos.desktop.WalletAppActivity" android:process=":wallet" android:theme="@android:style/Theme.DeviceDefault.NoActionBar" android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -46,65 +46,6 @@
                 <data android:host="wallet" android:scheme="wallet" />
             </intent-filter>
         </activity>
-        <activity android:exported="false" android:name="cn.jpush.android.ui.PopWinActivity" android:theme="@style/MyDialogStyle">
-        </activity>
-        <activity android:configChanges="orientation|keyboardHidden" android:exported="false" android:name="cn.jpush.android.ui.PushActivity" android:theme="@android:style/Theme.NoTitleBar">
-            <intent-filter>
-                <action android:name="cn.jpush.android.ui.PushActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="io.ionic.starter" />
-            </intent-filter>
-        </activity>
-        <service android:exported="false" android:name="cn.jpush.android.service.PushService" android:process=":mult">
-            <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTER" />
-                <action android:name="cn.jpush.android.intent.REPORT" />
-                <action android:name="cn.jpush.android.intent.PushService" />
-                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
-            </intent-filter>
-        </service>
-        <provider android:authorities="io.ionic.starter.DataProvider" android:exported="false" android:name="cn.jpush.android.service.DataProvider" />
-        <service android:enabled="true" android:exported="true" android:name="cn.jpush.android.service.DaemonService">
-            <intent-filter>
-                <action android:name="cn.jpush.android.intent.DaemonService" />
-                <category android:name="io.ionic.starter" />
-            </intent-filter>
-        </service>
-        <provider android:authorities="io.ionic.starter.DownloadProvider" android:exported="true" android:name="cn.jpush.android.service.DownloadProvider" />
-        <receiver android:enabled="true" android:exported="false" android:name="cn.jpush.android.service.PushReceiver">
-            <intent-filter android:priority="1000">
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
-                <category android:name="io.ionic.starter" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
-        <receiver android:exported="false" android:name="cn.jpush.android.service.AlarmReceiver" />
-        <receiver android:enabled="true" android:exported="false" android:name="io.ionic.starter.MyReceiver">
-            <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTRATION" />
-                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
-                <action android:name="cn.jpush.android.intent.CONNECTION" />
-                <category android:name="io.ionic.starter" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="io.ionic.starter.MyJPushMessageReceiver">
-            <intent-filter>
-                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
-                <category android:name="io.ionic.starter" />
-            </intent-filter>
-        </receiver>
-        <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default" />
-        <meta-data android:name="JPUSH_APPKEY" android:value="ce32fee188af2d3284b0c24e" />
         <meta-data android:name="org.chromium.content.browser.NUM_SANDBOXED_SERVICES" android:value="20" />
         <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService0" android:process=":sandboxed_process0" />
         <service android:exported="false" android:isolatedProcess="true" android:name="org.chromium.content.app.SandboxedProcessService1" android:process=":sandboxed_process1" />
