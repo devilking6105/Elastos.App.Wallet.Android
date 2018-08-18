@@ -5,6 +5,9 @@ import {Util} from "../../../providers/Util";
 import { Config } from '../../../providers/Config';
 import {TabsComponent} from "../../tabs/tabs.component";
 
+declare let cordova: any;
+
+
 @Component({
   selector: 'app-payment-confirm',
   templateUrl: './payment-confirm.component.html'
@@ -145,15 +148,28 @@ export class PaymentConfirmComponent extends BaseComponent implements OnInit {
             });
           }
         });
-        let result = {
-          txId: this.txId
-        }
-        return result;
+		
+        //let result = {
+        //  txId: this.txId
+        //}
+        //return result;
+		//支付成功，这里可以返回支付前的页面？
+		console.info( "ElastosJs  sendRawTransaction" + this.txId);
+		this.localStorage.get('backurl').then((value)=>{
+			let  backurl = JSON.parse(value).backurl;
+			console.info( "ElastosJs  backurl:" + backurl);
+			this.localStorage.remove('backurl');
+			cordova.plugins.appmanager.StartApp(backurl + "?type=payment&message=paymentmessage&txId=" + this.txId,
+				function (data) {}, 
+				function (error) {}); 
+			});
       } else {
         this.toast('text-password-error');
       }
-      this.Go(TabsComponent);
-      // this.platform.exitApp();
+	  
+	  
+      //this.platform.exitApp();
+	  this.setRootRouter(TabsComponent);
     });
   }
 

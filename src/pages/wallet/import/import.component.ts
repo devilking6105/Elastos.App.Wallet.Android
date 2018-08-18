@@ -110,10 +110,7 @@ export class ImportComponent extends BaseComponent implements OnInit {
     this.walletManager.importWalletWithMnemonic("1",mnemonic,this.mnemonicObj.phrasePassword,this.mnemonicObj.payPassword,this.getMnemonicLang(),()=>{
                  this.messageBox('import-text-world-sucess');
                  this.localStorage.remove('coinListCache').then(()=>{
-                 this.localStorage.setWallet({
-                  'name': "ELA-Wallet"
-                   }).then(()=>{
-                    //this.Go(TabsComponent);
+                 this.localStorage.setWallet("ELA-Wallet").then(()=>{
                     this.setRootRouter(TabsComponent);
                   });
 });
@@ -130,10 +127,7 @@ export class ImportComponent extends BaseComponent implements OnInit {
         console.log("====getCoinListCache======"+JSON.stringify(chinas));
          this.localStorage.set('coinListCache',chinas).then(()=>{
           this.messageBox('import-text-keystroe-sucess');
-          this.localStorage.setWallet({
-            'name': "ELA-Wallet"
-           }).then(()=>{
-            //this.Go(TabsComponent);
+          this.localStorage.setWallet("ELA-Wallet").then(()=>{
             this.setRootRouter(TabsComponent);
            });
          });

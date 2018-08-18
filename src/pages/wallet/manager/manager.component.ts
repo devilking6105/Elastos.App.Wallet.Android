@@ -17,7 +17,7 @@ export class ManagerComponent extends BaseComponent implements OnInit {
     // wallet name
     this.localStorage.getWallet().then((val) => {
       if (val) {
-        this.walletName = JSON.parse(val).name;
+        this.walletName = val;
       }
     });
   }
