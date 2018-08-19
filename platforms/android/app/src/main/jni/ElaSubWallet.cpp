@@ -107,6 +107,11 @@ public:
      */
     CARAPI OnBlockSyncStopped();
 
+    /**
+     * Callback method fired when subwallet was destroyed.
+     */
+    CARAPI OnDestroyWallet();
+
 private:
     JNIEnv* GetEnv();
     void Detach();
@@ -495,4 +500,16 @@ ECode ElaSubWalletListener::OnBlockSyncStopped()
 
     Detach();
     return NOERROR;
+}
+
+ECode ElaSubWalletCallback::OnDestroyWallet()
+{
+    JNIEnv* env = GetEnv();
+    LOGD("FUNC=[%s]========================LINE=[%d]", __FUNCTION__, __LINE__);
+
+    jclass clazz = env->GetObjectClass(mObj);
+    jmethodID methodId = env->GetMethodID(clazz, "OnDestroyWallet","()V");
+    env->CallVoidMethod(mObj, methodId);
+
+    Detach();
 }
