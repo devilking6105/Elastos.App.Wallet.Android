@@ -29,6 +29,9 @@ public class IDidManager {
     }
 
     public boolean RegisterCallback(String id, IIdManagerCallback callback) {
+
+        Log.d("ElastosJava", "RegisterCallback ");
+
         return nativeRegisterCallback(mDidManagerProxy, id, callback);
     }
 

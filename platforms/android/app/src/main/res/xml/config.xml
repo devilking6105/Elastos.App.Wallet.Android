@@ -20,6 +20,9 @@
     <feature name="Clipboard">
         <param name="android-package" value="com.verso.cordova.clipboard.Clipboard" />
     </feature>
+    <feature name="Java2JSBridge">
+        <param name="android-package" value="ElaJava2JSBridge.Java2JSBridge" />
+    </feature>
     <feature name="Wallet">
         <param name="android-package" value="ElaWallet.Wallet" />
     </feature>
@@ -73,7 +76,4 @@
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="ShowSplashScreenSpinner" value="false" />
     <preference name="AutoHideSplashScreen" value="false" />
-    <feature name="Java2JSBridge">
-        <param name="android-package" value="ElaJava2JSBridge.Java2JSBridge" />
-    </feature>
 </widget>
