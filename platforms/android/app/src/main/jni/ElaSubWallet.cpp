@@ -502,7 +502,7 @@ ECode ElaSubWalletListener::OnBlockSyncStopped()
     return NOERROR;
 }
 
-ECode ElaSubWalletCallback::OnDestroyWallet()
+ECode ElaSubWalletListener::OnDestroyWallet()
 {
     JNIEnv* env = GetEnv();
     LOGD("FUNC=[%s]========================LINE=[%d]", __FUNCTION__, __LINE__);
@@ -512,4 +512,5 @@ ECode ElaSubWalletCallback::OnDestroyWallet()
     env->CallVoidMethod(mObj, methodId);
 
     Detach();
+    return NOERROR;
 }
