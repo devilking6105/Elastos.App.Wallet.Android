@@ -73,10 +73,10 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
     // wallet name
     this.localStorage.getWallet().then((val) => {
-      if (val) {
-        this.wallet.name = val;
+		if (val) {
+			this.wallet.name = val;
       }
-    });
+   });
 
    }
 

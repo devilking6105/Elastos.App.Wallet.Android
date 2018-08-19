@@ -86,5 +86,13 @@
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "com.plugin.appmanager": {
+    "source": {
+      "type": "local",
+      "path": "E:\\Elastos\\wallet\\Elastos.ORG.Wallet.Mobile\\node_modules\\appmanager"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

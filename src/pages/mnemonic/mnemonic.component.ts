@@ -51,10 +51,8 @@ export class MnemonicComponent extends BaseComponent implements OnInit {
            // this.getSupportedChains();
            this.createSubWallet('ELA');
            this.Go(WriteComponent, {mnemonicStr: this.mnemonicStr, mnemonicList: this.mnemonicList});
-           this.localStorage.setWallet({
-            'name': this.name
-           });
-    })
+           this.localStorage.setWallet(this.name);		   
+    });
   }
 
   // getSupportedChains(){

@@ -129,7 +129,8 @@ export class ImportComponent extends BaseComponent implements OnInit {
           this.messageBox('import-text-keystroe-sucess');
           this.localStorage.setWallet("ELA-Wallet").then(()=>{
             this.setRootRouter(TabsComponent);
-           });
+          });
+
          });
       });
 

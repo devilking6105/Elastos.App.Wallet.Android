@@ -92,7 +92,8 @@
     </plugin>
     <plugin name="cordova-plugin-filechooser" spec="^1.0.1" />
     <plugin name="cordova-clipboard" spec="^1.2.1" />
-    <engine name="android" spec="^7.0.0" />
     <plugin name="ElaWallet" spec="ElaWallet" />
     <plugin name="ElaJava2JSBridge" spec="ElaJava2JSBridge" />
+    <plugin name="com.plugin.appmanager" spec="D:\project\Elastos.ORG.Wallet.Mobile\appmanager" />
+    <engine name="android" spec="^7.0.0" />
 </widget>

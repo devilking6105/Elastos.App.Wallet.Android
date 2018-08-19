@@ -71,6 +71,14 @@ module.exports = [
     "clobbers": [
       "cordova.plugins.Java2JSBridge"
     ]
+  },
+  {
+    "id": "com.plugin.appmanager.appmanager",
+    "file": "plugins/com.plugin.appmanager/www/appmanager.js",
+    "pluginId": "com.plugin.appmanager",
+    "clobbers": [
+      "cordova.plugins.appmanager"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -86,7 +94,8 @@ module.exports.metadata =
   "cordova-plugin-filechooser": "1.0.1",
   "cordova-clipboard": "1.2.1",
   "ElaWallet": "1.0.0",
-  "ElaJava2JSBridge": "1"
+  "ElaJava2JSBridge": "1",
+  "com.plugin.appmanager": "1.0.0"
 };
 // BOTTOM OF METADATA
 });

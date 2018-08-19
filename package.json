@@ -37,6 +37,8 @@
     "android-versions": "^1.3.0",
     "angular2-uuid": "^1.1.1",
     "angularx-qrcode": "^1.1.5",
+    "appmanager": "file:D:/project/Elastos.ORG.Wallet.Mobile/appmanager",
+    "archiver": "^2.1.1",
     "bootstrap": "^4.1.0",
     "cordova-android": "^7.0.0",
     "cordova-clipboard": "^1.2.1",
@@ -69,7 +71,7 @@
     "zone.js": "0.8.26"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "3.1.9",
+    "@ionic/app-scripts": "3.1.11",
     "typescript": "~2.6.2"
   },
   "description": "An Ionic project",
@@ -87,7 +89,8 @@
       "cordova-plugin-filechooser": {},
       "cordova-clipboard": {},
       "ElaWallet": {},
-      "ElaJava2JSBridge": {}
+      "ElaJava2JSBridge": {},
+      "com.plugin.appmanager": {}
     },
     "platforms": [
       "android"
