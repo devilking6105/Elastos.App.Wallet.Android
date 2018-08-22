@@ -53,7 +53,7 @@ public class MainActivity extends CordovaActivity
         // Set by <content src="index.html" /> in config.xml
         loadUrl(launchUrl);
 
-        initJG();
+//        initJG();
     }
 
     @Override
@@ -84,18 +84,18 @@ public class MainActivity extends CordovaActivity
 
         String deviceId = MyUtil.getDeviceId(applicationContext);
         Log.w("xxl-jg","deviceId " + deviceId);
-        Java2JSBridge.deviceID = deviceId;
+//        Java2JSBridge.deviceID = deviceId;
 
         String versionName =  MyUtil.GetVersion(applicationContext);
         Log.w("xxl-jg","versionName " + versionName);
 
 
-        String regID=JPushInterface.getRegistrationID(MainActivity.this);
-        Log.w("xxl-jg","rid " + regID);
-        Java2JSBridge.getRegistrationID = regID;
+//        String regID=JPushInterface.getRegistrationID(MainActivity.this);
+//        Log.w("xxl-jg","rid " + regID);
+//        Java2JSBridge.getRegistrationID = regID;
         //
 
-        JPushInterface.init(applicationContext);
+//        JPushInterface.init(applicationContext);
     }
 
 }

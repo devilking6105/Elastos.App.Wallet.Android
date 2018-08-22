@@ -40,6 +40,9 @@
     },
     "ElaJava2JSBridge": {
       "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "com.plugin.appmanager": {
+      "PACKAGE_NAME": "io.ionic.starter"
     }
   },
   "dependent_plugins": {}

@@ -14,7 +14,7 @@ export class WalletInfoComponent  extends BaseComponent implements OnInit  {
     this.setTitleByAssets('text-wallet-info');
     this.localStorage.getWallet().then((val) => {
       if (val) {
-        this.walletName = JSON.parse(val).name;
+        this.walletName = val;
       }
     });
   }

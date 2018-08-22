@@ -15,11 +15,11 @@ export class ManagerComponent extends BaseComponent implements OnInit {
   ngOnInit() {
     this.setTitleByAssets('text-wallet-manager');
     // wallet name
-    this.localStorage.getWallet().then((val) => {
+   this.localStorage.getWallet().then((val) => {
       if (val) {
-        this.walletName = JSON.parse(val).name;
+        this.walletName = val;
       }
-    });
+   });
   }
 
   onItem(i) {

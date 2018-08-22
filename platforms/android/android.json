@@ -39,6 +39,10 @@
             {
               "xml": "<feature name=\"Java2JSBridge\"><param name=\"android-package\" value=\"ElaJava2JSBridge.Java2JSBridge\" /></feature>",
               "count": 1
+            },
+            {
+              "xml": "<feature name=\"appmanager\"><param name=\"android-package\" value=\"com.plugin.appmanager.appmanager\" /></feature>",
+              "count": 1
             }
           ],
           "/widget": [
@@ -123,6 +127,9 @@
     },
     "ElaJava2JSBridge": {
       "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "com.plugin.appmanager": {
+      "PACKAGE_NAME": "io.ionic.starter"
     }
   },
   "dependent_plugins": {},
@@ -198,6 +205,14 @@
       "clobbers": [
         "cordova.plugins.Java2JSBridge"
       ]
+    },
+    {
+      "id": "com.plugin.appmanager.appmanager",
+      "file": "plugins/com.plugin.appmanager/www/appmanager.js",
+      "pluginId": "com.plugin.appmanager",
+      "clobbers": [
+        "cordova.plugins.appmanager"
+      ]
     }
   ],
   "plugin_metadata": {
@@ -211,6 +226,7 @@
     "cordova-plugin-filechooser": "1.0.1",
     "cordova-clipboard": "1.2.1",
     "ElaWallet": "1.0.0",
-    "ElaJava2JSBridge": "1"
+    "ElaJava2JSBridge": "1",
+    "com.plugin.appmanager": "1.0.0"
   }
 }

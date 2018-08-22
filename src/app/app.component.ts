@@ -44,11 +44,11 @@ export class AppComponent {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-      this.registerBackButtonAction();
+      //this.registerBackButtonAction();
       this.ls = localStorage;
       this.tr =  translate;
       //init java 2 js plugin
-      cordova.plugins.Java2JSBridge.init(this);
+      //cordova.plugins.Java2JSBridge.init(this);
 
 
       //cordova.plugins.Java2JSBridge.getDeviceID();
@@ -61,17 +61,30 @@ export class AppComponent {
     // }
     //alert(devideID);
 
-      cordova.plugins.Java2JSBridge.getRegistrationID(succeedCallback);
+      //cordova.plugins.Java2JSBridge.getRegistrationID(succeedCallback);
       function succeedCallback(message){
         //alert(message);
         console.log("-----setDeviceID------"+message);
         Config.setDeviceID(message);
       }
 
+
       localStorage.getWallet().then((val) => {
-        let type = this.GetQueryString("type");
+        let login_type = this.GetQueryString("type");
+        let backurl = this.GetQueryString("backurl");			
+        console.info( "ElastosJs  getWallet:" + val);		
+	    console.info( "ElastosJs  localStorage:" + login_type);
+		let login_params = {
+              login_type: login_type,
+        }
+		let backurl_params = {
+              backurl: backurl,
+        }
+		localStorage.set('login_type', login_params);
+		localStorage.set('backurl', backurl_params);
+		
         if (val) {
-          switch (type) {
+          switch (login_type) {
             case "payment":
               this.rootPage = PaymentConfirmComponent;
               break;
@@ -83,16 +96,23 @@ export class AppComponent {
               break;
           }
         } else {
-          if (type == 'payment') {
-            let account = this.GetQueryString("account");
+          if (login_type == 'payment') {
+            let amount = this.GetQueryString("amount");
             let toAddress = this.GetQueryString("address");
             let memo = this.GetQueryString("memo");
             let payment_params = {
-              account: account,
+              amount: amount,
               toAddress: toAddress,
               memo: memo
             }
             localStorage.set('payment', payment_params);
+          }
+          if (login_type == 'did_login') {
+            let message = this.GetQueryString("message");
+            let payment_params = {
+              message: message
+            }
+            localStorage.set('did_login', payment_params);
           }
           this.rootPage = LauncherComponent;
         }
@@ -112,7 +132,15 @@ export class AppComponent {
   GetQueryString(name){
     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
     var r = window.location.search.substr(1).match(reg);
-    if(r!=null)return  decodeURI(r[2]); return null;
+    if(r!= null) return  decodeURI(r[2]); 
+	return null;
+  }
+  
+   GetQueryKeyString(url, name){
+    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    var r = url.substr(1).match(reg);
+    if(r!= null) return  decodeURI(r[2]); 
+	return null;
   }
     //
     onReceiveJG(param) {
@@ -138,35 +166,40 @@ export class AppComponent {
       //   });
       //  });
     }
+	
+	
+	OnPlugInMessage(url){
+	  console.log('ElastosJs OnPlugInMessage ' + url);	  
+	   let login_type = this.GetQueryKeyString(url,"type");
+	   let backurl = this.GetQueryKeyString(url,"backurl");
+	   let backurl_params = {
+              backurl: backurl,
+        }
+	  localStorage.set('backurl', backurl_params);
+	  
+	  if (login_type == 'payment') {		  
+		    let account = this.GetQueryKeyString(url,"account");
+            let toAddress = this.GetQueryKeyString(url,"address");
+            let memo = this.GetQueryKeyString(url,"memo");
+            let payment_params = {
+              account: account,
+              toAddress: toAddress,
+              memo: memo
+            }
+			console.log('ElastosJs' + payment_params);
+			//this.Go(PaymentConfirmComponent, payment_params);
+			return true;
 
-    registerBackButtonAction(){
+	 } else if (login_type == 'did_login') {		 
+		 //this.Go(DidLoginComponent);
+		 return true;
+	 }
+	  
+  }
+	  registerBackButtonAction(){
       this.platform.registerBackButtonAction(()=>{
         this.showExit();
-        // let activeNav = this.appCtrl.getActiveNavs()[0];
-        // if(activeNav.canGoBack()){
-        //     activeNav.pop();
-        //  }else{
-        //     this.showExit();
-        //  }
-        // let activePortal = this.ionicApp._modalPortal.getActive();
-        // console.log("---activePortal---"+JSON.stringify(activePortal));
-        // if (activePortal) {
-        //   activePortal.dismiss().catch(() => {
-        //   });
-        //   activePortal.onDidDismiss(() => {
-        //   });
-        //   return;
-        // }
-        // console.log("---activeVC---"+JSON.stringify(this.nav.getActive()));
-        //let activeVC = this.nav.getActive();
-        // if (Util.isEmptyObject(activeVC.instance.tabs)) {
-        //   this.showExit();
-        // } else {
-        //   let tabs = activeVC.instance.tabs;
-        //   let activeNav = tabs.getSelected();
-        //   return activeNav.canGoBack() ? activeNav.pop() : this.showExit();//另外两种方法在这里将this.showExit()改为其他两种的方法的逻辑就好。
-        // }
-      },1);
+      },101);
     }
 
      //双击退出提示框
