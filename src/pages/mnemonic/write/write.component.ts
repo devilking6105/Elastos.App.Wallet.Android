@@ -29,15 +29,15 @@ export class WriteComponent extends BaseComponent implements OnInit {
       mn += this.selectList[i].text;
     }
     //hptest
-    if(!Util.isNull(mn) && mn == this.mnemonicStr.replace(/\s+/g,"")){
-      this.toast('text-mnemonic-ok');
-      //this.Go(TabsComponent)
-      this.setRootRouter(TabsComponent);
-    }else{
-      this.toast('text-mnemonic-prompt3');
-    }
+    // if(!Util.isNull(mn) && mn == this.mnemonicStr.replace(/\s+/g,"")){
+    //   this.toast('text-mnemonic-ok');
+    //   //this.Go(TabsComponent)
+    //   this.setRootRouter(TabsComponent);
+    // }else{
+    //   this.toast('text-mnemonic-prompt3');
+    // }
 
-    //this.Go(TabsComponent);
+    this.Go(TabsComponent);
   }
 
   public addButton(index: number, item: any): void {

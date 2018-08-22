@@ -20,7 +20,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
     name: 'myWallet',
     showBalance: true
   };
-  ElaObj ={"name":"ELA","balance":0};
+  ElaObj ={"name":"ELA","balance": 49.58};
   coinList = []
   
   backButtonPressed: boolean = false;  //用于判断返回键是否触发

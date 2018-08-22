@@ -34,6 +34,7 @@ export class MnemonicComponent extends BaseComponent implements OnInit {
     this.payPassword = this.getNavParams().get("payPassword");
     this.name = this.getNavParams().get("name");
     this.singleAddress = this.getNavParams().get("singleAddress");
+    // alert(this.singleAddress)
   }
 
   onNext() {
@@ -65,6 +66,7 @@ export class MnemonicComponent extends BaseComponent implements OnInit {
 
   createSubWallet(chainId){
     // Sub Wallet
+    // alert(this.singleAddress)
     this.walletManager.createSubWallet(chainId, this.payPassword, this.singleAddress, 0, (val)=>{
 
     });
