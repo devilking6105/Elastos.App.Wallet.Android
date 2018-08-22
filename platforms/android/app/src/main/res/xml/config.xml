@@ -48,6 +48,9 @@
     <feature name="Keyboard">
         <param name="android-package" onload="true" value="io.ionic.keyboard.IonicKeyboard" />
     </feature>
+    <feature name="CarrierPlugin">
+        <param name="android-package" onload="true" value="org.elastos.plugin.CarrierPlugin" />
+    </feature>
     <name>elastos</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>

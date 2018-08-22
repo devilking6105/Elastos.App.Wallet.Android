@@ -133,8 +133,8 @@ public class WalletAppActivity extends CordovaActivity
   public void onDestroy() {
     LOG.d(TAG, "CordovaActivity.onDestroy()");
     super.onDestroy();
-    //android.os.Process.killProcess(android.os.Process.myPid());
-    //System.exit(0);
+    android.os.Process.killProcess(android.os.Process.myPid());
+    System.exit(0);
   }
 
   @Override
