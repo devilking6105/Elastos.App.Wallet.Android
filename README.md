@@ -1,8 +1,8 @@
 ## Elastos Desktop App
 
-
 #####################应用开发人员环境准备##############################
-直接使用android Studio 打开 Elastos.ORG.Wallet.Mobile\platforms\android下的工程，直接Make Project 然后直接在手机上运行即可
+1 把build目录下的android.jar包替换到AndroidSDK\platforms\android-26目录下的同名文件，原来的文件记得备份一下。
+2 直接使用android Studio 打开 Elastos.ORG.Wallet.Mobile\platforms\android下的工程，直接Make Project 然后直接在手机上运行即可
 
 目前的安装包里面内置了一个TODO的demo和一个car构件引用的demo
 
@@ -11,7 +11,6 @@
 即可在Elastos Trinity里面添加运行
 
 epk包的目录结构说明如下 --todo
-
 
 
 ####################插件开发人员环境准备####################################
@@ -306,6 +305,8 @@ git clone git@github.com:elastos/Elastos.ORG.Wallet.Mobile.git wallet
          <uses-permission android:name="android.permission.CAMERA" />
     e. 将CordovaLib目录下的java文件替换为附件CordovaLib(从chromium/content/cordova/android/CordovaLib拷贝过来)文件夹。
     ElastosWebRT/CordovaLib ==> platforms/android/CordovaLib
+	
+	
 
 ## 编译studio工程，生成对应apk
     f. sync studio工程，编译生成apk
