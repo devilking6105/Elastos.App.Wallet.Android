@@ -1,97 +1,92 @@
 ## Elastos Desktop App
 
-#####################应用开发人员环境准备##############################
-1 把build目录下的android.jar包替换到AndroidSDK\platforms\android-26目录下的同名文件，原来的文件记得备份一下。
-2 直接使用android Studio 打开 Elastos.ORG.Wallet.Mobile\platforms\android下的工程，直接Make Project 然后直接在手机上运行即可
+#####################set up application development environment##############################
+1 replace package named "android.jar" under the path "build"directory to the file of same name under the path"AndroidSDK\platforms\android-26", and make sure you backup the former file.
+2. use Android Studio to open the engineering file under the path "Elastos.ORG.Wallet.Mobile\platforms\android", and make project, run it on the mobile side.
 
-目前的安装包里面内置了一个TODO的demo和一个car构件引用的demo
+there is a "TODO" and a "CAR" demo attaching in the installation package. 
 
-应用开发者使用ionic环境开发好的工程后，如果没有依赖特别的java的cordova插件，
-直接把platforms\android\app\src\main\assets\www文件夹压缩为一个epk包，
-即可在Elastos Trinity里面添加运行
+developers use Ionic environment to finish the engineering file, if there is no cordova plugin of special dependent java version, you can compress the folder under the path"platforms\android\app\src\main\assets\www" to a epk package, and run it on the Elastos Trinity.
 
-epk包的目录结构说明如下 --todo
+directory explanation of Epk package --todo
 
 
-####################插件开发人员环境准备####################################
-###  安装相关库
+####################set up plug development environment ####################################
+###  install related lib
 
-##### 安装 ionic|cordova
+##### install ionic|cordova
 > npm install -g ionic cordova 
-##### 安装 依赖包
+##### install dependent pacakge
 > npm install
 
 
-### 运行
+### run
 
-#### 1、web端运行：
+#### 1、run web side ：
 >ionic serve 
-#### 2、安卓端运行：
+#### 2、run android side：
 >ionic cordova run android --device
-#### 3、安卓端-调试模式：
-> ionic cordova run android -l -c -s // 挂载本地页面、实时更新，需要选择本地IP
-#### 4、android studio 加载项目启动：
-> 因为网站是编译打包后webview从assets目录中加载，若从android studio直接启动安卓项目，建议重新执行2或3命令重新打包
-
-
+#### 3、android side-debug mode:
+> ionic cordova run android -l -c -s // mount local page、realtime update, need choose local IP 
+#### 4、android studio load project initiation：
+> webview is loaded from "assets" directory once website is compiled, if Android Studio directly start the android porject, advise repeating 1 or 3 to pack.
 ---
 
-### 项目结构
+### project structure
 
-- src |网页代码
-    - app/app-routing.module.ts |网站路由
-    - pages |网站页面
-    - providers/WalletManager.ts | cordova插件调用  
-- www |打包后的网页代码
-- platforms |平台
-    - android |安卓项目
-        - assets | 打包好的网站项目
-        - jniLibs | 存放so动态库
-        - com.elastos.spvcore.WalletManager | java->c++ jni 调用
-        - ElaWallet.Wallet | java-js jni 调用
-        - io.ionic.starter.MainActivity | 挂载webview的程序入口
-- plungin-src | 钱包插件源码，通过命令自动添加到主项目中
-    - plugin.xml |配置文件
-    - www |  js代码 插件js接口
-    - src |  java代码 插件java接口
-- plugins |cordova 插件
-    - ElaWallet | 钱包 插件 
+- src |web code
+    - app/app-routing.module.ts |web routing
+    - pages |web page
+    - providers/WalletManager.ts | cordova plug calling  
+- www |web code after packing
+- platforms |
+    - android | android project
+        - assets | web project after packing
+        - jniLibs | store "so" dynamic lib
+        - com.elastos.spvcore.WalletManager | java->c++ jni calling
+        - ElaWallet.Wallet | java-js jni calling
+        - io.ionic.starter.MainActivity |  mount the program input of webview
+- plungin-src |wallet plug code, add to main directory by command
+    - plugin.xml |configuring file
+    - www |  js code, call JS code
+    - src |  java code interface of Java plug
+- plugins |cordova interface
+    - ElaWallet | wallet plug 
        
-        - anroid 与platforms下anroid相同，自动打包到项目中
-        - 
-### c++ 层
-> 参看 https://github.com/elastos/Elastos.ELA.SPV.Cpp/tree/jni
+        - automaticall pack to the project, there is similarity between anroid and platforms
+### c++ layer
+> reference https://github.com/elastos/Elastos.ELA.SPV.Cpp/tree/jni
 
 
-### 基础命令
-* 删除钱包插件: `ionic cordova plugin remove ElaWallet`
-* 增加钱包插件: `cd plungin-src && ionic cordova plugin add  ElaWallet`
-* 打包钱包插件: `cd .. && ionic cordova build android`
+### base command
+* delete wallet plug : `ionic cordova plugin remove ElaWallet`
+* add wallet plug: `cd plungin-src && ionic cordova plugin add  ElaWallet`
+* pack wallet plug : `cd .. && ionic cordova build android`
 * `ionic cordova plugin remove ElaWallet && cd plungin-src && ionic cordova plugin add  ElaWallet && cd ..  && ionic cordova run android --device --prod`
 
-### NDK使用版本
+### NDK version
 * android-ndk-r16b
 
-### 打正式包指令
+### offical packing command
 ionic cordova build android --release --prod
 
 
 
 ####################Elatos WebRT 说明####################################
-# elastos_web_rt 说明
-## 下载代码
+# elastos_web_rt description
+## download the code
 
 ```
 $git clone https://github.com/elastos/Elastos.Trinity.android trinty
 ```
 
-## 配置参数
+## parameter configuration
 
 ```
 $gn args out/arm
 ```
 
-按照下面参数配置
+follow parameter configuration 
 
 ```
 target_os="android"
@@ -107,61 +102,61 @@ proprietary_codecs=true
 enable_remoting=true
 ```
 
-## 编译
+## compile
 
 ```
 $ninja -C out/arm elastos_webrt_apk
 ```
 
-生成的文件，我们需要两个：
-Elastos.Trinity.android/src/out/arm/apks/ElastosWebRT.apk和Elastos.Trinity.android/src/out/arm/lib.java/elastos_webrt_java.jar
+we need two files produced：
+Elastos.Trinity.android/src/out/arm/apks/ElastosWebRT.apk and Elastos.Trinity.android/src/out/arm/lib.java/elastos_webrt_java.jar
 
-## 处理目标文件
-由于我们需要把jar包和so提供给studio环境使用，而chromium构建中有部分代码是在生成apk时才自动填充，所以我们分离出的jar包目前需要手动替换，请按下面的步骤进行操作：
+##  process targetting file:
+we need provide Jar package and so to studio environment, part of code from chromium building is automatically filled after producing apk, we have to replace the sparated Jar package manually , with following steps:
 
-    a. 手动替换elastos_webrt_java.jar中nativelibrary，buildconfig目录下的class文件。
-    用Elastos.Trinity.android/src/out/arm/gen/content/cordova/android/elastos_webrt_apk/elastos_webrt_apk.jar里的/org/chromium/base/
-    替换Elastos.Trinity.android/src/out/arm/lib.java/elastos_webrt_java.jar里的/org/chromium/base/
-    b. 删除elastos_webrt_java.jar中与AndroidStudio冲突的package(com.android.support)，目录如下：
-    elastos_webrt_java.jar/android/support/v4
+    a. manually replace the class file under the path "elastos_webrt_java.jar中nativelibrary，buildconfig"
+    use "/org/chromium/base/" in the directory" Elastos.Trinity.android/src/out/arm/gen/content/cordova/android/elastos_webrt_apk/elastos_webrt_apk.jar"  to  replace "/org/chromium/base/" in the directory"Elastos.Trinity.android/src/out/arm/lib.java/elastos_webrt_java.jar"
+    
+    b. delete some conflicted package(com.android.support)between "elastos_webrt_java.jar and AndroidStudio，following directory：elastos_webrt_java.jar/android/support/v4
 
-## ElastosWebRT 输出主要包含如下文件：
-    elastos_webrt_java.jar(chromium java 层代码生成的jar包)
-    cordovaLib (cordava 库代码)
-    asset(dat，bin，pak即chromium相关资源文件)
+## ElastosWebRT output includes following major files：
+    elastos_webrt_java.jar(jar package produced by chromium java layer )
+    cordovaLib (library code of cordava )
+    asset(dat，bin，pak is resource files related with chromium)
     Build.gradle(diff)
     manifest.xml(diff)
     android.jar
-使用方式有点复杂，但如果是基于Elastos.ORG.Wallet开发并不需要做这些复杂的操作，只需要clone 下来，替换一下sdk里的android.jar包就可以了。只有开发web engine的人员才需要处理。
+usage is a little complicated, we do not need these complicated operation if we develop on the Elastos.ORG.Wallet. We just need clone, and replace the package named"android.jar"under sdk. And only web engine developer need to operate it. 
 
-# Studio 工程搭建(Elastos.ORG.Wallet.Mobile.git仓库)
+# Studio engineering building(Elastos.ORG.Wallet.Mobile.git )
 
-## sdk 中的android.jar包替换
-由于chromium会使用到部分android sdk未开放的api，所以需要替换公共发布的sdk里的android.jar文件，这个文件已经拷贝到Elastos.ORG.Wallet.Mobile.git仓库的ds分支ElastosWebRT目录下（该文件实际使用chromium_src/.cipd/pkgs/35/_current/android_system.jar替换
-android-sdk/platforms/android-26/android.jar）
+## replace package named "android.jar "in the sdk 
+because chromium will use some api which is not disclosed in the android sdk, we need to replace the file named "android.jar" in the public sdk. The file is already copied to "ElastosWebRT" under the ds branch of Elastos.ORG.Wallet.Mobile.git warehouse
+（in fact use "chromium_src/.cipd/pkgs/35/_current/android_system.jar" to replace
+"android-sdk/platforms/android-26/android.jar"）
 
 
-## 下载代码
+## download code
 git clone git@github.com:elastos/Elastos.ORG.Wallet.Mobile.git wallet
 
-拉下来的代码使用chromium的so和jar包都是已经处理好的，直接编译即可，只有chromium发生变化才需要执行下面的步骤：
+these processed "so and jar" package can be compiled directly, follwing steps need to be used on the condition that chromius is changing：
 
-## 如果修改c++文件，需要替换相应so
-    a. 将ElastosWebRT.apk中的lib/armeabi-v7a中的so文件拷贝到platforms/android/app/src/main/jniLibs/armeabi-v7a目录；
+## if modify c++ file, need to replace reated "so"
+    a. copy "so"file under the directory"lib/armeabi-v7a" inside "ElastosWebRT.apk" to the path "platforms/android/app/src/main/jniLibs/armeabi-v7a"；
 
-## 如果修改了Java文件，需要替换jar包和assets下的资源文件，并且需要按照前面chromium编译的方式处理
-    b. 将elastos_webrt_java.jar拷贝到platforms/android/CordovaLib/libs目录；
+## if modify java file, need to replace jar package and resource files under "assets"，and need to obey ahead compiling way of chromium to operate
+    b. copy "elastos_webrt_java.jar" to the directory "platforms/android/CordovaLib/libs"；
 
-    c. 将ElastosWebRT.apk中assets目录下的icudtl.dat,natives_blob.bin,snapshot_blob_32.bin,content_shell.pak文件拷贝到
-       platforms/android/app/src/main/assets目录。
-       在platforms/android/app/build.gradle 中添加如下几行
+    c. copy "icudtl.dat,natives_blob.bin,snapshot_blob_32.bin,content_shell.pak" under the directory "assets" inside "ElastosWebRT.apk", to the directoy "  platforms/android/app/src/main/assets"
+
+        add some lines of code inside the file "platforms/android/app/build.gradle"
          aaptOptions {
              noCompress 'dat', 'bin', 'pak'
          }
 
-下面d和e一般不需要再次修改：
+following d and e steps would not be modified usually：
 
-    d. 在platforms/android/app/src/main/AndroidManifest.xml中添加SandboxedProcess相关的几项：
+    d. add several items related "SandboxedProcess"inside to" platforms/android/app/src/main/AndroidManifest.xml"：
     --- a/platforms/android/app/src/main/AndroidManifest.xml
     +++ b/platforms/android/app/src/main/AndroidManifest.xml
     @@ -99,6 +99,138 @@
@@ -308,5 +303,5 @@ git clone git@github.com:elastos/Elastos.ORG.Wallet.Mobile.git wallet
 	
 	
 
-## 编译studio工程，生成对应apk
-    f. sync studio工程，编译生成apk
+## compile studio engineering，producing apk
+    f. sync studio engineering，
