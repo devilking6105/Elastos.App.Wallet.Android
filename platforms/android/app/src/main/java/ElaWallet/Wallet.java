@@ -1,5 +1,6 @@
 package ElaWallet;
 
+import android.app.Activity;
 import android.util.JsonReader;
 
 import com.elastos.spvcore.IMasterWallet;
@@ -25,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -33,13 +35,13 @@ import java.util.Set;
 import java.util.Iterator;
 import android.util.Log;
 
-import io.ionic.starter.MyUtil;
+//import io.ionic.starter.MyUtil;
 
 /**
  * wallet webview jni
  */
 public class Wallet extends CordovaPlugin {
-    private static final String TAG = "Wallet.JNI";
+    private static final String TAG = "Elastos.Wallet.JNI";
     private IMasterWallet mCurrentMasterWallet;
     private MasterWalletManager mWalletManager;
     private ArrayList<IMasterWallet> mMasterWalletList = new ArrayList<IMasterWallet>();
@@ -54,10 +56,12 @@ public class Wallet extends CordovaPlugin {
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
 
-        mRootPath = MyUtil.getRootPath();
-        Log.d("JS-Wallet", "initialize=============mRootPath="+mRootPath);
+        mRootPath = cordova.getActivity().getApplication().getFilesDir().getParent();
+        String mRootPath2 = getStoragePaths(cordova.getActivity()) + "/elastos";
+        Log.d(TAG, "initialize=============mRootPath="+mRootPath);
+        Log.d(TAG, "initialize=============mRootPath2="+mRootPath2);
         mWalletManager = new MasterWalletManager(mRootPath);
-        MyUtil.SetCurrentMasterWalletManager(mWalletManager);
+        //MyUtil.SetCurrentMasterWalletManager(mWalletManager);
         mMasterWalletList = mWalletManager.GetAllMasterWallets();
         if (mMasterWalletList != null) {
             mCurrentMasterWallet = mMasterWalletList.get(0);
@@ -71,16 +75,17 @@ public class Wallet extends CordovaPlugin {
     }
 
     private void initDidManager() {
-      Log.d("JS-Wallet", "initDidManager=========1====mRootPath="+mRootPath);
+      Log.d(TAG, "initDidManager=========1====mRootPath="+mRootPath);
         if (mDidManager == null && mCurrentMasterWallet != null) {
-            Log.d("JS-Wallet", "initDidManager=========2====mRootPath="+mRootPath);
+            Log.d(TAG, "initDidManager=========2====mRootPath="+mRootPath);
             mDidManager = IdManagerFactory.CreateIdManager(mCurrentMasterWallet, mRootPath);
         }
     }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
-        Log.i("JS-Wallet", "execute=============action="+action);
+        Log.i(TAG, "execute=============action="+action);
+        Log.i(TAG, "execute=============args="+args.toString());
         try {
           switch (action) {
               case "coolMethod":
@@ -253,12 +258,12 @@ public class Wallet extends CordovaPlugin {
     //CreateSubWallet(String chainID, String payPassword, boolean singleAddress, long feePerKb)
     public void createSubWallet(JSONArray args, CallbackContext callbackContext) throws JSONException {
         try {
-            Log.i("JS-Wallet", "createSubWallet==============1, id="+args.getString(0));
+            Log.i(TAG, "createSubWallet==============1, id="+args.getString(0));
             ISubWallet subWallet = mCurrentMasterWallet.CreateSubWallet(args.getString(0), args.getString(1), args.getBoolean(2), args.getLong(3));
             if (subWallet != null) {
                 mSubWalletMap.put(args.getString(0), subWallet);
                 callbackContext.success(args.getString(0));
-                Log.i("JS-Wallet", "createSubWallet==============2, subWallet============["+subWallet+"]");
+                Log.i(TAG, "createSubWallet==============2, subWallet============["+subWallet+"]");
             }
             else {
                 callbackContext.error("CreateSubWallet failed.");
@@ -317,7 +322,7 @@ public class Wallet extends CordovaPlugin {
 
             mSubWalletMap.clear();
             ArrayList<ISubWallet> list = mCurrentMasterWallet.GetAllSubWallets();
-            Log.i("JS-Wallet", "getAllSubWallets==============1, list.size="+list.size());
+            Log.i(TAG, "getAllSubWallets==============1, list.size="+list.size());
             for (int i = 0; i < list.size(); i++) {
                 ISubWallet subWallet = list.get(i);
                 if (subWallet != null) {
@@ -412,7 +417,7 @@ public class Wallet extends CordovaPlugin {
 
     //DestroyWallet(String masterWalletId)
     public void destroyWallet(JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Log.i("JS-Wallet", "destroyWallet==================1, walletid="+args.getString(0));
+        Log.i(TAG, "destroyWallet==================1, walletid="+args.getString(0));
         try {
             mWalletManager.DestroyWallet(args.getString(0));
             callbackContext.success();
@@ -441,7 +446,7 @@ public class Wallet extends CordovaPlugin {
 
             mSubWalletMap.clear();
             ArrayList<ISubWallet> list = mCurrentMasterWallet.GetAllSubWallets();
-            Log.i("JS-Wallet", "importWalletWithKeystore==============1, subwallet.list.size="+list.size());
+            Log.i(TAG, "importWalletWithKeystore==============1, subwallet.list.size="+list.size());
             for (int i = 0; i < list.size(); i++) {
                 ISubWallet subWallet = list.get(i);
                 if (subWallet != null) {
@@ -465,7 +470,7 @@ public class Wallet extends CordovaPlugin {
             JSONObject jsonObject = new JSONObject();
             while(iter.hasNext()){
                 String chainID = iter.next();
-                Log.i("JS-Wallet", "getAllCreatedSubWallets=========================chainID=["+chainID+"]");
+                Log.i(TAG, "getAllCreatedSubWallets=========================chainID=["+chainID+"]");
                 jsonObject.put(chainID, chainID);
             }
 
@@ -479,7 +484,7 @@ public class Wallet extends CordovaPlugin {
     //ImportWalletWithMnemonic(String masterWalletId, String mnemonic, String phrasePassword ,String payPassWord, String language)
     public void importWalletWithMnemonic(JSONArray args, CallbackContext callbackContext) throws JSONException {
         try {
-            Log.i("JS-Wallet", "importWalletWithMnemonic======================================1");
+            Log.i(TAG, "importWalletWithMnemonic======================================1");
             mCurrentMasterWallet = mWalletManager.ImportWalletWithMnemonic(args.getString(0), args.getString(1), args.getString(2)
                     , args.getString(3), args.getString(4));
         }
@@ -489,14 +494,14 @@ public class Wallet extends CordovaPlugin {
             return;
         }
 
-        Log.i("JS-Wallet", "importWalletWithMnemonic======================================2");
+        Log.i(TAG, "importWalletWithMnemonic======================================2");
         if (mCurrentMasterWallet != null) {
-            Log.i("JS-Wallet", "importWalletWithMnemonic======================================3");
+            Log.i(TAG, "importWalletWithMnemonic======================================3");
             mMasterWalletList.add(mCurrentMasterWallet);
 
             mSubWalletMap.clear();
             ArrayList<ISubWallet> list = mCurrentMasterWallet.GetAllSubWallets();
-            Log.i("JS-Wallet", "importWalletWithMnemonic==============1, subwallet.list.size="+list.size());
+            Log.i(TAG, "importWalletWithMnemonic==============1, subwallet.list.size="+list.size());
             for (int i = 0; i < list.size(); i++) {
                 ISubWallet subWallet = list.get(i);
                 if (subWallet != null) {
@@ -612,7 +617,7 @@ public class Wallet extends CordovaPlugin {
 
     public void getAllTransaction(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
-        Log.i("JS-Wallet", "getAllTransaction======id="+args.getString(0)+", a1="+args.getInt(1)+", a2="+args.getInt(2)+", a3="+args.getString(3));
+        Log.i(TAG, "getAllTransaction======id="+args.getString(0)+", a1="+args.getInt(1)+", a2="+args.getInt(2)+", a3="+args.getString(3));
         ISubWallet subWallet = mSubWalletMap.get(args.getString(0));
         if (subWallet == null) {
             callbackContext.error("Don't have the subWallet: ["+args.getString(0)+"], please check.");
@@ -625,7 +630,7 @@ public class Wallet extends CordovaPlugin {
 
     public void registerWalletListener(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
-        Log.i("JS-Wallet", "registerWalletListener==================1");
+        Log.i(TAG, "registerWalletListener==================1");
         ISubWallet subWallet = mSubWalletMap.get(args.getString(0));
         if (subWallet == null) {
             callbackContext.error("Don't have the subWallet: ["+args.getString(0)+"], please check.");
@@ -636,7 +641,7 @@ public class Wallet extends CordovaPlugin {
             @Override
             public void OnTransactionStatusChanged(String txId, String status, String desc, int confirms) {
                 JSONObject jsonObject = new JSONObject();
-                Log.i("JS-Wallet", "OnTransactionStatusChanged==================1");
+                Log.i(TAG, "OnTransactionStatusChanged==================1");
                 try {
                     jsonObject.put("txId", txId);
                     jsonObject.put("status", status);
@@ -655,7 +660,7 @@ public class Wallet extends CordovaPlugin {
             @Override
             public void OnBlockSyncStarted() {
                 JSONObject jsonObject = new JSONObject();
-                Log.i("JS-Wallet", "OnBlockSyncStarted==================1");
+                Log.i(TAG, "OnBlockSyncStarted==================1");
                 try {
                     jsonObject.put("OnBlockSyncStarted", "OnBlockSyncStarted");
                 }
@@ -671,7 +676,7 @@ public class Wallet extends CordovaPlugin {
             @Override
             public void OnBlockHeightIncreased(int currentBlockHeight, double progress) {
                 JSONObject jsonObject = new JSONObject();
-                Log.i("JS-Wallet", "OnBlockHeightIncreased==================1");
+                Log.i(TAG, "OnBlockHeightIncreased==================1");
                 try {
                     jsonObject.put("currentBlockHeight", currentBlockHeight);
                     jsonObject.put("progress", progress);
@@ -688,7 +693,7 @@ public class Wallet extends CordovaPlugin {
             @Override
             public void OnBlockSyncStopped() {
                 JSONObject jsonObject = new JSONObject();
-                Log.i("JS-Wallet", "OnBlockSyncStopped==================1");
+                Log.i(TAG, "OnBlockSyncStopped==================1");
                 try {
                     jsonObject.put("OnBlockSyncStopped", "OnBlockSyncStopped");
                 }
@@ -716,7 +721,7 @@ public class Wallet extends CordovaPlugin {
 
     public void getBalance(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
-        Log.i("JS-Wallet", "getBalance==============1, id="+args.getString(0));
+        Log.i(TAG, "getBalance==============1, id="+args.getString(0));
         ISubWallet subWallet = mSubWalletMap.get(args.getString(0));
         if (subWallet == null) {
             callbackContext.error("Don't have the subWallet: ["+args.getString(0)+"], please check.");
@@ -799,7 +804,7 @@ public class Wallet extends CordovaPlugin {
     public void sendRawTransaction(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
         ISubWallet subWallet = mSubWalletMap.get(args.getString(0));
-        Log.i("JS-Wallet", "sendRawTransaction==============1, id="+args.getString(0));
+        Log.i(TAG, "sendRawTransaction==============1, id="+args.getString(0));
         if (subWallet == null) {
             callbackContext.error("Don't have the subWallet: ["+args.getString(0)+"], please check.");
             return;
@@ -838,7 +843,7 @@ public class Wallet extends CordovaPlugin {
     //String CreateIdTransaction(fromAddress, payloadJson, programJson, memo, remark)
     public void createIdTransaction(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
-        Log.i("JS-Wallet", "createIdTransaction==================1, id="+args.getString(0));
+        Log.i(TAG, "createIdTransaction==================1, id="+args.getString(0));
         if (!IMasterWallet.CHAINID.ID.equals(args.getString(0))) {
             callbackContext.success(parseOneParam(ERRORCODE, "The chainID must be IdChain."));
             return;
@@ -847,9 +852,9 @@ public class Wallet extends CordovaPlugin {
         IIdChainSubWallet subWallet;
         if(baseWallet instanceof IIdChainSubWallet){
             subWallet = (IIdChainSubWallet)baseWallet;
-            Log.i("JS-Wallet", "createIdTransaction instanceof IIdChainSubWallet 1, id="+args.getString(0));
+            Log.i(TAG, "createIdTransaction instanceof IIdChainSubWallet 1, id="+args.getString(0));
         }else{
-            Log.i("JS-Wallet", "createIdTransaction not instanceof IIdChainSubWallet 1, id="+args.getString(0));
+            Log.i(TAG, "createIdTransaction not instanceof IIdChainSubWallet 1, id="+args.getString(0));
             return ;
         }
        // IIdChainSubWallet subWallet = (IIdChainSubWallet)mSubWalletMap.get(args.getString(0));
@@ -876,7 +881,7 @@ public class Wallet extends CordovaPlugin {
 
     public void createDepositTransaction(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
-        Log.i("JS-Wallet", "createDepositTransaction==================1, id="+args.getString(0));
+        Log.i(TAG, "createDepositTransaction==================1, id="+args.getString(0));
         if (!IMasterWallet.CHAINID.MAIN.equals(args.getString(0))) {
             callbackContext.success(parseOneParam(ERRORCODE, "The chainID must be ELA."));
             return;
@@ -893,7 +898,6 @@ public class Wallet extends CordovaPlugin {
             json = subWallet.CreateDepositTransaction(args.getString(1), args.getString(2), args.getLong(3)
                     , args.getString(4), args.getString(5), args.getString(6)
                     , args.getString(7), args.getString(8));
-
             if (json != null) {
                 callbackContext.success(parseOneParam("json", json));
             }
@@ -1179,7 +1183,7 @@ public class Wallet extends CordovaPlugin {
     //             String mainchainAmounts, String mainchainIndexs, String memo, String remark)
     public void createWithdrawTransaction(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
-        Log.i("JS-Wallet", "createWithdrawTransaction==================1, id="+args.getString(0));
+        Log.i(TAG, "createWithdrawTransaction==================1, id="+args.getString(0));
         if (!IMasterWallet.CHAINID.ID.equals(args.getString(0))) {
             callbackContext.success(parseOneParam(ERRORCODE, "The chainID must be IdChain."));
             return;
@@ -1211,7 +1215,7 @@ public class Wallet extends CordovaPlugin {
 
     public void getGenesisAddress(JSONArray args, CallbackContext callbackContext) throws JSONException {
         //The first parameter is [chainID]
-        Log.i("JS-Wallet", "getGenesisAddress==================1, id="+args.getString(0));
+        Log.i(TAG, "getGenesisAddress==================1, id="+args.getString(0));
         if (!IMasterWallet.CHAINID.ID.equals(args.getString(0))) {
             callbackContext.success(parseOneParam(ERRORCODE, "The chainID must be IdChain."));
             return;
@@ -1243,4 +1247,21 @@ public class Wallet extends CordovaPlugin {
     public void onDestroy() {
         super.onDestroy();
     }
+
+  private String  getStoragePaths(Activity appactivity) {
+    try {
+      Object sm = appactivity.getSystemService("storage");
+      Method getVolumePathsMethod = Class.forName("android.os.storage.StorageManager").getMethod("getVolumePaths", new Class[0]);
+      String[] m_Paths = (String[]) getVolumePathsMethod.invoke(sm, new Object[]{});
+      Log.d(TAG,"length: " + m_Paths.length);
+      if (m_Paths == null || m_Paths.length <= 0) {
+        m_Paths  = new String[]{"", ""};
+      }
+      Log.d(TAG,"Path0: " + m_Paths[0]);
+      return  m_Paths[0];
+    } catch (Exception e) {
+      Log.d(TAG,"getStoragePaths() failed" + e);
+    }
+    return "";
+  }
 }
