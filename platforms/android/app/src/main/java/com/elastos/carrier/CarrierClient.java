@@ -157,10 +157,10 @@ public class CarrierClient extends AbstractStreamHandler implements SessionReque
 
       String port = mPort;
       if (port == null || port.isEmpty()) {
-        port = String.valueOf(findFreePort());;
+        port = String.valueOf(findFreePort());
       }
-      mPfId = mStream.openPortFowarding("owncloud", PortForwardingProtocol.TCP,
-        getHost(), port);
+
+      mPfId = mStream.openPortForwarding("owncloud", PortForwardingProtocol.TCP, getHost(), port);
 
       mPort = port;
 

@@ -93,10 +93,10 @@ public class AppActivity extends CordovaActivity {
               sdcardurl = "file:///" + getStoragePaths() + "/elastos/" + url;
             }
             Log.e(TAG, "loadUrl: " + sdcardurl);
-//            loadUrl(sdcardurl);
+            loadUrl(sdcardurl);
 
-            String sdurl = "file://" + getStoragePaths()+"/abc/www/index.html";
-            loadUrl(sdurl);
+//            String sdurl = "file://" + getStoragePaths()+"/abc/www/index.html";
+//            loadUrl(sdurl);
           } else {
             startParams = data.getQuery();
           }
