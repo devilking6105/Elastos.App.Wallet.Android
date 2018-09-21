@@ -23,6 +23,33 @@ export class LocalStorage {
     });
   }
 
+  //did][path][serialNum
+  public addKeyToSerialNum(did: string, path: string , serialNum: string, keyAdd : string, obj : any) {
+
+    let idsObj = {};
+    let self = this;
+    this.getKycList("kycId").then((val)=>{
+
+      console.info("ElastJs addKeyToSerialNum getKycList " + val);
+      if(val == null || val === undefined || val === {} || val === ''){
+        console.info("ElastJs addKeyToSerialNum getKycList err return ");
+
+        return;
+      }
+      idsObj = JSON.parse(val);
+
+      console.info("ElastJs addKeyToSerialNum  did "+ did + " path "+path + " serialNum "+ serialNum + " keyAdd "+ keyAdd);
+
+      idsObj[did][path][serialNum][keyAdd] = obj;
+
+      self.storage.set("kycId",idsObj);
+      console.info("ElastJs addKeyToSerialNum storage.set idsObj " + JSON.stringify(idsObj));
+
+    });
+
+  }
+
+
   public set(key: string, value: any): any {
     return this.storage.set(key, JSON.stringify(value));
   }

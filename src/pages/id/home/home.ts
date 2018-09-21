@@ -55,9 +55,14 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
                      ////
 
-                     //let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
-                     let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
-                     self.testDataHash(idJson);
+                     let arrPath = valueObj["Contents"][0]["Path"].split("/");
+
+                     if (arrPath && arrPath[1]){
+                       let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
+                       self.localStorage.addKeyToSerialNum(data.id, arrPath[1], serialNum, "idJson", idJson);
+                       self.testDataHash(idJson);
+                     }
+
                      ////
 
 
@@ -217,32 +222,19 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
             console.info("home.ts ElastosJs createDID serialNum "+ serialNum);
             self.setOrderStatus(5,serialNum);
 
-            let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
 
-            self.testDataHash(idJson);
-            //self.dataManager.addIdPathJson(data.id, valueObj["Contents"][0]["Path"], valueObj);
-            //self.dataManager.addSignCont();
+            let arrPath = valueObj["Contents"][0]["Path"].split("/");
 
-            //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
-
-            /*for(let ele of valueObj["Contents"]){
-              //get value
-
-              let proofObj = JSON.parse(ele["Proof"])
-
-              //newSeqNumObj这里可能有多个 提交的。 要找到path对应的那个
-              let newSeqNumObj = self.dataManager.getSeqNumObj(proofObj["signature"]);
-
-              //遍历result中的proof 找到对应的seqNumObj 比较这两个seqNumObj中的关键字。如果相同则先删除后添加。
-              //否则添加
-              self.walletManager.didGetValue(data["id"] , ele["Path"] ,(result)=>{
-
-              })
-              //check duplicate
-
-              //setvalue
-            }*/
+            if (arrPath && arrPath[1]){
+              let  idJson = self.dataManager.OutPutIDJson(data.id,valueObj["Contents"][0]["Path"], proofObj["signature"]);
+              self.localStorage.addKeyToSerialNum(data.id,  arrPath[1], serialNum, "idJson", idJson);
+              self.testDataHash(idJson);
+            }
+            // let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
+            // self.localStorage.addKeyToSerialNum(data.id, valueObj["Contents"][0]["Path"], serialNum, "idJson", idJson);
+            // self.testDataHash(idJson);
             //
+
 
           }
         }
