@@ -66,6 +66,7 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
     let parms ={"appid":"elastid","timestamp":timestamp};
     let checksum = IDManager.getCheckSum(parms,"asc");
     parms["checksum"] = checksum;
+    console.info("ElastJs identityauth getPrice url "+ ApiUrl.GET_PRICE + " parms " + JSON.stringify(parms));
     this.getHttp().postByAuth(ApiUrl.GET_PRICE,parms).toPromise().then().then(data => {
         if(data["status"] === 200){
           this.priceObj = JSON.parse(data["_body"]);
@@ -74,7 +75,7 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
           this.serialNum = this.priceObj["serialNum"];
          }
     }).catch(error => {
-
+        alert("identityauth getPrice error " + error);
     });
   }
 

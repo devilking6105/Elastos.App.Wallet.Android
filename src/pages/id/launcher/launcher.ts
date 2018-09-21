@@ -50,9 +50,16 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
                 let serialNum =  seqNumObj["serialNum"] ;
                 console.info("lacucher.ts ElastosJs createDID serialNum "+ serialNum);
                 self.setOrderStatus(5,serialNum);
-                self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
-                //self.dataManager.addIdPathJson(data.id, valueObj["Contents"][0]["Path"], valueObj);
-               // alert("lacucher.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
+                let arrPath = valueObj["Contents"][0]["Path"].split("/");
+
+                if (arrPath && arrPath[1]){
+                  let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"] , proofObj["signature"]);
+                  self.localStorage.addKeyToSerialNum(data.id, arrPath[1], serialNum, "idJson", idJson);
+                }
+
+                // let idJson =self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
+                // self.localStorage.addKeyToSerialNum(data.id, valueObj["Contents"][0]["Path"], serialNum, "idJson", idJson);
+
               }
             }
             //console.info("home.ts ElastosJs createDID registerIdListener " + JSON.stringify(data));
