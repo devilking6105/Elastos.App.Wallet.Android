@@ -99,6 +99,13 @@ import {IdentitypathinfoPage} from '../pages/id/identitypathinfo/identitypathinf
 import {IdentityauthPage} from '../pages/id/identityauth/identityauth';
 import {PhoneauthPage} from '../pages/id/phoneauth/phoneauth';
 import {BankcardauthPage} from '../pages/id/bankcardauth/bankcardauth';
+import {LanguagePage} from '../pages/wallet/language/language';
+import {WalltelistPage} from '../pages/walltelist/walltelist';
+import {CreatemultiwalltePage} from '../pages/createmultiwallte/createmultiwallte';
+import {WalltemodePage} from '../pages/walltemode/walltemode';
+import {AddpublickeyPage} from '../pages/addpublickey/addpublickey';
+import {AddprivatekeyPage} from '../pages/addprivatekey/addprivatekey';
+import {ImportprivatekeyPage} from '../pages/importprivatekey/importprivatekey';
 /*id相关页面*/
 
 /** 通过类引用方式解析国家化文件 */
@@ -186,7 +193,14 @@ export function TranslateLoaderFactory() {
     IdentitypathinfoPage,
     IdentityauthPage,
     PhoneauthPage,
-    BankcardauthPage
+    BankcardauthPage,
+    LanguagePage,
+    WalltelistPage,
+    CreatemultiwalltePage,
+    WalltemodePage,
+    AddpublickeyPage,
+    AddprivatekeyPage,
+    ImportprivatekeyPage
   ],
   imports: [
     BrowserModule,
@@ -270,7 +284,14 @@ export function TranslateLoaderFactory() {
     IdentitypathinfoPage,
     IdentityauthPage,
     PhoneauthPage,
-    BankcardauthPage
+    BankcardauthPage,
+    LanguagePage,
+    WalltelistPage,
+    CreatemultiwalltePage,
+    WalltemodePage,
+    AddpublickeyPage,
+    AddprivatekeyPage,
+    ImportprivatekeyPage
   ],
   providers: [
     StatusBar,
