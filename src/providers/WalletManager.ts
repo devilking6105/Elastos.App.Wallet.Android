@@ -277,7 +277,10 @@ export class WalletManager {
   }
 
   createDID(password:string,Fun){
+    console.log("elastjs WalletManager.ts =====createDID=====begin");
     this.wallet.createDID([password],Fun,this.errorFun);
+    console.log("elastjs WalletManager.ts =====createDID=====end");
+
   }
 
   getDIDList(Fun){

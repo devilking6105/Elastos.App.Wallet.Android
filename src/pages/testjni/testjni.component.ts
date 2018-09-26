@@ -375,10 +375,16 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
    }
 
    createDID(){
+     console.log("elastjs =====createDID=====begin");
+
      this.walletManager.createDID(this.payPassword,(result)=>{
              alert("==did=="+JSON.stringify(result));
-             this.did = result.didname;
+       console.log("elastjs =====createDID=====callback");
+
+       this.did = result.didname;
      });
+     console.log("elastjs =====createDID=====end");
+
    }
 
    getDIDList(){
