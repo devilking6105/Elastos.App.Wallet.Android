@@ -40,6 +40,7 @@ export class RechargeComponent extends BaseComponent implements OnInit {
   SELA = Config.SELA;
 
   ngOnInit() {
+    this.masterWalletId = Config.getCurMasterWalletId();
     this.setTitleByAssets('text-recharge');
     let transferObj =this.getNavParams().data;
     this.chianId = transferObj["chianId"];
@@ -170,14 +171,41 @@ export class RechargeComponent extends BaseComponent implements OnInit {
       this.toast("text-pwd-validator");
       return;
     }
-    this.walletManager.sendRawTransaction(this.masterWalletId,'ELA', this.rawTransaction, this.transfer.fee, this.transfer.payPassword, (data) => {
-      if(data['success']){
-        console.log("===sendRawTransaction===="+JSON.stringify(data));
-        this.Go(TabsComponent);
-      }else{
-        alert("===sendRawTransaction==error=="+JSON.stringify(data));
-      }
+    this.updateTxFee();
+  }
+
+  updateTxFee(){
+    this.walletManager.updateTransactionFee(this.masterWalletId,'ELA',this.rawTransaction, this.transfer.fee,(data)=>{
+                       if(data["success"]){
+                        console.log("===updateTransactionFee===="+JSON.stringify(data));
+                        this.singTx(data["success"]);
+                       }else{
+                         alert("=====updateTransactionFee=error==="+JSON.stringify(data));
+                       }
     });
   }
+
+  singTx(rawTransaction){
+    this.walletManager.signTransaction(this.masterWalletId,'ELA',rawTransaction,this.transfer.payPassword,(data)=>{
+      if(data["success"]){
+        console.log("===signTransaction===="+JSON.stringify(data));
+        this.sendTx(data["success"]);
+       }else{
+         alert("=====signTransaction=error==="+JSON.stringify(data));
+       }
+    });
+  }
+
+  sendTx(rawTransaction){
+    this.walletManager.publishTransaction(this.masterWalletId,'ELA',rawTransaction,(data)=>{
+     if(data["success"]){
+         console.log("===publishTransaction===="+JSON.stringify(data));
+         this.setRootRouter(TabsComponent);
+      }else{
+        alert("========publishTransaction=====error==="+JSON.stringify(data));
+      }
+
+    })
+ }
 
 }

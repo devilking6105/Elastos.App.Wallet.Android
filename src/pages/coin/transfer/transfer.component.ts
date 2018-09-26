@@ -8,14 +8,14 @@ import { Config } from '../../../providers/Config';
 import {IDManager} from "../../../providers/IDManager";
 import {ApiUrl} from "../../../providers/ApiUrl"
 import {IdResultComponent} from "../../../pages/id/result/result";
+import {ScancodePage} from '../../../pages/scancode/scancode';
 @Component({
   selector: 'app-transfer',
   templateUrl: './transfer.component.html'})
 export class TransferComponent extends BaseComponent implements OnInit {
-
   @ViewChild('subscribe') subPopup: PopupComponent;
   masterWalletId:string = "1";
-
+  walletType = "";
   transfer: any = {
     toAddress: '',
     amount: '',
@@ -40,8 +40,11 @@ export class TransferComponent extends BaseComponent implements OnInit {
   txId:string;
   did:string;
   isInput = true;
+  walletInfo = {};
   ngOnInit() {
+    this.masterWalletId = Config.getCurMasterWalletId();
     this.setTitleByAssets('text-transfer');
+    this.masterWalletId = Config.getCurMasterWalletId();
     let transferObj =this.getNavParams().data;
     console.log("=====pf==="+JSON.stringify(transferObj));
     this.chianId = transferObj["chianId"];
@@ -56,6 +59,8 @@ export class TransferComponent extends BaseComponent implements OnInit {
     this.selectType = transferObj["selectType"] || "";
     this.parms = transferObj["parms"] || "";
     this.did = transferObj["did"] || "";
+    this.walletInfo = transferObj["walletInfo"] || {};
+    console.log("====walletInfo====="+JSON.stringify(this.walletInfo));
     this.initData();
 
     this.setRightIcon('./assets/images/icon/ico-scan.svg', () => {
@@ -129,7 +134,16 @@ export class TransferComponent extends BaseComponent implements OnInit {
         this.toast("contact-address-digits");
         return;
       }
-      this.createTransaction();
+
+      console.log("====this.walletInfoType======"+this.walletInfo["Type"]);
+
+      if(this.walletInfo["Type"] === "Standard"){
+          this.createTransaction();
+      }else if(this.walletInfo["Type"] === "Multi-Sign"){
+        console.log("====this.walletInfoType======"+this.walletInfo["Type"]);
+          this.createMultTx();
+      }
+
       this.subPopup.show().subscribe((res: boolean) => {
       });
     })
@@ -153,7 +167,7 @@ export class TransferComponent extends BaseComponent implements OnInit {
   }
 
   getFee(){
-    this.walletManager.calculateTransactionFee(this.masterWalletId,this.chianId, this.rawTransaction, this.feePerKb, (data) => {
+    this.walletManager.calculateTransactionFee(this.masterWalletId,this.chianId,this.rawTransaction, this.feePerKb, (data) => {
       if(data['success']){
         console.log("=======calculateTransactionFee======"+JSON.stringify(data));
         this.transfer.fee = data['success'];
@@ -168,17 +182,47 @@ export class TransferComponent extends BaseComponent implements OnInit {
       this.toast("text-pwd-validator");
       return;
     }
+    this.updateTxFee();
+  }
 
-    this.walletManager.sendRawTransaction(this.masterWalletId,this.chianId, this.rawTransaction, this.transfer.fee, this.transfer.payPassword, (data) => {
+  updateTxFee(){
+    this.walletManager.updateTransactionFee(this.masterWalletId,this.chianId,this.rawTransaction, this.transfer.fee,(data)=>{
+                       if(data["success"]){
+                        console.log("===updateTransactionFee===="+JSON.stringify(data));
+                        this.singTx(data["success"]);
+                       }else{
+                         alert("=====updateTransactionFee=error==="+JSON.stringify(data));
+                       }
+    });
+  }
 
-      if(data['success']){
+  singTx(rawTransaction){
+    this.walletManager.signTransaction(this.masterWalletId,this.chianId,rawTransaction,this.transfer.payPassword,(data)=>{
+      if(data["success"]){
+        console.log("===signTransaction===="+JSON.stringify(data));
+        if(this.walletInfo["Type"] === "Standard"){
+             this.sendTx(data["success"]);
+        }else if(this.walletInfo["Type"] === "Multi-Sign"){
+            this.Go(ScancodePage,{"txContent":{"chianId":this.chianId,"address":this.transfer.toAddress, "amount": this.transfer.amount,"fee":this.transfer.fee, "rawTransaction": data["success"]}});
+        }
+       }else{
+         alert("=====signTransaction=error==="+JSON.stringify(data));
+       }
+    });
+  }
+
+  sendTx(rawTransaction){
+    console.log("===publishTransaction====rawTransaction"+rawTransaction);
+     this.walletManager.publishTransaction(this.masterWalletId,this.chianId,rawTransaction,(data)=>{
+      if(data["success"]){
+        console.log("===publishTransaction===="+JSON.stringify(data));
         this.txId = JSON.parse(data['success'])["TxHash"];
         console.log("=======sendRawTransaction======"+JSON.stringify(data));
         console.log("=======this.appType======"+JSON.stringify(data));
         if(this.isNull(this.appType)){
           console.log("===TabsComponent====");
           this.toast('send-raw-transaction');
-          this.Go(TabsComponent);
+          this.setRootRouter(TabsComponent);
         }else if(this.appType === "kyc"){
              if(this.selectType === "enterprise"){
                   this.company();
@@ -186,12 +230,10 @@ export class TransferComponent extends BaseComponent implements OnInit {
                   this.person();
              }
         }
-
-      }else{
-        alert("====sendRawTransaction====error"+JSON.stringify(data));
-      }
-
-    });
+       }else{
+         alert("=====signTransaction=error==="+JSON.stringify(data));
+       }
+     })
   }
 
   company(){
@@ -288,6 +330,23 @@ saveKycSerialNum(serialNum){
           this.Go(IdResultComponent,{'status':'0',id:this.did,path:this.selectType});
          });
      })
+}
+
+createMultTx(){
+  this.walletManager.createMultiSignTransaction(this.masterWalletId,this.chianId,"",
+  this.transfer.toAddress,
+  this.transfer.amount*Config.SELA,
+  this.transfer.memo,
+  (data)=>{
+    if(data["success"]){
+      console.log("====createMultiSignTransaction======"+JSON.stringify(data));
+      this.rawTransaction = data['success'];
+      this.getFee();
+    }else{
+      alert("====createMultiSignTransaction==error===="+JSON.stringify(data));
+    }
+  }
+)
 }
 
 }

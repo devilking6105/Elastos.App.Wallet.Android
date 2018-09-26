@@ -20,8 +20,8 @@ export class WalletManager {
   public static PAGECOUNT = 100;
 
   constructor(public native: Native) {
-    this.wallet = cordova.plugins.Wallet;
-    //this.wallet = {};
+      this.wallet = cordova.plugins.Wallet;
+      //this.wallet = {};
   }
 
   //--------------------------------------------------------------------------------子钱包操作
@@ -52,17 +52,8 @@ export class WalletManager {
       this.wallet.recoverSubWallet([masterWalletId,chainID,payPassword,singleAddress,limitGap,feePerKb], Fun, this.errorFun);
   }
 
-  /***
-   * 获取子钱包公钥
-   * @param Fun
-   */
-  getPublicKey(Fun) {
-    this.wallet.getPublicKey([], Fun, this.errorFun);
-  }
-
 
   //----------------------------------------------------------------------- 主钱包操作
-
 
   /**
    * 创建主钱包
@@ -152,16 +143,9 @@ export class WalletManager {
   }
 
   createMultiSignTransaction(masterWalletId:string,chainId:string,fromAddress:string,toAddress:string,amount,memo:string,Fun){
-    this.wallet.reateMultiSignTransaction([masterWalletId,chainId,fromAddress,toAddress,amount,memo],Fun,this.errorFun);
+    this.wallet.createMultiSignTransaction([masterWalletId,chainId,fromAddress,toAddress,amount,memo],Fun,this.errorFun);
   }
 
-  appendSignToTransaction(masterWalletId:string,chainId:string,rawTransaction:string,payPassword:string,Fun){
-    this.wallet.reateMultiSignTransaction([masterWalletId,chainId,rawTransaction,payPassword],Fun,this.errorFun);
-  }
-
-  publishMultiSignTransaction(masterWalletId:string,chainId:string,rawTransaction:string,fee,Fun){
-    this.wallet.reateMultiSignTransaction([masterWalletId,chainId,rawTransaction,fee],Fun,this.errorFun);
-  }
   /**
    * @param {string} masterWalletId
    * @param {string} chainId
@@ -272,9 +256,9 @@ export class WalletManager {
     this.wallet.calculateTransactionFee([masterWalletId,chainId,rawTransaction,feePerKb],Fun,this.errorFun);
   }
 
-  sendRawTransaction(masterWalletId:string,chainId:string,transactionJson:string ,fee:number, payPassword:string,Fun){
-    this.wallet.sendRawTransaction([masterWalletId,chainId,transactionJson,fee,payPassword],Fun,this.errorFun);
-  }
+  // sendRawTransaction(masterWalletId:string,chainId:string,transactionJson:string ,fee:number, payPassword:string,Fun){
+  //   this.wallet.sendRawTransaction([masterWalletId,chainId,transactionJson,fee,payPassword],Fun,this.errorFun);
+  // }
 
   createDID(password:string,Fun){
     console.log("elastjs WalletManager.ts =====createDID=====begin");
@@ -344,8 +328,8 @@ export class WalletManager {
  /**
    * @param {string} masterWalletId
    */
-  masterWalletGetBasicInfo(masterWalletId:string,Fun){
-     this.wallet.masterWalletGetBasicInfo([masterWalletId],Fun,this.errorFun);
+  getMasterWalletBasicInfo(masterWalletId:string,Fun){
+     this.wallet.getMasterWalletBasicInfo([masterWalletId],Fun,this.errorFun);
   }
 
   createMultiSignMasterWallet(masterWalletId:string,coSigners:string,requiredSignCount:number,Fun){
@@ -354,6 +338,30 @@ export class WalletManager {
 
   createMultiSignMasterWalletWithPrivKey(masterWalletId:string,privKey:string,payPassword:string,coSigners:string,requiredSignCount:number,Fun){
       this.wallet.createMultiSignMasterWalletWithPrivKey([masterWalletId,privKey,payPassword,coSigners,requiredSignCount],Fun,this.errorFun);
+  }
+
+  updateTransactionFee(masterWalletId:string,chainId:string,rawTransaction:string,fee:number,Fun){
+      this.wallet.updateTransactionFee([masterWalletId,chainId,rawTransaction,fee],Fun,this.errorFun);
+  }
+
+  signTransaction(masterWalletId:string,chainId:string,rawTransaction:string,payPassword:string,Fun){
+    this.wallet.signTransaction([masterWalletId,chainId,rawTransaction,payPassword],Fun,this.errorFun);
+  }
+
+  publishTransaction(masterWalletId:string,chainId:string,rawTransaction:string,Fun){
+    this.wallet.publishTransaction([masterWalletId,chainId,rawTransaction],Fun,this.errorFun);
+  }
+
+  getMasterWalletPublicKey(masterWalletId:string,Fun){
+    this.wallet.getMasterWalletPublicKey([masterWalletId],Fun,this.errorFun);
+  }
+
+  getSubWalletPublicKey(masterWalletId:string,chainId:string,Fun){
+    this.wallet.getSubWalletPublicKey([masterWalletId,chainId],Fun,this.errorFun);
+  }
+
+  createMultiSignMasterWalletWithMnemonic(masterWalletId:string,mnemonic:string,phrasePassword:string,payPassword:string,coSignersJson:string,requiredSignCount:string,language:string,Fun){
+     this.wallet.createMultiSignMasterWalletWithMnemonic([masterWalletId,mnemonic,phrasePassword,payPassword,coSignersJson,requiredSignCount,language],Fun,this.errorFun);
   }
 
   errorFun(error) {

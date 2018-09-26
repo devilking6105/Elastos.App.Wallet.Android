@@ -252,10 +252,15 @@ export const zh = {
   'text-publickey-placeholder':"请输入参与者的公钥",
   'text-add-publickey-title':"添加公钥",
   'text-add-private-title':"添加私钥",
-  'text-create-privatekyc':"创建私钥",
+  'text-create-privatekyc':"创建种子",
   'text-import-privatekyc':"导入私钥",
-  'text-observe-wallte':"观察钱包",
+  'text-observe-wallte':"只读钱包",
   'text-import-privatekey':"导入私钥",
   'text-import-privatekey-des':"输入Private Key文件内容至输入框。请留意字符大小写",
-  'text-import-privatekey-placeholder':"输入明文私钥"
+  'text-import-privatekey-placeholder':"输入明文私钥",
+  'text-check-publickey':"查看公钥",
+  'text-send-tx':"发送交易",
+  'text-sing-tx':"签名交易",
+  'text-scan-code':"查看二维码",
+  'text-tx-details':"交易详情"
 };

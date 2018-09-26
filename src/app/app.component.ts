@@ -34,6 +34,10 @@ import {ContactsComponent} from '../pages/contacts/contacts.component';
 import {ContactCreateComponent} from '../pages/contacts/contact-create/contact-create.component';
 import {ContactListComponent} from '../pages/contacts/contact-list/contact-list.component';
 import {CoinlistpasswordPage} from '../pages/coinlistpassword/coinlistpassword';
+import {TxdetailsPage} from '../pages/txdetails/txdetails';
+import {WalltemodePage} from '../pages/walltemode/walltemode';
+import {ScancodePage} from '../pages/scancode/scancode';
+
 //add for plugin
 declare var cordova: any;
 
@@ -73,6 +77,9 @@ export class AppComponent {
       //this.rootPage = ContactCreateComponent;
       //this.rootPage = ContactListComponent;
       //this.rootPage = CoinListComponent;
+        //this.rootPage = TxdetailsPage;
+        //this.rootPage = WalltemodePage;
+        //this.rootPage = ScancodePage;
          //init java 2 js plugin
          cordova.plugins.Java2JSBridge.init(this);
 
@@ -81,35 +88,77 @@ export class AppComponent {
             Config.setDeviceID(message);
           }
 
-      localStorage.getWallet().then((val) => {
-        let type = this.GetQueryString("type");
-        if (val) {
-          switch (type) {
-            case "payment":
-              this.rootPage = PaymentConfirmComponent;
-              break;
-            case "did_login":
-              this.rootPage = DidLoginComponent;
-              break;
-            default:
-              this.rootPage = TabsComponent;
-              break;
-          }
-        } else {
-          if (type == 'payment') {
-            let account = this.GetQueryString("account");
-            let toAddress = this.GetQueryString("address");
-            let memo = this.GetQueryString("memo");
-            let payment_params = {
-              account: account,
-              toAddress: toAddress,
-              memo: memo
-            }
-            localStorage.set('payment', payment_params);
-          }
-          this.rootPage = LauncherComponent;
-        }
-      });
+
+       this.localStorage.getWalletList().then((data)=>{
+           let type = this.GetQueryString("type");
+            let walletList = JSON.parse(data);
+            if(walletList == null || walletList === undefined || walletList === {} || walletList === '' || walletList === []){
+            if (type == 'payment') {
+                let account = this.GetQueryString("account");
+                let toAddress = this.GetQueryString("address");
+                let memo = this.GetQueryString("memo");
+                let payment_params = {
+                  account: account,
+                  toAddress: toAddress,
+                  memo: memo
+                }
+                localStorage.set('payment', payment_params);
+              }
+              this.rootPage = LauncherComponent;
+              Config.setMasterWalletIdList([]);
+               return;
+             }
+            this.localStorage.getCurMasterId().then((data)=>{
+                  console.log("=====getCurMasterId====="+data);
+                  let item = JSON.parse(data);
+                  console.log("====getCurMasterId===="+JSON.stringify(item));
+                  Config.setCurMasterWalletId(item["masterId"]);
+                  Config.setMasterWalletIdList(walletList);
+                  switch (type) {
+                    case "payment":
+                      this.rootPage = PaymentConfirmComponent;
+                      break;
+                    case "did_login":
+                      this.rootPage = DidLoginComponent;
+                      break;
+                    default:
+                      this.rootPage = TabsComponent;
+                      break;
+                  }
+            });
+        });
+
+
+
+      // localStorage.getWallet().then((val) => {
+      //   let type = this.GetQueryString("type");
+      //   if (val) {
+      //     switch (type) {
+      //       case "payment":
+      //         this.rootPage = PaymentConfirmComponent;
+      //         break;
+      //       case "did_login":
+      //         this.rootPage = DidLoginComponent;
+      //         break;
+      //       default:
+      //         this.rootPage = TabsComponent;
+      //         break;
+      //     }
+      //   } else {
+      //     if (type == 'payment') {
+      //       let account = this.GetQueryString("account");
+      //       let toAddress = this.GetQueryString("address");
+      //       let memo = this.GetQueryString("memo");
+      //       let payment_params = {
+      //         account: account,
+      //         toAddress: toAddress,
+      //         memo: memo
+      //       }
+      //       localStorage.set('payment', payment_params);
+      //     }
+      //     this.rootPage = LauncherComponent;
+      //   }
+      // });
 
       localStorage.getKycList("kycId").then((val)=>{
 
