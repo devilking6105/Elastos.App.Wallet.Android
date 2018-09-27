@@ -26,8 +26,8 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
 
   createId(){
     let self = this;
-    //Config.getCurMasterWalletId()
-    this.walletManager.createDID("1","s12345678",(result)=>{
+    //
+    this.walletManager.createDID(Config.getCurMasterWalletId(),"s12345678",(result)=>{
 
           let idObj ={id:result.didname};
 

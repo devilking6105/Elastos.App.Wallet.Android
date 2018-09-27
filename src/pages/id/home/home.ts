@@ -25,7 +25,10 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
              this.kycIdArr = this.objtoarr(seqNumJsonObj);
 
              console.info("ElastosJs IdHomeComponent val" + val);
-             self.initSeqObj(seqNumJsonObj);
+             console.info("ElastosJs IdHomeComponent this.kycIdArr" + JSON.stringify(this.kycIdArr));
+             console.info("ElastosJs IdHomeComponent length" + this.kycIdArr.length);
+
+              self.initSeqObj(seqNumJsonObj);
 
              this.kycIdArr.forEach(function(e){
                console.info("ElastosJs IdHomeComponent e.id registerIdListener begin  " + e.id);
@@ -199,11 +202,14 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
   }
 
   createDID(){
-    //Config.getCurMasterWalletId()
-    this.walletManager.createDID("1","s12345678",(result)=>{
-      let idObj ={id:result.didname};
+    //
+    this.walletManager.createDID(Config.getCurMasterWalletId(),"s12345678",(result)=>{
+      let idObj ={id:result.success};
       let self = this;
-      this.walletManager.registerIdListener(result.didname, (data) => {
+
+      console.info("home.ts ElastosJs createDID createDID "+ JSON.stringify(result));
+
+      this.walletManager.registerIdListener(result.success, (data) => {
 
         console.info("home.ts ElastosJs createDID registerIdListener "+ JSON.stringify(data));
         //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
@@ -248,7 +254,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
 
       this.localStorage.add("kycId",idObj).then(()=>{
-           this.kycIdArr.push({id:result.didname});
+           this.kycIdArr.push({id:result.success});
       });
     });
   }
