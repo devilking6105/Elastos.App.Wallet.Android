@@ -368,6 +368,20 @@ export class WalletManager {
     //this.native.toast(error);
   }
 
+  // Vote
+  createVoteTransaction(masterWalletId:string, chainId:string, count:number, publicKey:string, Fun){
+    this.wallet.createVoteTransaction([masterWalletId, chainId, count, publicKey], Fun, this.errorFun);
+  }
+
+  registerProducer(masterWalletId:string, chainId:string, publicKey:string, url:string, location:string, Fun){
+    // publicKey, url, location
+    let payload = "";
+    this.wallet.registerProducer([masterWalletId, chainId, payload], Fun, this.errorFun);
+  }
+
+  cancelProducer(masterWalletId:string, chainId:string, publicKey:string, Fun){
+    this.wallet.cancelProducer([masterWalletId, chainId, publicKey], Fun, this.errorFun);
+  }
 
 }
 

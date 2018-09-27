@@ -155,7 +155,6 @@ walletFunc.prototype.createTransaction = function(arg0, sucess, error) {
     exec(sucess, error, "Wallet", "createTransaction", arg0);
 };
 
-
 walletFunc.prototype.createDID = function(arg0, sucess, error) {
     exec(sucess, error, "Wallet", "createDID", arg0);
 };
@@ -262,5 +261,18 @@ walletFunc.prototype.signTransaction = function(arg0, success, error) {
 walletFunc.prototype.publishTransaction = function(arg0, success, error) {
     exec(success, error, "Wallet", "publishTransaction", arg0);
 };
+
+// Vote
+walletFunc.prototype.createVoteTransaction = function(arg0, sucess, error) {
+    exec(sucess, error, "Wallet", "createVoteTransaction", arg0);
+};
+walletFunc.prototype.registerProducer = function(arg0, sucess, error) {
+    exec(sucess, error, "Wallet", "registerProducer", arg0);
+};
+walletFunc.prototype.cancelProducer = function(arg0, sucess, error) {
+    exec(sucess, error, "Wallet", "cancelProducer", arg0);
+};
+
+
 var WALLETFUNC = new walletFunc();
 module.exports = WALLETFUNC;
