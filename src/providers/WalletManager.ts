@@ -260,9 +260,9 @@ export class WalletManager {
   //   this.wallet.sendRawTransaction([masterWalletId,chainId,transactionJson,fee,payPassword],Fun,this.errorFun);
   // }
 
-  createDID(password:string,Fun){
+  createDID(masterWalletId:string, password:string,Fun){
     console.log("elastjs WalletManager.ts =====createDID=====begin");
-    this.wallet.createDID([password],Fun,this.errorFun);
+    this.wallet.createDID([masterWalletId,password],Fun,this.errorFun);
     console.log("elastjs WalletManager.ts =====createDID=====end");
 
   }

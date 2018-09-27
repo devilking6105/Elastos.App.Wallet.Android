@@ -1,7 +1,11 @@
+import {Config} from "../../../providers/Config" ;
 import { Component,OnInit } from '@angular/core';
 import {BaseComponent} from "./../../../app/BaseComponent";
 import {IdHomeComponent} from "../../../pages/id/home/home";
 
+//import {Config} from "../../../providers/Config" ;
+
+//import {Config} from "./../../../providers/config";
 @Component({
   selector: 'id-create',
   templateUrl: 'create.html',
@@ -39,7 +43,8 @@ export class IdCreateComponent extends BaseComponent implements OnInit{
   }
 
   createDID(){
-    this.walletManager.createDID(this.createData.password,(result)=>{
+    //Config.getCurMasterWalletId()
+    this.walletManager.createDID(Config.getCurMasterWalletId(), this.createData.password,(result)=>{
                     alert("===2222ssss222222===="+JSON.stringify(result));
                     this.tiaozhuan();
     });

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {BaseComponent} from '../../app/BaseComponent';
 
-
+//import {Config} from '../../providers/Config'
 @Component({
   selector: 'app-testjni',
   templateUrl: './testjni.component.html',
@@ -366,8 +366,8 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
 
    createDID(){
      console.log("elastjs =====createDID=====begin");
-
-     this.walletManager.createDID(this.payPassword,(result)=>{
+      //Config.getCurMasterWalletId()
+     this.walletManager.createDID("1", this.payPassword,(result)=>{
              alert("==did=="+JSON.stringify(result));
        console.log("elastjs =====createDID=====callback");
 

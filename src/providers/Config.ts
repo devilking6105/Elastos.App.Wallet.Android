@@ -102,7 +102,7 @@ export class Config {
 
 
   public static getCurMasterWalletId(){
-            console.log("===getCurMasterWalletId===="+this.masterWalletId);
+            console.log("ElastJs config ===getCurMasterWalletId===="+this.masterWalletId);
             return this.masterWalletId;
   }
 

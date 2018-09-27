@@ -199,8 +199,8 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
   }
 
   createDID(){
-
-    this.walletManager.createDID("s12345678",(result)=>{
+    //Config.getCurMasterWalletId()
+    this.walletManager.createDID("1","s12345678",(result)=>{
       let idObj ={id:result.didname};
       let self = this;
       this.walletManager.registerIdListener(result.didname, (data) => {
