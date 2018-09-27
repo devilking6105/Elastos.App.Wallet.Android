@@ -33,7 +33,7 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
 
 
           console.info("ElastosJs luncher.ts createDID result add registerIdListener" + JSON.stringify(result));
-          self.walletManager.registerIdListener(result.didname, (data) => {
+          self.walletManager.registerIdListener(Config.getCurMasterWalletId(),result.didname, (data) => {
 
             console.info("lacucher.ts ElastosJs createDID registerIdListener "+ JSON.stringify(data));
             //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));

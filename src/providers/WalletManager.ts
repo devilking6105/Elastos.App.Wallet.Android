@@ -165,8 +165,8 @@ export class WalletManager {
     this.wallet.registerWalletListener([masterWalletId,chainId], Fun, this.errorFun);
   }
 
-  registerIdListener(chainId:string,Fun) {
-    this.wallet.registerIdListener([chainId], Fun, this.errorFun);
+  registerIdListener(masterWalletId:string, chainId:string,Fun) {
+    this.wallet.registerIdListener([masterWalletId, chainId], Fun, this.errorFun);
   }
   /**
    * @param {string} masterWalletId

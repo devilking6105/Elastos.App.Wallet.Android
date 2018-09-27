@@ -79,7 +79,7 @@ public class Wallet extends CordovaPlugin {
 
 		Log.i(TAG, "Initialize mRootPath = " + mRootPath);
 
-//		mDIDManagerSupervisor = new DIDManagerSupervisor(mRootPath);
+		mDIDManagerSupervisor = new DIDManagerSupervisor(mRootPath);
 
 		mMasterWalletManager = new MasterWalletManager(mRootPath);
 		MyUtil.SetCurrentMasterWalletManager(mMasterWalletManager);
@@ -95,22 +95,22 @@ public class Wallet extends CordovaPlugin {
 
 	private boolean createDIDManager(IMasterWallet masterWallet) {
 		try {
-//			String masterWalletId = masterWallet.GetId();
-//			JSONObject basicInfo = new JSONObject(masterWallet.GetBasicInfo());
-//			String accountType = basicInfo.getJSONObject("Account").getString("Type");
-//			if (! accountType.equals("Standard")) {
-//				Log.w(TAG, "Master wallet '" + masterWalletId + "' is not standard account, can't create DID manager");
-//				return false;
-//			}
-//
-//			if (null != getDIDManager(masterWalletId)) {
-//				Log.w(TAG, "Master wallet '" + masterWalletId + "' already contain DID manager");
-//				return false;
-//			}
-//
-//			Log.i(TAG, "Master wallet '" + masterWallet.GetId() + "' create DID manager with root path '" + mRootPath + "'");
-//			IDidManager DIDManager = mDIDManagerSupervisor.CreateDIDManager(masterWallet, mRootPath);
-//			putDIDManager(masterWalletId, DIDManager);
+			String masterWalletId = masterWallet.GetId();
+			JSONObject basicInfo = new JSONObject(masterWallet.GetBasicInfo());
+			String accountType = basicInfo.getJSONObject("Account").getString("Type");
+			if (! accountType.equals("Standard")) {
+				Log.w(TAG, "Master wallet '" + masterWalletId + "' is not standard account, can't create DID manager");
+				return false;
+			}
+
+			if (null != getDIDManager(masterWalletId)) {
+				Log.w(TAG, "Master wallet '" + masterWalletId + "' already contain DID manager");
+				return false;
+			}
+
+			Log.i(TAG, "Master wallet '" + masterWallet.GetId() + "' create DID manager with root path '" + mRootPath + "'");
+			IDidManager DIDManager = mDIDManagerSupervisor.CreateDIDManager(masterWallet, mRootPath);
+			putDIDManager(masterWalletId, DIDManager);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -122,15 +122,15 @@ public class Wallet extends CordovaPlugin {
 
 	private void destroyIDManager(IMasterWallet masterWallet) {
 		try {
-//			String masterWalletID = masterWallet.GetId();
-//
-//			IDidManager DIDManager = getDIDManager(masterWalletID);
-//			if (null == DIDManager) {
-//				return;
-//			}
-//			mDIDManagerMap.remove(masterWalletID);
-//
-//			mDIDManagerSupervisor.DestroyDIDManager(DIDManager);
+			String masterWalletID = masterWallet.GetId();
+
+			IDidManager DIDManager = getDIDManager(masterWalletID);
+			if (null == DIDManager) {
+				return;
+			}
+			mDIDManagerMap.remove(masterWalletID);
+
+			mDIDManagerSupervisor.DestroyDIDManager(DIDManager);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.e(TAG, "DID manager destroy exception");
@@ -1836,7 +1836,7 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 
-			IDid did = DIDManager.CreateDID(args.getString(0));
+			IDid did = DIDManager.CreateDID(password);
 			successProcess(cc, did.GetDIDName());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Create DID");

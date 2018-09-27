@@ -32,7 +32,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
              this.kycIdArr.forEach(function(e){
                console.info("ElastosJs IdHomeComponent e.id registerIdListener begin  " + e.id);
-               self.walletManager.registerIdListener(e.id, (data) => {
+               self.walletManager.registerIdListener(Config.getCurMasterWalletId() , e.id, (data) => {
 
                  console.info("home.ts ElastosJs ngOnInit registerIdListener data "+ JSON.stringify(data));
                  //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
@@ -209,7 +209,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
       console.info("home.ts ElastosJs createDID createDID "+ JSON.stringify(result));
 
-      this.walletManager.registerIdListener(result.success, (data) => {
+      this.walletManager.registerIdListener(Config.getCurMasterWalletId(), result.success, (data) => {
 
         console.info("home.ts ElastosJs createDID registerIdListener "+ JSON.stringify(data));
         //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
