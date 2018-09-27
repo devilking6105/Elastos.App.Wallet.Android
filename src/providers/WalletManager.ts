@@ -375,7 +375,11 @@ export class WalletManager {
 
   registerProducer(masterWalletId:string, chainId:string, publicKey:string, url:string, location:string, Fun){
     // publicKey, url, location
-    let payload = "";
+    let payload = {
+      publicKey: publicKey,
+      url: url,
+      location: location
+    };
     this.wallet.registerProducer([masterWalletId, chainId, payload], Fun, this.errorFun);
   }
 
