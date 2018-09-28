@@ -8,6 +8,14 @@ public class MasterWalletManager {
 	private long mManagerProxy = 0;
 	private String mRootPath = null;
 
+	public MasterWalletManager(String rootPath) {
+		mRootPath = rootPath;
+		mManagerProxy = nativeInitMasterWalletManager(mRootPath);
+	}
+
+	public void finalize() {
+		nativeDisposeNative(mManagerProxy);
+	}
 
 	public IMasterWallet CreateMasterWallet(String masterWalletId, String mnemonic,
 			String phrasePassword, String payPassword, String language) throws WalletException {
@@ -28,6 +36,20 @@ public class MasterWalletManager {
 		}
 
 		return list;
+	}
+
+	public String[] GetAllMasterWalletIds() throws WalletException {
+		return nativeGetAllMasterWalletIds(mManagerProxy);
+	}
+
+	public IMasterWallet GetWallet(String masterWalletId) throws WalletException {
+		long masterWalletProxy = nativeGetWallet(mManagerProxy, masterWalletId);
+
+		if (masterWalletProxy == 0) {
+			return null;
+		}
+
+		return new IMasterWallet(masterWalletProxy);
 	}
 
 	public void DestroyWallet(String masterWalletId) throws WalletException {
@@ -64,17 +86,8 @@ public class MasterWalletManager {
 		return nativeExportWalletWithMnemonic(mManagerProxy, masterWallet, payPassWord);
 	}
 
-	public MasterWalletManager(String rootPath) {
-		mRootPath = rootPath;
-		mManagerProxy = nativeInitMasterWalletManager(mRootPath);
-	}
-
 	public String GenerateMnemonic(String language) throws WalletException {
 		return nativeGenerateMnemonic(mManagerProxy, language);
-	}
-
-	public void finalize() {
-		nativeDisposeNative(mManagerProxy);
 	}
 
 	public void SaveConfigs() {
@@ -108,6 +121,14 @@ public class MasterWalletManager {
 		return new IMasterWallet(masterProxy);
 	}
 
+	public String ConvertToHexString(String txJson) {
+		return nativeConvertToHexString(mManagerProxy, txJson);
+	}
+
+	public String ConvertFromHexString(String hexString) {
+		return nativeConvertFromHexString(mManagerProxy, hexString);
+	}
+
 	private native void nativeSaveConfigs(long proxy);
 
 	private native String nativeGenerateMnemonic(long proxy, String language);
@@ -138,6 +159,14 @@ public class MasterWalletManager {
 	private native void nativeDestroyWallet(long proxy, String masterWalletId);
 
 	private native long[] nativeGetAllMasterWallets(long proxy);
+
+	private native String[] nativeGetAllMasterWalletIds(long proxy);
+
+	private native long nativeGetWallet(long proxy, String masterWalletId);
+
+	private native String nativeConvertToHexString(long proxy, String txJson);
+
+	private native String nativeConvertFromHexString(long proxy, String hexString);
 
 	private native long nativeInitMasterWalletManager(String rootPath);
 

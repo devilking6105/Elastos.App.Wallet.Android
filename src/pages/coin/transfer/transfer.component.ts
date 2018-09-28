@@ -135,9 +135,12 @@ export class TransferComponent extends BaseComponent implements OnInit {
         return;
       }
 
+      console.log("====this.walletInfoType======"+this.walletInfo["Type"]);
+
       if(this.walletInfo["Type"] === "Standard"){
           this.createTransaction();
-      }else{
+      }else if(this.walletInfo["Type"] === "Multi-Sign"){
+        console.log("====this.walletInfoType======"+this.walletInfo["Type"]);
           this.createMultTx();
       }
 
@@ -164,7 +167,7 @@ export class TransferComponent extends BaseComponent implements OnInit {
   }
 
   getFee(){
-    this.walletManager.calculateTransactionFee(this.masterWalletId,this.chianId, this.rawTransaction, this.feePerKb, (data) => {
+    this.walletManager.calculateTransactionFee(this.masterWalletId,this.chianId,this.rawTransaction, this.feePerKb, (data) => {
       if(data['success']){
         console.log("=======calculateTransactionFee======"+JSON.stringify(data));
         this.transfer.fee = data['success'];
@@ -199,8 +202,15 @@ export class TransferComponent extends BaseComponent implements OnInit {
         console.log("===signTransaction===="+JSON.stringify(data));
         if(this.walletInfo["Type"] === "Standard"){
              this.sendTx(data["success"]);
-        }else{
-            this.Go(ScancodePage,{"txContent":{"masterWalletId":this.masterWalletId,"chianId":this.chianId,"address":this.transfer.toAddress, "amount": this.transfer.amount, "memo": "", "fee":this.transfer.fee, "rawTransaction": data["success"]}});
+        }else if(this.walletInfo["Type"] === "Multi-Sign"){
+            this.walletManager.convertToHexString(data["success"],(raw)=>{
+                     if(raw["success"]){
+                      console.log("=======convertToHexString========="+JSON.stringify(raw));
+                      this.Go(ScancodePage,{"txContent":{"chianId":this.chianId,"address":this.transfer.toAddress, "amount": this.transfer.amount,"fee":this.transfer.fee, "rawTransaction":raw["success"]}});
+                     }else{
+                      alert("=====convertToHexString===error==="+JSON.stringify(raw));
+                     }
+            });
         }
        }else{
          alert("=====signTransaction=error==="+JSON.stringify(data));

@@ -32,12 +32,17 @@ export class HomeComponent extends BaseComponent implements OnInit {
     },0);
     this.getAllMasterWallets();
     this.events.subscribe("wallte:update",(item)=>{
+      setInterval(()=>{
+        this.elaPer = this.tempElaPer;
+        this.idChainPer = this.tempIdChinaPer;
+      },0);
       console.log("Selected Item", item);
       this.masterWalletId = item;
       Config.setCurMasterWalletId(this.masterWalletId);
       this.getAllMasterWallets();
     });
     this.events.subscribe('home:update', () => {
+           this.masterWalletId =  Config.getCurMasterWalletId();
            this.getElaBalance(this.ElaObj);
            this.localStorage.get('coinListCache').then((val)=>{
             if(Util.isEmptyObject(JSON.parse(val))){

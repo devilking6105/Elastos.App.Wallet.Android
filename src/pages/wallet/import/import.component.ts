@@ -17,7 +17,8 @@ export class ImportComponent {
   public showAdvOpts:boolean;
   public keyStoreContent:any;
   public importFileObj:any={payPassword: "",rePayPassword: "", backupPassWord: "",phrasePassword:""};
-  public mnemonicObj:any={mnemonic:"",payPassword: "", rePayPassword: "",phrasePassword:""}
+  public mnemonicObj:any={mnemonic:"",payPassword: "", rePayPassword: "",phrasePassword:""};
+  public walletType:string;
   constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native: Native,public localStorage:LocalStorage) {
          this.masterWalletId = Config.uuid(6,16);
   }
@@ -73,18 +74,30 @@ export class ImportComponent {
                       (data)=>{
                         console.log("this.keyStoreContent======"+this.keyStoreContent);
                         if(data["success"]){
-                          this.walletManager.createSubWallet(this.masterWalletId,"ELA", this.importFileObj.payPassword, false, 0, (data)=>{
-                                       if(data["success"]){
-                                          this.getAllCreatedSubWallets();
-                                        }else{
-                                          alert("=====createSubWallet=error"+JSON.stringify(data));
-                                        }
+                            this.walletManager.getMasterWalletBasicInfo(this.masterWalletId,(data)=>{
+                            if(data["success"]){
+                               console.log("===getMasterWalletBasicInfo==="+JSON.stringify(data));
+                               this.walletType = JSON.parse(data["success"])["Account"]["Type"];
+                               let single = false;
+                               if(this.walletType === "Multi-Sign"){
+                                   single = true;
+                               }
+
+                               this.walletManager.createSubWallet(this.masterWalletId,"ELA", this.importFileObj.payPassword,single, 0, (data)=>{
+                                if(data["success"]){
+                                   this.getAllCreatedSubWallets();
+                                 }else{
+                                   alert("=====createSubWallet=error"+JSON.stringify(data));
+                                 }
+                               });
+                            }else{
+                               alert("=======getMasterWalletBasicInfo====error====="+JSON.stringify(data));
+                            }
                           });
+
                         }else{
                            alert("=====importWalletWithKeystore=error"+JSON.stringify(data));
                         }
-
-
                       });
   }
 
@@ -129,16 +142,28 @@ export class ImportComponent {
     this.walletManager.importWalletWithMnemonic(this.masterWalletId,mnemonic,this.mnemonicObj.phrasePassword,this.mnemonicObj.payPassword,this.native.getMnemonicLang(),(data)=>{
                 if(data["success"]){
                    console.log("importWalletWithMnemonic=="+JSON.stringify(data));
-                   this.walletManager.createSubWallet(this.masterWalletId,"ELA", this.mnemonicObj.payPassword, false, 0, (data)=>{
-                            if(data["success"]){
-                              console.log("createSubWallet=="+JSON.stringify(data));
-                              this.native.toast_trans('import-text-world-sucess');
-                              this.localStorage.remove('coinListCache').then(()=>{
-                              this.saveWalletList();
-                            });
-                            }else{
-                                 alert("createSubWallet==error"+JSON.stringify(data));
-                            }
+                   this.walletManager.getMasterWalletBasicInfo(this.masterWalletId,(data)=>{
+                    if(data["success"]){
+                       console.log("===getMasterWalletBasicInfo==="+JSON.stringify(data));
+                       this.walletType = JSON.parse(data["success"])["Account"]["Type"];
+                       let single = false;
+                       if(this.walletType === "Multi-Sign"){
+                           single = true;
+                       }
+                       this.walletManager.createSubWallet(this.masterWalletId,"ELA", this.mnemonicObj.payPassword,single, 0, (data)=>{
+                        if(data["success"]){
+                          console.log("createSubWallet=="+JSON.stringify(data));
+                          this.native.toast_trans('import-text-world-sucess');
+                          this.localStorage.remove('coinListCache').then(()=>{
+                          this.saveWalletList();
+                        });
+                        }else{
+                             alert("createSubWallet==error"+JSON.stringify(data));
+                        }
+                         });
+                      }else{
+                        alert("=======getMasterWalletBasicInfo====error====="+JSON.stringify(data));
+                      }
                     });
                 }else{
                     alert("importWalletWithMnemonic==error"+JSON.stringify(data));
@@ -184,6 +209,10 @@ export class ImportComponent {
               this.native.setRootRouter(TabsComponent);
             });
     })
+  }
+
+  getBase(){
+
   }
 
 }

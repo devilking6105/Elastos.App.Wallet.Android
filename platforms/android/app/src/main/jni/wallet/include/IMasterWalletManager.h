@@ -12,17 +12,17 @@ namespace Elastos {
 
 		class IMasterWalletManager {
 		public:
-		   /**
-			 * Virtual destructor
-			 */
+			/**
+			  * Virtual destructor
+			  */
 			virtual ~IMasterWalletManager() noexcept {}
 
-		   /**
-			 * Generate a mnemonic by random 128 entropy. We support English, Chinese, French, Italian, Japanese, and
-			 * 	Spanish 6 types of mnemonic currently.
-			 * @param language specify mnemonic language.
-			 * @return a random mnemonic.
-			 */
+			/**
+			  * Generate a mnemonic by random 128 entropy. We support English, Chinese, French, Italian, Japanese, and
+			  * 	Spanish 6 types of mnemonic currently.
+			  * @param language specify mnemonic language.
+			  * @return a random mnemonic.
+			  */
 			virtual std::string GenerateMnemonic(const std::string &language) = 0;
 
 			/**
@@ -42,9 +42,9 @@ namespace Elastos {
 					const std::string &language = "english") = 0;
 
 			/**
-			  * Create a multi-sign master wallet by mnemonic phrase password and related co-signers, or return existing master wallet if current master wallet manager has the master wallet id.
+			  * Create a multi-sign master wallet by related co-signers, or return existing master wallet if current master wallet manager has the master wallet id. Note this creating method generate an readonly multi-sign account which can not append sign into a transaction.
 			  * @param masterWalletId is the unique identification of a master wallet object.
-			  * @param coSigners is an array of signers' public key
+			  * @param coSigners is an array of signers' public key.
 			  * @param requiredSignCount specify minimum count to accomplish related transactions.
 			  * @return If success will return a pointer of master wallet interface.
 			  */
@@ -54,11 +54,11 @@ namespace Elastos {
 					uint32_t requiredSignCount) = 0;
 
 			/**
-			  * Create a multi-sign master wallet by mnemonic phrase password and related co-signers, or return existing master wallet if current master wallet manager has the master wallet id.
+			  * Create a multi-sign master wallet by private key and related co-signers, or return existing master wallet if current master wallet manager has the master wallet id.
 			  * @param masterWalletId is the unique identification of a master wallet object.
 			  * @param privKey private key to do the sign job of related multi-sign accounts.
 			  * @param payPassword use to encrypt important things(such as private key) in memory. Pay password should between 8 and 128, otherwise will throw invalid argument exception.
-			  * @param coSigners is an array of signers' public key
+			  * @param coSigners is an array of signers' public key.
 			  * @param requiredSignCount specify minimum count to accomplish related transactions.
 			  * @return If success will return a pointer of master wallet interface.
 			  */
@@ -69,6 +69,17 @@ namespace Elastos {
 					const nlohmann::json &coSigners,
 					uint32_t requiredSignCount) = 0;
 
+			/**
+			 * Create a multi-sign master wallet by private key and related co-signers, or return existing master wallet if current master wallet manager has the master wallet id.
+			 * @param masterWalletId is the unique identification of a master wallet object.
+			 * @param mnemonic use to generate seed which deriving the master private key and chain code.
+			 * @param phrasePassword combine with random seed to generate root key and chain code. Phrase password can be empty or between 8 and 128, otherwise will throw invalid argument exception.
+			 * @param payPassword use to encrypt important things(such as private key) in memory. Pay password should between 8 and 128, otherwise will throw invalid argument exception.
+			 * @param coSigners is an array of signers' public key.
+			 * @param requiredSignCount specify minimum count to accomplish related transactions.
+			 * @param language specify language of mnemonic, value of language should correspond to the language of \p mnemonic.
+			 * @return If success will return a pointer of master wallet interface.
+			 */
 			virtual IMasterWallet *CreateMultiSignMasterWallet(
 					const std::string &masterWalletId,
 					const std::string &mnemonic,
@@ -83,6 +94,20 @@ namespace Elastos {
 			 * @return existing master wallet array.
 			 */
 			virtual std::vector<IMasterWallet *> GetAllMasterWallets() const = 0;
+
+			/**
+			 * Get manager available master wallet ids.
+			 * @return available ids array.
+			 */
+			virtual std::vector<std::string> GetAllMasterWalletIds() const = 0;
+
+			/**
+			 * Get a master wallet object by id.
+			 * @param masterWalletId master wallet id.
+			 * @return master wallet object.
+			 */
+			virtual IMasterWallet *GetWallet(
+					const std::string &masterWalletId) const = 0;
 
 			/**
 			 * Destroy a master wallet.

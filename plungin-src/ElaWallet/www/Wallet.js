@@ -32,9 +32,6 @@ walletFunc.prototype.recoverSubWallet = function(arg0, success, error) {
     exec(success, error, "Wallet", "createSubWallet", arg0);
 };
 
-walletFunc.prototype.getPublicKey = function(arg0, success, error) {
-    exec(success, error, "Wallet", "getPublicKey", arg0);
-};
 
 walletFunc.prototype.createMasterWallet = function(arg0, success, error) {
     exec(success, error, "Wallet", "createMasterWallet", arg0);
@@ -271,6 +268,27 @@ walletFunc.prototype.registerProducer = function(arg0, sucess, error) {
 };
 walletFunc.prototype.cancelProducer = function(arg0, sucess, error) {
     exec(sucess, error, "Wallet", "cancelProducer", arg0);
+};
+
+walletFunc.prototype.getMasterWalletPublicKey = function(arg0, success, error) {
+    exec(success, error, "Wallet", "getMasterWalletPublicKey", arg0);
+};
+
+walletFunc.prototype.getSubWalletPublicKey = function(arg0, success, error) {
+    exec(success, error, "Wallet", "getSubWalletPublicKey", arg0);
+};
+
+walletFunc.prototype.createMultiSignMasterWalletWithMnemonic = function(arg0, success, error) {
+    exec(success, error, "Wallet", "createMultiSignMasterWalletWithMnemonic", arg0);
+};
+
+
+walletFunc.prototype.convertToHexString = function(arg0, success, error) {
+    exec(success, error, "Wallet", "convertToHexString", arg0);
+};
+
+walletFunc.prototype.convertFromHexString = function(arg0, success, error) {
+    exec(success, error, "Wallet", "convertFromHexString", arg0);
 };
 
 

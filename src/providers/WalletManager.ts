@@ -20,8 +20,9 @@ export class WalletManager {
   public static PAGECOUNT = 100;
 
   constructor(public native: Native) {
-    this.wallet = cordova.plugins.Wallet;
-    //this.wallet = {};
+      console.log("========wal=======");
+      this.wallet = cordova.plugins.Wallet;
+      //this.wallet = {};
   }
 
   //--------------------------------------------------------------------------------子钱包操作
@@ -52,17 +53,8 @@ export class WalletManager {
       this.wallet.recoverSubWallet([masterWalletId,chainID,payPassword,singleAddress,limitGap,feePerKb], Fun, this.errorFun);
   }
 
-  /***
-   * 获取钱包公钥
-   * @param Fun
-   */
-  getPublicKey(masterWalletId,Fun) {
-    this.wallet.getPublicKey([masterWalletId], Fun, this.errorFun);
-  }
-
 
   //----------------------------------------------------------------------- 主钱包操作
-
 
   /**
    * 创建主钱包
@@ -152,13 +144,8 @@ export class WalletManager {
   }
 
   createMultiSignTransaction(masterWalletId:string,chainId:string,fromAddress:string,toAddress:string,amount,memo:string,Fun){
-    this.wallet.reateMultiSignTransaction([masterWalletId,chainId,fromAddress,toAddress,amount,memo],Fun,this.errorFun);
+    this.wallet.createMultiSignTransaction([masterWalletId,chainId,fromAddress,toAddress,amount,memo],Fun,this.errorFun);
   }
-
-  appendSignToTransaction(masterWalletId:string,chainId:string,rawTransaction:string,payPassword:string,Fun){
-    this.wallet.reateMultiSignTransaction([masterWalletId,chainId,rawTransaction,payPassword],Fun,this.errorFun);
-  }
-
 
   /**
    * @param {string} masterWalletId
@@ -362,6 +349,27 @@ export class WalletManager {
   publishTransaction(masterWalletId:string,chainId:string,rawTransaction:string,Fun){
     this.wallet.publishTransaction([masterWalletId,chainId,rawTransaction],Fun,this.errorFun);
   }
+
+  getMasterWalletPublicKey(masterWalletId:string,Fun){
+    this.wallet.getMasterWalletPublicKey([masterWalletId],Fun,this.errorFun);
+  }
+
+  getSubWalletPublicKey(masterWalletId:string,chainId:string,Fun){
+    this.wallet.getSubWalletPublicKey([masterWalletId,chainId],Fun,this.errorFun);
+  }
+
+  createMultiSignMasterWalletWithMnemonic(masterWalletId:string,mnemonic:string,phrasePassword:string,payPassword:string,coSignersJson:string,requiredSignCount:string,language:string,Fun){
+     this.wallet.createMultiSignMasterWalletWithMnemonic([masterWalletId,mnemonic,phrasePassword,payPassword,coSignersJson,requiredSignCount,language],Fun,this.errorFun);
+  }
+  //String txJson
+  convertToHexString(txJson:string,Fun){
+    this.wallet.convertToHexString([txJson],Fun,this.errorFun);
+  }
+
+   //String txHexString
+   convertFromHexString(txHexString:string,Fun){
+    this.wallet.convertFromHexString([txHexString],Fun,this.errorFun);
+   }
 
   errorFun(error) {
     alert("错误信息：" + JSON.stringify(error));
