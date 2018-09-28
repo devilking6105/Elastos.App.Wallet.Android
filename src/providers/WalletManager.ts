@@ -369,14 +369,15 @@ export class WalletManager {
   }
 
   // Vote
-  createVoteTransaction(masterWalletId:string, chainId:string, count:number, publicKey:string, Fun){
-    this.wallet.createVoteTransaction([masterWalletId, chainId, count, publicKey], Fun, this.errorFun);
+  createVoteTransaction(masterWalletId:string, chainId:string, voter:string, stake:number, publicKeys:string, Fun){
+    this.wallet.createVoteTransaction([masterWalletId, chainId, voter, stake, publicKeys], Fun, this.errorFun);
   }
 
-  registerProducer(masterWalletId:string, chainId:string, publicKey:string, url:string, location:string, Fun){
+  registerProducer(masterWalletId:string, chainId:string, publicKey:string, nickname:string, url:string, location:string, Fun){
     // publicKey, url, location
     let payload = {
       publicKey: publicKey,
+      nickname: nickname,
       url: url,
       location: location
     };
