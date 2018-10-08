@@ -378,13 +378,13 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
    }
 
    getDIDList(){
-    this.walletManager.getDIDList((result)=>{
+    this.walletManager.getDIDList(Config.getCurMasterWalletId(),(result)=>{
              alert('==DIDList=='+JSON.stringify(result));
     });
    }
 
    destoryDID(did:string){
-      this.walletManager.destoryDID(did,(result)=>{
+      this.walletManager.destoryDID(Config.getCurMasterWalletId(), did,(result)=>{
              alert("删除成功："+did);
       });
    }
@@ -408,44 +408,44 @@ export class TestJniComponent  extends BaseComponent implements OnInit  {
             "sign": "hello sign3"
           }
         };
-        this.walletManager.didSetValue(this.did,"1",JSON.stringify(obj),(result)=>{
+        this.walletManager.didSetValue(Config.getCurMasterWalletId(), this.did,"1",JSON.stringify(obj),(result)=>{
                    alert("====="+JSON.stringify(result));
         });
    }
 
    didGetValue(){
-        this.walletManager.didGetValue(this.did,"1",(result)=>{
+        this.walletManager.didGetValue(Config.getCurMasterWalletId(), this.did,"1",(result)=>{
              alert("===didGetValue===="+JSON.stringify(result));
         });
    }
 
    didGetHistoryValue(){
-     this.walletManager.didGetHistoryValue(this.did,"1",(result)=>{
+     this.walletManager.didGetHistoryValue(Config.getCurMasterWalletId(), this.did,"1",(result)=>{
            alert("===didGetHistoryValue===="+JSON.stringify(result));
      });
    }
 
    didGetAllKeys(){
-      this.walletManager.didGetAllKeys(this.did,0,2,(result)=>{
+      this.walletManager.didGetAllKeys(Config.getCurMasterWalletId(), this.did,0,2,(result)=>{
         alert("===didGetAllKeys===="+JSON.stringify(result));
       });
    }
 
    didSign(){
-     this.walletManager.didSign(this.did,"ssssss",this.payPassword,(result)=>{
+     this.walletManager.didSign(Config.getCurMasterWalletId(), this.did,"ssssss",this.payPassword,(result)=>{
              alert("===didSign==="+JSON.stringify(result));
              this.signature = "sssss";
      });
    }
 
    didCheckSign(){
-      this.walletManager.didCheckSign(this.did,"ssssss",this.signature,(result)=>{
+      this.walletManager.didCheckSign(Config.getCurMasterWalletId(), this.did,"ssssss",this.signature,(result)=>{
                   alert("===didCheckSign==="+JSON.stringify(result));
       });
    }
 
    didGetPublicKey(){
-     this.walletManager.didGetPublicKey(this.did,(result)=>{
+     this.walletManager.didGetPublicKey(Config.getCurMasterWalletId(), this.did,(result)=>{
           alert("===didGetPublicKey==="+JSON.stringify(result));
      });
    }

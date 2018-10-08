@@ -66,7 +66,7 @@ export class RechargeComponent extends BaseComponent implements OnInit {
   initData(){
     this.walletManager.getBalance(this.masterWalletId,'ELA', (data)=>{
       if(!Util.isNull(data["success"])){
-        console.log("===getBalance==="+JSON.stringify(data));
+        console.log("ElastJs initData===getBalance==="+JSON.stringify(data));
         this.balance = data["success"];
       }else{
        alert("===getBalance===error"+JSON.stringify(data));
@@ -76,6 +76,9 @@ export class RechargeComponent extends BaseComponent implements OnInit {
 
 
   onClick(type) {
+
+    console.log("ElastJs onClick begin type "+type);
+
     switch (type) {
       // case 1:
       //   this.Go(ContactListComponent);
@@ -93,6 +96,9 @@ export class RechargeComponent extends BaseComponent implements OnInit {
   }
 
   checkValue() {
+
+    console.log("ElastJs checkValue begin  ");
+
     if(Util.isNull(this.sidechain.accounts)){
       this.toast('correct-address');
       return;
@@ -122,6 +128,9 @@ export class RechargeComponent extends BaseComponent implements OnInit {
 
 
   createDepositTransaction(){
+
+    console.log("ElastJs createDepositTransaction begin  ");
+
     this.getGenesisAddress();
     let sidechainAddress = JSON.stringify([this.sidechain.accounts]);
     let sidechainAmounts = JSON.stringify([this.transfer.amount*Config.SELA - this.transfer.fee]);
@@ -135,8 +144,8 @@ export class RechargeComponent extends BaseComponent implements OnInit {
       this.transfer.memo,
       this.transfer.remark,
       (data)=>{
+        console.log("ElastJs=======createTransaction======"+JSON.stringify(data));
         if(data['success']){
-          console.log("=======createTransaction======"+JSON.stringify(data));
           this.rawTransaction = data['success'];
           this.getFee();
         }else{
@@ -177,10 +186,10 @@ export class RechargeComponent extends BaseComponent implements OnInit {
   updateTxFee(){
     this.walletManager.updateTransactionFee(this.masterWalletId,'ELA',this.rawTransaction, this.transfer.fee,(data)=>{
                        if(data["success"]){
-                        console.log("===updateTransactionFee===="+JSON.stringify(data));
+                        console.log("ElastJs ===updateTransactionFee===="+JSON.stringify(data));
                         this.singTx(data["success"]);
                        }else{
-                         alert("=====updateTransactionFee=error==="+JSON.stringify(data));
+                         alert("ElastJs =====updateTransactionFee=error==="+JSON.stringify(data));
                        }
     });
   }

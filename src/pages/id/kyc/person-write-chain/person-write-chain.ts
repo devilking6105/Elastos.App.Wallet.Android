@@ -3,6 +3,9 @@ import {BaseComponent} from "../../../../app/BaseComponent";
 import {IdHomeComponent} from "../../../../pages/id/home/home";
 import {IDManager} from "../../../../providers/IDManager";
 import { Config } from '../../../../providers/Config';
+import {config} from "ngx-weui/jweixin";
+import {ScancodePage} from "../../../scancode/scancode";
+import {TabsComponent} from "../../../tabs/tabs.component";
 //{notary:"COOIX"}
 
 @Component({
@@ -11,6 +14,7 @@ import { Config } from '../../../../providers/Config';
 })
 export class PersonWriteChainPage extends BaseComponent implements OnInit{
   masterWalletId:string ="1";
+  chianId = "IdChain";
   type: string;
   pageObj = {};
   personObj={
@@ -48,6 +52,7 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
  serialNum = "";
  ngOnInit(){
    let self = this;
+   this.masterWalletId = Config.getCurMasterWalletId();
    this.events.subscribe("order:update",(orderStatus,appr)=>{
      console.log("ElastJs ngOnInit  orderStatus "+orderStatus + " appr " + appr);
 
@@ -107,7 +112,9 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
 
   onCommit(){
     this.popupProvider.presentPrompt().then((val)=>{
-              if(this.isNull(val)){
+      console.log("ElastJs---onCommit----"+JSON.stringify(val));
+
+      if(this.isNull(val)){
                 this.messageBox("text-id-kyc-prompt-password");
                 return;
               }
@@ -121,16 +128,17 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
 
   didGenerateProgram(){
 
-    console.log("---didGenerateProgram----"+"message="+JSON.stringify(this.message)+"passworld"+this.passworld);
+    console.log("ElastJs---didGenerateProgram----"+"message="+JSON.stringify(this.message)+"passworld"+this.passworld);
     //console.log("---didGenerateProgram DataHash.length----"+ this.message.DataHash.length);
     //console.log("---didGenerateProgram----Sign.length"+ this.message.Sign.length);
     //console.log("---didGenerateProgram----Proof"+  this.message.Proof);
     //console.log("---didGenerateProgram----Proof"+ JSON.stringify(this.message.Proof) );
 
-    this.walletManager.didGenerateProgram(this.did,JSON.stringify(this.message),this.passworld,(result)=>{
-                   this.programJson  = result.value;
-                   console.log("ElastosJs didGenerateProgram programJson "+JSON.stringify(this.programJson));
-                   this.createfromAddress();
+    this.walletManager.didGenerateProgram(Config.getCurMasterWalletId() ,this.did,JSON.stringify(this.message),this.passworld,(result)=>{
+
+      console.log("ElastosJs didGenerateProgram result "+JSON.stringify(result));
+      this.programJson  = result.success;
+      this.createfromAddress();
     });
   }
 
@@ -143,24 +151,34 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
 
   cauFee(){
 
+    console.log("ElastosJs---cauFee--- persona-write-chain.ts"+" masterWalletId= "+this.masterWalletId+" message= "+JSON.stringify(this.message)+" programJson = "+this.programJson);
+
     //alert("createIdTransaction before" + this.fromAddress);
     this.walletManager.createIdTransaction(this.masterWalletId,"IdChain","",this.message,this.programJson,"","",(result)=>{
-            console.log("---createIdTransaction---"+"fromAddress="+this.fromAddress+"message="+JSON.stringify(this.message)+"programJson="+this.programJson);
-             let rawTransaction = result['json'].toString();
-             console.log("createIdTransaction rawTransaction =="+rawTransaction);
-             this.calculateTransactionFee(rawTransaction);
+             console.log("ElastosJs createIdTransaction result =="+ JSON.stringify(result));
+
+             //console.log("ElastosJs---createIdTransaction---"+"fromAddress="+this.fromAddress+"message="+JSON.stringify(this.message)+"programJson="+this.programJson);
+            if(result['success']){
+              let rawTransaction = JSON.parse(result['success']) ;
+              console.log("ElastosJs createIdTransaction rawTransaction ==" + JSON.stringify(rawTransaction) );
+              this.calculateTransactionFee(rawTransaction);
+            }
+
      });
   }
 
   calculateTransactionFee(rawTransaction){
-     this.walletManager.calculateTransactionFee(this.masterWalletId,"IdChain", rawTransaction,10000, (data) => {
+    console.log("ElastosJs calculateTransactionFee  begin" + JSON.stringify(rawTransaction));
 
-      this.fee = data['fee'];
+    this.walletManager.calculateTransactionFee(this.masterWalletId,"IdChain", rawTransaction,10000, (data) => {
+      console.log("ElastosJs calculateTransactionFee data=="+JSON.stringify(data));
+
+      this.fee = data['success'];
       //console.log("Elastos 111111111111111");
-      console.log("rawTransaction" + JSON.stringify(rawTransaction));
-      console.log("calculateTransactionFee fee=="+JSON.stringify(this.fee));
       this.popupProvider.presentConfirm(this.fee/Config.SELA).then(()=>{
-            this.sendRawTransaction(rawTransaction);
+        console.log("ElastosJs calculateTransactionFee before sendRawTransaction");
+
+        this.sendRawTransaction(rawTransaction);
       });
 
      });
@@ -268,13 +286,22 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
       signMessage["Contents"].push(content);
     }
 
-    console.log("caulmessageNew "+JSON.stringify(signMessage));
+    console.log("ElastJs caulmessageNew passworld "+this.passworld + "signMessage" +JSON.stringify(signMessage));
     //alert("caulmessageNew "+JSON.stringify(signMessage));
 
-    this.walletManager.didSign(this.did,JSON.stringify(signMessage),this.passworld,(result)=>{
+    //console.info("getcontent retContent "+ JSON.stringify(retContent));
+
+    this.walletManager.didSign(Config.getCurMasterWalletId() ,this.did,JSON.stringify(signMessage),this.passworld,(result)=>{
+      console.log("ElastJs caulmessageNew didSign result "+ result);
+      console.log("ElastJs caulmessageNew didSign "+JSON.stringify(result));
+
+      if(!result["success"]){
+        console.log("ElastJs caulmessageNew didSign serious error------------->"+JSON.stringify(result));
+        return ;
+      }
       this.message = {
         Id : this.did,
-        Sign :result.value,
+        Sign :result["success"],
         Contents: signMessage["Contents"],
       };
 
@@ -287,43 +314,48 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
 
 
   sendRawTransaction( rawTransaction){
-    //alert("sendRawTransaction begin==");
 
-    // this.walletManager.sendRawTransaction(this.masterWalletId,"IdChain",rawTransaction,this.fee,this.passworld,(result)=>{
+    this.updateTxFee(rawTransaction);
 
-
+    // console.log("ElastosJs ---sendRawTransaction--- begin"+JSON.stringify(rawTransaction));
+    //
+    // alert("sendRawTransaction begin==");
+    //
+    // this.walletManager.sendRawTransaction(this.masterWalletId,"IdChain",rawTransaction,rawTransaction,this.passworld,(result)=>{
+    //
+    //
     //   let rawTransactionObj = JSON.parse(rawTransaction);
-
+    //
     //   console.log("ElastosJs person-write-chain.ts ---sendRawTransaction---"+"rawTransaction="+JSON.stringify(rawTransactionObj)+"fee="+this.fee);
     //   //console.log("ElastosJs ---sendRawTransaction--- PayLoad"+ JSON.stringify(rawTransactionObj.PayLoad));
-
+    //
     //   if (!rawTransactionObj.PayLoad) {
     //     console.log("ElastosJs ---sendRawTransaction--- PayLoad NULL");
     //     return;
     //   }
-
+    //
     //   if (!rawTransactionObj["PayLoad"]["Contents"]){
     //     console.log("ElastosJs ---sendRawTransaction--- Contents NULL");
     //     return ;
     //   }
-
+    //
     //   for (let ele of rawTransactionObj["PayLoad"]["Contents"] ) {
-
+    //
     //     console.log("ElastosJs person-write-chain.ts ---sendRawTransaction--- ele " + JSON.stringify(ele));
     //     let arr = ele["Path"].split("/");
-
+    //
     //     if (arr[1]) {
-
-
+    //
+    //
     //       let self = this;
     //       //iterat values
     //       for (let valueObj of ele["Values"]){
     //         let proofObj = JSON.parse(valueObj["Proof"]);
-
+    //
     //         this.localStorage.getSeqNumObj(proofObj["signature"], rawTransactionObj.PayLoad.Id, arr[1], function (reult : any) {
     //           console.info("ElastosJs reult " + JSON.stringify(reult) );
     //           self.dataManager.addSeqNumObj(proofObj["signature"] , reult );
-
+    //
     //         });
     //       }
     //       // let proofObj = JSON.parse(ele["Proof"]);
@@ -334,11 +366,11 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
     //       //   self.dataManager.addSeqNumObj(proofObj["signature"] , reult );
     //       //
     //       // });
-
-
+    //
+    //
     //     }
     //   }
-
+    //
     //   console.info("sendRawTransaction person-write-chain.ts setOrderStatus(4)")
     //   this.setOrderStatus(4);
     //   //this.messageBox("text-id-kyc-china");
@@ -384,7 +416,100 @@ for(let index in obj){
 // }
 // }
 
+/////////////////
+  updateTxFee(rawTransaction){
+    //this.chianId = "IdChain";
 
+    this.walletManager.updateTransactionFee(this.masterWalletId,this.chianId ,rawTransaction, this.fee,(data)=>{
+      if(data["success"]){
+        console.log("ElastJs===updateTxFee===="+JSON.stringify(data));
+        this.singTx(data["success"]);
+      }else{
+        alert("=====updateTransactionFee=error==="+JSON.stringify(data));
+      }
+    });
+  }
+
+  singTx(rawTransaction){
+    this.walletManager.signTransaction(this.masterWalletId,this.chianId,rawTransaction,this.passworld,(data)=>{
+      if(data["success"]){
+        console.log("ElastJs===signTransaction===="+JSON.stringify(data));
+        this.sendTx(data["success"]);
+      }else{
+        alert("=====signTransaction=error==="+JSON.stringify(data));
+      }
+    });
+  }
+
+  sendTx(rawTransaction){
+    console.log("ElastJs sendTx===publishTransaction====rawTransaction"+rawTransaction);
+    this.walletManager.publishTransaction(this.masterWalletId,this.chianId,rawTransaction,(data)=>{
+      if(data["success"]){
+        ////////////////////
+        let rawTransactionObj = JSON.parse(rawTransaction);
+
+        console.log("ElastosJs person-write-chain.ts ---sendRawTransaction---"+"rawTransaction="+JSON.stringify(rawTransactionObj)+"fee="+this.fee);
+
+        if (!rawTransactionObj.PayLoad) {
+          console.log("ElastosJs ---sendRawTransaction--- PayLoad NULL");
+          return;
+        }
+
+        if (!rawTransactionObj["PayLoad"]["Contents"]){
+          console.log("ElastosJs ---sendRawTransaction--- Contents NULL");
+          return ;
+        }
+
+        for (let ele of rawTransactionObj["PayLoad"]["Contents"] ) {
+
+          console.log("ElastosJs person-write-chain.ts ---sendRawTransaction--- ele " + JSON.stringify(ele));
+          let arr = ele["Path"].split("/");
+
+          if (arr[1]) {
+
+
+            let self = this;
+            //iterat values
+            for (let valueObj of ele["Values"]){
+              let proofObj = JSON.parse(valueObj["Proof"]);
+
+              this.localStorage.getSeqNumObj(proofObj["signature"], rawTransactionObj.PayLoad.Id, arr[1], function (reult : any) {
+                console.info("ElastosJs reult " + JSON.stringify(reult) );
+                self.dataManager.addSeqNumObj(proofObj["signature"] , reult );
+
+              });
+            }
+
+          }
+        }
+
+        console.info("sendRawTransaction person-write-chain.ts setOrderStatus(4)")
+        this.setOrderStatus(4);
+        ///////////////////
+
+
+        // console.log("ElastJs===publishTransaction===="+JSON.stringify(data));
+        // this.txId = JSON.parse(data['success'])["TxHash"];
+        // console.log("ElastJs=======sendRawTransaction======"+JSON.stringify(data));
+        // console.log("=======this.appType======"+JSON.stringify(data));
+        // if(this.isNull(this.appType)){
+        //   console.log("===TabsComponent====");
+        //   this.toast('send-raw-transaction');
+        //   this.setRootRouter(TabsComponent);
+        // }else if(this.appType === "kyc"){
+        //   if(this.selectType === "enterprise"){
+        //     this.company();
+        //   }else {
+        //     this.person();
+        //   }
+        // }
+
+      }else{
+        alert("=====signTransaction=error==="+JSON.stringify(data));
+      }
+    })
+  }
+/////////////////////
 setOrderStatus(status){
   console.info("ElastJs setOrderStatus status begin" + status);
   let serids = Config.getSerIds();
@@ -401,7 +526,10 @@ setOrderStatus(status){
       }
    idsObj = JSON.parse(val);
    idsObj[did][path][this.serialNum]["pathStatus"] = status;
-   this.localStorage.set("kycId",idsObj).then(()=>{
+
+    console.info("ElastJs setOrderStatus idsObj " + JSON.stringify(idsObj));
+
+    this.localStorage.set("kycId",idsObj).then(()=>{
      console.info("ElastJs setOrderStatus  end  status " + status);
             this.orderStatus = status;
    });

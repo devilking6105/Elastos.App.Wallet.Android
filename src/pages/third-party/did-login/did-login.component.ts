@@ -4,6 +4,7 @@ import { PopupComponent } from "ngx-weui";
 import {Util} from "../../../providers/Util";
 import {IdLauncherComponent} from "../../id/launcher/launcher";
 
+import {Config} from "../../../providers/Config";
 @Component({
   selector: 'app-did-login',
   templateUrl: './did-login.component.html'
@@ -35,16 +36,16 @@ export class DidLoginComponent extends BaseComponent implements OnInit {
   }
 
   onItem(itemId){
-    this.popupProvider.presentPrompt().then((val)=>{              
+    this.popupProvider.presentPrompt().then((val)=>{
       if(this.isNull(val)){
         this.messageBox("text-id-kyc-prompt-password");
         return;
       }
       this.didNum = itemId;
-      this.walletManager.didSign(itemId, this.message, val.toString(), (data)=>{
+      this.walletManager.didSign(Config.getCurMasterWalletId() ,itemId, this.message, val.toString(), (data)=>{
         this.sign = data.value;
       })
-      this.walletManager.didGetPublicKey(itemId, (data)=>{
+      this.walletManager.didGetPublicKey(Config.getCurMasterWalletId() ,itemId, (data)=>{
         this.didPubkey = data.value;
       })
       let result = {

@@ -26,10 +26,18 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
 
   createId(){
     let self = this;
+
+    console.info("launcher.ts ElastosJs createId begin ");
+
     //
     this.walletManager.createDID(Config.getCurMasterWalletId(),"s12345678",(result)=>{
 
-          let idObj ={id:result.didname};
+          if(!result.success){
+            alert("launcher.ts createDID err"+ JSON.stringify(result));
+            return ;
+          }
+
+          let idObj ={id:result.success};
 
 
           console.info("ElastosJs luncher.ts createDID result add registerIdListener" + JSON.stringify(result));
@@ -50,12 +58,15 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
 
                 let serialNum =  seqNumObj["serialNum"] ;
                 console.info("lacucher.ts ElastosJs createDID serialNum "+ serialNum);
-                self.setOrderStatus(5,serialNum);
+                //self.setOrderStatus(5,serialNum);
                 let arrPath = valueObj["Contents"][0]["Path"].split("/");
 
                 if (arrPath && arrPath[1]){
                   let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"] , proofObj["signature"]);
-                  self.localStorage.addKeyToSerialNum(data.id, arrPath[1], serialNum, "idJson", idJson);
+                  self.localStorage.addKeyToSerialNum(data.id, arrPath[1], serialNum, "idJson", idJson, function(){
+                    self.setOrderStatus(5,serialNum);
+
+                  });
                 }
 
                 // let idJson =self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);

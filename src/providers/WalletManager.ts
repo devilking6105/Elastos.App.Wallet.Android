@@ -267,40 +267,40 @@ export class WalletManager {
 
   }
 
-  getDIDList(Fun){
-    this.wallet.getDIDList([],Fun,this.errorFun);
+  getDIDList(masterWalletId:string, Fun){
+    this.wallet.getDIDList([masterWalletId],Fun,this.errorFun);
   }
 
-  destoryDID(did:string,Fun){
-    this.wallet.destoryDID([did],Fun,this.errorFun);
+  destoryDID(masterWalletId:string, did:string,Fun){
+    this.wallet.destoryDID([masterWalletId,did],Fun,this.errorFun);
   }
 
-  didSetValue(did:string,keyPath:string,value:string,Fun){
-    this.wallet.didSetValue([did,keyPath,value],Fun,this.errorFun);
+  didSetValue(masterWalletId:string, did:string,keyPath:string,value:string,Fun){
+    this.wallet.didSetValue([masterWalletId,did,keyPath,value],Fun,this.errorFun);
   }
 
-  didGetValue(did:string,keyPath:string,Fun){
-    this.wallet.didGetValue([did,keyPath],Fun,this.errorFun);
+  didGetValue(masterWalletId:string, did:string,keyPath:string,Fun){
+    this.wallet.didGetValue([masterWalletId,did,keyPath],Fun,this.errorFun);
   }
 
-  didGetHistoryValue(did:string,keyPath:string,Fun){
-    this.wallet.didGetValue([did,keyPath],Fun,this.errorFun);
+  didGetHistoryValue(masterWalletId:string, did:string,keyPath:string,Fun){
+    this.wallet.didGetValue([masterWalletId,did,keyPath],Fun,this.errorFun);
   }
 
-  didGetAllKeys(did:string,start:number,count:number,Fun){
-    this.wallet.didGetAllKeys([did,start,count],Fun,this.errorFun);
+  didGetAllKeys(masterWalletId:string, did:string,start:number,count:number,Fun){
+    this.wallet.didGetAllKeys([masterWalletId,did,start,count],Fun,this.errorFun);
   }
 
-  didSign(did:string,message:string,password:string,Fun){
-    this.wallet.didSign([did,message,password],Fun,this.errorFun);
+  didSign(masterWalletId:string, did:string,message:string,password:string,Fun){
+    this.wallet.didSign([masterWalletId,did,message,password],Fun,this.errorFun);
   }
 
-  didCheckSign(did:string,message:string,signature:string,Fun){
-    this.wallet.didCheckSign([did,message,signature],Fun,this.errorFun);
+  didCheckSign(masterWalletId:string, did:string,message:string,signature:string,Fun){
+    this.wallet.didCheckSign([masterWalletId,did,message,signature],Fun,this.errorFun);
   }
 
-  didGetPublicKey(did:string,Fun){
-    this.wallet.didGetPublicKey([did],Fun,this.errorFun);
+  didGetPublicKey(masterWalletId:string, did:string,Fun){
+    this.wallet.didGetPublicKey([masterWalletId,did],Fun,this.errorFun);
   }
 
   createIdTransaction(masterWalletId:string,chainId:string,fromAddress:string,payloadJson:string,programJson:string,memo:string,remark:string,Fun){
@@ -321,8 +321,8 @@ export class WalletManager {
     this.wallet.getGenesisAddress([masterWalletId,chainId],Fun,this.errorFun);
   }
 
-  didGenerateProgram(did:string,message:string,password:string,Fun){
-      this.wallet.didGenerateProgram([did,message,password],Fun,this.errorFun);
+  didGenerateProgram(masterWalletId:string, did:string,message:string,password:string,Fun){
+      this.wallet.didGenerateProgram([masterWalletId,did,message,password],Fun,this.errorFun);
   }
 
  /**
@@ -341,7 +341,11 @@ export class WalletManager {
   }
 
   updateTransactionFee(masterWalletId:string,chainId:string,rawTransaction:string,fee:number,Fun){
-      this.wallet.updateTransactionFee([masterWalletId,chainId,rawTransaction,fee],Fun,this.errorFun);
+
+    console.log("Elastjs WalletManager.ts updateTransactionFee masterWalletId "+ masterWalletId + " chainId " + chainId + "fee "+ fee);
+    console.log("Elastjs WalletManager.ts updateTransactionFee rawTransaction "+ rawTransaction);
+
+    this.wallet.updateTransactionFee([masterWalletId,chainId,rawTransaction,fee],Fun,this.errorFun);
   }
 
   signTransaction(masterWalletId:string,chainId:string,rawTransaction:string,payPassword:string,Fun){

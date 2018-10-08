@@ -24,7 +24,7 @@ export class LocalStorage {
   }
 
   //did][path][serialNum
-  public addKeyToSerialNum(did: string, path: string , serialNum: string, keyAdd : string, obj : any) {
+  public addKeyToSerialNum(did: string, path: string , serialNum: string, keyAdd : string, obj : any, callback : any) {
 
     let idsObj = {};
     let self = this;
@@ -41,10 +41,10 @@ export class LocalStorage {
       console.info("ElastJs addKeyToSerialNum  did "+ did + " path "+path + " serialNum "+ serialNum + " keyAdd "+ keyAdd);
 
       idsObj[did][path][serialNum][keyAdd] = obj;
-
-      self.storage.set("kycId",idsObj);
       console.info("ElastJs addKeyToSerialNum storage.set idsObj " + JSON.stringify(idsObj));
 
+      self.storage.set("kycId",JSON.stringify(idsObj) );
+      callback();
     });
 
   }

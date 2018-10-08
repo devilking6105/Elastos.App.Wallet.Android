@@ -44,6 +44,8 @@ export class IdCreateComponent extends BaseComponent implements OnInit{
 
   createDID(){
     //Config.getCurMasterWalletId()
+    console.info("create.ts ElastosJs createDID begin ");
+
     this.walletManager.createDID(Config.getCurMasterWalletId(), this.createData.password,(result)=>{
                     //alert("===2222ssss222222===="+JSON.stringify(result));
                     console.info("create.ts ElastosJs createDID  "+ result);

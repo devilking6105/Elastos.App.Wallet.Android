@@ -21,6 +21,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
     var self = this;
     this.localStorage.get("kycId").then((val)=>{
 
+             console.info("ElastosJs IdHomeComponent begin" + val);
              let seqNumJsonObj = JSON.parse(val);
              this.kycIdArr = this.objtoarr(seqNumJsonObj);
 
@@ -54,7 +55,6 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
                      let serialNum =  seqNumObj["serialNum"] ;
                      console.info("home.ts ElastosJs ngOnInit serialNum "+ serialNum);
-                     self.setOrderStatus(5,serialNum);
 
                      ////
 
@@ -62,7 +62,10 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
                      if (arrPath && arrPath[1]){
                        let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
-                       self.localStorage.addKeyToSerialNum(data.id, arrPath[1], serialNum, "idJson", idJson);
+                       self.localStorage.addKeyToSerialNum(data.id, arrPath[1], serialNum, "idJson", idJson, function(){
+                         self.setOrderStatus(5,serialNum);
+
+                       });
                        self.testDataHash(idJson);
                      }
 
@@ -202,8 +205,16 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
   }
 
   createDID(){
+
+    console.info("home.ts ElastosJs createDID begin ");
     //
     this.walletManager.createDID(Config.getCurMasterWalletId(),"s12345678",(result)=>{
+
+      if(!result.success){
+        alert("home.ts createDID err"+ JSON.stringify(result));
+        return ;
+      }
+
       let idObj ={id:result.success};
       let self = this;
 
@@ -226,14 +237,17 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
             let serialNum =  seqNumObj["serialNum"] ;
             console.info("home.ts ElastosJs createDID serialNum "+ serialNum);
-            self.setOrderStatus(5,serialNum);
+            //self.setOrderStatus(5,serialNum);
 
 
             let arrPath = valueObj["Contents"][0]["Path"].split("/");
 
             if (arrPath && arrPath[1]){
               let  idJson = self.dataManager.OutPutIDJson(data.id,valueObj["Contents"][0]["Path"], proofObj["signature"]);
-              self.localStorage.addKeyToSerialNum(data.id,  arrPath[1], serialNum, "idJson", idJson);
+              self.localStorage.addKeyToSerialNum(data.id,  arrPath[1], serialNum, "idJson", idJson, function(){
+                self.setOrderStatus(5,serialNum);
+
+              });
               self.testDataHash(idJson);
             }
             // let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
@@ -261,7 +275,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
 
   getDID(){
-    this.walletManager.getDIDList((result)=>{
+    this.walletManager.getDIDList(Config.getCurMasterWalletId(),(result)=>{
       this.kycIdArr = JSON.parse(result["list"]);
     });
   }
@@ -293,9 +307,30 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
       console.info("ElastJs setOrderStatus before chg status did "+ did + " path "+path + " serialNum "+ serialNum + " status "+ status);
 
-      idsObj[did][path][serialNum]["pathStatus"] = status;
+      console.info("ElastJs setOrderStatus idsObj before chg----- " + JSON.stringify(idsObj));
 
-     this.localStorage.set("kycId",idsObj).then(()=>{
+      idsObj[did][path][serialNum]["pathStatus"] = status;
+      if (idsObj[did]){
+
+        console.info("ElastJs setOrderStatus did ok"+ did);
+        if (idsObj[did][path]){
+          console.info("ElastJs setOrderStatus path ok"+ path);
+          if (idsObj[did][path][serialNum]){
+            console.info("ElastJs setOrderStatus serialNum ok"+ serialNum);
+
+            if (idsObj[did][path][serialNum]["pathStatus"]){
+              console.info("ElastJs setOrderStatus pathStatus ok"+ idsObj[did][path][serialNum]["pathStatus"]);
+
+
+            }
+          }
+        }
+
+      }
+
+      console.info("ElastJs setOrderStatus idsObj " + JSON.stringify(idsObj));
+
+      this.localStorage.set("kycId",idsObj).then(()=>{
           this.events.publish("order:update",status,path);
        console.info("ElastJs setOrderStatus pulish order ");
 

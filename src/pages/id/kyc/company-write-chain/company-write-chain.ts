@@ -32,6 +32,7 @@ export class CompanyWriteChainPage extends BaseComponent implements OnInit{
  orderStatus = 0;
  serialNum = "";
  ngOnInit(){
+   this.masterWalletId = Config.getCurMasterWalletId();
     this.events.subscribe("order:update",(orderStatus,appr)=>{
            if(appr === "enterprise"){
              this.orderStatus = orderStatus;
@@ -91,7 +92,7 @@ export class CompanyWriteChainPage extends BaseComponent implements OnInit{
     //console.log("---didGenerateProgram----Proof"+  this.message.Proof);
     //console.log("---didGenerateProgram----Proof"+ JSON.stringify(this.message.Proof) );
 
-    this.walletManager.didGenerateProgram(this.did,JSON.stringify(this.message),this.passworld,(result)=>{
+    this.walletManager.didGenerateProgram(Config.getCurMasterWalletId() ,this.did,JSON.stringify(this.message),this.passworld,(result)=>{
                    this.programJson  = result.value;
                    console.log("ElastosJs didGenerateProgram programJson "+JSON.stringify(this.programJson));
                    this.createfromAddress();
@@ -108,10 +109,12 @@ export class CompanyWriteChainPage extends BaseComponent implements OnInit{
   cauFee(){
 
     //alert("createIdTransaction before" + this.fromAddress);
+    console.log("ElastosJs---cauFee---"+" masterWalletId= "+this.masterWalletId+" message= "+JSON.stringify(this.message)+" programJson = "+this.programJson);
+
     this.walletManager.createIdTransaction(this.masterWalletId,"IdChain","",this.message,this.programJson,"","",(result)=>{
-            console.log("---createIdTransaction---"+"fromAddress="+this.fromAddress+"message="+JSON.stringify(this.message)+"programJson="+this.programJson);
+            console.log("ElastosJs---createIdTransaction---"+"fromAddress="+this.fromAddress+"message="+JSON.stringify(this.message)+"programJson="+this.programJson);
              let rawTransaction = result['json'].toString();
-             console.log("createIdTransaction rawTransaction =="+rawTransaction);
+             console.log("ElastosJs createIdTransaction rawTransaction =="+rawTransaction);
              this.calculateTransactionFee(rawTransaction);
      });
   }
@@ -262,7 +265,7 @@ export class CompanyWriteChainPage extends BaseComponent implements OnInit{
     console.log("caulmessageNew "+JSON.stringify(signMessage));
     //alert("caulmessageNew "+JSON.stringify(signMessage));
 
-    this.walletManager.didSign(this.did,JSON.stringify(signMessage),this.passworld,(result)=>{
+    this.walletManager.didSign(Config.getCurMasterWalletId() ,this.did,JSON.stringify(signMessage),this.passworld,(result)=>{
       this.message = {
         Id : this.did,
         Sign :result.value,
@@ -301,7 +304,7 @@ export class CompanyWriteChainPage extends BaseComponent implements OnInit{
 
     let singObj = {Id:this.did,Path:this.message["Path"],Proof:authSign,DataHash:kycChainDataHash};
 
-     this.walletManager.didSign(this.did,JSON.stringify(singObj),this.passworld,(result)=>{
+     this.walletManager.didSign(Config.getCurMasterWalletId() ,this.did,JSON.stringify(singObj),this.passworld,(result)=>{
       console.log("didSign 4"+ JSON.stringify(result));
 
        let proofString = JSON.stringify(authSign);
