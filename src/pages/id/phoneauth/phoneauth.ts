@@ -51,11 +51,11 @@ export class PhoneauthPage extends BaseComponent implements OnInit{
     this.localStorage.get("kycId").then((val)=>{
         let idsObj = JSON.parse(val);
         let order = idsObj[this.did][this.path];
-        order[serialNum] = {serialNum:serialNum,pathStatus:0,payObj:{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.phoneValidate}};
+        order[serialNum] = {serialNum:serialNum,pathStatus:0,payObj:{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.phoneValidate, "walletInfo" : { "Type" : "Standard"}}};
         this.localStorage.set("kycId",idsObj).then((newVal)=>{
 
           this.phoneValidate["serialNum"] = serialNum;
-          this.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.phoneValidate});
+          this.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.phoneValidate, "walletInfo" : { "Type" : "Standard"}});
         });
     })
 }
