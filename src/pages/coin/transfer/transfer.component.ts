@@ -321,12 +321,14 @@ sendPersonAuth(parms){
 saveKycSerialNum(serialNum){
   console.log('ElastJs saveKycSerialNum serialNum begin'+ serialNum);
 
-  this.localStorage.get("kycId").then((val)=>{
-         let idsObj = JSON.parse(val);
-         let serialNumObj = idsObj[this.did][this.selectType][serialNum];
+  this.localStorage.getKyc().then((val)=>{
+        let masterWalletId = Config.getCurMasterWalletId();
+
+        let idsObj = JSON.parse(val);
+         let serialNumObj = idsObj[masterWalletId][this.did][this.selectType][serialNum];
          serialNumObj["txHash"] = this.txId;
          serialNumObj["pathStatus"] = 1;
-         this.localStorage.set("kycId",idsObj).then((newVal)=>{
+         this.localStorage.setKyc(idsObj).then((newVal)=>{
           this.Go(IdResultComponent,{'status':'0',id:this.did,path:this.selectType});
          });
      })

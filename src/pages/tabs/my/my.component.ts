@@ -64,7 +64,7 @@ export class MyComponent  extends BaseComponent implements OnInit  {
    }
 
    getDIDList(){
-    this.localStorage.get("kycId").then((val)=>{
+    this.localStorage.getKyc().then((val)=>{
       if(this.isNull(val)){
           this.Go(IdLauncherComponent);
           return;

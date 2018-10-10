@@ -1,5 +1,7 @@
 import { Component,OnInit } from '@angular/core';
 import {BaseComponent} from "./../../../app/BaseComponent";
+import {Config} from "./../../../providers/Config";
+
 /**
  * Generated class for the LauncherPage page.
  *
@@ -19,12 +21,13 @@ export class IdManagerComponent extends BaseComponent implements OnInit{
   idsObj:any;
   ngOnInit(){
     this.setTitleByAssets('text-id-manager');
-        this.localStorage.get('kycId').then((val)=>{
+        let masterWalletId = Config.getCurMasterWalletId();
+        this.localStorage.getKyc().then((val)=>{
         if(val === null){
           this.kycIdArr = [];
         }else{
-          this.kycIdArr = this.objtoarr(JSON.parse(val));
-          this.idsObj = JSON.parse(val);
+          this.kycIdArr = this.objtoarr(JSON.parse(val)[masterWalletId]);
+          this.idsObj = JSON.parse(val)[masterWalletId];
         }
       });
 
@@ -130,7 +133,11 @@ export class IdManagerComponent extends BaseComponent implements OnInit{
         let key =ids[id];
         delete this.idsObj[key];
       }
-      this.localStorage.set("kycId",this.idsObj).then(()=>{
+
+      let obj ={};
+      let masterWalletId = Config.getCurMasterWalletId();
+      obj[masterWalletId] = this.idsObj;
+      this.localStorage.setKyc(obj).then(()=>{
                this.kycIdArr = this.objtoarr(this.idsObj);
                this.messageBox('text-id-kyc-import-text-del-message');
       });

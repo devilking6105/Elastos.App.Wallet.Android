@@ -4,6 +4,8 @@ import {IDManager} from "../../../../providers/IDManager";
 import {ApiUrl} from "../../../../providers/ApiUrl";
 import {CompanyWriteChainPage} from "../../../../pages/id/kyc/company-write-chain/company-write-chain";
 import {PersonWriteChainPage} from "../../../../pages/id/kyc/person-write-chain/person-write-chain";
+import {Config} from "../../../../providers/Config";
+
 @Component({
   selector: 'page-kyc-order',
   templateUrl: 'kyc-order.html',
@@ -25,12 +27,14 @@ export class KycOrderPage  extends BaseComponent implements OnInit{
      }
 
      this.setTitleByAssets("text-id-kyc-order-list");
-     this.localStorage.getKycList("kycId").then((val=>{
+     this.localStorage.getKyc().then((val=>{
             if(this.isNull(val)){
                   return;
             }
             this.idsObj = JSON.parse(val);
-            this.orderList = JSON.parse(val)[this.did]["kyc"][this.aprType]["order"];
+            let masterWalletId = Config.getCurMasterWalletId();
+
+            this.orderList = this.idsObj[masterWalletId][this.did]["kyc"][this.aprType]["order"];
             this.serialNumList = this.objtoarr(this.orderList);
      }));
   }
@@ -110,9 +114,13 @@ export class KycOrderPage  extends BaseComponent implements OnInit{
   }
 
   saveSerialNumParm(serialNum){
-     this.idsObj[this.did]["kyc"][this.aprType]["order"][serialNum]["status"] = 1;
-     this.idsObj[this.did]["kyc"][this.aprType]["order"][serialNum]["params"] = this.params;
-     this.localStorage.set("kycId",this.idsObj).then(()=>{
+    let masterWalletId = Config.getCurMasterWalletId();
+
+    this.idsObj[masterWalletId][this.did]["kyc"][this.aprType]["order"][serialNum]["status"] = 1;
+     this.idsObj[masterWalletId][this.did]["kyc"][this.aprType]["order"][serialNum]["params"] = this.params;
+
+     this.localStorage.setKyc(this.idsObj).then(()=>{
+
       this.params["orderStatus"] = this.idsObj[this.did]["kyc"][this.aprType]["order"][serialNum]["status"];
       this.params["serialNum"] = serialNum;
       if(this.params["type"] === "company"){

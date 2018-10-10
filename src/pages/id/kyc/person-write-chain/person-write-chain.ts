@@ -473,7 +473,7 @@ for(let index in obj){
             for (let valueObj of ele["Values"]){
               let proofObj = JSON.parse(valueObj["Proof"]);
 
-              this.localStorage.getSeqNumObj(proofObj["signature"], rawTransactionObj.PayLoad.Id, arr[1], function (reult : any) {
+              this.localStorage.getSeqNumObj(Config.getCurMasterWalletId(), proofObj["signature"], rawTransactionObj.PayLoad.Id, arr[1], function (reult : any) {
                 console.info("ElastosJs reult " + JSON.stringify(reult) );
                 self.dataManager.addSeqNumObj(proofObj["signature"] , reult );
 
@@ -519,17 +519,19 @@ setOrderStatus(status){
   let did = serid["id"];
   let path = serid["path"];
   let idsObj = {};
-  this.localStorage.getKycList("kycId").then((val)=>{
+  this.localStorage.getKyc().then((val)=>{
       if(val == null || val === undefined || val === {} || val === ''){
         console.info("ElastJs setOrderStatus val == null return ");
         return;
       }
    idsObj = JSON.parse(val);
-   idsObj[did][path][this.serialNum]["pathStatus"] = status;
+   let masterWalletId = Config.getCurMasterWalletId();
+
+    idsObj[masterWalletId][did][path][this.serialNum]["pathStatus"] = status;
 
     console.info("ElastJs setOrderStatus idsObj " + JSON.stringify(idsObj));
 
-    this.localStorage.set("kycId",idsObj).then(()=>{
+    this.localStorage.setKyc(idsObj).then(()=>{
      console.info("ElastJs setOrderStatus  end  status " + status);
             this.orderStatus = status;
    });

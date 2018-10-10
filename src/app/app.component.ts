@@ -160,12 +160,15 @@ export class AppComponent {
       //   }
       // });
 
-      localStorage.getKycList("kycId").then((val)=>{
+      localStorage.getKyc().then((val)=>{
 
              if(val == null || val === undefined || val === {} || val === ''){
                           return;
              }
-            let serids = Config.getSertoId(JSON.parse(val));
+             let masterWalletId = Config.getCurMasterWalletId();
+             let kycObj = JSON.parse(val);
+
+            let serids = Config.getSertoId(kycObj[masterWalletId]);
             Config.setSerIds(serids);
       });
     });

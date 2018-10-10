@@ -449,7 +449,7 @@ export class CompanyWriteChainPage extends BaseComponent implements OnInit{
             for (let valueObj of ele["Values"]){
               let proofObj = JSON.parse(valueObj["Proof"]);
 
-              this.localStorage.getSeqNumObj(proofObj["signature"], rawTransactionObj.PayLoad.Id, arr[1], function (reult : any) {
+              this.localStorage.getSeqNumObj(Config.getCurMasterWalletId(), proofObj["signature"], rawTransactionObj.PayLoad.Id, arr[1], function (reult : any) {
                 console.info("ElastosJs reult " + JSON.stringify(reult) );
                 self.dataManager.addSeqNumObj(proofObj["signature"] , reult );
 
@@ -484,14 +484,16 @@ getDepositTransaction(){
        let did = serid["id"];
        let path = serid["path"];
        let idsObj = {};
-       this.localStorage.getKycList("kycId").then((val)=>{
+   let masterWalletId = Config.getCurMasterWalletId();
+
+   this.localStorage.getKyc().then((val)=>{
            if(val == null || val === undefined || val === {} || val === ''){
              console.info("setOrderStatus val == null return ");
              return;
            }
         idsObj = JSON.parse(val);
-        idsObj[did][path][this.serialNum]["pathStatus"] = status;
-        this.localStorage.set("kycId",idsObj).then(()=>{
+        idsObj[masterWalletId][did][path][this.serialNum]["pathStatus"] = status;
+        this.localStorage.setKyc(idsObj).then(()=>{
           console.info("ElastJs setOrderStatus  end  status " + status);
                  this.orderStatus = status;
         });

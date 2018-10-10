@@ -3,6 +3,8 @@ import {BaseComponent} from "../../../app/BaseComponent";
 import {IDManager} from "../../../providers/IDManager"
 import {ApiUrl} from "../../../providers/ApiUrl"
 import {TransferComponent} from "../../../pages/coin/transfer/transfer.component";
+import {Config} from "../../../providers/Config"
+
 @Component({
   selector: 'page-identityauth',
   templateUrl: 'identityauth.html',
@@ -31,11 +33,26 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
   }
 
   saveKycSerialNum(serialNum){
-    this.localStorage.get("kycId").then((val)=>{
-        let idsObj = JSON.parse(val);
-        let order = idsObj[this.did][this.path];
-        order[serialNum] = {serialNum:serialNum,pathStatus:0,payObj:{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.personValidate}};
-        this.localStorage.set("kycId",idsObj).then((newVal)=>{
+    let masterWalletId = Config.getCurMasterWalletId();
+    console.info("identityauth.ts Elastos saveKycSerialNum masterWalletId" + masterWalletId);
+    this.localStorage.getKyc().then((val)=>{
+
+      console.info("identityauth.ts Elastos saveKycSerialNum val" + val);
+
+      let idsObj = JSON.parse(val);
+        let order = idsObj[masterWalletId][this.did][this.path];
+        order[serialNum] = {
+                              serialNum:serialNum,pathStatus:0,
+                              payObj:{
+                                  did:this.did,
+                                  addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",
+                                  money:this.payMoney,
+                                  appType:"kyc",chianId:"ELA",
+                                  selectType:this.path,
+                                  parms:this.personValidate
+                              }};
+
+        this.localStorage.setKyc(idsObj).then((newVal)=>{
           this.personValidate["serialNum"] = serialNum;
           this.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD"
             ,money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.personValidate, "walletInfo" : { "Type" : "Standard"}});
@@ -67,9 +84,11 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
     let parms ={"appid":"elastid","timestamp":timestamp};
     let checksum = IDManager.getCheckSum(parms,"asc");
     parms["checksum"] = checksum;
-    console.info("ElastJs identityauth getPrice url "+ ApiUrl.GET_PRICE + " parms " + JSON.stringify(parms));
+    console.info("ElastJs identityauth.ts getPrice url "+ ApiUrl.GET_PRICE + " parms " + JSON.stringify(parms));
     this.getHttp().postByAuth(ApiUrl.GET_PRICE,parms).toPromise().then().then(data => {
-        if(data["status"] === 200){
+      console.info("ElastJs identityauth.ts data "+  JSON.stringify(data));
+
+      if(data["status"] === 200){
           this.priceObj = JSON.parse(data["_body"]);
           this.payMoney = this.priceObj["price"] || 0.1;
           this.unit = this.priceObj["unit"] || "ELA";

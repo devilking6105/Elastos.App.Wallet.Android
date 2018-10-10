@@ -3,6 +3,7 @@ import {BaseComponent} from "../../../../app/BaseComponent";
 import {ApiUrl} from "../../../../providers/ApiUrl";
 import {IDManager} from "../../../../providers/IDManager";
 import {TransferComponent} from "../../../../pages/coin/transfer/transfer.component";
+import {Config} from "../../../../providers/Config"
 
 @Component({
   selector: 'id-company',
@@ -38,12 +39,26 @@ export class IdKycCompanyComponent extends BaseComponent implements OnInit {
   }
 
   saveKycSerialNum(serialNum){
-    this.localStorage.get("kycId").then((val)=>{
+    this.localStorage.getKyc().then((val)=>{
+
         let idsObj = JSON.parse(val);
-        let order = idsObj[this.did][this.path];
-        order[serialNum] = {serialNum:serialNum,pathStatus:0,payObj:{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.businessObj}};
-        this.localStorage.set("kycId",idsObj).then((newVal)=>{
-          this.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.businessObj, "walletInfo" : { "Type" : "Standard"}});
+        let masterWalletId = Config.getCurMasterWalletId();
+
+        let order = idsObj[masterWalletId][this.did][this.path];
+        order[serialNum] = {
+                            serialNum:serialNum
+                            ,pathStatus:0
+                            ,payObj:{
+                                        did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD"
+                                        ,money:this.payMoney,appType:"kyc",chianId:"ELA"
+                                        ,selectType:this.path,parms:this.businessObj
+                                    }
+                          };
+
+        this.localStorage.setKyc(idsObj).then((newVal)=>{
+          this.Go(TransferComponent,{
+            did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path
+            ,parms:this.businessObj, "walletInfo" : { "Type" : "Standard"}});
         });
     })
 }

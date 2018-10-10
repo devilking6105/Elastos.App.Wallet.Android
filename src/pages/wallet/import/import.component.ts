@@ -16,7 +16,7 @@ export class ImportComponent {
   public selectedTab: string="words";
   public showAdvOpts:boolean;
   public keyStoreContent:any;
-  public importFileObj:any={payPassword: "",rePayPassword: "", backupPassWord: "",phrasePassword:""};
+  public importFileObj:any={payPassword: "s12345678",rePayPassword: "s12345678", backupPassWord: "s12345678",phrasePassword:"s12345678"};
   public mnemonicObj:any={mnemonic:"",payPassword: "", rePayPassword: "",phrasePassword:""}
   constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native: Native,public localStorage:LocalStorage) {
          this.masterWalletId = Config.uuid(6,16);

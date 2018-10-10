@@ -4,6 +4,8 @@ import {CompanypathinfoPage} from '../../../pages/id/companypathinfo/companypath
 import {BankcardpathinfoPage} from '../../../pages/id/bankcardpathinfo/bankcardpathinfo';
 import {PhonepathinfoPage} from '../../../pages/id/phonepathinfo/phonepathinfo';
 import {IdentitypathinfoPage} from '../../../pages/id/identitypathinfo/identitypathinfo';
+import {Config} from '../../../providers/Config';
+
 @Component({
   selector: 'page-pathlist',
   templateUrl: 'pathlist.html',
@@ -26,14 +28,17 @@ export class PathlistPage extends BaseComponent implements OnInit{
            }
 
            nextPage(){
-            this.localStorage.get("kycId").then((val)=>{
+             let masterWalletId = Config.getCurMasterWalletId();
+
+             this.localStorage.getKyc().then((val)=>{
+
               let  idsObj = JSON.parse(val);
               let  id = this.parmar["id"];
               let  path = this.parmar["path"];
-              let idObj = idsObj[id];
+              let idObj = idsObj[masterWalletId][id];
               if(this.isNull(idObj[path])){
                    idObj[path] = {};
-                   this.localStorage.set("kycId",idsObj).then(()=>{
+                   this.localStorage.setKyc(idsObj).then(()=>{
                    this.jumpPage(path);
                  });
               }else{

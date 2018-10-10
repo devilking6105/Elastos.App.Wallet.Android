@@ -3,7 +3,10 @@ import {BaseComponent} from "../../../../app/BaseComponent";
 import {IdKycPersonComponent} from "../../../../pages/id/kyc/person/person";
 import {IdKycCompanyComponent} from "../../../../pages/id/kyc/company/company";
 import {KycOrderPage} from "../../../../pages/id/kyc/kyc-order/kyc-order";
+
 import {PathlistPage} from '../../../../pages/id/pathlist/pathlist';
+import {Config} from '../../../../providers/Config';
+
 @Component({
   selector: 'page-kyc-operation',
   templateUrl: 'kyc-operation.html',
@@ -16,8 +19,11 @@ export class KycOperationPage  extends BaseComponent implements OnInit{
       this.params  = this.getNavParams().data;
       this.aprType = this.params["type"];
       this.setTitleByAssets('text-id-kyc-operation');
-      this.localStorage.get("kycId").then((val)=>{
-        this.orderList= JSON.parse(val)[this.params["id"]]["kyc"][this.aprType]["order"];
+
+      this.localStorage.getKyc().then((val)=>{
+        let masterWalletId = Config.getCurMasterWalletId();
+
+        this.orderList= JSON.parse(val)[masterWalletId][this.params["id"]]["kyc"][this.aprType]["order"];
       });
     }
 

@@ -1,6 +1,7 @@
 import { Component,OnInit } from '@angular/core';
 import {BaseComponent} from "./../../../app/BaseComponent";
 import {IdHomeComponent} from "../../../pages/id/home/home";
+import {Config} from "../../../providers/Config";
 
 
 @Component({
@@ -12,11 +13,14 @@ export class IdImportComponent extends BaseComponent implements OnInit{
   keyStoreContent="";
   ngOnInit(){
       this.setTitleByAssets('text-id-import');
-      this.localStorage.get("kycId").then((val)=>{
+    let masterWalletId = Config.getCurMasterWalletId();
+
+    this.localStorage.getKyc().then((val)=>{
+
             if(this.isNull(val)){
                this.kycObj = {};
             }else{
-               this.kycObj =JSON.parse(val);
+               this.kycObj =JSON.parse(val)[masterWalletId];
             }
       })
   }
@@ -30,7 +34,7 @@ export class IdImportComponent extends BaseComponent implements OnInit{
     for(let key in addObjs){
       this.kycObj[key] =  addObjs[key];
     }
-    this.localStorage.set('kycId',this.kycObj).then(()=>{
+    this.localStorage.setKyc(this.kycObj).then(()=>{
       this.messageBox('text-exprot-sucess-message');
       this.Go(IdHomeComponent);
     });

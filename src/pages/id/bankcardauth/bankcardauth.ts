@@ -5,6 +5,9 @@ import {ApiUrl} from "../../../providers/ApiUrl"
 import {TransferComponent} from "../../../pages/coin/transfer/transfer.component";
 import {Observable} from 'rxjs';
 import 'rxjs/add/observable/timer';
+import {Config} from "../../../providers/Config"
+
+
 @Component({
   selector: 'page-bankcardauth',
   templateUrl: 'bankcardauth.html',
@@ -82,11 +85,14 @@ export class BankcardauthPage extends BaseComponent implements OnInit{
    }
 
    saveKycSerialNum(serialNum){
-     this.localStorage.get("kycId").then((val)=>{
+     let masterWalletId = Config.getCurMasterWalletId();
+
+     this.localStorage.getKyc().then((val)=>{
          let idsObj = JSON.parse(val);
-         let order = idsObj[this.did][this.path];
+         let order = idsObj[masterWalletId][this.did][this.path];
          order[serialNum] = {serialNum:serialNum,pathStatus:0,payObj:{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.debitCard}};
-         this.localStorage.set("kycId",idsObj).then((newVal)=>{
+
+         this.localStorage.setKyc(idsObj).then((newVal)=>{
            this.debitCard["serialNum"] = serialNum;
 
            this.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.debitCard, "walletInfo" : { "Type" : "Standard"}});

@@ -4,6 +4,8 @@ import {BankcardauthPage} from '../../../pages/id/bankcardauth/bankcardauth';
 import {PersonWriteChainPage} from "../../../pages/id/kyc/person-write-chain/person-write-chain";
 import {IDManager} from "../../../providers/IDManager";
 import {ApiUrl} from "../../../providers/ApiUrl";
+import {Config} from "../../../providers/Config";
+
 @Component({
   selector: 'page-bankcardpathinfo',
   templateUrl: 'bankcardpathinfo.html',
@@ -16,13 +18,15 @@ export class BankcardpathinfoPage extends BaseComponent implements OnInit{
    this.parmar = this.getNavParams().data;
    console.log("---path---"+JSON.stringify(this.parmar));
    this.setTitleByAssets("text-bankcard-path-deatils");
-   this.localStorage.get("kycId").then((val)=>{
+    let masterWalletId = Config.getCurMasterWalletId();
+
+    this.localStorage.getKyc().then((val)=>{
     if(val == null || val === undefined || val === {} || val === ''){
       return;
      }
     this.idsObj = JSON.parse(val);
 
-    let pathList = this.idsObj[this.parmar["id"]][this.parmar["path"]];
+    let pathList = this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]];
 
     for(let key in pathList){
        this.backcardList.push(pathList[key]);
@@ -103,9 +107,11 @@ getAppAuth(item){
 }
 
 saveSerialNumParm(serialNum,item){
-   item["pathStatus"] = 2;
-   this.idsObj[this.parmar["id"]][this.parmar["path"]][serialNum]= item;
-   this.localStorage.set("kycId",this.idsObj).then(()=>{
+  let masterWalletId = Config.getCurMasterWalletId();
+
+  item["pathStatus"] = 2;
+   this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]][serialNum]= item;
+   this.localStorage.setKyc(this.idsObj).then(()=>{
       this.Go(PersonWriteChainPage,item);
    });
 }

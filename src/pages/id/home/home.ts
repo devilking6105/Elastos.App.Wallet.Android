@@ -19,11 +19,13 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
     });
 
     var self = this;
-    this.localStorage.get("kycId").then((val)=>{
+    this.localStorage.getKyc().then((val)=>{
 
              console.info("ElastosJs IdHomeComponent begin" + val);
              let seqNumJsonObj = JSON.parse(val);
-             this.kycIdArr = this.objtoarr(seqNumJsonObj);
+             let masterWalletId = Config.getCurMasterWalletId();
+
+      this.kycIdArr = this.objtoarr(seqNumJsonObj[masterWalletId]);
 
              console.info("ElastosJs IdHomeComponent val" + val);
              console.info("ElastosJs IdHomeComponent this.kycIdArr" + JSON.stringify(this.kycIdArr));
@@ -62,7 +64,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
                      if (arrPath && arrPath[1]){
                        let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
-                       self.localStorage.addKeyToSerialNum(data.id, arrPath[1], serialNum, "idJson", idJson, function(){
+                       self.localStorage.addKeyToSerialNum(Config.getCurMasterWalletId(), data.id, arrPath[1], serialNum, "idJson", idJson, function(){
                          self.setOrderStatus(5,serialNum);
 
                        });
@@ -88,8 +90,10 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
     });
 
     this.events.subscribe('idhome:update', () => {
-      this.localStorage.get("kycId").then((val)=>{
-        this.kycIdArr = this.objtoarr(JSON.parse(val));
+      this.localStorage.getKyc().then((val)=>{
+        let masterWalletId = Config.getCurMasterWalletId();
+        let kycObj = JSON.parse(val);
+        this.kycIdArr = this.objtoarr(kycObj[masterWalletId]);
       });
     });
   }
@@ -244,7 +248,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
             if (arrPath && arrPath[1]){
               let  idJson = self.dataManager.OutPutIDJson(data.id,valueObj["Contents"][0]["Path"], proofObj["signature"]);
-              self.localStorage.addKeyToSerialNum(data.id,  arrPath[1], serialNum, "idJson", idJson, function(){
+              self.localStorage.addKeyToSerialNum(Config.getCurMasterWalletId(),data.id,  arrPath[1], serialNum, "idJson", idJson, function(){
                 self.setOrderStatus(5,serialNum);
 
               });
@@ -267,7 +271,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
       });
 
 
-      this.localStorage.add("kycId",idObj).then(()=>{
+      this.localStorage.addKycKey(Config.getCurMasterWalletId(), idObj.id, idObj).then(()=>{
            this.kycIdArr.push({id:result.success});
       });
     });
@@ -295,7 +299,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
     console.info("ElastJs setOrderStatus appr " + path);
 
     let idsObj = {};
-    this.localStorage.getKycList("kycId").then((val)=>{
+    this.localStorage.getKyc().then((val)=>{
 
       console.info("ElastJs setOrderStatus getKycList " + val);
         if(val == null || val === undefined || val === {} || val === ''){
@@ -303,34 +307,36 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
           return;
         }
-     idsObj = JSON.parse(val);
+      let masterWalletId = Config.getCurMasterWalletId();
+
+      idsObj = JSON.parse(val);
 
       console.info("ElastJs setOrderStatus before chg status did "+ did + " path "+path + " serialNum "+ serialNum + " status "+ status);
 
       console.info("ElastJs setOrderStatus idsObj before chg----- " + JSON.stringify(idsObj));
 
-      idsObj[did][path][serialNum]["pathStatus"] = status;
-      if (idsObj[did]){
-
-        console.info("ElastJs setOrderStatus did ok"+ did);
-        if (idsObj[did][path]){
-          console.info("ElastJs setOrderStatus path ok"+ path);
-          if (idsObj[did][path][serialNum]){
-            console.info("ElastJs setOrderStatus serialNum ok"+ serialNum);
-
-            if (idsObj[did][path][serialNum]["pathStatus"]){
-              console.info("ElastJs setOrderStatus pathStatus ok"+ idsObj[did][path][serialNum]["pathStatus"]);
-
-
-            }
-          }
-        }
-
-      }
+      idsObj[masterWalletId][did][path][serialNum]["pathStatus"] = status;
+      // if (idsObj[did]){
+      //
+      //   console.info("ElastJs setOrderStatus did ok"+ did);
+      //   if (idsObj[did][path]){
+      //     console.info("ElastJs setOrderStatus path ok"+ path);
+      //     if (idsObj[did][path][serialNum]){
+      //       console.info("ElastJs setOrderStatus serialNum ok"+ serialNum);
+      //
+      //       if (idsObj[did][path][serialNum]["pathStatus"]){
+      //         console.info("ElastJs setOrderStatus pathStatus ok"+ idsObj[did][path][serialNum]["pathStatus"]);
+      //
+      //
+      //       }
+      //     }
+      //   }
+      //
+      // }
 
       console.info("ElastJs setOrderStatus idsObj " + JSON.stringify(idsObj));
 
-      this.localStorage.set("kycId",idsObj).then(()=>{
+      this.localStorage.setKyc(idsObj).then(()=>{
           this.events.publish("order:update",status,path);
        console.info("ElastJs setOrderStatus pulish order ");
 

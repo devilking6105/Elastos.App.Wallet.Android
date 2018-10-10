@@ -41,7 +41,7 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
 
 
           console.info("ElastosJs luncher.ts createDID result add registerIdListener" + JSON.stringify(result));
-          self.walletManager.registerIdListener(Config.getCurMasterWalletId(),result.didname, (data) => {
+          self.walletManager.registerIdListener(Config.getCurMasterWalletId(),result.success, (data) => {
 
             console.info("lacucher.ts ElastosJs createDID registerIdListener "+ JSON.stringify(data));
             //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
@@ -63,7 +63,7 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
 
                 if (arrPath && arrPath[1]){
                   let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"] , proofObj["signature"]);
-                  self.localStorage.addKeyToSerialNum(data.id, arrPath[1], serialNum, "idJson", idJson, function(){
+                  self.localStorage.addKeyToSerialNum(Config.getCurMasterWalletId(), data.id, arrPath[1], serialNum, "idJson", idJson, function(){
                     self.setOrderStatus(5,serialNum);
 
                   });
@@ -80,7 +80,7 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
 
 
           });
-          this.localStorage.add("kycId",idObj).then(()=>{
+          this.localStorage.addKycKey(Config.getCurMasterWalletId(), idObj.id,idObj).then(()=>{
                this.Go(IdHomeComponent);
           });
     })
@@ -101,13 +101,14 @@ export class IdLauncherComponent extends BaseComponent implements OnInit{
     console.info("setOrderStatus appr" + path);
 
     let idsObj = {};
-    this.localStorage.getKycList("kycId").then((val)=>{
+    this.localStorage.getKyc().then((val)=>{
         if(val == null || val === undefined || val === {} || val === ''){
              return;
         }
+     let masterWalletId = Config.getCurMasterWalletId();
      idsObj = JSON.parse(val);
-     idsObj[did][path][serialNum]["pathStatus"] = status;
-     this.localStorage.set("kycId",idsObj).then(()=>{
+     idsObj[masterWalletId][did][path][serialNum]["pathStatus"] = status;
+     this.localStorage.setKyc(idsObj).then(()=>{
           this.events.publish("order:update",status,path);
      });
     });

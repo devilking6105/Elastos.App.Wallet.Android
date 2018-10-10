@@ -7,11 +7,15 @@ import { Storage } from '@ionic/storage';
 @Injectable()
 export class LocalStorage {
 
+  public  KYC_KEY = "kycId";
+
   constructor(private storage: Storage) { }
 
   public add(key: string, value: any): any {
     return this.get(key).then((val)=>{
+
      let id = value['id'];
+
      if(val === null){
       let initObj = {};
       initObj[id] = value;
@@ -24,11 +28,11 @@ export class LocalStorage {
   }
 
   //did][path][serialNum
-  public addKeyToSerialNum(did: string, path: string , serialNum: string, keyAdd : string, obj : any, callback : any) {
+  public addKeyToSerialNum(masterWalletID : string, did: string, path: string , serialNum: string, keyAdd : string, obj : any, callback : any) {
 
     let idsObj = {};
     let self = this;
-    this.getKycList("kycId").then((val)=>{
+    this.getKyc().then((val)=>{
 
       console.info("ElastJs addKeyToSerialNum getKycList " + val);
       if(val == null || val === undefined || val === {} || val === ''){
@@ -40,10 +44,10 @@ export class LocalStorage {
 
       console.info("ElastJs addKeyToSerialNum  did "+ did + " path "+path + " serialNum "+ serialNum + " keyAdd "+ keyAdd);
 
-      idsObj[did][path][serialNum][keyAdd] = obj;
+      idsObj[masterWalletID][did][path][serialNum][keyAdd] = obj;
       console.info("ElastJs addKeyToSerialNum storage.set idsObj " + JSON.stringify(idsObj));
 
-      self.storage.set("kycId",JSON.stringify(idsObj) );
+      self.setKyc(idsObj);
       callback();
     });
 
@@ -62,13 +66,13 @@ export class LocalStorage {
   //key  id
   //appType kyc  and so on
   //authType  person  company
-  public getSeqNumObj(sign : string, id: string,  authType: string, callback : any ): any {
+  public getSeqNumObj(masterWalletID : string, sign : string, id: string,  authType: string, callback : any ): any {
 
     console.info( "ElastosJs localstorage getSeqNumObj begin sign " + sign + " id "+ id + " authType " + authType);
 
     /////////////////
-    this.get("kycId").then((val)=>{
-     let valObj = JSON.parse(val);
+    this.getKyc().then((val)=>{
+     let valObj = JSON.parse(val)[masterWalletID];
 
      console.info("ElastosJs getSeqNumObj total     valObj " + JSON.stringify(valObj));
 
@@ -149,6 +153,48 @@ export class LocalStorage {
       return this.storage.get(key);
   }
 
+  ///////////
+
+  public addKycKey(masterWalletID: string , id: string, value: any): any {
+
+    console.info("ElastJs addKycKey masterWalletID"+ masterWalletID + " id " + id+ " value " + JSON.stringify(value));
+    let key = "kycId";
+    return this.get(key).then((val)=>{
+
+      console.info("ElastJs addKycKey get kycId val "+ JSON.stringify(val));
+
+      let addObj = {};
+
+      if(val){
+        addObj = JSON.parse(val);
+      }
+      if (!addObj[masterWalletID]) {
+        addObj[masterWalletID] = {};
+      }
+      addObj[masterWalletID][id] = value;
+
+      console.info("ElastJs addKycKey get kycId addObj "+ JSON.stringify(addObj));
+      return this.setKyc(addObj);
+    });
+  }
+  public setKyc( value: any): any {//masterWalletId: string,
+
+    let key = "kycId";
+    // let obj ={
+    //   key : {}
+    // };
+    //obj[key][masterWalletId] = value;
+    console.info("ElastJs setKyc get kycId value "+ JSON.stringify(value));
+
+    return this.storage.set(key, JSON.stringify(value));
+  }
+
+  public getKyc(): any {
+    let key = "kycId";
+
+    return this.storage.get(key);
+  }
+  ///////////
   public getLanguage(key):any{
       return this.storage.get(key);
   }

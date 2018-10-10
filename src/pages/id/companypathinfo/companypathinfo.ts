@@ -4,6 +4,7 @@ import {IdKycCompanyComponent} from "../../../pages/id/kyc/company/company";
 import {IDManager} from "../../../providers/IDManager";
 import {ApiUrl} from "../../../providers/ApiUrl";
 import {CompanyWriteChainPage} from "../../../pages/id/kyc/company-write-chain/company-write-chain";
+import {Config} from "../../../providers/Config";
 
 @Component({
   selector: 'page-companypathinfo',
@@ -17,13 +18,16 @@ export class CompanypathinfoPage extends BaseComponent implements OnInit{
         this.parmar = this.getNavParams().data;
         console.log("---path---"+JSON.stringify(this.parmar));
         this.setTitleByAssets("text-company-path-deatils");
-        this.localStorage.get("kycId").then((val)=>{
+
+        this.localStorage.getKyc().then((val)=>{
           if(val == null || val === undefined || val === {} || val === ''){
             return;
            }
+          let masterWalletId = Config.getCurMasterWalletId();
+
           this.idsObj = JSON.parse(val);
 
-          let pathList = this.idsObj[this.parmar["id"]][this.parmar["path"]];
+          let pathList = this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]];
 
           for(let key in pathList){
              this.companyPathList.push(pathList[key]);
@@ -127,9 +131,11 @@ export class CompanypathinfoPage extends BaseComponent implements OnInit{
       }
 
       saveSerialNumParm(serialNum,item){
-         item["pathStatus"] = 2;
-         this.idsObj[this.parmar["id"]][this.parmar["path"]][serialNum]= item;
-         this.localStorage.set("kycId",this.idsObj).then(()=>{
+        let masterWalletId = Config.getCurMasterWalletId();
+
+        item["pathStatus"] = 2;
+         this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]][serialNum]= item;
+         this.localStorage.setKyc(this.idsObj).then(()=>{
             this.Go(CompanyWriteChainPage,item);
          });
       }
