@@ -16,11 +16,11 @@ export class IdImportComponent extends BaseComponent implements OnInit{
     let masterWalletId = Config.getCurMasterWalletId();
 
     this.localStorage.getKyc().then((val)=>{
-
+            console.info(" import.ts ElastJs ngOnInit val" + val);
             if(this.isNull(val)){
                this.kycObj = {};
             }else{
-               this.kycObj =JSON.parse(val)[masterWalletId];
+               this.kycObj =JSON.parse(val);
             }
       })
   }
@@ -30,10 +30,15 @@ export class IdImportComponent extends BaseComponent implements OnInit{
            this.messageBox("text-id-kyc-import-no-message");
            return;
     }
+    let masterWalletId = Config.getCurMasterWalletId();
     let addObjs = JSON.parse(this.keyStoreContent);
-    for(let key in addObjs){
-      this.kycObj[key] =  addObjs[key];
+
+    console.info(" import.ts ElastJs onImport" + this.keyStoreContent);
+
+    for(let key in addObjs[masterWalletId]){
+      this.kycObj[masterWalletId][key] =  addObjs[masterWalletId][key];
     }
+
     this.localStorage.setKyc(this.kycObj).then(()=>{
       this.messageBox('text-exprot-sucess-message');
       this.Go(IdHomeComponent);

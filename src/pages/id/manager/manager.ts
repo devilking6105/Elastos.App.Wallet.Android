@@ -16,18 +16,19 @@ import {Config} from "./../../../providers/Config";
 export class IdManagerComponent extends BaseComponent implements OnInit{
   public kycIdArr:any=[];
   public isSelectObj:any={};
+  masterWalletId = "0";
   selectAll = false;
   public backupWalletPlainText:any;
   idsObj:any;
   ngOnInit(){
+    this.masterWalletId = Config.getCurMasterWalletId();
     this.setTitleByAssets('text-id-manager');
-        let masterWalletId = Config.getCurMasterWalletId();
         this.localStorage.getKyc().then((val)=>{
         if(val === null){
           this.kycIdArr = [];
         }else{
-          this.kycIdArr = this.objtoarr(JSON.parse(val)[masterWalletId]);
-          this.idsObj = JSON.parse(val)[masterWalletId];
+          this.kycIdArr = this.objtoarr(JSON.parse(val)[this.masterWalletId]);
+          this.idsObj = JSON.parse(val);
         }
       });
 
@@ -70,7 +71,7 @@ export class IdManagerComponent extends BaseComponent implements OnInit{
 
   setSelectAll(stauts)
   {
-     for(let key in this.idsObj){
+     for(let key in this.idsObj[this.masterWalletId]){
        this.isSelectObj[key] = stauts;
      }
   }
@@ -101,16 +102,19 @@ export class IdManagerComponent extends BaseComponent implements OnInit{
   }
 
   downButton(ids){
+    let masterWalletId = Config.getCurMasterWalletId();
 
     if(ids.length===0){
       this.messageBox("text-down-please-message");
          return;
     }
      let idsObj = {};
-     let kycObj = this.idsObj;
+     idsObj[masterWalletId] ={};
+
+     let kycObj = this.idsObj[masterWalletId];
      for(let id in ids){
       let key =ids[id];
-      idsObj[key] = kycObj[key];
+      idsObj[masterWalletId][key] = kycObj[key];
      }
      this.backupWalletPlainText = JSON.stringify(idsObj);
   }
@@ -124,20 +128,21 @@ export class IdManagerComponent extends BaseComponent implements OnInit{
   }
 
   delIds(ids){
+    let masterWalletId = Config.getCurMasterWalletId();
 
-      if(ids.length===0){
+    if(ids.length===0){
         this.messageBox("text-id-kyc-import-text-del-please-message");
            return;
       }
       for(let id in ids){
         let key =ids[id];
-        delete this.idsObj[key];
+        delete this.idsObj[masterWalletId][key];
       }
 
-      let obj ={};
-      let masterWalletId = Config.getCurMasterWalletId();
-      obj[masterWalletId] = this.idsObj;
-      this.localStorage.setKyc(obj).then(()=>{
+      // let obj ={};
+      // let masterWalletId = Config.getCurMasterWalletId();
+      // obj[masterWalletId] = this.idsObj;
+      this.localStorage.setKyc(this.idsObj).then(()=>{
                this.kycIdArr = this.objtoarr(this.idsObj);
                this.messageBox('text-id-kyc-import-text-del-message');
       });
