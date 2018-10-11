@@ -272,41 +272,54 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
 
     //
     ///////////////////////
-    let signMessage= {};
-
-    signMessage["Id"] = this.did ;//
-    //signMessage["Sign"] = "" ;//
-    signMessage["Contents"] =[];
-
-    let content ;
     let params = this.idObj;//
+    let self = this;
+    console.log("ElastJs caulmessageNew begin params  " +JSON.stringify(params));
+    if (params.adata.length <= 0){
 
-    for (let ele of params.adata) {
-      content = this.getcontent(params.type , ele);
-      signMessage["Contents"].push(content);
+      console.log("ElastJs caulmessageNew  params error return  " +JSON.stringify(params));
+      return ;
     }
 
-    console.log("ElastJs caulmessageNew passworld "+this.passworld + "signMessage" +JSON.stringify(signMessage));
-    //alert("caulmessageNew "+JSON.stringify(signMessage));
+    this.localStorage.getOnchainContent(Config.getCurMasterWalletId(), this.did, params.adata[0].type, function (OnChainContentArry) {
 
-    //console.info("getcontent retContent "+ JSON.stringify(retContent));
+      console.log("ElastJs caulmessageNew getOnchainContent OnChainContentArry  " +JSON.stringify(OnChainContentArry));
 
-    this.walletManager.didSign(Config.getCurMasterWalletId() ,this.did,JSON.stringify(signMessage),this.passworld,(result)=>{
-      console.log("ElastJs caulmessageNew didSign result "+ result);
-      console.log("ElastJs caulmessageNew didSign "+JSON.stringify(result));
+      let signMessage= {};
+      signMessage["Id"] = self.did ;//
+      signMessage["Contents"] =[];
 
-      if(!result["success"]){
-        console.log("ElastJs caulmessageNew didSign serious error------------->"+JSON.stringify(result));
-        return ;
+      let content ;
+      for (let ele of params.adata) {
+        content = self.getcontent(params.type , ele);
+        signMessage["Contents"].push(content);
       }
-      this.message = {
-        Id : this.did,
-        Sign :result["success"],
-        Contents: signMessage["Contents"],
-      };
 
-      this.didGenerateProgram();
-    });
+      console.log("ElastJs caulmessageNew before concat  " + "signMessage" +JSON.stringify(signMessage));
+
+      if (OnChainContentArry.length > 0){
+        signMessage["Contents"][0]['Values'] = signMessage["Contents"][0]['Values'].concat(OnChainContentArry);
+      }
+
+      console.log("ElastJs caulmessageNew passworld "+self.passworld + " after concat signMessage" +JSON.stringify(signMessage));
+
+      self.walletManager.didSign(Config.getCurMasterWalletId() ,self.did,JSON.stringify(signMessage),self.passworld,(result)=>{
+        console.log("ElastJs caulmessageNew didSign result "+ result);
+
+        if(!result["success"]){
+          console.log("ElastJs caulmessageNew didSign serious error------------->"+JSON.stringify(result));
+          return ;
+        }
+        self.message = {
+          Id : self.did,
+          Sign :result["success"],
+          Contents: signMessage["Contents"],
+        };
+
+        self.didGenerateProgram();
+      });
+    })
+
   }
 ////////////////////////
 

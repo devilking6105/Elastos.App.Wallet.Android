@@ -65,7 +65,9 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
                      if (arrPath && arrPath[1]){
                        let  idJson = self.dataManager.OutPutIDJson(data.id, valueObj["Contents"][0]["Path"], proofObj["signature"]);
                        self.localStorage.addKeyToSerialNum(Config.getCurMasterWalletId(), data.id, arrPath[1], serialNum, "idJson", idJson, function(){
-                         self.setOrderStatus(5,serialNum);
+                         self.setOrderStatus(5,serialNum,function () {
+                           self.addOnChainContent(valueObj, arrPath[1]);
+                         });
 
                        });
                        self.testDataHash(idJson);
@@ -236,11 +238,11 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
             let proofObj = JSON.parse(valueObj["Contents"][0]["Values"][0]["Proof"]);
 
-            console.info("home.ts ElastosJs createDID proofObj[\"signature\"]  "+ proofObj["signature"]);
+            console.info("home.ts ElastosJs createDID valueObj  "+ JSON.stringify(valueObj));
             let seqNumObj = self.dataManager.getSeqNumObj(proofObj["signature"]);
 
             let serialNum =  seqNumObj["serialNum"] ;
-            console.info("home.ts ElastosJs createDID serialNum "+ serialNum);
+            //console.info("home.ts ElastosJs createDID serialNum "+ serialNum);
             //self.setOrderStatus(5,serialNum);
 
 
@@ -249,7 +251,10 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
             if (arrPath && arrPath[1]){
               let  idJson = self.dataManager.OutPutIDJson(data.id,valueObj["Contents"][0]["Path"], proofObj["signature"]);
               self.localStorage.addKeyToSerialNum(Config.getCurMasterWalletId(),data.id,  arrPath[1], serialNum, "idJson", idJson, function(){
-                self.setOrderStatus(5,serialNum);
+
+                self.setOrderStatus(5,serialNum ,function () {
+                  self.addOnChainContent(valueObj, arrPath[1]);
+                });
 
               });
               self.testDataHash(idJson);
@@ -284,7 +289,7 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
     });
   }
 
-  setOrderStatus(status,serialNum){
+  setOrderStatus(status,serialNum , callback : any){
 
     console.info("ElastJs setOrderStatus begin status " + status +" serialNum " + serialNum);
 
@@ -338,9 +343,58 @@ export class IdHomeComponent extends BaseComponent implements OnInit{
 
       this.localStorage.setKyc(idsObj).then(()=>{
           this.events.publish("order:update",status,path);
+
        console.info("ElastJs setOrderStatus pulish order ");
+        callback();
 
      });
     });
 }
+
+  /*
+  * onChainConentObj 数据格式如下：
+  {
+    "Contents": [{
+      "Path": "kyc/identityCard",
+      "Values": [{
+        "DataHash": "f0d2651ded79d60fee12658efd1e35eb8c5fa494e925615ad1ce2337d2fd61f0",
+        "Proof": "{\"signature\":\"3045022100bef6e8a9ed9046676382aa7ed956e01591c7e8361549be95e60ae51ff21479a102203f9b1fb9e5ac2e1864f29a1276aa3ba95fbd877f54a3ff788d5c07034c965933\",\"notary\":\"COOIX\"}"
+      }]
+    }],
+    "Id": "iiaoJBEq9j4b1ZBiMDZGCEqrCRdmZjbmEs",
+    "Sign": "4099fd7ff6520b5c683dc01e729713753c22692dad26ca6a1f169c77a85feb3cbc73e751fba5f05f3ac190cce9ffbb45fefcdfbb40ad7a064aa013de91a90a6812"
+   }
+  *
+  * */
+
+  addOnChainContent(onChainConentObj : any , authType : string ){
+
+      console.info("ElastJs home.ts begin addOnChainContent" + JSON.stringify(onChainConentObj) + " authType " + authType);
+      let idsObj = {};
+      this.localStorage.getKyc().then((val)=>{
+
+        console.info("ElastJs addOnChainContent getKycList " + val);
+        if(val == null || val === undefined || val === {} || val === ''){
+          console.info("ElastJs addOnChainContent getKycList err return ");
+
+          return;
+        }
+        let masterWalletId = Config.getCurMasterWalletId();
+
+        idsObj = JSON.parse(val);
+
+        //idsObj[masterWalletId][onChainConentObj.Id]
+        if(!idsObj[masterWalletId][onChainConentObj.Id]["onChainContent"]){
+          idsObj[masterWalletId][onChainConentObj.Id]["onChainContent"] ={};
+        }
+
+        idsObj[masterWalletId][onChainConentObj.Id]["onChainContent"][authType] = onChainConentObj;
+        console.info("ElastJs addOnChainContent idsObj " + JSON.stringify(idsObj));
+
+        this.localStorage.setKyc(idsObj).then(()=>{
+          console.info("ElastJs addOnChainContent pulish order ");
+
+        });
+      });
+    }
 }

@@ -253,34 +253,50 @@ export class CompanyWriteChainPage extends BaseComponent implements OnInit{
 
   caulmessageNew(){
 
-    //
     ///////////////////////
+    let params = this.idObj;//
+    let self = this;
+
+    if (params.adata.length <= 0){
+
+      console.log("ElastJs caulmessageNew company-write-chain.ts params error return  " +JSON.stringify(params));
+      return ;
+    }
     let signMessage= {};
 
-    signMessage["Id"] = this.did ;//
-    //signMessage["Sign"] = "" ;//
-    signMessage["Contents"] =[];
 
-    let content ;
-    let params = this.idObj;//
+    this.localStorage.getOnchainContent(Config.getCurMasterWalletId(), this.did, params.adata[0].type, function (OnChainContentArry) {
+      signMessage["Id"] = self.did ;//
+      //signMessage["Sign"] = "" ;//
+      signMessage["Contents"] =[];
 
-    for (let ele of params.adata) {
-      content = this.getcontent( ele);
-      signMessage["Contents"].push(content);
-    }
+      let content ;
 
-    console.log("caulmessageNew "+JSON.stringify(signMessage));
-    //alert("caulmessageNew "+JSON.stringify(signMessage));
 
-    this.walletManager.didSign(Config.getCurMasterWalletId() ,this.did,JSON.stringify(signMessage),this.passworld,(result)=>{
-      this.message = {
-        Id : this.did,
-        Sign :result.success,
-        Contents: signMessage["Contents"],
-      };
+      for (let ele of params.adata) {
+        content = self.getcontent( ele);
+        signMessage["Contents"].push(content);
+      }
+      console.log("ElastJs caulmessageNew before concat  " + "signMessage" +JSON.stringify(signMessage));
 
-      this.didGenerateProgram();
+      if (OnChainContentArry.length > 0){
+        signMessage["Contents"][0]['Values'] = signMessage["Contents"][0]['Values'].concat(OnChainContentArry);
+      }
+
+      console.log("ElastJs caulmessageNew passworld "+self.passworld + " after concat signMessage" +JSON.stringify(signMessage));
+
+      self.walletManager.didSign(Config.getCurMasterWalletId() ,self.did,JSON.stringify(signMessage),self.passworld,(result)=>{
+        self.message = {
+          Id : self.did,
+          Sign :result.success,
+          Contents: signMessage["Contents"],
+        };
+
+        self.didGenerateProgram();
+      });
     });
+
+
   }
 ////////////////////////
 
