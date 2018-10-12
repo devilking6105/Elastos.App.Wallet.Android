@@ -12,7 +12,7 @@ import {Config} from "../../../providers/Config"
   templateUrl: 'phoneauth.html',
 })
 export class PhoneauthPage extends BaseComponent implements OnInit{
-  phoneValidate  = {fullName:'宋家准',identityNumber:'410426198811151012',mobile:'18210230496',code:'',type:"phone"};
+  phoneValidate  = {fullName:'刘博群',identityNumber:'220106198402038222',mobile:'15210335978',code:'',type:"phone"};
   payMoney = 0;
   unit:string="ELA"
   priceObj:any={};
@@ -46,7 +46,23 @@ export class PhoneauthPage extends BaseComponent implements OnInit{
   }
 
   onCommit(){
-     this.saveKycSerialNum(this.serialNum);
+
+    let self = this;
+    console.info("phoneauth.ts Elastos onCommit parms" + JSON.stringify(this.parms));
+
+    self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.phoneValidate.mobile, function(isExit){
+      console.info("phoneauth.ts Elastos onCommit isExit " + isExit);
+
+      if (!isExit){
+
+        self.saveKycSerialNum(self.serialNum);
+      }
+      else{
+        self.popupProvider.ionicAlert('confirmTitle', 'text-phone-auth-exist').then((data) => {
+        });
+      }
+    })
+    // this.saveKycSerialNum(this.serialNum);
   }
 
   saveKycSerialNum(serialNum){

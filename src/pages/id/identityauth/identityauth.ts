@@ -28,11 +28,27 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
 
   onCommit(){
          if(this.checkIdentity()){
-            this.saveKycSerialNum(this.serialNum);
+           let self = this;
+           console.info("identityauth.ts Elastos onCommit parms" + JSON.stringify(this.parms));
+
+           self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.personValidate.identityNumber, function(isExit){
+             console.info("identityauth.ts Elastos onCommit isExit " + isExit);
+
+             if (!isExit){
+
+               self.saveKycSerialNum(self.serialNum);
+             }
+             else{
+               self.popupProvider.ionicAlert('confirmTitle', 'text-ident-auth-exist').then((data) => {
+               });
+             }
+           })
+
          }
   }
 
   saveKycSerialNum(serialNum){
+
     let masterWalletId = Config.getCurMasterWalletId();
     console.info("identityauth.ts Elastos saveKycSerialNum masterWalletId" + masterWalletId);
     this.localStorage.getKyc().then((val)=>{

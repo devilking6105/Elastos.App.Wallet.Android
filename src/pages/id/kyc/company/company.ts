@@ -34,7 +34,22 @@ export class IdKycCompanyComponent extends BaseComponent implements OnInit {
   onCommit(): void {
     if(this.checkParms()){
       this.businessObj["serialNum"] = this.serialNum;
-       this.saveKycSerialNum(this.serialNum);
+
+      let self = this;
+      console.info("company.ts Elastos onCommit parms" + JSON.stringify(this.parms));
+
+      self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.businessObj.registrationNum, function(isExit){
+        console.info("company.ts Elastos onCommit isExit " + isExit);
+
+        if (!isExit){
+
+          self.saveKycSerialNum(self.serialNum);
+        }
+        else{
+          self.popupProvider.ionicAlert('confirmTitle', 'text-enterprise-auth-exist').then((data) => {
+          });
+        }
+      })
     }
   }
 

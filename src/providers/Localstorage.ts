@@ -220,6 +220,74 @@ export class LocalStorage {
 
     });
   }
+  public isAllReadyExist(masterWalletID: string , id: string, authType: string, unique_num : string, callBack : any){
+
+    console.info( "ElastosJs isAllReadyExist begin masterWalletID " + masterWalletID + " id " + id + " authType "+ authType + " unique_num " + unique_num);
+
+    this.getKyc().then((val)=>{
+      let valObj = JSON.parse(val)[masterWalletID];
+
+      console.info("ElastosJs isAllReadyExist total     valObj " + JSON.stringify(valObj));
+
+      let  idJsonObj = valObj[id];
+
+      if ( idJsonObj && idJsonObj[authType])
+      {
+        let authObj = idJsonObj[authType];
+
+        console.info("ElastosJs isAllReadyExist  authObj " + JSON.stringify(authObj));
+        for (var seriNum in authObj){
+
+          if((!authObj[seriNum]['payObj'])){
+            console.info("ElastosJs isAllReadyExist  payObj error ");
+
+            continue
+          }
+          if ((!authObj[seriNum]['payObj']["parms"])) {
+            console.info("ElastosJs isAllReadyExist  parms error ");
+            continue;
+          }
+          let  paramsObj= authObj[seriNum]['payObj']["parms"];
+
+          switch (authType)
+          {
+            case "identityCard": {
+              if (unique_num == paramsObj.identityNumber){
+                callBack(true);
+                return ;
+              }
+              break;
+            }
+            case "enterprise": {
+              if (unique_num == paramsObj.registrationNum){
+                callBack(true);
+                return ;
+
+              }
+              break;
+            }
+            case "phone": {
+              if (unique_num == paramsObj.mobile){
+                callBack(true);
+                return ;
+
+              }
+              break;
+            }
+            case "bankCard": {
+              if (unique_num == paramsObj.cardNumber){
+                callBack(true);
+                return ;
+
+              }
+              break;
+            }
+          }
+        }
+      }
+      callBack(false);
+    });
+  }
   ///////////
   public getLanguage(key):any{
       return this.storage.get(key);

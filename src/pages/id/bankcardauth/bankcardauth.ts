@@ -13,7 +13,7 @@ import {Config} from "../../../providers/Config"
   templateUrl: 'bankcardauth.html',
 })
 export class BankcardauthPage extends BaseComponent implements OnInit{
-  debitCard={fullName:'宋家准',identityNumber:'410426198811151012',cardNumber:'6225880167820399',cardMobile:'18210230496',cardCode:'',type:"bankCard"};
+  debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6225880167820399',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
   payMoney = 0;
   unit:string="ELA";
   priceObj:any={};
@@ -79,7 +79,22 @@ export class BankcardauthPage extends BaseComponent implements OnInit{
 
     onCommit(){
       if(this.checkParms()){
-        this.saveKycSerialNum(this.serialNum);
+
+        let self = this;
+        console.info("bankcardauth.ts Elastos onCommit parms" + JSON.stringify(this.parms));
+
+        self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.debitCard.cardNumber, function(isExit){
+          console.info("bankcardauth.ts Elastos onCommit isExit " + isExit);
+
+          if (!isExit){
+
+            self.saveKycSerialNum(self.serialNum);
+          }
+          else{
+            self.popupProvider.ionicAlert('confirmTitle', 'text-bankcard-auth-exist').then((data) => {
+            });
+          }
+        })
       }
 
    }
@@ -124,6 +139,7 @@ if(this.isCardNo(this.debitCard.identityNumber)){
        return;
      }
 
+     console.info('ElastJs  this.debitCard.cardNumber'+ this.debitCard.cardNumber)
      if(this.isBankCard(this.debitCard.cardNumber)){
       this.messageBox('text-debitCard-message-2');
        return;

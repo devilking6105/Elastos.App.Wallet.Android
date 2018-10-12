@@ -262,5 +262,10 @@ export const zh = {
   'text-send-tx':"发送交易",
   'text-sing-tx':"签名交易",
   'text-scan-code':"查看二维码",
-  'text-tx-details':"交易详情"
+  'text-tx-details':"交易详情",
+  'text-ident-auth-exist': '该身份认证已经存在',
+  'text-bankcard-auth-exist': '该银行卡认证已经存在',
+  'text-phone-auth-exist': '该手机认证已经存在',
+  'text-enterprise-auth-exist': '该企业认证已经存在'
+
 };
