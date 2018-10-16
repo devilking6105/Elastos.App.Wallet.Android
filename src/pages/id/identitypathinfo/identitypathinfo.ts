@@ -16,7 +16,7 @@ export class IdentitypathinfoPage extends BaseComponent implements OnInit{
   public idsObj ={};
   ngOnInit(){
    this.parmar = this.getNavParams().data;
-   console.log("---path---"+JSON.stringify(this.parmar));
+   console.log("Elastos IdentitypathinfoPage ---parmar---"+JSON.stringify(this.parmar));
    this.setTitleByAssets("text-identity-path-deatils");
     let masterWalletId = Config.getCurMasterWalletId();
 
@@ -29,6 +29,8 @@ export class IdentitypathinfoPage extends BaseComponent implements OnInit{
     let pathList = this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]];
 
     for(let key in pathList){
+      pathList[key]["id"] = this.parmar["id"];
+      pathList[key]["path"] = this.parmar["path"];
        this.identitypathlist.push(pathList[key]);
     }
 
@@ -45,15 +47,23 @@ export class IdentitypathinfoPage extends BaseComponent implements OnInit{
   }
 
   jumpPage(item){
+    console.log("ElastJs identitypathinfo item " + JSON.stringify(item) );
+
     switch(item["pathStatus"]){
           case 0 :
-              break;
+            //this.Go(PersonWriteChainPage,item);
+            this.Go(IdentityauthPage,item);
+
+            break;
           case 1:
              this.getAppAuth(item);
               break;
           case 2 :
              this.Go(PersonWriteChainPage,item);
               break;
+          // case 3 :
+          //   this.Go(IdentityauthPage,this.parmar);
+          //   break;
     }
 }
 
@@ -61,7 +71,7 @@ export class IdentitypathinfoPage extends BaseComponent implements OnInit{
 getAppAuth(item){
   let serialNum = item["serialNum"];
   let txHash =  item["txHash"];
-  console.log("getAppAuth======= txHash type "+typeof(txHash));
+  //console.log("getAppAuth======= txHash type "+typeof(txHash));
   console.log('ElastosJs--identitypathinfo.ts--getAppAuth----'+"---serialNum---"+serialNum+"---txHash---"+txHash);
   let timestamp = this.getTimestamp();
   let parms ={"serialNum":serialNum,
@@ -70,10 +80,17 @@ getAppAuth(item){
              }
   let checksum = IDManager.getCheckSum(parms,"asc");
   parms["checksum"] = checksum;
+
+
   this.getHttp().postByAuth(ApiUrl.APP_AUTH,parms).toPromise().then().then(data => {
+    console.log('ElastosJs--identitypathinfo.ts--getAppAuth---- data '+ JSON.stringify(data) );
+
     if(data["status"] === 200){
-      console.log("sssss======="+JSON.stringify(data));
+      //console.log("sssss======="+JSON.stringify(data));
       let authResult = JSON.parse(data["_body"]);
+
+      console.log('ElastosJs--identitypathinfo.ts--getAppAuth---- authResult '+ JSON.stringify(authResult) );
+
       if(authResult["errorCode"] === "1"){
         this.messageBox("text-id-kyc-auth-fee-fail");
         return;
@@ -89,15 +106,25 @@ getAppAuth(item){
       if(authResult["errorCode"] === "0"){
           //this.params["adata"] = authResult["data"];
           item["adata"] = authResult["data"];
-          this.saveSerialNumParm(serialNum,item);
 
         if (authResult["data"].length > 0){
           var signCont = JSON.parse(JSON.stringify(authResult["data"][0]));
+
+          if(signCont["result"] == "success"){
+            this.saveSerialNumParm(serialNum,item, 2);
+
+          }
+          else{
+            this.saveSerialNumParm(serialNum,item, 3);
+
+          }
           let resultSign = signCont["resultSign"];
           delete signCont["resultSign"];
-
           this.dataManager.addSignCont(resultSign, signCont);
-
+        }
+        else{
+          this.messageBox("text-kyc-failure");
+          return;
         }
       }
      }
@@ -106,14 +133,19 @@ getAppAuth(item){
   });
 }
 
-saveSerialNumParm(serialNum,item){
+saveSerialNumParm(serialNum,item, pathStatus){
   let masterWalletId = Config.getCurMasterWalletId();
 
-  item["pathStatus"] = 2;
-   this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]][serialNum]= item;
-   this.localStorage.setKyc(this.idsObj).then(()=>{
-      this.Go(PersonWriteChainPage,item);
-   });
+  item["pathStatus"] = pathStatus;
+
+    this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]][serialNum]= item;
+    this.localStorage.setKyc(this.idsObj).then(()=>{
+      if(item["pathStatus"]  == 2) {
+        this.Go(PersonWriteChainPage, item);
+      }
+    });
+
+
 }
 
 }

@@ -290,7 +290,10 @@ sendPersonAuth(parms){
       console.info("ElastJs sendPersonAuth params "+ JSON.stringify(parms));
 
   this.getHttp().postByAuth(ApiUrl.AUTH,parms).toPromise().then(data=>{
-        if(data["status"] === 200){
+
+    console.log('ElastJs sendPersonAuth return postByAuth data '+data);
+
+    if(data["status"] === 200){
           let authData= JSON.parse(data["_body"])
           console.log('ElastJs sendPersonAuth return data ---authData---'+JSON.stringify(authData));
           if(authData["errorCode"] === "0"){

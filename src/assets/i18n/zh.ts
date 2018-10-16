@@ -266,6 +266,6 @@ export const zh = {
   'text-ident-auth-exist': '该身份认证已经存在',
   'text-bankcard-auth-exist': '该银行卡认证已经存在',
   'text-phone-auth-exist': '该手机认证已经存在',
-  'text-enterprise-auth-exist': '该企业认证已经存在'
-
+  'text-enterprise-auth-exist': '该企业认证已经存在',
+  'path-status_failed' : "认证失败"
 };

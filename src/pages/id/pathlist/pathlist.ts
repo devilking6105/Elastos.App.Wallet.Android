@@ -33,8 +33,10 @@ export class PathlistPage extends BaseComponent implements OnInit{
              this.localStorage.getKyc().then((val)=>{
 
               let  idsObj = JSON.parse(val);
+              
               let  id = this.parmar["id"];
               let  path = this.parmar["path"];
+
               let idObj = idsObj[masterWalletId][id];
               if(this.isNull(idObj[path])){
                    idObj[path] = {};

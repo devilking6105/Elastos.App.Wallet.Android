@@ -78,18 +78,29 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
       this.type = status;
     }
     this.setLeftIcon('',()=>{
-           this.Go(IdHomeComponent);
+      console.info("ElastJs ngOnInit go  IdHomeComponent" )
+
+      this.Go(IdHomeComponent);
     });
    console.info("ElastJs ngOnInit end " )
 
  }
   getPerson(){
+
+   // console.info("ElastJs getPerson person-write-chain.ts ngOnInit begin ")
+
+    console.info("ElastJs getPerson person-write-chain.ts ngOnInit idObj " + JSON.stringify(this.idObj))
+
+
     this.pageObj = this.getPageObj(this.idObj["adata"]);
     let index = this.idObj["adata"].length-1;
     let adata = this.idObj["adata"][index];
     //let pesronObj = adata["retdata"];
 
     this.message["Path"] = adata["type"];
+
+    console.info("ElastJs getPerson person-write-chain.ts ngOnInit end ")
+
     // this.approdType =  adata["type"];
     // if(this.message["Path"] === "identityCard"){
     //      this.personObj["fullName"] = pesronObj["fullName"];

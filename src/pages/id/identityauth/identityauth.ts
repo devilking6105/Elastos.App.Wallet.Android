@@ -23,7 +23,23 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
     this.parms = this.getNavParams().data;
     this.did = this.parms["id"];
     this.path = this.parms["path"] || "";
-    this.getPrice();
+    console.info("identityauth.ts Elastos ngOnInit parms" + JSON.stringify(this.parms));
+
+    //this.getPrice();
+    if(!this.parms["serialNum"]){
+      this.getPrice();
+    }
+    else{
+      if (this.parms["payObj"]) {
+        this.payMoney = this.parms["payObj"]["money"] || 0.1;
+      }
+      else{
+        this.payMoney = 0.1;
+      }
+
+      //let unit = priceObj["unit"] || "ELA";
+      this.serialNum = this.parms["serialNum"];
+    }
   }
 
   onCommit(){
@@ -31,7 +47,7 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
            let self = this;
            console.info("identityauth.ts Elastos onCommit parms" + JSON.stringify(this.parms));
 
-           self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.personValidate.identityNumber, function(isExit){
+           self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.personValidate.identityNumber, self.serialNum,function(isExit){
              console.info("identityauth.ts Elastos onCommit isExit " + isExit);
 
              if (!isExit){

@@ -220,9 +220,10 @@ export class LocalStorage {
 
     });
   }
-  public isAllReadyExist(masterWalletID: string , id: string, authType: string, unique_num : string, callBack : any){
+  public isAllReadyExist(masterWalletID: string , id: string, authType: string, unique_num : string, exludeSeriNum : string, callBack : any){
 
-    console.info( "ElastosJs isAllReadyExist begin masterWalletID " + masterWalletID + " id " + id + " authType "+ authType + " unique_num " + unique_num);
+    console.info( "ElastosJs isAllReadyExist begin masterWalletID " + masterWalletID + " id " +
+      id + " authType "+ authType + " unique_num " + unique_num + " exludeSeriNum " + exludeSeriNum);
 
     this.getKyc().then((val)=>{
       let valObj = JSON.parse(val)[masterWalletID];
@@ -237,7 +238,15 @@ export class LocalStorage {
 
         console.info("ElastosJs isAllReadyExist  authObj " + JSON.stringify(authObj));
         for (var seriNum in authObj){
+          if (seriNum == exludeSeriNum){
+            console.info("ElastosJs isAllReadyExist  seriNum == exludeSeriNum " + exludeSeriNum);
 
+            continue;
+          }
+          //ignore failed
+          if(authObj[seriNum]["pathStatus"] == 3){
+                continue;
+          }
           if((!authObj[seriNum]['payObj'])){
             console.info("ElastosJs isAllReadyExist  payObj error ");
 

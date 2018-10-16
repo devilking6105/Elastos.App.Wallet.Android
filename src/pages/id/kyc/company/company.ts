@@ -28,8 +28,20 @@ export class IdKycCompanyComponent extends BaseComponent implements OnInit {
     this.parms = this.getNavParams().data;
     this.did = this.parms["id"];
     this.path = this.parms["path"] || "";
-    this.getPrice();
-  }
+    if(!this.parms["serialNum"]){
+      this.getPrice();
+    }
+    else{
+      if (this.parms["payObj"]) {
+        this.payMoney = this.parms["payObj"]["money"] || 0.1;
+      }
+      else{
+        this.payMoney = 0.1;
+      }
+
+      //let unit = priceObj["unit"] || "ELA";
+      this.serialNum = this.parms["serialNum"];
+    }  }
 
   onCommit(): void {
     if(this.checkParms()){
@@ -38,7 +50,7 @@ export class IdKycCompanyComponent extends BaseComponent implements OnInit {
       let self = this;
       console.info("company.ts Elastos onCommit parms" + JSON.stringify(this.parms));
 
-      self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.businessObj.registrationNum, function(isExit){
+      self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.businessObj.registrationNum, self.serialNum, function(isExit){
         console.info("company.ts Elastos onCommit isExit " + isExit);
 
         if (!isExit){

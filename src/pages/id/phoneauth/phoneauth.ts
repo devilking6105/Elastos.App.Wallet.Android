@@ -25,7 +25,23 @@ export class PhoneauthPage extends BaseComponent implements OnInit{
     this.parms = this.getNavParams().data;
     this.did = this.parms["id"];
     this.path = this.parms["path"] || "";
-    this.getPrice();
+
+    console.info("phoneauth.ts Elastos ngOnInit this.parms" + JSON.stringify(this.parms));
+
+    if(!this.parms["serialNum"]){
+      this.getPrice();
+    }
+    else{
+      if (this.parms["payObj"]) {
+        this.payMoney = this.parms["payObj"]["money"] || 0.1;
+      }
+      else{
+        this.payMoney = 0.1;
+      }
+
+      //let unit = priceObj["unit"] || "ELA";
+      this.serialNum = this.parms["serialNum"];
+    }
   }
 
   getPrice(){
@@ -35,11 +51,13 @@ export class PhoneauthPage extends BaseComponent implements OnInit{
     parms["checksum"] = checksum;
     this.getHttp().postByAuth(ApiUrl.GET_PRICE,parms).toPromise().then().then(data => {
         if(data["status"] === 200){
-          this.priceObj = JSON.parse(data["_body"]);
-          this.payMoney = this.priceObj["price"] || 0.1;
-          this.unit = this.priceObj["unit"] || "ELA";
-          this.serialNum = this.priceObj["serialNum"];
-         }
+          let priceObj = JSON.parse(data["_body"]);
+          this.payMoney = priceObj["price"] || 0.1;
+          //let unit = priceObj["unit"] || "ELA";
+          this.serialNum = priceObj["serialNum"];
+          console.info("phoneauth.ts Elastos getPrice serialNum" + this.serialNum);
+
+        }
     }).catch(error => {
 
     });
@@ -48,9 +66,9 @@ export class PhoneauthPage extends BaseComponent implements OnInit{
   onCommit(){
 
     let self = this;
-    console.info("phoneauth.ts Elastos onCommit parms" + JSON.stringify(this.parms));
+    console.info("phoneauth.ts Elastos onCommit parms" + JSON.stringify(this.parms) + " this.serialNum " + this.serialNum);
 
-    self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.phoneValidate.mobile, function(isExit){
+    self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.phoneValidate.mobile, self.serialNum, function(isExit){
       console.info("phoneauth.ts Elastos onCommit isExit " + isExit);
 
       if (!isExit){

@@ -27,7 +27,21 @@ export class BankcardauthPage extends BaseComponent implements OnInit{
     this.parms = this.getNavParams().data;
     this.did = this.parms["id"];
     this.path = this.parms["path"] || "";
-    this.getPrice();
+    //this.getPrice();
+    if(!this.parms["serialNum"]){
+      this.getPrice();
+    }
+    else{
+      if (this.parms["payObj"]) {
+        this.payMoney = this.parms["payObj"]["money"] || 0.1;
+      }
+      else{
+        this.payMoney = 0.1;
+      }
+
+      //let unit = priceObj["unit"] || "ELA";
+      this.serialNum = this.parms["serialNum"];
+    }
   }
 
   getPrice(){
@@ -83,7 +97,7 @@ export class BankcardauthPage extends BaseComponent implements OnInit{
         let self = this;
         console.info("bankcardauth.ts Elastos onCommit parms" + JSON.stringify(this.parms));
 
-        self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.debitCard.cardNumber, function(isExit){
+        self.localStorage.isAllReadyExist(Config.getCurMasterWalletId(), this.did, this.path,  this.debitCard.cardNumber, self.serialNum, function(isExit){
           console.info("bankcardauth.ts Elastos onCommit isExit " + isExit);
 
           if (!isExit){

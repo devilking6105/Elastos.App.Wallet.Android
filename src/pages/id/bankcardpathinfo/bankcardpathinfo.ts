@@ -29,6 +29,8 @@ export class BankcardpathinfoPage extends BaseComponent implements OnInit{
     let pathList = this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]];
 
     for(let key in pathList){
+      pathList[key]["id"] = this.parmar["id"];
+      pathList[key]["path"] = this.parmar["path"];
        this.backcardList.push(pathList[key]);
     }
 
@@ -47,7 +49,8 @@ export class BankcardpathinfoPage extends BaseComponent implements OnInit{
   jumpPage(item){
     switch(item["pathStatus"]){
           case 0 :
-              break;
+            this.Go(BankcardauthPage,item);
+            break;
           case 1:
              this.getAppAuth(item);
               break;
@@ -87,12 +90,19 @@ getAppAuth(item){
              return;
       }
       if(authResult["errorCode"] === "0"){
-          //this.params["adata"] = authResult["data"];
           item["adata"] = authResult["data"];
-          this.saveSerialNumParm(serialNum,item);
 
         if (authResult["data"].length > 0){
           var signCont = JSON.parse(JSON.stringify(authResult["data"][0]));
+
+          if(signCont["result"] == "success"){
+            this.saveSerialNumParm(serialNum,item, 2);
+
+          }
+          else{
+            this.saveSerialNumParm(serialNum,item, 3);
+
+          }
           let resultSign = signCont["resultSign"];
           delete signCont["resultSign"];
 
@@ -106,13 +116,16 @@ getAppAuth(item){
   });
 }
 
-saveSerialNumParm(serialNum,item){
+saveSerialNumParm(serialNum,item, pathStatus){
   let masterWalletId = Config.getCurMasterWalletId();
 
-  item["pathStatus"] = 2;
+  item["pathStatus"] = pathStatus;
    this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]][serialNum]= item;
    this.localStorage.setKyc(this.idsObj).then(()=>{
-      this.Go(PersonWriteChainPage,item);
+
+     if(item["pathStatus"]  == 2) {
+       this.Go(PersonWriteChainPage, item);
+     }
    });
 }
 }
