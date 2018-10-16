@@ -29,7 +29,6 @@ import android.util.SparseArray;
 public class CallbackMap {
     private int currentCallbackId = 0;
     private SparseArray<Pair<CordovaPlugin, Integer>> callbacks;
-    private final Object mLock = new Object();
 
     public CallbackMap() {
         this.callbacks = new SparseArray<Pair<CordovaPlugin, Integer>>();
@@ -44,12 +43,10 @@ public class CallbackMap {
      * @return              A unique request code that can be used to retrieve this callback
      *                      with getAndRemoveCallback()
      */
-    public int registerCallback(CordovaPlugin receiver, int requestCode) {
-      synchronized(mLock){
+    public synchronized int registerCallback(CordovaPlugin receiver, int requestCode) {
         int mappedId = this.currentCallbackId++;
         callbacks.put(mappedId, new Pair<CordovaPlugin, Integer>(receiver, requestCode));
         return mappedId;
-      }
     }
 
     /**
@@ -60,11 +57,9 @@ public class CallbackMap {
      * @return              The CordovaPlugin and orignal request code that correspond to the
      *                      given mappedCode
      */
-    public Pair<CordovaPlugin, Integer> getAndRemoveCallback(int mappedId) {
-      synchronized(mLock){
+    public synchronized Pair<CordovaPlugin, Integer> getAndRemoveCallback(int mappedId) {
         Pair<CordovaPlugin, Integer> callback = callbacks.get(mappedId);
         callbacks.remove(mappedId);
         return callback;
-      }
     }
 }

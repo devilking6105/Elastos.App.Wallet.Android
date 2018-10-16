@@ -62,7 +62,7 @@ public class appmanager extends CordovaPlugin {
             //cordova.getActivity().startActivity(mIntent);
           }
           mIntent.setPackage("org.elastos.desktop");
-          if(message.contains("backurl=")) {
+          if(message.contains("backurlbackurl=")) {
               Log.e(TAG, "Elastos startActivityForResult "+  message);
               mCallbackContext = callbackContext;
               cordova.startActivityForResult(this, mIntent, openwallet);

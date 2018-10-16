@@ -30,12 +30,6 @@ export class AppConfig {
       size: "2 MB",
       date: AppConfig.currentDateYYYYMMDD
     }, {
-      path: "../CarTest/www/assets/imgs/logo.png",
-      name: "CarTest",
-      url: "CarTest/www/index.html",
-      size: "666 KB",
-      date: AppConfig.currentDateYYYYMMDD
-    }, {
       path: "../guess/www/assets/imgs/logo.png",
       name: "Guess",
       url: "guess/www/index.html",

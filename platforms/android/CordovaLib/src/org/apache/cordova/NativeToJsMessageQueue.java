@@ -57,8 +57,6 @@ public class NativeToJsMessageQueue {
      */
     private ArrayList<BridgeMode> bridgeModes = new ArrayList<BridgeMode>();
 
-
-    private final Object mLock = new Object();
     /**
      * When null, the bridge is disabled. This occurs during page transitions.
      * When disabled, all callbacks are dropped since they are assumed to be
@@ -88,7 +86,7 @@ public class NativeToJsMessageQueue {
             BridgeMode newMode = value < 0 ? null : bridgeModes.get(value);
             if (newMode != activeBridgeMode) {
                 LOG.d(LOG_TAG, "Set native->JS mode to " + (newMode == null ? "null" : newMode.getClass().getSimpleName()));
-                synchronized (mLock) {
+                synchronized (this) {
                     activeBridgeMode = newMode;
                     if (newMode != null) {
                         newMode.reset();
@@ -105,7 +103,7 @@ public class NativeToJsMessageQueue {
      * Clears all messages and resets to the default bridge mode.
      */
     public void reset() {
-        synchronized (mLock) {
+        synchronized (this) {
             queue.clear();
             setBridgeMode(-1);
         }
@@ -130,7 +128,7 @@ public class NativeToJsMessageQueue {
      * Returns null if the queue is empty.
      */
     public String popAndEncode(boolean fromOnlineEvent) {
-        synchronized (mLock) {
+        synchronized (this) {
             if (activeBridgeMode == null) {
                 return null;
             }
@@ -168,7 +166,7 @@ public class NativeToJsMessageQueue {
      * Same as popAndEncode(), except encodes in a form that can be executed as JS.
      */
     public String popAndEncodeAsJs() {
-        synchronized (mLock) {
+        synchronized (this) {
             int length = queue.size();
             if (length == 0) {
                 return null;
@@ -241,7 +239,7 @@ public class NativeToJsMessageQueue {
     }
 
     private void enqueueMessage(JsMessage message) {
-        synchronized (mLock) {
+        synchronized (this) {
             if (activeBridgeMode == null) {
                 LOG.d(LOG_TAG, "Dropping Native->JS message due to disabled bridge");
                 return;
@@ -261,7 +259,7 @@ public class NativeToJsMessageQueue {
         }
         paused = value;
         if (!value) {
-            synchronized (mLock) {
+            synchronized (this) {
                 if (!queue.isEmpty() && activeBridgeMode != null) {
                     activeBridgeMode.onNativeToJsMessageAvailable(this);
                 }
@@ -294,7 +292,6 @@ public class NativeToJsMessageQueue {
         @Override
         public void onNativeToJsMessageAvailable(final NativeToJsMessageQueue queue) {
             cordova.getActivity().runOnUiThread(new Runnable() {
-                @Override
                 public void run() {
                     String js = queue.popAndEncodeAsJs();
                     if (js != null) {
@@ -323,7 +320,6 @@ public class NativeToJsMessageQueue {
         @Override
         public void reset() {
             delegate.runOnUiThread(new Runnable() {
-                @Override
                 public void run() {
                     online = false;
                     // If the following call triggers a notifyOfFlush, then ignore it.
@@ -336,7 +332,6 @@ public class NativeToJsMessageQueue {
         @Override
         public void onNativeToJsMessageAvailable(final NativeToJsMessageQueue queue) {
             delegate.runOnUiThread(new Runnable() {
-                @Override
                 public void run() {
                     if (!queue.isEmpty()) {
                         ignoreNextFlush = false;
@@ -367,7 +362,6 @@ public class NativeToJsMessageQueue {
         @Override
         public void onNativeToJsMessageAvailable(final NativeToJsMessageQueue queue) {
             cordova.getActivity().runOnUiThread(new Runnable() {
-                @Override
                 public void run() {
                     String js = queue.popAndEncodeAsJs();
                     if (js != null) {

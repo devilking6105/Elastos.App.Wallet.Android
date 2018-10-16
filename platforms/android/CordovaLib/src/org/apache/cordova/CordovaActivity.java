@@ -42,13 +42,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import org.chromium.base.library_loader.LibraryLoader;
-import org.chromium.base.library_loader.LibraryProcessType;
-import org.chromium.base.library_loader.ProcessInitException;
-import org.chromium.base.ContextUtils;
-import org.chromium.base.PathUtils;
-import org.chromium.base.CommandLine;
-import android.content.pm.PackageManager;
+
 /**
  * This class is the main Android activity that represents the Cordova
  * application. It should be extended by the user to load the specific
@@ -81,7 +75,7 @@ import android.content.pm.PackageManager;
  *
  */
 public class CordovaActivity extends Activity {
-    public static String TAG = "Elastos.CordovaActivity";
+    public static String TAG = "CordovaActivity";
 
     // The webview for our app
     protected CordovaWebView appView;
@@ -89,7 +83,7 @@ public class CordovaActivity extends Activity {
     private static int ACTIVITY_STARTING = 0;
     private static int ACTIVITY_RUNNING = 1;
     private static int ACTIVITY_EXITING = 2;
-    private static final String PRIVATE_DATA_DIRECTORY_SUFFIX = "cordova_shell";
+
     // Keep app running when pause is received. (default = true)
     // If true, then the JavaScript and native code continue to run in the background
     // when another application (activity) is started.
@@ -103,11 +97,7 @@ public class CordovaActivity extends Activity {
     protected String launchUrl;
     protected ArrayList<PluginEntry> pluginEntries;
     protected CordovaInterfaceImpl cordovaInterface;
-    public static final String COMMAND_LINE_FILE = "/data/local/tmp/cordova-shell-command-line";
-    private static final int PERMISSIONS_REQUEST_ALL_PERMISSIONS = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE" };
+
     /**
      * Called when the activity is first created.
      */
@@ -119,9 +109,6 @@ public class CordovaActivity extends Activity {
         String logLevel = preferences.getString("loglevel", "ERROR");
         LOG.setLogLevel(logLevel);
 
-        if (!CommandLine.isInitialized()) {
-            CommandLine.initFromFile(COMMAND_LINE_FILE);
-        }
         LOG.i(TAG, "Apache Cordova native platform version " + CordovaWebView.CORDOVA_VERSION + " is starting");
         LOG.d(TAG, "CordovaActivity.onCreate()");
 
@@ -148,40 +135,10 @@ public class CordovaActivity extends Activity {
         }
 
         super.onCreate(savedInstanceState);
-        ContextUtils.initApplicationContext(getApplicationContext());
-        PathUtils.setPrivateDataDirectorySuffix(PRIVATE_DATA_DIRECTORY_SUFFIX);
-       try {
-            LibraryLoader.get(LibraryProcessType.PROCESS_BROWSER).ensureInitialized();
-        } catch (ProcessInitException e) {
-            LOG.e(TAG, "ContentView initialization failed.", e);
-            // Since the library failed to initialize nothing in the application
-            // can work, so kill the whole application not just the activity
-            System.exit(-1);
-            return;
-        }
 
         cordovaInterface = makeCordovaInterface();
         if (savedInstanceState != null) {
             cordovaInterface.restoreInstanceState(savedInstanceState);
-        }else{
-            validatePermissions();
-        }
-    }
-
-
-    private void validatePermissions() {
-        // Construct a list of missing permissions
-        boolean needRequest = false;
-        for (String permission: PERMISSIONS_STORAGE){
-            if (checkSelfPermission(permission)
-                    != PackageManager.PERMISSION_GRANTED){
-                needRequest = true;
-                break;
-            }
-        }
-        if (needRequest) {
-            requestPermissions(PERMISSIONS_STORAGE,
-                PERMISSIONS_REQUEST_ALL_PERMISSIONS);
         }
     }
 
@@ -220,7 +177,6 @@ public class CordovaActivity extends Activity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-
         setContentView(appView.getView());
 
         if (preferences.contains("BackgroundColor")) {
@@ -234,7 +190,7 @@ public class CordovaActivity extends Activity {
             }
         }
 
-     //   appView.getView().requestFocusFromTouch();
+        appView.getView().requestFocusFromTouch();
     }
 
     /**
@@ -296,7 +252,6 @@ public class CordovaActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-         LOG.d(TAG, "onNewIntent the activity.");
         //Forward to plugins
         if (this.appView != null)
             this.appView.onNewIntent(intent);
@@ -315,7 +270,7 @@ public class CordovaActivity extends Activity {
         }
         // Force window to have focus, so application always
         // receive user input. Workaround for some devices (Samsung Galaxy Note 3 at least)
-//        this.getWindow().getDecorView().requestFocus();
+        this.getWindow().getDecorView().requestFocus();
 
         this.appView.handleResume(this.keepRunning);
     }
@@ -420,7 +375,6 @@ public class CordovaActivity extends Activity {
         if ((errorUrl != null) && (!failingUrl.equals(errorUrl)) && (appView != null)) {
             // Load URL on UI thread
             me.runOnUiThread(new Runnable() {
-                @Override
                 public void run() {
                     me.appView.showWebPage(errorUrl, false, true, null);
                 }
@@ -430,7 +384,6 @@ public class CordovaActivity extends Activity {
         else {
             final boolean exit = !(errorCode == WebViewClient.ERROR_HOST_LOOKUP);
             me.runOnUiThread(new Runnable() {
-                @Override
                 public void run() {
                     if (exit) {
                         me.appView.getView().setVisibility(View.GONE);
@@ -447,7 +400,6 @@ public class CordovaActivity extends Activity {
     public void displayError(final String title, final String message, final String button, final boolean exit) {
         final CordovaActivity me = this;
         me.runOnUiThread(new Runnable() {
-            @Override
             public void run() {
                 try {
                     AlertDialog.Builder dlg = new AlertDialog.Builder(me);
@@ -456,7 +408,6 @@ public class CordovaActivity extends Activity {
                     dlg.setCancelable(false);
                     dlg.setPositiveButton(button,
                             new AlertDialog.OnClickListener() {
-                                @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                     if (exit) {
@@ -521,7 +472,6 @@ public class CordovaActivity extends Activity {
         return null;
     }
 
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         cordovaInterface.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);

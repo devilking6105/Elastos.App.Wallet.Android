@@ -49,6 +49,9 @@
     },
     "ElaWallet": {
       "PACKAGE_NAME": "org.elastos.desktop"
+    },
+    "elastos-plugin-carrier": {
+      "PACKAGE_NAME": "org.elastos.desktop"
     }
   },
   "dependent_plugins": {

@@ -44,7 +44,7 @@ public class CoreAndroid extends CordovaPlugin {
     private CallbackContext messageChannel;
     private PluginResult pendingResume;
     private final Object messageChannelLock = new Object();
-    private final Object mLock = new Object();
+
     /**
      * Send an event to be fired on the Javascript side.
      *
@@ -71,7 +71,6 @@ public class CoreAndroid extends CordovaPlugin {
      * @param callbackContext   The callback context from which we were invoked.
      * @return                  A PluginResult object with a status and message.
      */
-    @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         PluginResult.Status status = PluginResult.Status.OK;
         String result = "";
@@ -85,7 +84,6 @@ public class CoreAndroid extends CordovaPlugin {
                 // I recommend we change the name of the Message as spinner/stop is not
                 // indicative of what this actually does (shows the webview).
                 cordova.getActivity().runOnUiThread(new Runnable() {
-                    @Override
                     public void run() {
                         webView.getPluginManager().postMessage("spinner", "stop");
                     }
@@ -140,7 +138,6 @@ public class CoreAndroid extends CordovaPlugin {
      */
     public void clearCache() {
         cordova.getActivity().runOnUiThread(new Runnable() {
-            @Override
             public void run() {
                 webView.clearCache(true);
             }
@@ -197,7 +194,7 @@ public class CoreAndroid extends CordovaPlugin {
 
         if (wait > 0) {
             try {
-                synchronized(mLock) {
+                synchronized(this) {
                     this.wait(wait);
                 }
             } catch (InterruptedException e) {
@@ -212,7 +209,6 @@ public class CoreAndroid extends CordovaPlugin {
      */
     public void clearHistory() {
         cordova.getActivity().runOnUiThread(new Runnable() {
-            @Override
             public void run() {
                 webView.clearHistory();
             }
@@ -225,7 +221,6 @@ public class CoreAndroid extends CordovaPlugin {
      */
     public void backHistory() {
         cordova.getActivity().runOnUiThread(new Runnable() {
-            @Override
             public void run() {
                 webView.backHistory();
             }
@@ -340,7 +335,6 @@ public class CoreAndroid extends CordovaPlugin {
      * Unregister the receiver
      *
      */
-    @Override
     public void onDestroy()
     {
         webView.getContext().unregisterReceiver(this.telephonyReceiver);

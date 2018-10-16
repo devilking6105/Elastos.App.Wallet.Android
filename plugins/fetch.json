@@ -118,5 +118,13 @@
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "elastos-plugin-carrier": {
+    "source": {
+      "type": "local",
+      "path": "D:\\project\\Elastos.ORG.Wallet.Mobile\\node_modules\\carrier"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

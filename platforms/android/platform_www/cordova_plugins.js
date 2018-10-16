@@ -268,6 +268,14 @@ module.exports = [
     "clobbers": [
       "cordova.plugins.Wallet"
     ]
+  },
+  {
+    "id": "elastos-plugin-carrier.CarrierPlugin",
+    "file": "plugins/elastos-plugin-carrier/www/carrier.js",
+    "pluginId": "elastos-plugin-carrier",
+    "clobbers": [
+      "carrierPlugin"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -287,7 +295,8 @@ module.exports.metadata =
   "cordova-plugin-filepath": "1.0.2",
   "phonegap-plugin-barcodescanner": "8.0.0",
   "com.plugin.appmanager": "1.0.0",
-  "ElaWallet": "1.0.0"
+  "ElaWallet": "1.0.0",
+  "elastos-plugin-carrier": "0.0.1"
 };
 // BOTTOM OF METADATA
 });
