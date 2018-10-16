@@ -9,9 +9,10 @@ import {AddprivatekeyPage} from '../../pages/addprivatekey/addprivatekey';
 })
 export class ImportprivatekeyPage {
   public msobj:any;
-  public importText:string="xprv9s21ZrQH143K2UGVHfyyduzwS2ce8YN7WDVcDUh2bo8crhGbjnBjtfHugXpe9zUvjzwoDvcWX81ePnKDCJG7uN3Sqg15SXcGntzfTb42ayi";
-  public passWord:string="s12345678";
-  public rePassWorld:string="s12345678";
+  public importText:string="";
+  public passWord:string="";
+  public rePassWorld:string="";
+  public name:string ="";
   constructor(public navCtrl: NavController, public navParams: NavParams,public native:Native) {
     this.msobj = this.navParams.data;
   }
@@ -23,12 +24,17 @@ export class ImportprivatekeyPage {
   import(){
 
         if(this.checkParms()){
-            this.msobj["importText"] = this.importText;
+            this.msobj["importText"] = this.importText.replace(/^\s+|\s+$/g,"");
             this.msobj["passWord"] = this.passWord;
+            this.msobj["name"] = this.name;
             this.navCtrl.push(AddprivatekeyPage,this.msobj);
         }
   }
   checkParms(){
+    if (Util.isNull(this.name)) {
+      this.native.toast_trans("text-wallet-name-validator");
+      return;
+    }
     if(Util.isNull(this.importText)){
       this.native.toast_trans('text-import-privatekey-placeholder');
       return false;

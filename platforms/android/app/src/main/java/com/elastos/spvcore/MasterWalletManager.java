@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.util.Log;
 
 public class MasterWalletManager {
+	private String TAG = "MasterWalletManager";
 	private long mManagerProxy = 0;
 	private String mRootPath = null;
 
@@ -18,10 +19,15 @@ public class MasterWalletManager {
 	}
 
 	public IMasterWallet CreateMasterWallet(String masterWalletId, String mnemonic,
-			String phrasePassword, String payPassword, String language) throws WalletException {
+			String phrasePassword, String payPassword, boolean singleAddress, String language) throws WalletException {
 
 		long masterProxy = nativeCreateMasterWallet(mManagerProxy, masterWalletId, mnemonic,
-				phrasePassword, payPassword, language);
+				phrasePassword, payPassword, singleAddress, language);
+
+		if (masterProxy == 0) {
+			Log.e(TAG, "Create master wallet fail");
+			return null;
+		}
 
 		return new IMasterWallet(masterProxy);
 	}
@@ -38,24 +44,49 @@ public class MasterWalletManager {
 		return list;
 	}
 
+	public String[] GetAllMasterWalletIds() throws WalletException {
+		return nativeGetAllMasterWalletIds(mManagerProxy);
+	}
+
+	public IMasterWallet GetWallet(String masterWalletId) throws WalletException {
+		long masterWalletProxy = nativeGetWallet(mManagerProxy, masterWalletId);
+
+		if (masterWalletProxy == 0) {
+			Log.e(TAG, "Get master wallet fail");
+			return null;
+		}
+
+		return new IMasterWallet(masterWalletProxy);
+	}
+
 	public void DestroyWallet(String masterWalletId) throws WalletException {
 		nativeDestroyWallet(mManagerProxy, masterWalletId);
 	}
 
 	public IMasterWallet ImportWalletWithKeystore(String masterWalletId, String keystoreContent,
-			String backupPassWord, String payPassWord, String phrasePassword) throws WalletException {
+			String backupPassWord, String payPassWord) throws WalletException {
 
 		long masterProxy = nativeImportWalletWithKeystore(mManagerProxy, masterWalletId,
-				keystoreContent, backupPassWord, payPassWord, phrasePassword);
+				keystoreContent, backupPassWord, payPassWord);
+
+		if (masterProxy == 0) {
+			Log.e(TAG, "Import master wallet with key store fail");
+			return null;
+		}
 
 		return new IMasterWallet(masterProxy);
 	}
 
 	public IMasterWallet ImportWalletWithMnemonic(String masterWalletId, String mnemonic,
-			String phrasePassword, String payPassWord, String language) throws WalletException {
+			String phrasePassword, String payPassWord, boolean singleAddress, String language) throws WalletException {
 
 		long masterProxy = nativeImportWalletWithMnemonic(mManagerProxy, masterWalletId,
-				mnemonic, phrasePassword, payPassWord, language);
+				mnemonic, phrasePassword, payPassWord, singleAddress, language);
+
+		if (masterProxy == 0) {
+			Log.e(TAG, "Import master wallet with mnemonic fail");
+			return null;
+		}
 
 		return new IMasterWallet(masterProxy);
 	}
@@ -86,6 +117,11 @@ public class MasterWalletManager {
 		long masterProxy = nativeCreateMultiSignMasterWallet(mManagerProxy, masterWallet,
 				coSigners, requiredSignCount);
 
+		if (masterProxy == 0) {
+			Log.e(TAG, "Create multi sign master wallet fail");
+			return null;
+		}
+
 		return new IMasterWallet(masterProxy);
 	}
 
@@ -94,6 +130,11 @@ public class MasterWalletManager {
 
 		long masterProxy = nativeCreateMultiSignMasterWalletWithPrivKey(mManagerProxy, masterWallet,
 				privKey, payPassword, coSigners, requiredSignCount);
+
+		if (masterProxy == 0) {
+			Log.e(TAG, "Create multi sign master wallet with private key fail");
+			return null;
+		}
 
 		return new IMasterWallet(masterProxy);
 	}
@@ -104,15 +145,20 @@ public class MasterWalletManager {
 		long masterProxy = nativeCreateMultiSignMasterWalletWithMnemonic(mManagerProxy, masterWalletId, mnemonic,
 				phrasePassword, payPassword, coSigners, requiredSignCount, language);
 
+		if (masterProxy == 0) {
+			Log.e(TAG, "Create multi sign master wallet with mnemonic fail");
+			return null;
+		}
+
 		return new IMasterWallet(masterProxy);
 	}
 
-	public String ConvertToHexString(String txJson) {
-		return nativeConvertToHexString(mManagerProxy, txJson);
+	public String EncodeTransactionToString(String txJson) {
+		return nativeEncodeTransactionToString(mManagerProxy, txJson);
 	}
 
-	public String ConvertFromHexString(String hexString) {
-		return nativeConvertFromHexString(mManagerProxy, hexString);
+	public String DecodeTransactionFromString(String cipher) {
+		return nativeDecodeTransactionFromString(mManagerProxy, cipher);
 	}
 
 	private native void nativeSaveConfigs(long proxy);
@@ -120,7 +166,7 @@ public class MasterWalletManager {
 	private native String nativeGenerateMnemonic(long proxy, String language);
 
 	private native long nativeCreateMasterWallet(long proxy, String masterWalletId, String mnemonic,
-			String phrasePassword, String payPassword, String language);
+			String phrasePassword, String payPassword, boolean singleAddress, String language);
 
 	private native long nativeCreateMultiSignMasterWallet(long proxy, String masterWalletId,
 			String coSigners, int requiredSignCount);
@@ -132,10 +178,10 @@ public class MasterWalletManager {
 			String phrasePassword, String payPassword, String coSigners, int requiredSignCount, String language);
 
 	private native long nativeImportWalletWithKeystore(long proxy, String masterWalletId,
-			String keystoreContent, String backupPassWord ,String payPassWord, String phrasePassword);
+			String keystoreContent, String backupPassWord ,String payPassWord);
 
 	private native long nativeImportWalletWithMnemonic(long proxy, String masterWalletId, String mnemonic,
-			String phrasePassword,String payPassWord,String language);
+			String phrasePassword, String payPassWord, boolean singleAddress, String language);
 
 	private native String nativeExportWalletWithKeystore(long proxy, IMasterWallet masterWallet,
 			String backupPassWord,String payPassword);
@@ -146,9 +192,13 @@ public class MasterWalletManager {
 
 	private native long[] nativeGetAllMasterWallets(long proxy);
 
-	private native String nativeConvertToHexString(long proxy, String txJson);
+	private native String[] nativeGetAllMasterWalletIds(long proxy);
 
-	private native String nativeConvertFromHexString(long proxy, String hexString);
+	private native long nativeGetWallet(long proxy, String masterWalletId);
+
+	private native String nativeEncodeTransactionToString(long proxy, String txJson);
+
+	private native String nativeDecodeTransactionFromString(long proxy, String cipher);
 
 	private native long nativeInitMasterWalletManager(String rootPath);
 

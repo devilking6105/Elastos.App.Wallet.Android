@@ -1,23 +1,37 @@
-import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from './../../../app/BaseComponent';
+import {Component} from '@angular/core';
 import { Config } from '../../../providers/Config';
+import { NavController, NavParams,Events} from 'ionic-angular';
+import {WalletManager} from '../../../providers/WalletManager';
+import {Native} from "../../../providers/Native";
 
 @Component({
   selector: 'app-address',
   templateUrl: './address.component.html',
 })
-export class AddressComponent extends BaseComponent implements OnInit {
+export class AddressComponent {
   masterWalletId:string ="1";
   addrList = [];
   chinaId: string;
-  ngOnInit() {
+  pageNo = 0;
+  start = 0;
+  constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public events :Events,public native :Native){
+         this.init();
+  }
+  init() {
     this.masterWalletId = Config.getCurMasterWalletId();
-    this.setTitleByAssets('text-contacts-address');
-    this.chinaId = this.getNavParams().get("chinaId");
-    this.walletManager.getAllAddress(this.masterWalletId,this.chinaId, 0, (data) => {
+    this.chinaId = this.navParams.get("chinaId");
+    this.getAddressList();
+  }
+
+  getAddressList(){
+    this.walletManager.getAllAddress(this.masterWalletId,this.chinaId,this.start, (data) => {
       if(data["success"]){
         console.log("===getAllAddress==="+JSON.stringify(data));
-        this.addrList = JSON.parse(data["success"])['Addresses'];
+        if(this.pageNo != 0){
+        this.addrList = this.addrList.concat(JSON.parse(data["success"])['Addresses']);
+        }else{
+          this.addrList = JSON.parse(data["success"])['Addresses'];
+        }
       }else{
         alert("==getAllAddress==error"+JSON.stringify(data))
       }
@@ -26,6 +40,26 @@ export class AddressComponent extends BaseComponent implements OnInit {
 
   onItem(item) {
     this.native.copyClipboard(item);
-    this.toast('copy-ok');
+    this.native.toast_trans('copy-ok');
+  }
+
+  doRefresh(refresher){
+     this.pageNo = 0;
+     this.start = 0;
+     this.getAddressList();
+     setTimeout(() => {
+      refresher.complete();
+      //toast提示
+      this.native.toast("加载成功");
+  },2000);
+  }
+
+  doInfinite(infiniteScroll){
+    setTimeout(() => {
+      this.pageNo++;
+      this.start  = this.pageNo*20;
+      this.getAddressList();
+      infiniteScroll.complete();
+    },2000);
   }
 }

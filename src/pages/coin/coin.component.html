@@ -1,12 +1,13 @@
 <ion-header>
-    <app-header [header]="header"></app-header>
+    <ion-navbar>
+        <ion-title style="text-align:center">{{coinName}}</ion-title>
+    </ion-navbar>
 </ion-header>
 <ion-content>
     <div class='address-whole'>
         <div class="coin-info-top-box">
             <img src="./assets/images/logo-maincolor.svg">
-            <div>{{coinCount}}&nbsp; {{ coinName }}</div>
-
+            <div style="font-size: 1.6em;">{{coinCount}} </div>
         </div>
 
         <div class="weui-cells__title">{{ 'coin-recent-transfer' | translate }}</div>
@@ -17,21 +18,22 @@
                 <div class="weui-cell__bd">
                     <p><br/> {{item.status | translate}} <span class="transfer-list-date" *ngIf="item.timestamp!='0'"> {{item.datetime}} </span></p>
                 </div>
-                <div class="weui-cell__ft">{{item.balance > 0 ? '+' : ''}} {{item.balance}} {{item.name}}</div>
+                <div class="weui-cell__ft">{{item.balance - item.payfees > 0 ? '+' : ''}} {{item.balance - item.payfees}} </div>
             </li>
+            <p style="text-align: center;font-size: 16px;height:30px;line-height:30px;margin-top: 5px" (click)="clickMore()" *ngIf="isShowMore">点击加载更多</p>
         </ul>
-
-        <!-- <div class="coin-outher" (click)="onNext(3)">  {{ 'transfer-more' | translate }} </div> -->
-        <div class="coin-bottom">
-            <div (click)="onNext(1)">
-                {{ 'text-receive' | translate }}
-            </div>
-            <div (click)="onNext(3)">
-                {{ this.textShow | translate }}
-            </div>
-            <div (click)="onNext(2)">
-                {{ 'text-transfer' | translate }}
-            </div>
-        </div>
     </div>
 </ion-content>
+<ion-footer>
+    <div class="coin-bottom">
+        <div (click)="onNext(1)" style="font-size: 1.6em;">
+            {{ 'text-receive' | translate }}
+        </div>
+        <div (click)="onNext(3)" style="font-size: 1.6em;">
+            {{ this.textShow | translate }}
+        </div>
+        <div (click)="onNext(2)" style="font-size: 1.6em;">
+            {{ 'text-transfer' | translate }}
+        </div>
+    </div>
+</ion-footer>

@@ -1,6 +1,4 @@
 import {Component,ViewChild} from '@angular/core';
-import {Util} from "../../../providers/Util";
-import {CoinlistpasswordPage} from '../../../pages/coinlistpassword/coinlistpassword';
 import { NavController, NavParams,ModalController,Navbar,Events } from 'ionic-angular';
 import {WalletManager} from '../../../providers/WalletManager';
 import {Native} from "../../../providers/Native";
@@ -31,36 +29,40 @@ export class CoinListComponent {
     };
   }
 
-  createMode(){
-    let modal = this.modalCtrl.create(CoinlistpasswordPage);
-        modal.onDidDismiss((data)=>{
-              if(!Util.isEmptyObject(data)){
-                console.log("==1111==="+JSON.stringify(data));
-                this.createSubWallet(data);
-              }else{
-                console.log("==2222==="+JSON.stringify(data));
-                this.currentCoin["open"] = false;
-              }
-        });
-        modal.present();
-  }
   onSelect(item) {
      console.log("====item===="+JSON.stringify(item));
      if(item.open){
       this.currentCoin = item;
-      this.createMode();
+      //this.createMode();
+      this.createSubWallet();
      }else{
-        this.localStorage.get('coinListCache').then((val)=>{
-        let coinListCache = JSON.parse(val);
-        delete(coinListCache[item.name]);
-        this.localStorage.set('coinListCache',coinListCache);
-      });
+        let subWallte = Config.getSubWallet(this.masterWalletId);
+        //this.localStorage.get('coinListCache').then((val)=>{
+        //let coinListCache = JSON.parse(val);
+        delete(subWallte[item.name]);
+        let walletObj = this.native.clone(Config.masterWallObj);
+        walletObj["id"]   = this.masterWalletId;
+        walletObj["wallname"] = Config.getWalletName(this.masterWalletId);
+        walletObj["coinListCache"] = subWallte;
+        this.localStorage.saveMappingTable(walletObj).then((walletObj)).then((data)=>{
+          let  mappingList = this.native.clone(Config.getMappingList());
+          mappingList[this.masterWalletId] = walletObj;
+         console.log("=====mappingList===="+JSON.stringify(mappingList));
+          Config.setMappingList(mappingList);
+        });
+        //this.localStorage.set('coinListCache',coinListCache);
+      //});
      }
   }
 
   init() {
+    this.events.subscribe("error:update",()=>{
+      this.currentCoin["open"] = false;
+    });
     this.masterWalletId =Config.getCurMasterWalletId();
-    this.localStorage.get('coinListCache').then((val)=>{
+    //this.localStorage.get('coinListCache').then((val)=>{
+      let subWallte= Config.getSubWallet(this.masterWalletId);
+      console.log("=====subWallte======")
       this.walletManager.getSupportedChains(this.masterWalletId,(data) => {
         if(data['success']){
           console.log("====getSupportedChains===="+JSON.stringify(data));
@@ -68,9 +70,9 @@ export class CoinListComponent {
           for (let index in allChains) {
             let chain = allChains[index];
             let isOpen = false;
-            let coinListCache = JSON.parse(val);
-            if (coinListCache) {
-              isOpen = chain in coinListCache ? true : false;
+            //let coinListCache = JSON.parse(val);
+            if (subWallte) {
+              isOpen = chain in subWallte ? true : false;
             }
             if (chain == "ELA") {
               isOpen = true;
@@ -81,27 +83,42 @@ export class CoinListComponent {
             alert("====getSupportedChains==error=="+JSON.stringify(data));
         }
       });
-    });
+    //});
   }
 
-  createSubWallet(data){
+  createSubWallet(){
     // Sub Wallet IdChain
     let chainId = this.currentCoin["name"];
-    let payPassword = data["password"];
-    let singleAddress= data["singleAddress"];
     //this.currentCoin["open"] = false;
-    this.walletManager.createSubWallet(this.masterWalletId,chainId,payPassword,singleAddress, 0, (data)=>{
-      console.log("==333==="+JSON.stringify(data));
+    this.walletManager.createSubWallet(this.masterWalletId,chainId,0, (data)=>{
       if(data['success']){
-         console.log("createSubWallet==="+JSON.stringify(data));
-        let coin = {};
-        coin["id"] = chainId;
-        this.localStorage.add('coinListCache', coin);
+        let coin = this.native.clone(Config.getSubWallet(this.masterWalletId));
+        if(coin){
+          coin[chainId] = {id:chainId};
+        }else{
+          coin = {};
+          coin[chainId] = {id:chainId};
+        }
+
+        //this.localStorage.add('coinListCache', coin);
+        let walletObj = this.native.clone(Config.masterWallObj);
+        walletObj["id"]   = this.masterWalletId;
+        walletObj["wallname"] = Config.getWalletName(this.masterWalletId);
+        walletObj["coinListCache"] = coin;
+        this.localStorage.saveMappingTable(walletObj).then((data)=>{
+          let  mappingList = this.native.clone(Config.getMappingList());
+          mappingList[this.masterWalletId] = walletObj;
+          Config.setMappingList(mappingList);
+        });
       }else{
         this.currentCoin["open"] = false;
         alert("createSubWallet===error=="+JSON.stringify(data));
       }
     });
+  }
+
+  ionViewDidLeave() {
+     this.events.unsubscribe("error:update");
   }
 
 }

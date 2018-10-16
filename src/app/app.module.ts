@@ -72,6 +72,8 @@ import {FileChooser} from "@ionic-native/file-chooser";
 import {TestJniComponent} from '../pages/testjni/testjni.component';
 import {kycSelectTypeComponent} from "../pages/id/kyc/selecttype/create"
 import {ComponentsModule} from "../components/components.module";
+import {InitializepagePage} from "../pages/initializepage/initializepage";
+import {CreatewalletnamePage} from "../pages/createwalletname/createwalletname";
 /*id相关页面*/
 import {IdLauncherComponent} from '../pages/id/launcher/launcher';
 import {IdHomeComponent} from '../pages/id/home/home';
@@ -101,6 +103,8 @@ import {WalltemodePage} from '../pages/walltemode/walltemode';
 import {AddpublickeyPage} from '../pages/addpublickey/addpublickey';
 import {AddprivatekeyPage} from '../pages/addprivatekey/addprivatekey';
 import {ImportprivatekeyPage} from '../pages/importprivatekey/importprivatekey';
+import {PaymentboxPage} from '../pages/paymentbox/paymentbox';
+
 /*id相关页面*/
 
 /** 通过类引用方式解析国家化文件 */
@@ -190,7 +194,10 @@ export function TranslateLoaderFactory() {
     ImportprivatekeyPage,
     CoinlistpasswordPage,
     ScancodePage,
-    TxdetailsPage
+    TxdetailsPage,
+    InitializepagePage,
+    PaymentboxPage,
+    CreatewalletnamePage
   ],
   imports: [
     BrowserModule,
@@ -276,7 +283,10 @@ export function TranslateLoaderFactory() {
     ImportprivatekeyPage,
     CoinlistpasswordPage,
     ScancodePage,
-    TxdetailsPage
+    TxdetailsPage,
+    InitializepagePage,
+    PaymentboxPage,
+    CreatewalletnamePage
   ],
   providers: [
     StatusBar,

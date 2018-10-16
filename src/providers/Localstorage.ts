@@ -302,17 +302,6 @@ export class LocalStorage {
       return this.storage.get(key);
   }
 
-  public setWalletList(value: any): any {
-    // TODO
-    let key = "ELA-WalletList";
-    return this.storage.set(key, JSON.stringify(value));
-  }
-
-  public getWalletList(): any {
-    // TODO
-    let key = "ELA-WalletList";
-    return this.storage.get(key);
-  }
 
   public saveCurMasterId(value){
     // {masterId:"123"}
@@ -322,6 +311,16 @@ export class LocalStorage {
 
   public getCurMasterId(){
     let key = "cur-masterId";
+    return this.storage.get(key);
+  }
+
+  public saveMappingTable(obj){
+     let key = "map-table";
+     return this.add(key,obj);
+  }
+
+  public getMappingTable(){
+    let key = "map-table";
     return this.storage.get(key);
   }
 

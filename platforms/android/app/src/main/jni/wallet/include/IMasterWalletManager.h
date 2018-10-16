@@ -12,17 +12,17 @@ namespace Elastos {
 
 		class IMasterWalletManager {
 		public:
-		   /**
-			 * Virtual destructor
-			 */
+			/**
+			  * Virtual destructor
+			  */
 			virtual ~IMasterWalletManager() noexcept {}
 
-		   /**
-			 * Generate a mnemonic by random 128 entropy. We support English, Chinese, French, Italian, Japanese, and
-			 * 	Spanish 6 types of mnemonic currently.
-			 * @param language specify mnemonic language.
-			 * @return a random mnemonic.
-			 */
+			/**
+			  * Generate a mnemonic by random 128 entropy. We support English, Chinese, French, Italian, Japanese, and
+			  * 	Spanish 6 types of mnemonic currently.
+			  * @param language specify mnemonic language.
+			  * @return a random mnemonic.
+			  */
 			virtual std::string GenerateMnemonic(const std::string &language) = 0;
 
 			/**
@@ -31,6 +31,7 @@ namespace Elastos {
 			  * @param mnemonic use to generate seed which deriving the master private key and chain code.
 			  * @param phrasePassword combine with random seed to generate root key and chain code. Phrase password can be empty or between 8 and 128, otherwise will throw invalid argument exception.
 			  * @param payPassword use to encrypt important things(such as private key) in memory. Pay password should between 8 and 128, otherwise will throw invalid argument exception.
+			  * @param singleAddress singleAddress if true created wallet will have only one address inside, otherwise sub wallet will manager a chain of addresses for security.
 			  * @param language specify language of mnemonic, value of language should correspond to the language of \p mnemonic.
 			  * @return If success will return a pointer of master wallet interface.
 			  */
@@ -39,6 +40,7 @@ namespace Elastos {
 					const std::string &mnemonic,
 					const std::string &phrasePassword,
 					const std::string &payPassword,
+					bool singleAddress,
 					const std::string &language = "english") = 0;
 
 			/**
@@ -96,6 +98,20 @@ namespace Elastos {
 			virtual std::vector<IMasterWallet *> GetAllMasterWallets() const = 0;
 
 			/**
+			 * Get manager available master wallet ids.
+			 * @return available ids array.
+			 */
+			virtual std::vector<std::string> GetAllMasterWalletIds() const = 0;
+
+			/**
+			 * Get a master wallet object by id.
+			 * @param masterWalletId master wallet id.
+			 * @return master wallet object.
+			 */
+			virtual IMasterWallet *GetWallet(
+					const std::string &masterWalletId) const = 0;
+
+			/**
 			 * Destroy a master wallet.
 			 * @param masterWallet A pointer of master wallet interface create or imported by wallet factory object.
 			 */
@@ -114,8 +130,7 @@ namespace Elastos {
 					const std::string &masterWalletId,
 					const nlohmann::json &keystoreContent,
 					const std::string &backupPassword,
-					const std::string &payPassword,
-					const std::string &phrasePassword) = 0;
+					const std::string &payPassword) = 0;
 
 			/**
 			 * Import master wallet by mnemonic.
@@ -123,6 +138,7 @@ namespace Elastos {
 			 * @param mnemonic for importing the master wallet.
 			 * @param phrasePassword combine with mnemonic to generate root key and chain code. Phrase password can be empty or between 8 and 128, otherwise will throw invalid argument exception.
 			 * @param payPassword use to encrypt important things(such as private key) in memory. Pay password should between 8 and 128, otherwise will throw invalid argument exception.
+			 * @param singleAddress singleAddress if true created wallet will have only one address inside, otherwise sub wallet will manager a chain of addresses for security.
 			 * @param language specify language of mnemonic. Language should not be empty, and exit corresponding language config file under the root path. The config begin with fixed prefix "mnemonic_" and end with ".txt" extension, for example mnemonic of Chinese config will be "mnemonic_chinese.txt".
 			 * @return If success will return a pointer of master wallet interface.
 			 */
@@ -131,6 +147,7 @@ namespace Elastos {
 					const std::string &mnemonic,
 					const std::string &phrasePassword,
 					const std::string &payPassword,
+					bool singleAddress,
 					const std::string &language) = 0;
 
 			/**

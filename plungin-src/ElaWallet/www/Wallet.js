@@ -273,5 +273,20 @@ walletFunc.prototype.createMultiSignMasterWalletWithMnemonic = function(arg0, su
 };
 
 
+walletFunc.prototype.encodeTransactionToString = function(arg0, success, error) {
+    exec(success, error, "Wallet", "encodeTransactionToString", arg0);
+};
+
+walletFunc.prototype.decodeTransactionFromString = function(arg0, success, error) {
+    exec(success, error, "Wallet", "decodeTransactionFromString", arg0);
+};
+
+walletFunc.prototype.removeWalletListener = function(arg0, success, error) {
+    exec(success, error, "Wallet", "removeWalletListener", arg0);
+};
+
+
+
+
 var WALLETFUNC = new walletFunc();
 module.exports = WALLETFUNC;

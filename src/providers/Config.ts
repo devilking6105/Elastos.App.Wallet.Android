@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-
+import {Logger} from "../providers/Logger";
 
 
 
@@ -9,23 +9,17 @@ import {Injectable} from '@angular/core';
  */
 @Injectable()
 export class Config {
+  public static masterWallObj={id:"",wallname:""};
+  public static perObj = {};
   public static masterWalletId:string = "1";
   public static masterWalletList = [];
-  public static COIN_LIST = {"ELA": {id: 0, name: 'ELA', balance: 0}};
 
-  public static WalletKey = "wallet";
-
-  public static LIST_COUNT = 20;
+  public static mappingList = {};
 
   public static SELA = 100000000;
 
-  public static BLOCKCHAIN_URL: String = 'https://blockchain.elastos.org/';
-
-  public static appList=[{"id":0,"appkeyName":"kyc"}];
-
-  private static smsSecretKey = "";
-
-  public static test: any = '';
+//  public static BLOCKCHAIN_URL: String = 'https://blockchain.elastos.org/';
+    public static BLOCKCHAIN_URL: String = 'https://blockchain-beta.elastos.org/';
 
   private static kycObj:any={};
 
@@ -39,10 +33,6 @@ export class Config {
 
   public static setKycObj(obj){
         this.kycObj = obj;
-  }
-
-  public static getSmsSecretKey(){
-      return this.smsSecretKey;
   }
 
   public static setDeviceID(deviceID){
@@ -111,14 +101,6 @@ export class Config {
        this.masterWalletId = masterWalletId;
   }
 
-  public static maXMasterWalletId(){
-
-  }
-
-  public static addMasterWalletId(){
-
-  }
-
   public static getMasterWalletIdList(){
           return this.masterWalletList;
   }
@@ -156,6 +138,49 @@ export class Config {
     }
 
     return uuid.join('');
+  }
+
+
+  public static setMasterPer(masterId,coin,per){
+      if(this.perObj[masterId]){
+        this.perObj[masterId][coin] = per;
+      }else{
+         this.perObj[masterId] = {};
+         this.perObj[masterId][coin] = per;
+      }
+  }
+
+  public static getMasterPer(masterId,coin){
+
+    if(this.perObj[masterId]){
+      return this.perObj[masterId][coin] || 0;
+    }else{
+         return 0;
+    }
+  }
+
+  public static setMappingList(list){
+      this.mappingList = list;
+  }
+
+  public static getMappingList(){
+       return this.mappingList;
+  }
+
+  public static objtoarr(obj){
+    let arr = [];
+    for (let key in obj) {
+      arr.push(obj[key]);
+    }
+    return arr;
+  }
+
+  public static getWalletName(id){
+          return this.mappingList[id]["wallname"];
+  }
+
+  public static getSubWallet(id){
+          return this.mappingList[id]["coinListCache"] || null;
   }
 }
 

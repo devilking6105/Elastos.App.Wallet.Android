@@ -12,6 +12,7 @@ using namespace Elastos::ElaWallet;
 #define  CLASS_SUBWALLET   "com/elastos/spvcore/ISubWallet"
 #define  FIELD_SUBWALLET   "mSubProxy"
 
+#define SIG_GET_CHAIN_ID "(J)Ljava/lang/String;"
 static jstring JNICALL nativeGetChainId(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
 	jstring chainId = NULL;
@@ -27,6 +28,7 @@ static jstring JNICALL nativeGetChainId(JNIEnv *env, jobject clazz, jlong jSubPr
 	return chainId;
 }
 
+#define SIG_GET_BASIC_INFO "(J)Ljava/lang/String;"
 static jstring JNICALL nativeGetBasicInfo(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
 	jstring info = NULL;
@@ -42,6 +44,7 @@ static jstring JNICALL nativeGetBasicInfo(JNIEnv *env, jobject clazz, jlong jSub
 	return info;
 }
 
+#define SIG_GET_BALANCE_INFO "(J)Ljava/lang/String;"
 static jstring JNICALL nativeGetBalanceInfo(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
 	jstring info = NULL;
@@ -57,6 +60,7 @@ static jstring JNICALL nativeGetBalanceInfo(JNIEnv *env, jobject clazz, jlong jS
 	return info;
 }
 
+#define SIG_GET_BALANCE "(J)J"
 static jlong JNICALL nativeGetBalance(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
 	jlong balance = 0;
@@ -71,6 +75,7 @@ static jlong JNICALL nativeGetBalance(JNIEnv *env, jobject clazz, jlong jSubProx
 	return balance;
 }
 
+#define SIG_CREATE_ADDRESS "(J)Ljava/lang/String;"
 static jstring JNICALL nativeCreateAddress(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
 	jstring addr = NULL;
@@ -86,6 +91,7 @@ static jstring JNICALL nativeCreateAddress(JNIEnv *env, jobject clazz, jlong jSu
 	return addr;
 }
 
+#define SIG_GET_ALL_ADDRESS "(JII)Ljava/lang/String;"
 static jstring JNICALL nativeGetAllAddress(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jint jStart,
 		jint jCount)
@@ -103,6 +109,7 @@ static jstring JNICALL nativeGetAllAddress(JNIEnv *env, jobject clazz, jlong jSu
 	return addresses;
 }
 
+#define SIG_GET_BALANCE_WITH_ADDRESS "(JLjava/lang/String;)J"
 static jlong JNICALL nativeGetBalanceWithAddress(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jstring jaddress)
 {
@@ -145,17 +152,14 @@ class ElaSubWalletCallback: public ISubWalletCallback
 		 * @param currentBlockHeight is the of current block when callback fired.
 		 * @param progress is current progress when block height increased.
 		 */
-		virtual void OnBlockHeightIncreased(uint32_t currentBlockHeight, double progress);
+		virtual void OnBlockHeightIncreased(uint32_t currentBlockHeight, int progress);
 
 		/**
 		 * Callback method fired when block end synchronizing with a peer. This callback could be used to show progress.
 		 */
 		virtual void OnBlockSyncStopped();
 
-		/**
-		 * Callback method fired when subwallet was destroyed.
-		 */
-		virtual void OnDestroyWallet();
+		virtual void OnBalanceChanged(uint64_t balance);
 
 		ElaSubWalletCallback(
 				/* [in] */ JNIEnv* env,
@@ -173,16 +177,17 @@ class ElaSubWalletCallback: public ISubWalletCallback
 };
 
 
-static std::map<jobject, ElaSubWalletCallback*> sSubCallbackMap;
+static std::map<jlong, ElaSubWalletCallback*> sSubCallbackMap;
+#define SIG_ADD_CALLBACK "(JLcom/elastos/spvcore/ISubWalletCallback;)V"
 static void JNICALL nativeAddCallback(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jobject jsubCallback)
 {
 	try {
-		if (sSubCallbackMap.find(jsubCallback) == sSubCallbackMap.end()) {
-			ElaSubWalletCallback* subCallback = new ElaSubWalletCallback(env, jsubCallback);
-			ISubWallet* subWallet = (ISubWallet*)jSubProxy;
+		if (sSubCallbackMap.find(jSubProxy) == sSubCallbackMap.end()) {
+			ElaSubWalletCallback *subCallback = new ElaSubWalletCallback(env, jsubCallback);
+			ISubWallet *subWallet = (ISubWallet *)jSubProxy;
 			subWallet->AddCallback(subCallback);
-			sSubCallbackMap[jsubCallback] = subCallback;
+			sSubCallbackMap[jSubProxy] = subCallback;
 		} else {
 			LOGE("Sub wallet callback already exist");
 		}
@@ -191,14 +196,14 @@ static void JNICALL nativeAddCallback(JNIEnv *env, jobject clazz, jlong jSubProx
 	}
 }
 
-static void JNICALL nativeRemoveCallback(JNIEnv *env, jobject clazz, jlong jSubProxy,
-		jobject jsubCallback)
+#define SIG_REMOVE_CALLBACK "(J)V"
+static void JNICALL nativeRemoveCallback(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
 	try {
 		ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-		std::map<jobject, ElaSubWalletCallback*>::iterator it;
+		std::map<jlong, ElaSubWalletCallback*>::iterator it;
 		for (it = sSubCallbackMap.begin(); it != sSubCallbackMap.end(); it++) {
-			if (jsubCallback == it->first) {
+			if (jSubProxy == it->first) {
 				subWallet->RemoveCallback(it->second);
 				delete it->second;
 				sSubCallbackMap.erase(it);
@@ -210,6 +215,7 @@ static void JNICALL nativeRemoveCallback(JNIEnv *env, jobject clazz, jlong jSubP
 	}
 }
 
+#define SIG_CREATE_TRANSACTION "(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeCreateTransaction(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jstring jfromAddress,
 		jstring jtoAddress,
@@ -248,7 +254,7 @@ static jstring JNICALL nativeCreateTransaction(JNIEnv *env, jobject clazz, jlong
 	return tx;
 }
 
-//"(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+#define SIG_CREATE_MULTISIGN_TX "(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeCreateMultiSignTransaction(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jstring jfromAddress,
 		jstring jtoAddress,
@@ -284,6 +290,7 @@ static jstring JNICALL nativeCreateMultiSignTransaction(JNIEnv *env, jobject cla
 	return tx;
 }
 
+#define SIG_CALCULATE_TX_FEE "(JLjava/lang/String;J)J"
 static jlong JNICALL nativeCalculateTransactionFee(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jstring jrawTransaction,
 		jlong feePerKb)
@@ -313,6 +320,7 @@ static jlong JNICALL nativeCalculateTransactionFee(JNIEnv *env, jobject clazz, j
 	return fee;
 }
 
+#define SIG_UPDATE_TX_FEE "(JLjava/lang/String;J)Ljava/lang/String;"
 static jstring JNICALL nativeUpdateTransactionFee(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jstring jrawTransaction,
 		jlong fee)
@@ -342,6 +350,7 @@ static jstring JNICALL nativeUpdateTransactionFee(JNIEnv *env, jobject clazz, jl
 	return tx;
 }
 
+#define SIG_SIGN_TX "(JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeSignTransaction(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jstring jRawTransaction,
 		jstring jPayPassword)
@@ -373,6 +382,35 @@ static jstring JNICALL nativeSignTransaction(JNIEnv *env, jobject clazz, jlong j
 	return tx;
 }
 
+#define SIG_GET_TX_SIGNED_SIGNERS "(JLjava/lang/String;)Ljava/lang/String;"
+static jstring JNICALL nativeGetTransactionSignedSigners(JNIEnv *env, jobject clazz, jlong jSubProxy,
+		jstring jTransactionJson)
+{
+	bool exception = false;
+	std::string msgException;
+
+	const char *transactionJson = env->GetStringUTFChars(jTransactionJson, NULL);
+	jstring result = NULL;
+
+	try {
+		ISubWallet* subWallet = (ISubWallet*)jSubProxy;
+		nlohmann::json signers = subWallet->GetTransactionSignedSigners(nlohmann::json::parse(transactionJson));
+		result = env->NewStringUTF(signers.dump().c_str());
+	} catch (std::exception &e) {
+		exception = true;
+		msgException = e.what();
+	}
+
+	env->ReleaseStringUTFChars(jTransactionJson, transactionJson);
+
+	if (exception) {
+		ThrowWalletException(env, msgException.c_str());
+	}
+
+	return result;
+}
+
+#define SIG_PUBLISH_TX "(JLjava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativePublishTransaction(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jstring jTransactionJson)
 {
@@ -381,10 +419,10 @@ static jstring JNICALL nativePublishTransaction(JNIEnv *env, jobject clazz, jlon
 
 	const char* transactionJson = env->GetStringUTFChars(jTransactionJson, NULL);
 
-	ISubWallet* subWallet = (ISubWallet*)jSubProxy;
 	jstring result = NULL;
 
 	try {
+		ISubWallet* subWallet = (ISubWallet*)jSubProxy;
 		nlohmann::json r = subWallet->PublishTransaction(nlohmann::json::parse(transactionJson));
 		result = env->NewStringUTF(r.dump().c_str());
 	} catch (std::exception &e) {
@@ -401,6 +439,7 @@ static jstring JNICALL nativePublishTransaction(JNIEnv *env, jobject clazz, jlon
 	return result;
 }
 
+#define SIG_GET_ALL_TX "(JIILjava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeGetAllTransaction(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jint start,
 		jint count,
@@ -431,6 +470,7 @@ static jstring JNICALL nativeGetAllTransaction(JNIEnv *env, jobject clazz, jlong
 }
 
 
+#define SIG_SIGN "(JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeSign(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jstring jmessage,
 		jstring jpayPassword)
@@ -462,6 +502,7 @@ static jstring JNICALL nativeSign(JNIEnv *env, jobject clazz, jlong jSubProxy,
 	return result;
 }
 
+#define SIG_CHECK_SIGN "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
 static jstring JNICALL nativeCheckSign(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jstring jPublicKey,
 		jstring jMessage,
@@ -496,6 +537,7 @@ static jstring JNICALL nativeCheckSign(JNIEnv *env, jobject clazz, jlong jSubPro
 	return result;
 }
 
+#define SIG_GET_PUBLIC_KEY "(J)Ljava/lang/String;"
 static jstring JNICALL nativeGetPublicKey(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
 	bool exception = false;
@@ -515,25 +557,26 @@ static jstring JNICALL nativeGetPublicKey(JNIEnv *env, jobject clazz, jlong jSub
 }
 
 static const JNINativeMethod gMethods[] = {
-	{"nativeGetChainId", "(J)Ljava/lang/String;", (void*)nativeGetChainId},
-	{"nativeGetBasicInfo", "(J)Ljava/lang/String;", (void*)nativeGetBasicInfo},
-	{"nativeGetBalanceInfo", "(J)Ljava/lang/String;", (void*)nativeGetBalanceInfo},
-	{"nativeGetBalance", "(J)J", (void*)nativeGetBalance},
-	{"nativeCreateAddress", "(J)Ljava/lang/String;", (void*)nativeCreateAddress},
-	{"nativeGetAllAddress", "(JII)Ljava/lang/String;", (void*)nativeGetAllAddress},
-	{"nativeGetBalanceWithAddress", "(JLjava/lang/String;)J", (void*)nativeGetBalanceWithAddress},
-	{"nativeAddCallback", "(JLcom/elastos/spvcore/ISubWalletCallback;)V", (void*)nativeAddCallback},
-	{"nativeRemoveCallback", "(JLcom/elastos/spvcore/ISubWalletCallback;)V", (void*)nativeRemoveCallback},
-	{"nativeCreateTransaction", "(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;", (void*)nativeCreateTransaction},
-	{"nativeCreateMultiSignTransaction", "(JLjava/lang/String;Ljava/lang/String;JLjava/lang/String;)Ljava/lang/String;", (void*)nativeCreateMultiSignTransaction},
-	{"nativeCalculateTransactionFee", "(JLjava/lang/String;J)J", (void*)nativeCalculateTransactionFee},
-	{"nativeUpdateTransactionFee", "(JLjava/lang/String;J)Ljava/lang/String;", (void*)nativeUpdateTransactionFee},
-	{"nativeSignTransaction", "(JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;", (void*)nativeSignTransaction},
-	{"nativePublishTransaction", "(JLjava/lang/String;)Ljava/lang/String;", (void*)nativePublishTransaction},
-	{"nativeGetAllTransaction", "(JIILjava/lang/String;)Ljava/lang/String;", (void*)nativeGetAllTransaction},
-	{"nativeSign", "(JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;", (void*)nativeSign},
-	{"nativeCheckSign", "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", (void*)nativeCheckSign},
-	{"nativeGetPublicKey", "(J)Ljava/lang/String;", (void*)nativeGetPublicKey},
+	{ "nativeGetChainId", SIG_GET_CHAIN_ID, (void*)nativeGetChainId },
+	{ "nativeGetBasicInfo", SIG_GET_BASIC_INFO, (void*)nativeGetBasicInfo },
+	{ "nativeGetBalanceInfo", SIG_GET_BALANCE_INFO, (void*)nativeGetBalanceInfo },
+	{ "nativeGetBalance", SIG_GET_BALANCE, (void*)nativeGetBalance },
+	{ "nativeCreateAddress", SIG_CREATE_ADDRESS, (void*)nativeCreateAddress },
+	{ "nativeGetAllAddress", SIG_GET_ALL_ADDRESS, (void*)nativeGetAllAddress },
+	{ "nativeGetBalanceWithAddress", SIG_GET_BALANCE_WITH_ADDRESS, (void*)nativeGetBalanceWithAddress },
+	{ "nativeAddCallback", SIG_ADD_CALLBACK, (void*)nativeAddCallback },
+	{ "nativeRemoveCallback", SIG_REMOVE_CALLBACK, (void*)nativeRemoveCallback },
+	{ "nativeCreateTransaction", SIG_CREATE_TRANSACTION, (void*)nativeCreateTransaction },
+	{ "nativeCreateMultiSignTransaction", SIG_CREATE_MULTISIGN_TX, (void*)nativeCreateMultiSignTransaction },
+	{ "nativeCalculateTransactionFee", SIG_CALCULATE_TX_FEE, (void*)nativeCalculateTransactionFee },
+	{ "nativeUpdateTransactionFee", SIG_UPDATE_TX_FEE, (void*)nativeUpdateTransactionFee },
+	{ "nativeSignTransaction", SIG_SIGN_TX, (void*)nativeSignTransaction },
+	{ "nativeGetTransactionSignedSigners", SIG_GET_TX_SIGNED_SIGNERS, (void *)nativeGetTransactionSignedSigners },
+	{ "nativePublishTransaction", SIG_PUBLISH_TX, (void*)nativePublishTransaction },
+	{ "nativeGetAllTransaction", SIG_GET_ALL_TX, (void*)nativeGetAllTransaction },
+	{ "nativeSign", SIG_SIGN, (void*)nativeSign },
+	{ "nativeCheckSign", SIG_CHECK_SIGN, (void*)nativeCheckSign },
+	{ "nativeGetPublicKey", SIG_GET_PUBLIC_KEY, (void*)nativeGetPublicKey },
 };
 
 jint register_elastos_spv_ISubWallet(JNIEnv *env)
@@ -546,7 +589,6 @@ ElaSubWalletCallback::ElaSubWalletCallback(
 		/* [in] */ JNIEnv* env,
 		/* [in] */ jobject jobj)
 {
-	LOGD("FUNC=[%s]========================LINE=[%d]", __FUNCTION__, __LINE__);
 	mObj = env->NewGlobalRef(jobj);
 	env->GetJavaVM(&mVM);
 }
@@ -600,12 +642,12 @@ void ElaSubWalletCallback::OnBlockSyncStarted()
 	Detach();
 }
 
-void ElaSubWalletCallback::OnBlockHeightIncreased(uint32_t currentBlockHeight, double progress)
+void ElaSubWalletCallback::OnBlockHeightIncreased(uint32_t currentBlockHeight, int progress)
 {
 	JNIEnv* env = GetEnv();
 
 	jclass clazz = env->GetObjectClass(mObj);
-	jmethodID methodId = env->GetMethodID(clazz, "OnBlockHeightIncreased","(ID)V");
+	jmethodID methodId = env->GetMethodID(clazz, "OnBlockHeightIncreased", "(II)V");
 	env->CallVoidMethod(mObj, methodId, currentBlockHeight, progress);
 
 	Detach();
@@ -616,19 +658,20 @@ void ElaSubWalletCallback::OnBlockSyncStopped()
 	JNIEnv* env = GetEnv();
 
 	jclass clazz = env->GetObjectClass(mObj);
-	jmethodID methodId = env->GetMethodID(clazz, "OnBlockSyncStopped","()V");
+	jmethodID methodId = env->GetMethodID(clazz, "OnBlockSyncStopped", "()V");
 	env->CallVoidMethod(mObj, methodId);
 
 	Detach();
 }
 
-void ElaSubWalletCallback::OnDestroyWallet()
+void ElaSubWalletCallback::OnBalanceChanged(uint64_t balance)
 {
-	JNIEnv* env = GetEnv();
+	JNIEnv *env = GetEnv();
 
 	jclass clazz = env->GetObjectClass(mObj);
-	jmethodID methodId = env->GetMethodID(clazz, "OnDestroyWallet","()V");
-	env->CallVoidMethod(mObj, methodId);
+	jmethodID methodId = env->GetMethodID(clazz, "OnBalanceChanged", "(J)V");
+	env->CallVoidMethod(mObj, methodId, balance);
 
 	Detach();
 }
+

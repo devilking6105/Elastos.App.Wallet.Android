@@ -26,9 +26,13 @@ export class ProgressBarComponent implements OnInit, OnChanges {
 
   setData(){
     //this.proportion = Math.round(this.amount / this.total * 100);
-    this.proportion = this.proportion*100;
+    //this.proportion = this.proportion;
     if (this.proportion) {
-      this.proportion += '%';
+      if(this.proportion === "0" || this.proportion === 0){
+        this.proportion = '0';
+      }else{
+        this.proportion += '%';
+      }
     } else {
       this.proportion = '0';
     }

@@ -11,12 +11,14 @@ import {LocalStorage} from "../../providers/Localstorage";
 })
 export class AddprivatekeyPage {
   masterWalletId:string = "1";
-  public  publicKey:string="xpub6DXoyYMMVE2snF2A51DfVrKikRqMbMmw6JQbS5wSHVVPj7SrBR3QHXeqjGU5rb1TA3hNE7SoJhdRGpRLJg2ntRiKJiRs37jnD2kPxScTzZB";
+  public  publicKey:string="";
   private msobj:any;
   public  publicKeyArr:any=[];
+  public  name:string = "";
   constructor(public navCtrl: NavController, public navParams: NavParams,public walletManager: WalletManager,public native:Native,public localStorage:LocalStorage) {
     console.log("=========AddpublickeyPage"+JSON.stringify(this.navParams.data));
     this.msobj = this.navParams.data;
+    this.name = this.msobj["name"];
     let totalCopayers = this.msobj["totalCopayers"];
     for(let index=0 ;index<totalCopayers-1;index++){
         let item ={index:index,publicKey:this.publicKey};
@@ -31,20 +33,19 @@ export class AddprivatekeyPage {
   }
 
   nextPage(){
-     //this.navCtrl.push(AddpublickeyPage);
+     this.native.showLoading();
      this.createWallet();
   }
 
   createWallet(){
      let copayers = this.getTotalCopayers();
-     console.log("====mastId===="+this.masterWalletId+"====importText===="+this.msobj["importText"]+"====passWord===="+this.msobj["passWord"]+"====copayers===="+copayers+"==requiredCopayers=="+this.msobj["requiredCopayers"]);
      this.walletManager.createMultiSignMasterWalletWithPrivKey(this.masterWalletId,this.msobj["importText"],this.msobj["passWord"],copayers,this.msobj["requiredCopayers"],(data)=>{
                if(data['success']){
-                 console.log("=====createMultiSignMasterWalletWithPrivKey======"+JSON.stringify(data));
                  //this.native.setRootRouter(TabsComponent);
                  this.createSubWallet("ELA");
                }else{
-                 alert("=====createMultiSignMasterWalletWithPrivKey===error==="+JSON.stringify(data));
+                this.native.hideLoading();
+                alert("=====createMultiSignMasterWalletWithPrivKey===error==="+JSON.stringify(data));
                }
      });
   }
@@ -53,31 +54,44 @@ export class AddprivatekeyPage {
     let arr = [];
     for(let index = 0;index<this.publicKeyArr.length;index++){
           let item = this.publicKeyArr[index];
-          arr.push(item["publicKey"]);
+          let publicKey =item["publicKey"].replace(/^\s+|\s+$/g,"");
+          arr.push(publicKey);
     }
     return JSON.stringify(arr);
   }
 
   createSubWallet(chainId){
     // Sub Wallet
-    this.walletManager.createSubWallet(this.masterWalletId,chainId, this.msobj["passWord"],true, 0, (data)=>{
+    this.walletManager.createSubWallet(this.masterWalletId,chainId,0, (data)=>{
           if(data["success"]){
                console.log("====createSubWallet===="+JSON.stringify(data));
                this.saveWalletList();
           }else{
+                this.native.hideLoading();
                 alert("createSubWallet=error:"+JSON.stringify(data));
           }
     });
   }
 
   saveWalletList(){
+
     Config.getMasterWalletIdList().push(this.masterWalletId);
-    this.localStorage.setWalletList(Config.getMasterWalletIdList()).then((data)=>{
-            this.localStorage.saveCurMasterId({masterId:this.masterWalletId}).then((data)=>{
-              Config.setCurMasterWalletId(this.masterWalletId);
-              this.native.setRootRouter(TabsComponent);
-            });
-    })
+     this.localStorage.saveCurMasterId({masterId:this.masterWalletId}).then((data)=>{
+      let walletObj = this.native.clone(Config.masterWallObj);
+      walletObj["id"]   = this.masterWalletId;
+      walletObj["wallname"] = this.name;
+
+      this.localStorage.saveMappingTable(walletObj).then((data)=>{
+        let mappingList = this.native.clone(Config.getMappingList());
+            mappingList[this.masterWalletId] = walletObj;
+           console.log("=====mappingList===="+JSON.stringify(mappingList));
+            Config.setMappingList(mappingList);
+            this.native.hideLoading();
+            Config.setCurMasterWalletId(this.masterWalletId);
+            this.native.setRootRouter(TabsComponent);
+      });
+
+      });
   }
 
 }
