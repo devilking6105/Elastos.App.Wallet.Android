@@ -21,11 +21,13 @@ export class ManagerComponent {
   public currentLanguageName:string = "";
   constructor(public navCtrl: NavController, public navParams: NavParams,public events: Events,public localStorage:LocalStorage,public popupProvider: PopupProvider, public walletManager: WalletManager,private app: App,public native:Native) {
     this.masterWalletId = Config.getCurMasterWalletId();
-    this.localStorage.getWallet().then((val) => {
-      if (val) {
-        this.walletName = JSON.parse(val).name;
-      }
-    });
+    // this.localStorage.getWallet().then((val) => {
+    //   if (val) {
+    //     this.walletName = JSON.parse(val).name;
+    //   }
+    // });
+
+    this.walletName = Config.getWalletName(this.masterWalletId);
 
     this.localStorage.getLanguage("wallte-language").then((val)=>{
          this.currentLanguageName = JSON.parse(val)["name"] || "";
@@ -47,7 +49,8 @@ export class ManagerComponent {
       case 2:
         this.popupProvider.ionicConfirm('confirmTitle', 'confirmSubTitle').then((data) => {
           if (data) {
-            this.destroyWallet(this.masterWalletId);
+            //this.destroyWallet(this.masterWalletId);
+            this.getAllCreatedSubWallets();
           }
         });
         break;
@@ -61,8 +64,40 @@ export class ManagerComponent {
     }
   }
 
+
+  getAllCreatedSubWallets(){
+
+    this.walletManager.getAllSubWallets(this.masterWalletId,(data) => {
+      if(data["success"]){
+        let chinas = JSON.parse(data["success"]);
+        let maxLen = chinas.length;
+        for (let index in chinas) {
+          let chain = chinas[index];
+          this.destroyWalletListener(index,maxLen,this.masterWalletId,chain);
+        }
+      }else{
+          this.native.hideLoading();
+          alert("==getAllSubWallets==error"+JSON.stringify(data));
+      }
+
+    });
+
+}
+
+  destroyWalletListener(index,maxLen,masterWalletId,chainId){
+      this.walletManager.removeWalletListener(masterWalletId,chainId,(data)=>{
+                if(data["success"]){
+                    if(parseInt(index) === (maxLen-1)){
+                        this.destroyWallet(masterWalletId);
+                    }
+                }else{
+                  alert("==getAllSubWallets==error"+JSON.stringify(data));
+                }
+      });
+  }
+
   destroyWallet(masterWalletId: string){
-    this.localStorage.remove('coinListCache').then(()=>{
+    //this.localStorage.remove('coinListCache').then(()=>{
         this.walletManager.destroyWallet(masterWalletId, (data)=>{
           if(data["success"]){
             console.log("===destroyWallet===="+JSON.stringify(data));
@@ -71,11 +106,11 @@ export class ManagerComponent {
             alert("====destroyWallet==error=="+JSON.stringify(data));
           }
         });
-    });
+    //});
   }
 
   delWalletListOne(masterWalletId){
-    console.log("===delWalletListOne===="+JSON.stringify(masterWalletId));
+    console.log("===delWalletListOne===="+masterWalletId);
     let arr = Config.getMasterWalletIdList();
      let index = arr.indexOf(masterWalletId);
      console.log("===index===="+index);
@@ -89,23 +124,22 @@ export class ManagerComponent {
      }
      console.log("===index===="+JSON.stringify(arr));
      Config.setCurMasterWalletId(arr[0]);
-     Config.setMasterWalletIdList(arr);
+     //Config.setMasterWalletIdList(arr);
+     let allmastwalle = this.native.clone(Config.getMappingList());
+     delete(allmastwalle[this.masterWalletId]);
+     console.log("=====allmastwalle===="+JSON.stringify[allmastwalle]);
+     Config.setMappingList(allmastwalle);
      this.saveWalletList(arr[0]);
   }
 
   saveWalletList(masterWalletId){
-
-    this.localStorage.setWalletList(Config.getMasterWalletIdList()).then((data)=>{
             this.localStorage.saveCurMasterId({masterId:masterWalletId}).then((data)=>{
               Config.setCurMasterWalletId(masterWalletId);
               this.native.setRootRouter(TabsComponent);
             });
-    })
   }
 
   saveWalletList1(){
-    this.localStorage.setWalletList(Config.getMasterWalletIdList()).then((data)=>{
-              this.native.setRootRouter(LauncherComponent);
-    });
+        this.native.setRootRouter(LauncherComponent);
   }
 }

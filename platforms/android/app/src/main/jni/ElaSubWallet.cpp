@@ -152,17 +152,14 @@ class ElaSubWalletCallback: public ISubWalletCallback
 		 * @param currentBlockHeight is the of current block when callback fired.
 		 * @param progress is current progress when block height increased.
 		 */
-		virtual void OnBlockHeightIncreased(uint32_t currentBlockHeight, double progress);
+		virtual void OnBlockHeightIncreased(uint32_t currentBlockHeight, int progress);
 
 		/**
 		 * Callback method fired when block end synchronizing with a peer. This callback could be used to show progress.
 		 */
 		virtual void OnBlockSyncStopped();
 
-		/**
-		 * Callback method fired when subwallet was destroyed.
-		 */
-		virtual void OnDestroyWallet();
+		virtual void OnBalanceChanged(uint64_t balance);
 
 		ElaSubWalletCallback(
 				/* [in] */ JNIEnv* env,
@@ -180,17 +177,17 @@ class ElaSubWalletCallback: public ISubWalletCallback
 };
 
 
-static std::map<jobject, ElaSubWalletCallback*> sSubCallbackMap;
+static std::map<jlong, ElaSubWalletCallback*> sSubCallbackMap;
 #define SIG_ADD_CALLBACK "(JLcom/elastos/spvcore/ISubWalletCallback;)V"
 static void JNICALL nativeAddCallback(JNIEnv *env, jobject clazz, jlong jSubProxy,
 		jobject jsubCallback)
 {
 	try {
-		if (sSubCallbackMap.find(jsubCallback) == sSubCallbackMap.end()) {
-			ElaSubWalletCallback* subCallback = new ElaSubWalletCallback(env, jsubCallback);
-			ISubWallet* subWallet = (ISubWallet*)jSubProxy;
+		if (sSubCallbackMap.find(jSubProxy) == sSubCallbackMap.end()) {
+			ElaSubWalletCallback *subCallback = new ElaSubWalletCallback(env, jsubCallback);
+			ISubWallet *subWallet = (ISubWallet *)jSubProxy;
 			subWallet->AddCallback(subCallback);
-			sSubCallbackMap[jsubCallback] = subCallback;
+			sSubCallbackMap[jSubProxy] = subCallback;
 		} else {
 			LOGE("Sub wallet callback already exist");
 		}
@@ -199,15 +196,14 @@ static void JNICALL nativeAddCallback(JNIEnv *env, jobject clazz, jlong jSubProx
 	}
 }
 
-#define SIG_REMOVE_CALLBACK "(JLcom/elastos/spvcore/ISubWalletCallback;)V"
-static void JNICALL nativeRemoveCallback(JNIEnv *env, jobject clazz, jlong jSubProxy,
-		jobject jsubCallback)
+#define SIG_REMOVE_CALLBACK "(J)V"
+static void JNICALL nativeRemoveCallback(JNIEnv *env, jobject clazz, jlong jSubProxy)
 {
 	try {
 		ISubWallet* subWallet = (ISubWallet*)jSubProxy;
-		std::map<jobject, ElaSubWalletCallback*>::iterator it;
+		std::map<jlong, ElaSubWalletCallback*>::iterator it;
 		for (it = sSubCallbackMap.begin(); it != sSubCallbackMap.end(); it++) {
-			if (jsubCallback == it->first) {
+			if (jSubProxy == it->first) {
 				subWallet->RemoveCallback(it->second);
 				delete it->second;
 				sSubCallbackMap.erase(it);
@@ -593,7 +589,6 @@ ElaSubWalletCallback::ElaSubWalletCallback(
 		/* [in] */ JNIEnv* env,
 		/* [in] */ jobject jobj)
 {
-	LOGD("FUNC=[%s]========================LINE=[%d]", __FUNCTION__, __LINE__);
 	mObj = env->NewGlobalRef(jobj);
 	env->GetJavaVM(&mVM);
 }
@@ -647,12 +642,12 @@ void ElaSubWalletCallback::OnBlockSyncStarted()
 	Detach();
 }
 
-void ElaSubWalletCallback::OnBlockHeightIncreased(uint32_t currentBlockHeight, double progress)
+void ElaSubWalletCallback::OnBlockHeightIncreased(uint32_t currentBlockHeight, int progress)
 {
 	JNIEnv* env = GetEnv();
 
 	jclass clazz = env->GetObjectClass(mObj);
-	jmethodID methodId = env->GetMethodID(clazz, "OnBlockHeightIncreased","(ID)V");
+	jmethodID methodId = env->GetMethodID(clazz, "OnBlockHeightIncreased", "(II)V");
 	env->CallVoidMethod(mObj, methodId, currentBlockHeight, progress);
 
 	Detach();
@@ -663,19 +658,20 @@ void ElaSubWalletCallback::OnBlockSyncStopped()
 	JNIEnv* env = GetEnv();
 
 	jclass clazz = env->GetObjectClass(mObj);
-	jmethodID methodId = env->GetMethodID(clazz, "OnBlockSyncStopped","()V");
+	jmethodID methodId = env->GetMethodID(clazz, "OnBlockSyncStopped", "()V");
 	env->CallVoidMethod(mObj, methodId);
 
 	Detach();
 }
 
-void ElaSubWalletCallback::OnDestroyWallet()
+void ElaSubWalletCallback::OnBalanceChanged(uint64_t balance)
 {
-	JNIEnv* env = GetEnv();
+	JNIEnv *env = GetEnv();
 
 	jclass clazz = env->GetObjectClass(mObj);
-	jmethodID methodId = env->GetMethodID(clazz, "OnDestroyWallet","()V");
-	env->CallVoidMethod(mObj, methodId);
+	jmethodID methodId = env->GetMethodID(clazz, "OnBalanceChanged", "(J)V");
+	env->CallVoidMethod(mObj, methodId, balance);
 
 	Detach();
 }
+

@@ -7,6 +7,7 @@ import {CoinSelectComponent} from "./coin-select/coin-select.component";
 import {WithdrawComponent} from "./withdraw/withdraw.component";
 import {ReceiveComponent} from "./receive/receive.component";
 import {RecordinfoComponent} from "./recordinfo/recordinfo.component";
+import { max } from 'rxjs/operators';
 
 
 @Component({
@@ -24,16 +25,15 @@ export class CoinComponent extends BaseComponent implements OnInit {
   coinId = 0;
 
   coinName = "";
-
+  pageNo =0;
   start = 0;
-
-  count = Config.LIST_COUNT;
 
   textShow = '';
 
   elaPer:any;
   idChainPer:any;
-
+  isShowMore = false;
+  MaxCount = 0;
   ngOnInit() {
     this.masterWalletId = Config.getCurMasterWalletId();
     this.walletManager.getMasterWalletBasicInfo(this.masterWalletId,(data)=>{
@@ -52,7 +52,6 @@ export class CoinComponent extends BaseComponent implements OnInit {
     this.coinName = this.getNavParams().get("name");
     this.elaPer = this.getNavParams().get("elaPer") || 0;
     this.idChainPer = this.getNavParams().get("idChainPer") || 0;
-    this.setTitle(this.coinName);
     if (this.coinName == 'ELA') {
       this.textShow = 'text-recharge';
     }else{
@@ -69,19 +68,30 @@ export class CoinComponent extends BaseComponent implements OnInit {
       }else{
          alert("====getBalance==error="+JSON.stringify(data));
       }
-
     });
+    this.getAllTx();
+  }
+
+  getAllTx(){
     this.walletManager.getAllTransaction(this.masterWalletId,this.coinName, this.start, '', (data) => {
       if(data["success"]){
           console.log("====getAllTransaction===="+JSON.stringify(data));
       let allTransaction = JSON.parse(data['success']);
       let transactions = allTransaction['Transactions'];
+      this.MaxCount = allTransaction['MaxCount'];
+      if(!transactions){
+          this.isShowMore = false;
+          return;
+      }
       for (let key in transactions) {
         let transaction = transactions[key];
-        let timestamp = transaction['Timestamp']*1000;
-        let datetime = Util.dateFormat(new Date(timestamp));
-        let txId = transaction['TxHash'];
+        // let timestamp = transaction['Timestamp']*1000;
+
+        // let txId = transaction['TxHash'];
         let summary = transaction['Summary'];
+        let timestamp = summary['Timestamp']*1000;
+        let datetime = Util.dateFormat(new Date(timestamp));
+        let txId = summary['TxHash'];
         let incomingAmount = summary["Incoming"]['Amount'];
         let outcomingAmount = summary["Outcoming"]['Amount'];
         let balanceResult = incomingAmount - outcomingAmount;
@@ -105,6 +115,7 @@ export class CoinComponent extends BaseComponent implements OnInit {
           "balance": balanceResult/Config.SELA,
           "datetime": datetime,
           "timestamp": timestamp,
+          "payfees": summary['Fee']/Config.SELA,
           "txId": txId
         }
         this.transferList.push(transfer);
@@ -158,5 +169,14 @@ export class CoinComponent extends BaseComponent implements OnInit {
     }
   }
 
-
+  clickMore(){
+    this.pageNo++;
+    this.start = this.pageNo*20;
+    if(this.start >= this.MaxCount){
+      this.isShowMore = false;
+      return;
+    }
+    this.isShowMore = true;
+    this.getAllTx();
+  }
 }

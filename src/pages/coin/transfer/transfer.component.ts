@@ -43,7 +43,6 @@ export class TransferComponent extends BaseComponent implements OnInit {
   walletInfo = {};
   ngOnInit() {
     this.masterWalletId = Config.getCurMasterWalletId();
-    this.setTitleByAssets('text-transfer');
     this.masterWalletId = Config.getCurMasterWalletId();
     let transferObj =this.getNavParams().data;
     console.log("=====pf==="+JSON.stringify(transferObj));
@@ -62,24 +61,25 @@ export class TransferComponent extends BaseComponent implements OnInit {
     this.walletInfo = transferObj["walletInfo"] || {};
     console.log("====walletInfo====="+JSON.stringify(this.walletInfo));
     this.initData();
-
-    this.setRightIcon('./assets/images/icon/ico-scan.svg', () => {
-      this.native.scan().then((q)=>{
-        let result = q.text;
-        if (result.indexOf('elastos') != -1) {
-          this.transfer.toAddress = result.split(":")[1];
-        } else {
-          this.transfer.toAddress = result.split(":")[0];
-        }
-      }).catch(err=>{
-          this.toast('error-address');
-      });
-    });
-
-    this.setHeadDisPlay({right: true});
-
     //Logger.info(this.autoAS);
     this.subPopup.config = {cancel:'',confirm:'',backdrop:false,is_full:false};
+    this.events.subscribe("error:update", ()=>{
+      this.subPopup.close();
+      // this.Back();
+    });
+  }
+
+  rightHeader(){
+    this.native.scan().then((q)=>{
+      let result = q.text;
+      if (result.indexOf('elastos') != -1) {
+        this.transfer.toAddress = result.split(":")[1];
+      } else {
+        this.transfer.toAddress = result.split(":")[0];
+      }
+    }).catch(err=>{
+        this.toast('error-address');
+    });
   }
 
   initData(){
@@ -178,6 +178,10 @@ export class TransferComponent extends BaseComponent implements OnInit {
   }
 
   sendRawTransaction(){
+    if(this.walletInfo["Type"] === "Multi-Sign" && this.walletInfo["Readonly"]){
+        this.updateTxFee();
+        return;
+    }
     if (!Util.password(this.transfer.payPassword)) {
       this.toast("text-pwd-validator");
       return;
@@ -189,6 +193,10 @@ export class TransferComponent extends BaseComponent implements OnInit {
     this.walletManager.updateTransactionFee(this.masterWalletId,this.chianId,this.rawTransaction, this.transfer.fee,(data)=>{
                        if(data["success"]){
                         console.log("===updateTransactionFee===="+JSON.stringify(data));
+                        if(this.walletInfo["Type"] === "Multi-Sign" && this.walletInfo["Readonly"]){
+                                 this.readWallet(data["success"]);
+                                 return;
+                        }
                         this.singTx(data["success"]);
                        }else{
                          alert("=====updateTransactionFee=error==="+JSON.stringify(data));
@@ -203,12 +211,11 @@ export class TransferComponent extends BaseComponent implements OnInit {
         if(this.walletInfo["Type"] === "Standard"){
              this.sendTx(data["success"]);
         }else if(this.walletInfo["Type"] === "Multi-Sign"){
-            this.walletManager.convertToHexString(data["success"],(raw)=>{
+            this.walletManager.encodeTransactionToString(data["success"],(raw)=>{
                      if(raw["success"]){
-                      console.log("=======convertToHexString========="+JSON.stringify(raw));
-                      this.Go(ScancodePage,{"txContent":{"chianId":this.chianId,"address":this.transfer.toAddress, "amount": this.transfer.amount,"fee":this.transfer.fee, "rawTransaction":raw["success"]}});
+                      this.Go(ScancodePage,{"tx":{"chianId":this.chianId,"fee":this.transfer.fee/Config.SELA, "rawTransaction":raw["success"]}});
                      }else{
-                      alert("=====convertToHexString===error==="+JSON.stringify(raw));
+                      alert("=====encodeTransactionToString===error==="+JSON.stringify(raw));
                      }
             });
         }
@@ -355,5 +362,20 @@ createMultTx(){
   }
 )
 }
+
+readWallet(raws){
+  this.walletManager.encodeTransactionToString(raws,(raw)=>{
+    if(raw["success"]){
+     this.Go(ScancodePage,{"tx":{"chianId":this.chianId,"fee":this.transfer.fee/Config.SELA, "raw":raw["success"]}});
+    }else{
+     alert("=====encodeTransactionToString===error==="+JSON.stringify(raw));
+    }
+});
+}
+
+  ionViewDidLeave() {
+     this.events.unsubscribe("error:update");
+  }
+
 
 }

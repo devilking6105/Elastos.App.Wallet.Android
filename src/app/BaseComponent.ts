@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ChangeDetectorRef, ViewChild, ViewEncapsulation,NgZone} from '@angular/core';
 import {WalletManager} from '../providers/WalletManager';
 import {Logger} from '../providers/Logger';
 import {Location} from '@angular/common';
@@ -11,13 +11,13 @@ import {Native} from "../providers/Native";
 import {DialogService, ToastService} from 'ngx-weui';
 
 import {zh} from "../assets/i18n/zh";
-import {WalletModel} from "../models/wallet.model";
 import {LocalStorage} from "../providers/Localstorage";
 import { NavParams } from 'ionic-angular';
 import {BackupProvider} from "../providers/backup";
 import {HttpService} from "../providers/HttpService";
 import {PopupProvider} from "../providers/popup";
 import {DataManager} from "../providers/DataManager";
+
 
 import { App } from 'ionic-angular';
 import {Platform} from 'ionic-angular';
@@ -29,13 +29,7 @@ import { Events } from 'ionic-angular';
 
 })
 export class BaseComponent {
-
-
   header: Header;
-
-  public walletData: WalletModel;
-
-
   public constructor(public log: Logger,
                      public translate: TranslateService,
                      public location: Location,
@@ -53,7 +47,8 @@ export class BaseComponent {
                      public dataManager  : DataManager,
                      public events: Events,
                      public platform  : Platform,
-                     private app: App) {
+                     private app: App,
+                     private zone:NgZone) {
     this.header = new Header(location, '');
     this.header.backClick = () => {
       this.Back();
@@ -266,5 +261,9 @@ export class BaseComponent {
 
   setRootRouter(router){
     this.app.getRootNav().setRoot(router);
+  }
+
+  public getZone(){
+    return this.zone;
   }
 }

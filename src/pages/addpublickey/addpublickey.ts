@@ -13,9 +13,11 @@ export class AddpublickeyPage {
   masterWalletId:string = "1";
   private msobj:any;
   public  publicKeyArr:any=[];
+  public  name:string ="";
   constructor(public navCtrl: NavController, public navParams: NavParams,public walletManager:WalletManager,public native :Native,public localStorage:LocalStorage) {
     console.log("=========AddpublickeyPage"+JSON.stringify(this.navParams.data));
     this.msobj = this.navParams.data;
+    this.name = this.msobj["name"];
     let totalCopayers = 0;
     if(this.msobj["payPassword"]){
       totalCopayers = this.msobj["totalCopayers"]-1;
@@ -35,9 +37,8 @@ export class AddpublickeyPage {
   }
 
   nextPage(){
-    console.log("========"+JSON.stringify(this.publicKeyArr));
+    this.native.showLoading();
     if(this.msobj["payPassword"]){
-       console.log("======payPassword======"+this.msobj["payPassword"]);
        this.createWalletWithMnemonic();
      }else{
       this.createWallet();
@@ -47,12 +48,11 @@ export class AddpublickeyPage {
 
   createWallet(){
     let copayers = this.getTotalCopayers();
-    console.log("====mastId===="+this.masterWalletId+"====copayers===="+copayers+"==requiredCopayers=="+this.msobj["requiredCopayers"]);
     this.walletManager.createMultiSignMasterWallet(this.masterWalletId,copayers,this.msobj["requiredCopayers"],(data)=>{
               if(data['success']){
-                console.log("=====createMultiSignMasterWallet======"+JSON.stringify(data));
                 this.createSubWallet("ELA");
               }else{
+                this.native.hideLoading();
                 alert("=====createMultiSignMasterWallet===error=="+JSON.stringify(data));
               }
     });
@@ -62,32 +62,48 @@ export class AddpublickeyPage {
     let arr = [];
     for(let index = 0;index<this.publicKeyArr.length;index++){
           let item = this.publicKeyArr[index];
-          arr.push(item["publicKey"]);
+          let publicKey =item["publicKey"].replace(/^\s+|\s+$/g,"");
+          arr.push(publicKey);
     }
     return JSON.stringify(arr);
   }
 
   createSubWallet(chainId){
     // Sub Wallet
-    this.walletManager.createSubWallet(this.masterWalletId,chainId,"s12345678",true, 0, (data)=>{
+    this.walletManager.createSubWallet(this.masterWalletId,chainId,0, (data)=>{
           if(data["success"]){
                console.log("====createSubWallet===="+JSON.stringify(data));
                this.saveWalletList();
           }else{
+                this.native.hideLoading();
                 alert("createSubWallet=error:"+JSON.stringify(data));
           }
     });
   }
 
   saveWalletList(){
-    Config.getMasterWalletIdList().push(this.masterWalletId);
-    this.localStorage.setWalletList(Config.getMasterWalletIdList()).then((data)=>{
+        Config.getMasterWalletIdList().push(this.masterWalletId);
             this.localStorage.saveCurMasterId({masterId:this.masterWalletId}).then((data)=>{
-              Config.setCurMasterWalletId(this.masterWalletId);
-              this.native.setRootRouter(TabsComponent);
+              let walletObj = this.native.clone(Config.masterWallObj);
+              walletObj["id"]   = this.masterWalletId;
+              walletObj["wallname"] = this.name;
+              this.localStorage.saveMappingTable(walletObj).then((data)=>{
+                let mappingList = this.native.clone(Config.getMappingList());
+                    mappingList[this.masterWalletId] = walletObj;
+                    console.log("=====mappingList===="+JSON.stringify(mappingList));
+                    Config.setMappingList(mappingList);
+                    this.native.hideLoading();
+                    Config.setCurMasterWalletId(this.masterWalletId);
+                    this.native.setRootRouter(TabsComponent);
+              });
             });
-    })
   }
+
+
+
+
+
+
   createWalletWithMnemonic(){
       let copayers = this.getTotalCopayers();
       this.walletManager.createMultiSignMasterWalletWithMnemonic(this.masterWalletId,this.msobj["mnemonicStr"],this.msobj["mnemonicPassword"],this.msobj["payPassword"],copayers,this.msobj["requiredCopayers"],this.native.getMnemonicLang(),(data)=>{
@@ -95,6 +111,7 @@ export class AddpublickeyPage {
             console.log("=====createMultiSignMasterWalletWithMnemonic======"+JSON.stringify(data));
             this.createMnemonicSubWallet("ELA",this.msobj["payPassword"]);
           }else{
+            this.native.hideLoading();
             alert("=====createMultiSignMasterWalletWithMnemonic=======error"+JSON.stringify(data));
           }
       });
@@ -102,11 +119,13 @@ export class AddpublickeyPage {
 
   createMnemonicSubWallet(chainId,password){
     // Sub Wallet
-    this.walletManager.createSubWallet(this.masterWalletId,chainId,password,true, 0, (data)=>{
+    this.walletManager.createSubWallet(this.masterWalletId,chainId,0, (data)=>{
           if(data["success"]){
+               this.native.hideLoading();
                console.log("====createSubWallet===="+JSON.stringify(data));
                this.saveWalletList();
           }else{
+                this.native.hideLoading();
                 alert("createSubWallet=error:"+JSON.stringify(data));
           }
     });

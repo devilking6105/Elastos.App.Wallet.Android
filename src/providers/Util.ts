@@ -24,8 +24,13 @@ export class Util {
   };
 
   static password = function (text) {
-    var pPattern = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/;
-    return pPattern.test(text);
+    if(text.length < 8){
+        return false;
+    }
+    return true;
+    //var pPattern = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/;
+    //return pPattern.test(text);
+
   };
   static number = function (text) {
     // var numPattern = /^(([1-9]\d*)|0)(\.\d{1,2})?$"/;
@@ -132,6 +137,12 @@ export class Util {
       arr.push(obj[key]);
     }
     return arr;
+  }
+
+  public static  GetQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return decodeURI(r[2]); return null;
   }
 
 
