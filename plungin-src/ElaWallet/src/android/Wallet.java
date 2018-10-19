@@ -73,26 +73,30 @@ public class Wallet extends CordovaPlugin {
 
 	@Override
 	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+
+		Log.i(TAG, "ElastosJava initialize begin ");
+
 		super.initialize(cordova, webView);
 
 		mRootPath = MyUtil.getRootPath();
 
-/*<<<<<<< HEAD
 		Log.i(TAG, "Initialize mRootPath = " + mRootPath);
-
 		mDIDManagerSupervisor = new DIDManagerSupervisor(mRootPath);
 
-=======*/
-//		mDIDManagerSupervisor = new DIDManagerSupervisor(mRootPath);
-//>>>>>>> origin/wallet_dev
 		mMasterWalletManager = new MasterWalletManager(mRootPath);
 		MyUtil.SetCurrentMasterWalletManager(mMasterWalletManager);
+
+		Log.i(TAG, "ElastosJava initialize end ");
 	}
 
 	private boolean createDIDManager(IMasterWallet masterWallet) {
 		try {
-/*<<<<<<< HEAD
+
 			String masterWalletId = masterWallet.GetId();
+
+
+			Log.i(TAG, "ElastosJava createDIDManager masterWallet.GetId " + masterWallet.GetId());
+
 			JSONObject basicInfo = new JSONObject(masterWallet.GetBasicInfo());
 			String accountType = basicInfo.getJSONObject("Account").getString("Type");
 			if (! accountType.equals("Standard")) {
@@ -105,10 +109,11 @@ public class Wallet extends CordovaPlugin {
 				return false;
 			}
 
-			Log.i(TAG, "Master wallet '" + masterWallet.GetId() + "' create DID manager with root path '" + mRootPath + "'");
+			Log.i(TAG, "ElastosJava Master wallet '" + masterWallet.GetId() + "' create DID manager with root path '" + mRootPath + "'");
 			IDidManager DIDManager = mDIDManagerSupervisor.CreateDIDManager(masterWallet, mRootPath);
 			putDIDManager(masterWalletId, DIDManager);
-=======*/
+			Log.i(TAG, "ElastosJava createDIDManager  end");
+
 //			String masterWalletID = masterWallet.GetId();
 //			JSONObject basicInfo = new JSONObject(masterWallet.GetBasicInfo());
 //			String accountType = basicInfo.getJSONObject("Account").getString("Type");
@@ -563,6 +568,7 @@ public class Wallet extends CordovaPlugin {
 
 			for (int i = 0; i < masterWalletList.size(); i++) {
 				masterWalletListJson.put(masterWalletList.get(i).GetId());
+				//createDIDManager(masterWalletList.get(i));
 			}
 			successProcess(cc, masterWalletListJson.toString());
 		} catch (WalletException e) {
@@ -741,7 +747,7 @@ public class Wallet extends CordovaPlugin {
 	// args[5]: String language
 	public void createMasterWallet(JSONArray args, CallbackContext cc) throws JSONException {
 		int idx = 0;
-
+    Log.i(TAG, "ElastJava createMasterWallet begin");
 		String masterWalletID = args.getString(idx++);
 		String mnemonic       = args.getString(idx++);
 		String phrasePassword = args.getString(idx++);
@@ -762,6 +768,7 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeCreateMasterWallet, "Create " + formatWalletName(masterWalletID));
 				return;
 			}
+
 			createDIDManager(masterWallet);
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
@@ -773,6 +780,8 @@ public class Wallet extends CordovaPlugin {
 	// args[1]: String coSigners
 	// args[2]: int requiredSignCount
 	public void createMultiSignMasterWallet(JSONArray args, CallbackContext cc) throws JSONException {
+
+	  Log.i(TAG, "ElastJava createMultiSignMasterWallet begin");
 		int idx = 0;
 		String privKey = null;
 
@@ -1978,8 +1987,13 @@ public class Wallet extends CordovaPlugin {
 	public void createDID(JSONArray args, CallbackContext cc) throws JSONException {
 		int idx = 0;
 
+		Log.i(TAG, "ElastosJava createDID  begin");
+
 		String masterWalletID = args.getString(idx++);
 		String password       = args.getString(idx++);
+
+		Log.i(TAG, "ElastosJava createDID  masterWalletID " + masterWalletID) ;
+		Log.i(TAG, "ElastosJava createDID  password " + password) ;
 
 		if (args.length() != idx) {
 			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
