@@ -145,5 +145,21 @@ export class Util {
     if (r != null) return decodeURI(r[2]); return null;
   }
 
+  public static isCardNo(card:string): boolean{
+    if(!(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(card))){
+      return true;
+    }
+    return false;
+  }
+
+  public static isBankCard(bankCard:string): boolean {
+    var regex = /^(998801|998802|622525|622526|435744|435745|483536|528020|526855|622156|622155|356869|531659|622157|627066|627067|627068|627069|622588)\d{10}$/;
+    if(!regex.test(bankCard)) {
+        return true;
+    }
+    return false;
+  }
+
+
 
 }
