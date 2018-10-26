@@ -30,6 +30,8 @@ export class LocalStorage {
   //did][path][serialNum
   public addKeyToSerialNum(masterWalletID : string, did: string, path: string , serialNum: string, keyAdd : string, obj : any, callback : any) {
 
+    console.info("ElastJs addKeyToSerialNum begin masterWalletID " + masterWalletID);
+
     let idsObj = {};
     let self = this;
     this.getKyc().then((val)=>{
@@ -209,8 +211,16 @@ export class LocalStorage {
       if ( idJsonObj )
       {
         if (idJsonObj["onChainContent"]) {
-          console.info("ElastosJs getOnchainContent end " + JSON.stringify(idJsonObj["onChainContent"][authType]));
-          callBack(idJsonObj["onChainContent"][authType]['Contents'][0]['Values']);
+          console.info("ElastosJs getOnchainContent authType obj " + JSON.stringify(idJsonObj["onChainContent"][authType]));
+          if(idJsonObj["onChainContent"][authType] && idJsonObj["onChainContent"][authType]['Contents']&&idJsonObj["onChainContent"][authType]['Contents'].length > 0){
+            console.info("ElastosJs getOnchainContent end  []" + JSON.stringify(idJsonObj["onChainContent"][authType]['Contents'][0]['Values']));
+
+            callBack(idJsonObj["onChainContent"][authType]['Contents'][0]['Values']);
+          }
+          else {
+            console.info("ElastosJs getOnchainContent end  []" );
+            callBack([]);
+          }
         }
         else{
           console.info("ElastosJs getOnchainContent end  []" );

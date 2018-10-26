@@ -40,7 +40,7 @@ import io.ionic.starter.MyUtil;
  * wallet webview jni
  */
 public class Wallet extends CordovaPlugin {
-	private static final String TAG = "Wallet";
+	private static final String TAG = "Wallet " + "ElastJava";
 
 	private Map<String, IDidManager> mDIDManagerMap = new HashMap<String, IDidManager>();
 	private DIDManagerSupervisor mDIDManagerSupervisor = null;
@@ -130,7 +130,7 @@ public class Wallet extends CordovaPlugin {
 //			Log.i(TAG, "Master wallet '" + masterWallet.GetId() + "' create DID manager with root path '" + mRootPath + "'");
 //			IDidManager DIDManager = mDIDManagerSupervisor.CreateDIDManager(masterWallet, mRootPath);
 //			putDIDManager(masterWalletID, DIDManager);
-//>>>>>>> origin/wallet_dev
+
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -563,6 +563,8 @@ public class Wallet extends CordovaPlugin {
 
 	public void getAllMasterWallets(JSONArray args, CallbackContext cc) throws JSONException {
 		try {
+			Log.i(TAG, "ElastosJava getAllMasterWallets begin");
+
 			ArrayList<IMasterWallet> masterWalletList = mMasterWalletManager.GetAllMasterWallets();
 			JSONArray masterWalletListJson = new JSONArray();
 
@@ -570,6 +572,10 @@ public class Wallet extends CordovaPlugin {
 				masterWalletListJson.put(masterWalletList.get(i).GetId());
 				//createDIDManager(masterWalletList.get(i));
 			}
+			for (int i = 0; i < masterWalletList.size(); i++) {
+        //masterWalletListJson.put(masterWalletList.get(i).GetId());
+        createDIDManager(masterWalletList.get(i));
+      }
 			successProcess(cc, masterWalletListJson.toString());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get all master wallets");
@@ -1664,7 +1670,7 @@ public class Wallet extends CordovaPlugin {
 				@Override
 				public void OnTransactionStatusChanged(String txId, String status, String desc, int confirms) {
 					JSONObject jsonObject = new JSONObject();
-					Log.i(TAG, "OnTransactionStatusChanged");
+					Log.i(TAG, "OnTransactionStatusChanged txId " + txId + " status " +status + " confirms " + confirms);
 					try {
 						jsonObject.put("txId", txId);
 						jsonObject.put("status", status);
