@@ -47,7 +47,7 @@ export class CoinListComponent {
         walletObj["id"]   = this.masterWalletId;
         walletObj["wallname"] = Config.getWalletName(this.masterWalletId);
         walletObj["coinListCache"] = subWallte;
-        this.localStorage.saveMappingTable(walletObj).then((walletObj)).then((data)=>{
+        this.localStorage.saveMappingTable(walletObj).then((data)=>{
           let  mappingList = this.native.clone(Config.getMappingList());
           mappingList[this.masterWalletId] = walletObj;
          console.log("=====mappingList===="+JSON.stringify(mappingList));
@@ -95,6 +95,9 @@ export class CoinListComponent {
     //this.currentCoin["open"] = false;
     this.walletManager.createSubWallet(this.masterWalletId,chainId,0, (data)=>{
       if(data['success']){
+        if(!Config.isResregister(this.masterWalletId,chainId)){
+          this.registerWalletListener(this.masterWalletId,chainId);
+        }
         this.native.hideLoading();
         let coin = this.native.clone(Config.getSubWallet(this.masterWalletId));
         if(coin){
@@ -123,6 +126,16 @@ export class CoinListComponent {
 
   ionViewDidLeave() {
      this.events.unsubscribe("error:update");
+  }
+
+  registerWalletListener(masterId,coin){
+    this.walletManager.registerWalletListener(masterId,coin,(data)=>{
+          if(!Config.isResregister){
+            Config.setResregister(masterId,coin,true);
+          }
+           this.events.publish("register:update",masterId,coin,data);
+           //this.saveWalletList();
+    });
   }
 
 }

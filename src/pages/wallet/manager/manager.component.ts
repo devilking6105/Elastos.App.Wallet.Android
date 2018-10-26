@@ -6,10 +6,11 @@ import {WalletManager} from '../../../providers/WalletManager';
 import {ExprotPrikeyComponent} from "../exprot-prikey/exprot-prikey.component";
 import {PaypasswordResetComponent} from "../paypassword-reset/paypassword-reset.component";
 import {LauncherComponent} from "../../launcher/launcher.component";
-import {LanguagePage} from '../../../pages/wallet/language/language';
 import {Native} from "../../../providers/Native";
 import {Config} from "../../../providers/Config";
 import {TabsComponent} from "../../tabs/tabs.component"
+import {ModifywalletnamePage} from '../../../pages/modifywalletname/modifywalletname';
+import {PublickeyPage} from '../../../pages/publickey/publickey';
 @Component({
   selector: 'app-manager',
   templateUrl: './manager.component.html',
@@ -19,6 +20,9 @@ export class ManagerComponent {
   walletName = "";
   masterWalletId:string = "1";
   public currentLanguageName:string = "";
+  public readonly:boolean = false;
+  public masterWalletType:string = "";
+  public singleAddress:boolean = false;
   constructor(public navCtrl: NavController, public navParams: NavParams,public events: Events,public localStorage:LocalStorage,public popupProvider: PopupProvider, public walletManager: WalletManager,private app: App,public native:Native) {
     this.masterWalletId = Config.getCurMasterWalletId();
     // this.localStorage.getWallet().then((val) => {
@@ -29,13 +33,19 @@ export class ManagerComponent {
 
     this.walletName = Config.getWalletName(this.masterWalletId);
 
-    this.localStorage.getLanguage("wallte-language").then((val)=>{
-         this.currentLanguageName = JSON.parse(val)["name"] || "";
+    // this.localStorage.getLanguage("wallte-language").then((val)=>{
+    //      this.currentLanguageName = JSON.parse(val)["name"] || "";
+    // });
+
+    // this.events.subscribe('language:update', (item) => {
+    //     this.currentLanguageName = item["name"] || "";
+    // });
+
+    this.events.subscribe("walletname:update",()=>{
+      this.walletName = Config.getWalletName(this.masterWalletId);
     });
 
-    this.events.subscribe('language:update', (item) => {
-        this.currentLanguageName = item["name"] || "";
-    });
+    this.getMasterWalletBasicInfo();
   }
 
   onItem(i) {
@@ -57,11 +67,15 @@ export class ManagerComponent {
         });
         break;
       case 3:
-      this.localStorage.getLanguage("wallte-language").then((val)=>{
-             let item =JSON.parse(val);
-             this.native.Go(this.navCtrl,LanguagePage,item);
-      })
+      // this.localStorage.getLanguage("wallte-language").then((val)=>{
+      //        let item =JSON.parse(val);
+      //        this.native.Go(this.navCtrl,LanguagePage,item);
+      // })
 
+        this.native.Go(this.navCtrl,PublickeyPage);
+         break;
+      case 4:
+         this.native.Go(this.navCtrl,ModifywalletnamePage);
          break;
     }
   }
@@ -145,5 +159,19 @@ export class ManagerComponent {
   saveWalletList1(){
         this.native.hideLoading();
         this.native.setRootRouter(LauncherComponent);
+  }
+
+  getMasterWalletBasicInfo(){
+    this.walletManager.getMasterWalletBasicInfo(this.masterWalletId,(data)=>{
+      if(data["success"]){
+         console.log("===getMasterWalletBasicInfo==="+JSON.stringify(data));
+         let item = JSON.parse(data["success"])["Account"];
+         this.masterWalletType = item["Type"] ;
+         this.singleAddress = item["SingleAddress"];
+         this.readonly = item["Readonly"] || false;
+      }else{
+         alert("=======getMasterWalletBasicInfo====error====="+JSON.stringify(data));
+      }
+    });
   }
 }

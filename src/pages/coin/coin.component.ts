@@ -36,6 +36,7 @@ export class CoinComponent{
   idChainPer:any;
   isShowMore = false;
   MaxCount = 0;
+  isNodata:boolean = false;
   constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native: Native,public events: Events) {
             this.init();
   }
@@ -92,6 +93,11 @@ export class CoinComponent{
       let allTransaction = JSON.parse(data['success']);
       let transactions = allTransaction['Transactions'];
       this.MaxCount = allTransaction['MaxCount'];
+      if(this.MaxCount>0){
+         this.isNodata = false;
+      }else{
+         this.isNodata = true;
+      }
       if(!transactions){
           this.isShowMore = false;
           return;
@@ -107,8 +113,22 @@ export class CoinComponent{
         let txId = summary['TxHash'];
         let incomingAmount = summary["Incoming"]['Amount'];
         let outcomingAmount = summary["Outcoming"]['Amount'];
+        let outcomingAddress = summary["Outcoming"]['ToAddress'];
         let balanceResult = incomingAmount - outcomingAmount;
-        let resultAmount = balanceResult - summary['Fee'];
+        let resultAmount = 0;
+        if (outcomingAmount === 0 && outcomingAddress === "") {
+          resultAmount = balanceResult;
+        } else {
+          resultAmount = balanceResult - summary['Fee'];
+        }
+        let payStatusIcon = "";
+        if (balanceResult > 0) {
+          payStatusIcon = './assets/images/tx-state/icon-tx-received-outline.svg';
+        } else if(balanceResult < 0) {
+          payStatusIcon = './assets/images/tx-state/icon-tx-sent.svg';
+        } else if(balanceResult == 0) {
+          payStatusIcon = './assets/images/tx-state/icon-tx-moved.svg';
+        }
         let status = '';
         switch(summary["Status"])
         {
@@ -131,7 +151,8 @@ export class CoinComponent{
           "datetime": datetime,
           "timestamp": timestamp,
           "payfees": summary['Fee']/Config.SELA,
-          "txId": txId
+          "txId": txId,
+          "payStatusIcon": payStatusIcon
         }
         this.transferList.push(transfer);
       }
@@ -193,5 +214,13 @@ export class CoinComponent{
     }
     this.isShowMore = true;
     this.getAllTx();
+  }
+
+  doRefresh(refresher){
+    this.pageNo = 0;
+    this.clickMore();
+    setTimeout(() => {
+      refresher.complete();
+    },1000);
   }
 }

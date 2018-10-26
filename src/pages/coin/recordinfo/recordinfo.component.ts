@@ -12,6 +12,7 @@ export class RecordinfoComponent{
   masterWalletId:string = "1";
   transactionRecord: any = {};
   start = 0;
+  payStatusIcon: string = "";
   blockchain_url = Config.BLOCKCHAIN_URL;
   constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native :Native){
     this.init();
@@ -35,7 +36,12 @@ export class RecordinfoComponent{
         let incomingAddress = summary["Incoming"]['ToAddress'];
         let outcomingAddress = summary["Outcoming"]['ToAddress'];
         let balanceResult = incomingAmount - outcomingAmount;
-        let resultAmount = balanceResult - summary['Fee'];
+        let resultAmount = 0;
+        if (outcomingAmount === 0 && outcomingAddress === "") {
+          resultAmount = balanceResult;
+        } else {
+          resultAmount = balanceResult - summary['Fee'];
+        }
         let status = '';
         switch(summary["Status"])
         {
@@ -48,6 +54,13 @@ export class RecordinfoComponent{
           case 'Unconfirmed':
             status = 'Unconfirmed'
             break;
+        }
+        if (balanceResult > 0) {
+          this.payStatusIcon = './assets/images/tx-state/icon-tx-received-outline.svg';
+        } else if(balanceResult < 0) {
+          this.payStatusIcon = './assets/images/tx-state/icon-tx-sent.svg';
+        } else if(balanceResult == 0) {
+          this.payStatusIcon = './assets/images/tx-state/icon-tx-moved.svg';
         }
         this.transactionRecord = {
           name: chainId,
@@ -79,6 +92,13 @@ export class RecordinfoComponent{
 
   tiaozhuan(txId){
    self.location.href=this.blockchain_url + 'tx/' + txId;
+  }
+
+  doRefresh(refresher){
+    this.init();
+    setTimeout(() => {
+      refresher.complete();
+    },1000);
   }
 
 }

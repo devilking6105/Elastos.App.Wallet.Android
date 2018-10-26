@@ -4,10 +4,17 @@
     </ion-navbar>
 </ion-header>
 <ion-content>
-    <div class='address-whole'>
+    <nodata keyText='no-tx-record' *ngIf="isNodata"></nodata>
+    <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!isNodata">
+        <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="" refreshingSpinner="circles" refreshingText="">
+        </ion-refresher-content>
+        <ion-refresher-content>
+        </ion-refresher-content>
+    </ion-refresher>
+    <div class='address-whole' *ngIf="!isNodata">
         <div class="coin-info-top-box">
             <img src="./assets/images/logo-maincolor.svg">
-            <div style="font-size: 1.6em;">{{coinCount}} </div>
+            <div style="font-size: 1.6em;">{{coinCount}} {{coinName}}</div>
         </div>
 
         <ion-grid style="margin-bottom: 60px">
@@ -18,7 +25,7 @@
             </ion-row>
             <ion-row *ngFor="let item of transferList; let i = index" (click)="onItem(item)" class="hang" [ngClass]="{'bottom-border': i==transferList.length-1}">
                 <ion-col col-2 align-self-center>
-                    <img src="./assets/images/tx-state/icon-tx-moved.svg" alt="" class="transfer-list-img">
+                    <img src={{item.payStatusIcon}} alt="" class="transfer-list-img">
                 </ion-col>
                 <ion-col col-5 align-self-center class="text-left">
                     <span class="font-size-2">{{item.status | translate}}</span> <span class="transfer-list-date" *ngIf="item.timestamp!='0'" class="font-size-2"> {{item.datetime}} </span>

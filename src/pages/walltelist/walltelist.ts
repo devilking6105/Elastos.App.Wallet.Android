@@ -5,14 +5,15 @@ import { Events } from 'ionic-angular';
 import {LocalStorage} from "../../providers/Localstorage";
 import {Config} from "../../providers/Config";
 import {Native} from "../../providers/Native";
-
+import {WalletManager} from "../../providers/WalletManager";
 @Component({
   selector: 'page-walltelist',
   templateUrl: 'walltelist.html',
 })
 export class WalltelistPage {
    items = [];
-  constructor(public navCtrl: NavController, public navParams: NavParams,public events: Events,public localStorage:LocalStorage,public native:Native,private zone:NgZone) {
+   masterWalletId:string = "1";
+  constructor(public navCtrl: NavController, public navParams: NavParams,public events: Events,public localStorage:LocalStorage,public native:Native,private zone:NgZone,public walletManager:WalletManager) {
         this.init();
   }
 
@@ -22,6 +23,7 @@ export class WalltelistPage {
 
   init(){
      //this.items = Config.getMasterWalletIdList();
+     this.masterWalletId = Config.getCurMasterWalletId();
      let mappList = Config.getMappingList();
      console.log("=========mappList==========="+JSON.stringify(mappList));
      //let mappList ={"2C66B4":{"id":"2C66B4","wallname":"ss","name":"ss"}};
@@ -34,18 +36,42 @@ export class WalltelistPage {
   itemSelected(item: string) {
     console.log("Selected Item", item);
     let id = item["id"];
+    this.getAllsubWallet(id);
+
+  }
+
+  saveId(id){
     this.localStorage.saveCurMasterId({masterId:id}).then((data)=>{
-      //this.localStorage.remove("coinListCache").then((data)=>{
-        this.navCtrl.pop();
-        this.events.publish("wallte:update",id);
-      //});
-    })
+      console.log("qiehuam========="+id);
+      Config.setCurMasterWalletId(id);
+      this.masterWalletId = Config.getCurMasterWalletId();
+      this.navCtrl.pop();
+      this.events.publish("wallte:update",id);
+    });
   }
 
   nextPage(){
     this.native.Go(this.navCtrl,LauncherComponent);
   }
 
+  registerWalletListener(masterId,coin){
+    this.walletManager.registerWalletListener(masterId,coin,(data)=>{
+          if(!Config.isResregister(masterId,coin)){
+            Config.setResregister(masterId,coin,true);
+          }
+           this.events.publish("register:update",masterId,coin,data);
+           //this.saveWalletList();
+    });
+  }
 
+  getAllsubWallet(masterId){
 
-}
+        let chinas = Config.getSubWallet(masterId);
+        for (let chain in chinas) {
+          if(Config.isResregister(masterId,chain)){
+            this.registerWalletListener(masterId,chain);
+          }
+        }
+        this.saveId(masterId);
+    }
+ }

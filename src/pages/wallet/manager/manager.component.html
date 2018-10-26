@@ -5,7 +5,7 @@
 </ion-header>
 <ion-content no-bounce>
     <ion-list>
-        <button ion-item>
+        <button ion-item (click)="onItem(4)">
       <ion-icon item-start>
         <img src="assets/images/icon-wallet.svg" width="22">
       </ion-icon>
@@ -17,16 +17,13 @@
       </ion-note>
     </button>
 
-        <button ion-item (click)="onItem(3)">
+        <button ion-item (click)="onItem(3)" *ngIf="singleAddress && !readonly">
       <ion-icon item-start>
         <img src="assets/images/icon-language.svg" width="22">
       </ion-icon>
       <ion-label>
-        <span>{{'text-language-message' | translate}}</span>
+        <span>{{'text-check-publickey' | translate }}</span>
       </ion-label>
-      <ion-note *ngIf="currentLanguageName" item-end>
-        {{ currentLanguageName }}
-      </ion-note>
     </button>
 
         <button ion-item (click)="onItem(0)">
