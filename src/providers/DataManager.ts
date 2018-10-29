@@ -64,22 +64,20 @@ export class DataManager {
   public OutPutIDJson(Id: string, Path : string , signature: string){
     let idJson = {};
 
-    let jsonObj = this.getIdPathJson(Id, Path);
+    // let jsonObj = this.getIdPathJson(Id, Path);
+    //
+    // let signCont = this.getSignCont(signature)
+    //
+    // idJson["Id"] = Id;
+    // idJson["Path"] = Path;
+    // idJson["SignContent"] = signCont;
+    // //idJson["DataHash"] = [];
+    //
+    // idJson["DataHash"] = (jsonObj)
+    //
+    // console.info("Elastjs OutPutIDJson " + JSON.stringify(idJson));
+    return idJson;
 
-    //if( (jsonObj["Contents"].length > 0) && (jsonObj["Contents"][0]["Values"].length > 0)){
-      //let proofObj = JSON.parse(jsonObj["Contents"][0]["Values"][0]["Proof"] );
-      let signCont = this.getSignCont(signature)
-
-      idJson["Id"] = Id;
-      idJson["Path"] = Path;
-      idJson["SignContent"] = signCont;
-      //idJson["DataHash"] = [];
-
-      idJson["DataHash"] = (jsonObj)
-
-      console.info("Elastjs OutPutIDJson " + JSON.stringify(idJson));
-      return idJson;
-    //}
 
   }
 
