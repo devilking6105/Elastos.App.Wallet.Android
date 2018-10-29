@@ -13,7 +13,11 @@ import {Config} from "../../../providers/Config"
   templateUrl: 'bankcardauth.html',
 })
 export class BankcardauthPage extends BaseComponent implements OnInit{
-  debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6225880167820399',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
+  //6214 8501 0138 0787
+  //6225 8801 6782 0399
+  debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6214850101380787',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
+
+  //debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6225880167820399',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
   payMoney = 0;
   unit:string="ELA";
   priceObj:any={};
