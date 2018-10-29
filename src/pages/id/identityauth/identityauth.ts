@@ -1,15 +1,22 @@
-import { Component ,OnInit} from '@angular/core';
-import {BaseComponent} from "../../../app/BaseComponent";
+import { Component} from '@angular/core';
 import {IDManager} from "../../../providers/IDManager"
 import {ApiUrl} from "../../../providers/ApiUrl"
 import {TransferComponent} from "../../../pages/coin/transfer/transfer.component";
 import {Config} from "../../../providers/Config"
 
+
+import { NavController, NavParams,Events } from 'ionic-angular';
+import {WalletManager} from '../../../providers/WalletManager';
+import {Native} from "../../../providers/Native";
+import {LocalStorage} from "../../../providers/Localstorage";
+import {DataManager} from "../../../providers/DataManager";
+import { Util } from '../../../providers/Util';
 @Component({
   selector: 'page-identityauth',
   templateUrl: 'identityauth.html',
 })
-export class IdentityauthPage extends BaseComponent implements OnInit{
+export class IdentityauthPage{
+
   personValidate = {fullName:'宋家准',identityNumber:'410426198811151012',"type":"identityCard"};//个人验证对象
   payMoney = 0;
   unit:string="ELA"
@@ -18,9 +25,11 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
   did:any;
   serialNum:string;
   path:string;
-  ngOnInit(){
-    this.setTitleByAssets('text-certified-person');
-    this.parms = this.getNavParams().data;
+  constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager){
+    this.init();
+  }
+  init(){
+    this.parms = this.navParams.data;
     this.did = this.parms["id"];
     this.path = this.parms["path"] || "";
     console.info("identityauth.ts Elastos ngOnInit parms" + JSON.stringify(this.parms));
@@ -86,25 +95,26 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
 
         this.localStorage.setKyc(idsObj).then((newVal)=>{
           this.personValidate["serialNum"] = serialNum;
-          this.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD"
+          this.native.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD"
             ,money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.personValidate, "walletInfo" : { "Type" : "Standard"}});
+
         });
     })
 }
 
   checkIdentity(){
-    if(this.isNull(this.personValidate.fullName)){
-      this.messageBox('text-realname-message');
+    if(Util.isNull(this.personValidate.fullName)){
+      this.native.toast_trans('text-realname-message');
        return;
      }
 
-    if(this.isNull(this.personValidate.identityNumber)){
-      this.messageBox('text-cardNo-message-1');
+    if(Util.isNull(this.personValidate.identityNumber)){
+      this.native.toast_trans('text-cardNo-message-1');
      return;
    }
 
-   if(this.isCardNo(this.personValidate.identityNumber)){
-      this.messageBox('text-cardNo-message-2');
+   if(Util.isCardNo(this.personValidate.identityNumber)){
+      this.native.toast_trans('text-cardNo-message-2');
        return;
     }
 
@@ -112,15 +122,17 @@ export class IdentityauthPage extends BaseComponent implements OnInit{
   }
 
   getPrice(){
-    let timestamp = this.getTimestamp();
+    let timestamp = this.native.getTimestamp();
     let parms ={"appid":"elastid","timestamp":timestamp};
     let checksum = IDManager.getCheckSum(parms,"asc");
     parms["checksum"] = checksum;
+
     console.info("ElastJs identityauth.ts getPrice url "+ ApiUrl.GET_PRICE + " parms " + JSON.stringify(parms));
-    this.getHttp().postByAuth(ApiUrl.GET_PRICE,parms).toPromise().then().then(data => {
+    this.native.getHttp().postByAuth(ApiUrl.GET_PRICE,parms).toPromise().then().then(data => {
       console.info("ElastJs identityauth.ts data "+  JSON.stringify(data));
 
       if(data["status"] === 200){
+
           this.priceObj = JSON.parse(data["_body"]);
           this.payMoney = this.priceObj["price"] || 0.1;
           this.unit = this.priceObj["unit"] || "ELA";

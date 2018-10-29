@@ -4,6 +4,7 @@ import {WalletManager} from '../../../providers/WalletManager';
 import {Native} from "../../../providers/Native";
 import {LocalStorage} from "../../../providers/Localstorage";
 import { Config } from '../../../providers/Config';
+
 @Component({
   selector: 'app-coin-list',
   templateUrl: './coin-list.component.html'
@@ -34,7 +35,9 @@ export class CoinListComponent {
      if(item.open){
       this.currentCoin = item;
       //this.createMode();
-      this.createSubWallet();
+      this.native.showLoading().then(()=>{
+        this.createSubWallet();
+      });
      }else{
         let subWallte = Config.getSubWallet(this.masterWalletId);
         //this.localStorage.get('coinListCache').then((val)=>{
@@ -44,7 +47,7 @@ export class CoinListComponent {
         walletObj["id"]   = this.masterWalletId;
         walletObj["wallname"] = Config.getWalletName(this.masterWalletId);
         walletObj["coinListCache"] = subWallte;
-        this.localStorage.saveMappingTable(walletObj).then((walletObj)).then((data)=>{
+        this.localStorage.saveMappingTable(walletObj).then((data)=>{
           let  mappingList = this.native.clone(Config.getMappingList());
           mappingList[this.masterWalletId] = walletObj;
          console.log("=====mappingList===="+JSON.stringify(mappingList));
@@ -92,6 +95,10 @@ export class CoinListComponent {
     //this.currentCoin["open"] = false;
     this.walletManager.createSubWallet(this.masterWalletId,chainId,0, (data)=>{
       if(data['success']){
+        if(!Config.isResregister(this.masterWalletId,chainId)){
+          this.registerWalletListener(this.masterWalletId,chainId);
+        }
+        this.native.hideLoading();
         let coin = this.native.clone(Config.getSubWallet(this.masterWalletId));
         if(coin){
           coin[chainId] = {id:chainId};
@@ -119,6 +126,16 @@ export class CoinListComponent {
 
   ionViewDidLeave() {
      this.events.unsubscribe("error:update");
+  }
+
+  registerWalletListener(masterId,coin){
+    this.walletManager.registerWalletListener(masterId,coin,(data)=>{
+          if(!Config.isResregister){
+            Config.setResregister(masterId,coin,true);
+          }
+           this.events.publish("register:update",masterId,coin,data);
+           //this.saveWalletList();
+    });
   }
 
 }

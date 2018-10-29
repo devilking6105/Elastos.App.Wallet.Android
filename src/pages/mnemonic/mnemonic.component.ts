@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import { NavController,NavParams} from 'ionic-angular';
+import { NavController,NavParams,Events} from 'ionic-angular';
 import {Native} from "../../providers/Native";
 import {WalletManager} from '../../providers/WalletManager';
 import {Config} from '../../providers/Config';
@@ -24,14 +24,18 @@ export class MnemonicComponent {
   defaultCointype = "Ela";
   isSelect:boolean = false;
   multType:any;
-  constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native: Native,public localStorage:LocalStorage){
-          this.init();
+  constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native: Native,public localStorage:LocalStorage,public events :Events){
+          native.showLoading().then(()=>{
+                 this.init();
+          })
+
   }
   init() {
     this.masterWalletId = Config.uuid(6,16);
     this.walletManager.generateMnemonic(this.native.getMnemonicLang(),(data) => {
 
       if(data["success"]){
+        this.native.hideLoading();
         console.log("====generateMnemonic===="+JSON.stringify(data));
         this.mnemonicStr = data["success"].toString();
         let mnemonicArr = this.mnemonicStr.split(/[\u3000\s]+/);
@@ -45,10 +49,7 @@ export class MnemonicComponent {
     this.payPassword = this.navParams.get("payPassword");
     this.name = this.navParams.get("name");
     this.singleAddress = this.navParams.get("singleAddress");
-    console.log("===========singleAddress1: ", this.singleAddress);
-    console.log("===========singleAddress2: ", this.navParams.get("singleAddress"));
     this.multType = this.navParams.get("mult");
-    console.log("====this.multType====="+this.navParams.get("mult"));
   }
 
   onNext() {
@@ -66,14 +67,19 @@ export class MnemonicComponent {
         this.native.Go(this.navCtrl,AddpublickeyPage,{"totalCopayers":this.multType["totalCopayers"],"requiredCopayers":this.multType["requiredCopayers"],"mnemonicStr":this.mnemonicStr,"mnemonicPassword":this.mnemonicPassword,"payPassword":this.payPassword,name:this.name})
         return;
     }
-    this.walletManager.createMasterWallet(this.masterWalletId, this.mnemonicStr, this.mnemonicPassword, this.payPassword,this.singleAddress,this.native.getMnemonicLang(),(data) =>{
-           if(data["success"]){
-            console.log("====createMasterWallet===="+JSON.stringify(data));
-            this.createSubWallet('ELA');
-           }else{
-             alert("createMasterWallet=error:"+JSON.stringify(data));
-           }
+    this.native.showLoading().then(()=>{
+
+      this.walletManager.createMasterWallet(this.masterWalletId, this.mnemonicStr, this.mnemonicPassword, this.payPassword,this.singleAddress,this.native.getMnemonicLang(),(data) =>{
+        if(data["success"]){
+         console.log("====createMasterWallet===="+JSON.stringify(data));
+         this.createSubWallet('ELA');
+        }else{
+          alert("createMasterWallet=error:"+JSON.stringify(data));
+        }
+     });
+
     });
+
   }
 
   createSubWallet(chainId){
@@ -89,6 +95,8 @@ export class MnemonicComponent {
                console.log("=====mappingList===="+JSON.stringify(mappingList));
                 Config.setMappingList(mappingList);
                   this.saveWalletList();
+                  this.registerWalletListener(this.masterWalletId,chainId);
+
               });
           }else{
                 alert("createSubWallet=error:"+JSON.stringify(data));
@@ -99,8 +107,19 @@ export class MnemonicComponent {
   saveWalletList(){
     Config.getMasterWalletIdList().push(this.masterWalletId);
             this.localStorage.saveCurMasterId({masterId:this.masterWalletId}).then((data)=>{
+              this.native.hideLoading();
               Config.setCurMasterWalletId(this.masterWalletId);
               this.native.Go(this.navCtrl,WriteComponent, {mnemonicStr: this.mnemonicStr, mnemonicList: this.mnemonicList});
             });
+  }
+
+  registerWalletListener(masterId,coin){
+    this.walletManager.registerWalletListener(masterId,coin,(data)=>{
+          if(!Config.isResregister(masterId,coin)){
+            Config.setResregister(masterId,coin,true);
+          }
+           this.events.publish("register:update",masterId,coin,data);
+           //this.saveWalletList();
+    });
   }
 }

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import { NavController, NavParams} from 'ionic-angular';
+import { NavController, NavParams,Events} from 'ionic-angular';
 import {WalletManager} from '../../../providers/WalletManager';
 import {Native} from "../../../providers/Native";
 import {LocalStorage} from "../../../providers/Localstorage";
@@ -25,7 +25,7 @@ export class ImportComponent {
   public mnemonicObj:any={mnemonic:"",payPassword: "", rePayPassword: "",phrasePassword:"",name:"",singleAddress:false};
   public walletType:string;
 
-  constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native: Native,public localStorage:LocalStorage) {
+  constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native: Native,public localStorage:LocalStorage,public events:Events) {
          this.masterWalletId = Config.uuid(6,16);
   }
   public toggleShowAdvOpts(): void {
@@ -41,19 +41,16 @@ export class ImportComponent {
      switch(this.selectedTab){
        case "words":
             if(this.checkWorld()){
-               this.native.showLoading();
-               setTimeout(() => {
+               this.native.showLoading().then(()=>{
                 this.importWalletWithMnemonic();
-               },100);
-
+               });
              }
        break;
        case "file":
           if(this.checkImportFile()){
-               this.native.showLoading();
-               setTimeout(()=>{
+               this.native.showLoading().then(()=>{
                 this.importWalletWithKeystore();
-               },100);
+               });
           }
        break;
      }
@@ -72,6 +69,13 @@ export class ImportComponent {
       this.native.toast_trans("text-wallet-name-validator");
       return false;
     }
+
+    if(Util.isWalletName(this.importFileObj.name)){
+      this.native.toast_trans("text-wallet-name-validator1");
+      return;
+    }
+
+
     if(Util.isNull(this.importFileObj.backupPassWord)){
       //this.native.hideLoading();
       this.native.toast_trans('text-backup-passworld-input');
@@ -99,6 +103,7 @@ export class ImportComponent {
                         if(data["success"]){
                                this.walletManager.createSubWallet(this.masterWalletId,"ELA",0, (data)=>{
                                 if(data["success"]){
+                                   this.registerWalletListener(this.masterWalletId,"ELA");
                                    this.getAllCreatedSubWallets();
                                  }else{
                                    this.native.hideLoading();
@@ -119,6 +124,13 @@ export class ImportComponent {
         this.native.toast_trans("text-wallet-name-validator");
         return false;
     }
+
+    if(Util.isWalletName(this.mnemonicObj.name)){
+      this.native.toast_trans("text-wallet-name-validator1");
+      return;
+    }
+
+
     if(Util.isNull(this.mnemonicObj.mnemonic)){
       //this.native.hideLoading();
         this.native.toast_trans('text-input-mnemonic');
@@ -167,6 +179,7 @@ export class ImportComponent {
                        this.walletManager.createSubWallet(this.masterWalletId,"ELA",0, (data)=>{
                         if(data["success"]){
                           this.native.toast_trans('import-text-world-sucess');
+                          this.registerWalletListener(this.masterWalletId,"ELA");
                           this.saveWalletList(null);
                         }else{
                              this.native.hideLoading();
@@ -223,6 +236,7 @@ export class ImportComponent {
               walletObj["wallname"] = name;
               if(subchains){
                 walletObj["coinListCache"] = subchains;
+                this.registersubWallet(this.masterWalletId,subchains);
               }
               this.localStorage.saveMappingTable(walletObj).then((data)=>{
               let  mappingList = this.native.clone(Config.getMappingList());
@@ -237,4 +251,19 @@ export class ImportComponent {
             });
   }
 
+  registerWalletListener(masterId,coin){
+    this.walletManager.registerWalletListener(masterId,coin,(data)=>{
+          if(!Config.isResregister(masterId,coin)){
+            Config.setResregister(masterId,coin,true);
+          }
+           this.events.publish("register:update",masterId,coin,data);
+    });
+  }
+
+  registersubWallet(masterId,chinas){
+        for (let index in chinas) {
+          let chain =  chinas[index];
+          this.registerWalletListener(masterId,chain);
+        }
+  }
 }

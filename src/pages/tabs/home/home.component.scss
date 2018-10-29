@@ -1,14 +1,15 @@
 app-home {
     .home-top-box {
         text-align: center;
-        padding: 30px 0px 50px 0px;
+        padding: 50px 0px 10px 0px;
         &>img {
             width: 60px;
         }
     }
     .home-list-img {
-        height: 40px;
-        margin-right: 20px;
+        display: inline-block;
+        //width: 30px;
+        // height: 60px;
     }
     .home-list-title {
         font-size: 1.2em;
@@ -40,5 +41,23 @@ app-home {
             height: 40px;
             top: 0px;
         }
+    }
+    .row-title {
+        font-size: 14px;
+    }
+    .text-right {
+        text-align: right;
+    }
+    .text-left {
+        text-align: left;
+    }
+    .font-size-1 {
+        font-size: 16px;
+    }
+    .hang {
+        border-top: 1px solid #dddddd;
+    }
+    .text-center {
+        text-align: center;
     }
 }

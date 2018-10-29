@@ -1,5 +1,4 @@
-import { Component ,OnInit} from '@angular/core';
-import {BaseComponent} from "../../../app/BaseComponent";
+import { Component} from '@angular/core';
 import {IDManager} from "../../../providers/IDManager"
 import {ApiUrl} from "../../../providers/ApiUrl"
 import {TransferComponent} from "../../../pages/coin/transfer/transfer.component";
@@ -7,12 +6,22 @@ import {Observable} from 'rxjs';
 import 'rxjs/add/observable/timer';
 import {Config} from "../../../providers/Config"
 
+import { NavController, NavParams,Events } from 'ionic-angular';
+import {WalletManager} from '../../../providers/WalletManager';
+import {Native} from "../../../providers/Native";
+import {LocalStorage} from "../../../providers/Localstorage";
+import {DataManager} from "../../../providers/DataManager";
+import { Util } from '../../../providers/Util';
+import {PopupProvider} from '../../../providers/popup';
 @Component({
   selector: 'page-phoneauth',
   templateUrl: 'phoneauth.html',
 })
-export class PhoneauthPage extends BaseComponent implements OnInit{
-  phoneValidate  = {fullName:'刘博群',identityNumber:'220106198402038222',mobile:'15210335978',code:'',type:"phone"};
+
+export class PhoneauthPage {
+  //phoneValidate  = {fullName:'刘博群',identityNumber:'220106198402038222',mobile:'15210335978',code:'',type:"phone"};
+
+  phoneValidate  = {fullName:'宋家准',identityNumber:'410426198811151012',mobile:'18210230496',code:'',type:"phone"};
   payMoney = 0;
   unit:string="ELA"
   priceObj:any={};
@@ -20,9 +29,16 @@ export class PhoneauthPage extends BaseComponent implements OnInit{
   did:any;
   serialNum:string;
   path:string;
-  ngOnInit(){
-    this.setTitleByAssets('text-certified-phone');
-    this.parms = this.getNavParams().data;
+  verifyCode: any = {
+    verifyCodeTips: "获取验证码",
+    countdown:60,//总共时间
+    disable:true
+}
+  constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager , public popupProvider : PopupProvider){
+      this.init();
+  }
+  init(){
+    this.parms = this.navParams.data;
     this.did = this.parms["id"];
     this.path = this.parms["path"] || "";
 
@@ -45,11 +61,11 @@ export class PhoneauthPage extends BaseComponent implements OnInit{
   }
 
   getPrice(){
-    let timestamp = this.getTimestamp();
+    let timestamp = this.native.getTimestamp();
     let parms ={"appid":"elastid","timestamp":timestamp};
     let checksum = IDManager.getCheckSum(parms,"asc");
     parms["checksum"] = checksum;
-    this.getHttp().postByAuth(ApiUrl.GET_PRICE,parms).toPromise().then().then(data => {
+    this.native.getHttp().postByAuth(ApiUrl.GET_PRICE,parms).toPromise().then().then(data => {
         if(data["status"] === 200){
           let priceObj = JSON.parse(data["_body"]);
           this.payMoney = priceObj["price"] || 0.1;
@@ -93,39 +109,40 @@ export class PhoneauthPage extends BaseComponent implements OnInit{
         this.localStorage.setKyc(idsObj).then((newVal)=>{
 
           this.phoneValidate["serialNum"] = serialNum;
-          this.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.phoneValidate, "walletInfo" : { "Type" : "Standard"}});
+          this.native.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.phoneValidate, "walletInfo" : { "Type" : "Standard"}});
+
         });
     })
 }
 
   checkIdentity(){
-    if(this.isNull(this.phoneValidate.fullName)){
-      this.messageBox('text-realname-message');
+    if(Util.isNull(this.phoneValidate.fullName)){
+      this.native.toast_trans('text-realname-message');
        return;
      }
 
-    if(this.isNull(this.phoneValidate.identityNumber)){
-      this.messageBox('text-cardNo-message-1');
+    if(Util.isNull(this.phoneValidate.identityNumber)){
+      this.native.toast_trans('text-cardNo-message-1');
      return;
    }
 
-   if(this.isCardNo(this.phoneValidate.identityNumber)){
-      this.messageBox('text-cardNo-message-2');
+   if(Util.isCardNo(this.phoneValidate.identityNumber)){
+      this.native.toast_trans('text-cardNo-message-2');
        return;
     }
 
-    if(this.isNull(this.phoneValidate.mobile)){
-      this.messageBox('text-phone-message-1');
+    if(Util.isNull(this.phoneValidate.mobile)){
+      this.native.toast_trans('text-phone-message-1');
        return;
 }
 
- if(this.checkCellphone(this.phoneValidate.mobile)){
-  this.messageBox('text-phone-message-2');
+ if(Util.checkCellphone(this.phoneValidate.mobile)){
+  this.native.toast_trans('text-phone-message-2');
   return;
   }
 
-  if(this.isNull(this.phoneValidate.code)){
-      this.messageBox('text-sendcode-message-1');
+  if(Util.isNull(this.phoneValidate.code)){
+      this.native.toast_trans('text-sendcode-message-1');
   return;
  }
 
@@ -134,31 +151,48 @@ export class PhoneauthPage extends BaseComponent implements OnInit{
 
   sendCodeHttp(mobile){
     let code = (Math.random()*1000000000000000).toString().substring(0,6);
-    let timestamp = this.getTimestamp();
+    let timestamp = this.native.getTimestamp();
     let parms ={"mobile":mobile,"code":code,"serialNum":this.serialNum,"timestamp":timestamp};
     let checksum = IDManager.getCheckSum(parms,"asc");
     parms["checksum"] = checksum;
-    this.getHttp().postByAuth(ApiUrl.SEND_CODE,parms).toPromise().then(data=>{
+    this.native.getHttp().postByAuth(ApiUrl.SEND_CODE,parms).toPromise().then(data=>{
 
     }).catch(error => {
 
     });
   }
 
-  public onSendCode(): Observable<boolean> {
-    return Observable.timer(1000).map((v, i) => true);
-  }
-
-  sendCode(phone){
-    if(this.isNull(phone)){
-      this.messageBox('text-phone-message-1');
+  getCode(phone){
+    if(Util.isNull(phone)){
+      this.native.toast_trans('text-phone-message-1');
        return;
-}
+    }
 
-if(this.checkCellphone(phone)){
-  this.messageBox('text-phone-message-2');
-  return;
-}
-   this.sendCodeHttp(phone);
+   if(Util.checkCellphone(phone)){
+        this.native.toast_trans('text-phone-message-2');
+      return;
+    }
+    if(this.verifyCode.disable){
+      this.verifyCode.disable = false;
+      this.settime();
+      this.sendCodeHttp(phone);
+    }
+
   }
-}
+
+   //倒计时
+   settime() {
+     if (this.verifyCode.countdown == 0)
+         {
+           this.verifyCode.verifyCodeTips = "获取验证码";
+           this.verifyCode.disable = true;
+           this.verifyCode.countdown = 60;
+           return;
+         } else {
+            this.verifyCode.countdown--;
+         }
+         setTimeout(() => {
+           this.verifyCode.verifyCodeTips = "重新获取" + this.verifyCode.countdown + "秒"; this.settime();
+         }, 1000);
+        }
+   }

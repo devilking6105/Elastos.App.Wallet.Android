@@ -1,18 +1,28 @@
-import { Component,OnInit } from '@angular/core';
-import {BaseComponent} from "../../../../app/BaseComponent";
+import { Component,ViewChild,NgZone} from '@angular/core';
 import {IdHomeComponent} from "../../../../pages/id/home/home";
 import {IDManager} from "../../../../providers/IDManager";
 import { Config } from '../../../../providers/Config';
-import {config} from "ngx-weui/jweixin";
-import {ScancodePage} from "../../../scancode/scancode";
-import {TabsComponent} from "../../../tabs/tabs.component";
+// <<<<<<< HEAD
+// import {config} from "ngx-weui/jweixin";
+// import {ScancodePage} from "../../../scancode/scancode";
+// import {TabsComponent} from "../../../tabs/tabs.component";
+// =======
+import { NavController, NavParams,Events,Navbar } from 'ionic-angular';
+import {WalletManager} from '../../../../providers/WalletManager';
+import {Native} from "../../../../providers/Native";
+import {LocalStorage} from "../../../../providers/Localstorage";
+import {DataManager} from "../../../../providers/DataManager";
+import { Util } from '../../../../providers/Util';
+import { PopupProvider } from '../../../../providers/popup';
+//>>>>>>> origin/wallet_dev
 //{notary:"COOIX"}
 
 @Component({
   selector: 'page-person-write-chain',
   templateUrl: 'person-write-chain.html',
 })
-export class PersonWriteChainPage extends BaseComponent implements OnInit{
+export class PersonWriteChainPage{
+  @ViewChild(Navbar) navBar: Navbar;
   masterWalletId:string ="1";
   chianId = "IdChain";
   type: string;
@@ -50,21 +60,29 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
  signature:string;
  orderStatus = 0;
  serialNum = "";
- ngOnInit(){
-   let self = this;
-   this.masterWalletId = Config.getCurMasterWalletId();
+// <<<<<<< HEAD
+//  ngOnInit(){
+//    let self = this;
+//    this.masterWalletId = Config.getCurMasterWalletId();
+// =======
+ constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager,public popupProvider:PopupProvider,public ngzone: NgZone){
+    this.init();
+}
+ init(){
+
+//>>>>>>> origin/wallet_dev
    this.events.subscribe("order:update",(orderStatus,appr)=>{
      console.log("ElastJs ngOnInit  orderStatus "+orderStatus + " appr " + appr);
 
      if(appr != "enterprise"){
-
-       self.orderStatus = orderStatus;//
+       this.ngzone.run(()=>{
+        this.orderStatus = orderStatus;
+       });
        console.log("ElastJs ngOnInit 111 appr !=orderStatus "+orderStatus + " appr " + appr);
 
      }
    });
-    this.setTitleByAssets('text-kyc-result');
-    this.idObj = this.getNavParams().data;
+    this.idObj = this.navParams.data;
     console.log("ElastJs ngOnInit idObj"+JSON.stringify(this.idObj));
    this.did = this.idObj["payObj"]["did"];
 
@@ -72,19 +90,31 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
     this.orderStatus = this.idObj["pathStatus"];
     this.serialNum = this.idObj["serialNum"];
     this.getPerson();
-    if(this.isNull(status)){
+    if(Util.isNull(status)){
       this.type = '0';
     }else{
       this.type = status;
     }
-    this.setLeftIcon('',()=>{
-      console.info("ElastJs ngOnInit go  IdHomeComponent" )
-
-      this.Go(IdHomeComponent);
-    });
+// <<<<<<< HEAD
+//     this.setLeftIcon('',()=>{
+//       console.info("ElastJs ngOnInit go  IdHomeComponent" )
+//
+//       this.Go(IdHomeComponent);
+//     });
+// =======
+//
+// >>>>>>> origin/wallet_dev
    console.info("ElastJs ngOnInit end " )
 
  }
+
+ ionViewDidLoad() {
+  this.navBar.backButtonClick = (e)=>{
+    this.navCtrl.pop();
+    this.native.Go(this.navCtrl,IdHomeComponent);
+  };
+}
+
   getPerson(){
 
    // console.info("ElastJs getPerson person-write-chain.ts ngOnInit begin ")
@@ -123,10 +153,15 @@ export class PersonWriteChainPage extends BaseComponent implements OnInit{
 
   onCommit(){
     this.popupProvider.presentPrompt().then((val)=>{
-      console.log("ElastJs---onCommit----"+JSON.stringify(val));
-
-      if(this.isNull(val)){
-                this.messageBox("text-id-kyc-prompt-password");
+// <<<<<<< HEAD
+//       console.log("ElastJs---onCommit----"+JSON.stringify(val));
+//
+//       if(this.isNull(val)){
+//                 this.messageBox("text-id-kyc-prompt-password");
+// =======
+              if(Util.isNull(val)){
+                this.native.toast_trans("text-id-kyc-prompt-password");
+//>>>>>>> origin/wallet_dev
                 return;
               }
               this.passworld = val.toString();

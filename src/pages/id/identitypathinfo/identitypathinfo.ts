@@ -1,25 +1,39 @@
-import { Component ,OnInit} from '@angular/core';
-import {BaseComponent} from "../../../app/BaseComponent";
+import { Component} from '@angular/core';
 import {IdentityauthPage} from '../../../pages/id/identityauth/identityauth';
 import {PersonWriteChainPage} from "../../../pages/id/kyc/person-write-chain/person-write-chain";
 import {IDManager} from "../../../providers/IDManager";
 import {ApiUrl} from "../../../providers/ApiUrl";
 import {Config} from "../../../providers/Config";
 
+import { NavController, NavParams} from 'ionic-angular';
+import {Native} from "../../../providers/Native";
+import {LocalStorage} from "../../../providers/Localstorage";
+import {DataManager} from "../../../providers/DataManager";
 @Component({
   selector: 'page-identitypathinfo',
   templateUrl: 'identitypathinfo.html',
 })
-export class IdentitypathinfoPage extends BaseComponent implements OnInit{
+export class IdentitypathinfoPage{
+  //public identitypathlist =[{'pathStatus':4,payObj:{parms:{"fullName":"sssssss","identityNumber":410426,"mobile":18210230496}}},{'pathStatus':5,payObj:{parms:{"fullName":"sssssss","identityNumber":410426,"mobile":18210230496}}},{'pathStatus':4,payObj:{parms:{"fullName":"sssssss","identityNumber":410426,"mobile":18210230496}}},{'pathStatus':4,payObj:{parms:{"fullName":"sssssss","identityNumber":410426,"mobile":18210230496}}}];
   public identitypathlist =[];
   private parmar ={};
   public idsObj ={};
-  ngOnInit(){
-   this.parmar = this.getNavParams().data;
-   console.log("Elastos IdentitypathinfoPage ---parmar---"+JSON.stringify(this.parmar));
-   this.setTitleByAssets("text-identity-path-deatils");
+// <<<<<<< HEAD
+//   ngOnInit(){
+//    this.parmar = this.getNavParams().data;
+//    console.log("Elastos IdentitypathinfoPage ---parmar---"+JSON.stringify(this.parmar));
+//    this.setTitleByAssets("text-identity-path-deatils");
+//     let masterWalletId = Config.getCurMasterWalletId();
+//
+//    this.localStorage.getKyc().then((val)=>{
+// =======
+  constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public localStorage: LocalStorage,public dataManager :DataManager){
+    this.init();
+}
+  init(){
+   this.parmar = this.navParams.data;
     let masterWalletId = Config.getCurMasterWalletId();
-
+   console.log("---path---"+JSON.stringify(this.parmar));
    this.localStorage.getKyc().then((val)=>{
     if(val == null || val === undefined || val === {} || val === ''){
       return;
@@ -43,7 +57,7 @@ export class IdentitypathinfoPage extends BaseComponent implements OnInit{
   }
 
   onCommit(){
-    this.Go(IdentityauthPage,this.parmar);
+    this.native.Go(this.navCtrl,IdentityauthPage,this.parmar);
   }
 
   jumpPage(item){
@@ -59,7 +73,7 @@ export class IdentitypathinfoPage extends BaseComponent implements OnInit{
              this.getAppAuth(item);
               break;
           case 2 :
-             this.Go(PersonWriteChainPage,item);
+          this.native.Go(this.navCtrl,PersonWriteChainPage,item);
               break;
           // case 3 :
           //   this.Go(IdentityauthPage,this.parmar);
@@ -73,7 +87,7 @@ getAppAuth(item){
   let txHash =  item["txHash"];
   //console.log("getAppAuth======= txHash type "+typeof(txHash));
   console.log('ElastosJs--identitypathinfo.ts--getAppAuth----'+"---serialNum---"+serialNum+"---txHash---"+txHash);
-  let timestamp = this.getTimestamp();
+  let timestamp = this.native.getTimestamp();
   let parms ={"serialNum":serialNum,
               "txHash":txHash,
               "timestamp":timestamp,
@@ -81,10 +95,7 @@ getAppAuth(item){
   let checksum = IDManager.getCheckSum(parms,"asc");
   parms["checksum"] = checksum;
 
-
-  this.getHttp().postByAuth(ApiUrl.APP_AUTH,parms).toPromise().then().then(data => {
-    console.log('ElastosJs--identitypathinfo.ts--getAppAuth---- data '+ JSON.stringify(data) );
-
+  this.native.getHttp().postByAuth(ApiUrl.APP_AUTH,parms).toPromise().then().then(data => {
     if(data["status"] === 200){
       //console.log("sssss======="+JSON.stringify(data));
       let authResult = JSON.parse(data["_body"]);
@@ -92,15 +103,15 @@ getAppAuth(item){
       console.log('ElastosJs--identitypathinfo.ts--getAppAuth---- authResult '+ JSON.stringify(authResult) );
 
       if(authResult["errorCode"] === "1"){
-        this.messageBox("text-id-kyc-auth-fee-fail");
+        this.native.toast_trans("text-id-kyc-auth-fee-fail");
         return;
       }
       if(authResult["errorCode"] === "2"){
-               this.messageBox("text-id-kyc-auth-query-timeout");
+        this.native.toast_trans("text-id-kyc-auth-query-timeout");
                return;
       }
       if(authResult["errorCode"] === "4"){
-          this.messageBox("text-id-kyc-auth-uncompleted");
+        this.native.toast_trans("text-id-kyc-auth-uncompleted");
              return;
       }
       if(authResult["errorCode"] === "0"){
@@ -123,7 +134,7 @@ getAppAuth(item){
           this.dataManager.addSignCont(resultSign, signCont);
         }
         else{
-          this.messageBox("text-kyc-failure");
+          this.native.toast_trans("text-kyc-failure");
           return;
         }
       }
@@ -133,6 +144,7 @@ getAppAuth(item){
   });
 }
 
+
 saveSerialNumParm(serialNum,item, pathStatus){
   let masterWalletId = Config.getCurMasterWalletId();
 
@@ -141,9 +153,10 @@ saveSerialNumParm(serialNum,item, pathStatus){
     this.idsObj[masterWalletId][this.parmar["id"]][this.parmar["path"]][serialNum]= item;
     this.localStorage.setKyc(this.idsObj).then(()=>{
       if(item["pathStatus"]  == 2) {
-        this.Go(PersonWriteChainPage, item);
+        this.native.Go(this.navCtrl,PersonWriteChainPage, item);
       }
     });
+
 
 
 }

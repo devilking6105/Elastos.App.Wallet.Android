@@ -1,26 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import {BaseComponent} from './../../../app/BaseComponent';
+import { Component} from '@angular/core';
 import {Config} from '../../../providers/Config';
 import { Util } from '../../../providers/Util';
-
+import { NavController, NavParams} from 'ionic-angular';
+import {WalletManager} from '../../../providers/WalletManager';
+import {Native} from "../../../providers/Native";
 @Component({
   selector: 'app-recordinfo',
   templateUrl: './recordinfo.component.html',
-  // styleUrls: ['./recordinfo.component.scss']
 })
-export class RecordinfoComponent extends BaseComponent implements OnInit {
+export class RecordinfoComponent{
   masterWalletId:string = "1";
   transactionRecord: any = {};
-
   start = 0;
-
+  payStatusIcon: string = "";
   blockchain_url = Config.BLOCKCHAIN_URL;
-
-  ngOnInit() {
+  constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native :Native){
+    this.init();
+  }
+  init() {
     this.masterWalletId = Config.getCurMasterWalletId();
-    this.setTitleByAssets('text-record');
-    let txId = this.getNavParams().get("txId");
-    let chainId = this.getNavParams().get("chainId");
+    let txId = this.navParams.get("txId");
+    let chainId = this.navParams.get("chainId");
     this.walletManager.getAllTransaction(this.masterWalletId,chainId, this.start, txId, (data) => {
       if(data["success"]){
         console.log("====getAllTransaction====="+JSON.stringify(data));
@@ -36,6 +36,12 @@ export class RecordinfoComponent extends BaseComponent implements OnInit {
         let incomingAddress = summary["Incoming"]['ToAddress'];
         let outcomingAddress = summary["Outcoming"]['ToAddress'];
         let balanceResult = incomingAmount - outcomingAmount;
+        let resultAmount = 0;
+        if (outcomingAmount === 0 && outcomingAddress === "") {
+          resultAmount = balanceResult;
+        } else {
+          resultAmount = balanceResult - summary['Fee'];
+        }
         let status = '';
         switch(summary["Status"])
         {
@@ -49,12 +55,20 @@ export class RecordinfoComponent extends BaseComponent implements OnInit {
             status = 'Unconfirmed'
             break;
         }
+        if (balanceResult > 0) {
+          this.payStatusIcon = './assets/images/tx-state/icon-tx-received-outline.svg';
+        } else if(balanceResult < 0) {
+          this.payStatusIcon = './assets/images/tx-state/icon-tx-sent.svg';
+        } else if(balanceResult == 0) {
+          this.payStatusIcon = './assets/images/tx-state/icon-tx-moved.svg';
+        }
         this.transactionRecord = {
           name: chainId,
           status: status,
           balance: balanceResult/Config.SELA,
           incomingAmount: incomingAmount/Config.SELA,
           outcomingAmount: outcomingAmount/Config.SELA,
+          resultAmount: resultAmount/Config.SELA,
           incomingAddress: incomingAddress,
           outcomingAddress: outcomingAddress,
           txId: txId,
@@ -73,7 +87,18 @@ export class RecordinfoComponent extends BaseComponent implements OnInit {
 
   onNext(address){
     this.native.copyClipboard(address);
-    this.toast('copy-ok');
+    this.native.toast_trans('copy-ok');
+  }
+
+  tiaozhuan(txId){
+   self.location.href=this.blockchain_url + 'tx/' + txId;
+  }
+
+  doRefresh(refresher){
+    this.init();
+    setTimeout(() => {
+      refresher.complete();
+    },1000);
   }
 
 }

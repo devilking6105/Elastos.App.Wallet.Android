@@ -4,7 +4,6 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import {HttpModule} from '@angular/http';
-import {WeUiModule} from 'ngx-weui';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {Observable} from 'rxjs/Observable';
 
@@ -31,7 +30,6 @@ import { DataManager } from '../providers/DataManager';
 
 /**pages*/
 import {AppComponent} from './app.component';
-import {HeaderComponent} from './header/app.header';
 import {TabsComponent} from './../pages/tabs/tabs.component';
 import {HomeComponent} from './../pages/tabs/home/home.component';
 import {MyComponent} from './../pages/tabs/my/my.component';
@@ -44,7 +42,6 @@ import {MnemonicComponent} from '../pages/mnemonic/mnemonic.component';
 import {WriteComponent} from '../pages/mnemonic/write/write.component';
 import {AddressComponent} from '../pages/wallet/address/address.component';
 import {ContactsComponent} from '../pages/contacts/contacts.component';
-import {ResultComponent} from '../pages/universal/result/result.component';
 import {CoinComponent} from '../pages/coin/coin.component';
 import {TransferComponent} from '../pages/coin/transfer/transfer.component';
 import {PaymentConfirmComponent} from "../pages/coin/payment-confirm/payment-confirm.component";
@@ -63,32 +60,25 @@ import {ScancodePage} from '../pages/scancode/scancode';
 import {TxdetailsPage} from '../pages/txdetails/txdetails';
 import {Native} from '../providers/Native';
 import {Logger} from '../providers/Logger';
-import {BaseComponent} from './BaseComponent';
 import {RecordinfoComponent} from '../pages/coin/recordinfo/recordinfo.component';
 import {WalletManager} from "../providers/WalletManager";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner";
 import {FileChooser} from "@ionic-native/file-chooser";
 
 import {TestJniComponent} from '../pages/testjni/testjni.component';
-import {kycSelectTypeComponent} from "../pages/id/kyc/selecttype/create"
 import {ComponentsModule} from "../components/components.module";
 import {InitializepagePage} from "../pages/initializepage/initializepage";
 import {CreatewalletnamePage} from "../pages/createwalletname/createwalletname";
 /*id相关页面*/
 import {IdLauncherComponent} from '../pages/id/launcher/launcher';
 import {IdHomeComponent} from '../pages/id/home/home';
-import {IdCreateComponent} from '../pages/id/create/create';
 import {IdImportComponent} from '../pages/id/import/import';
 import {IdManagerComponent} from '../pages/id/manager/manager';
-import {IdKycPersonComponent} from '../pages/id/kyc/person/person';
 import {IdKycCompanyComponent} from '../pages/id/kyc/company/company';
 import {IdResultComponent} from '../pages/id/result/result';
-import {KycOperationPage} from '../pages/id/kyc/kyc-operation/kyc-operation';
-import {KycOrderPage} from '../pages/id/kyc/kyc-order/kyc-order';
 import {CompanyWriteChainPage} from '../pages/id/kyc/company-write-chain/company-write-chain';
 import {PersonWriteChainPage} from '../pages/id/kyc/person-write-chain/person-write-chain';
 import {PathlistPage} from '../pages/id/pathlist/pathlist';
-import {PathdetailsPage} from '../pages/id/pathdetails/pathdetails';
 import {CompanypathinfoPage} from '../pages/id/companypathinfo/companypathinfo';
 import {BankcardpathinfoPage} from '../pages/id/bankcardpathinfo/bankcardpathinfo';
 import {PhonepathinfoPage} from '../pages/id/phonepathinfo/phonepathinfo';
@@ -104,6 +94,8 @@ import {AddpublickeyPage} from '../pages/addpublickey/addpublickey';
 import {AddprivatekeyPage} from '../pages/addprivatekey/addprivatekey';
 import {ImportprivatekeyPage} from '../pages/importprivatekey/importprivatekey';
 import {PaymentboxPage} from '../pages/paymentbox/paymentbox';
+import {ModifywalletnamePage} from '../pages/modifywalletname/modifywalletname';
+
 
 /*id相关页面*/
 
@@ -133,8 +125,6 @@ export function TranslateLoaderFactory() {
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    BaseComponent,
     TabsComponent,
     HomeComponent,
     MyComponent,
@@ -147,7 +137,6 @@ export function TranslateLoaderFactory() {
     WriteComponent,
     AddressComponent,
     ContactsComponent,
-    ResultComponent,
     CoinComponent,
     TransferComponent,
     PaymentConfirmComponent,
@@ -165,19 +154,13 @@ export function TranslateLoaderFactory() {
     TestJniComponent,
     IdLauncherComponent,
     IdHomeComponent,
-    IdCreateComponent,
     IdImportComponent,
     IdManagerComponent,
-    IdKycPersonComponent,
     IdKycCompanyComponent,
     IdResultComponent,
-    kycSelectTypeComponent,
-    KycOperationPage,
-    KycOrderPage,
     CompanyWriteChainPage,
     PersonWriteChainPage,
     PathlistPage,
-    PathdetailsPage,
     CompanypathinfoPage,
     BankcardpathinfoPage,
     PhonepathinfoPage,
@@ -197,7 +180,8 @@ export function TranslateLoaderFactory() {
     TxdetailsPage,
     InitializepagePage,
     PaymentboxPage,
-    CreatewalletnamePage
+    CreatewalletnamePage,
+    ModifywalletnamePage
   ],
   imports: [
     BrowserModule,
@@ -211,19 +195,21 @@ export function TranslateLoaderFactory() {
     }),
     QRCodeModule,
     BrowserAnimationsModule,
-    IonicModule.forRoot(AppComponent,{tabsHideOnSubPages: 'true'}),
+    IonicModule.forRoot(AppComponent,{
+    backButtonText: "",
+    backButtonIcon: 'arrow-dropleft-circle',//按钮图标样式
+    iconMode: "ios",
+    mode: "ios",
+    tabsHideOnSubPages: 'true'}),
     IonicStorageModule.forRoot({
       name: '__walletdb',
       driverOrder: ['localstorage','indexeddb', 'sqlite', 'websql']
     }),
-    ComponentsModule,
-    WeUiModule.forRoot()
+    ComponentsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     AppComponent,
-    HeaderComponent,
-    BaseComponent,
     TabsComponent,
     HomeComponent,
     MyComponent,
@@ -236,7 +222,6 @@ export function TranslateLoaderFactory() {
     WriteComponent,
     AddressComponent,
     ContactsComponent,
-    ResultComponent,
     CoinComponent,
     TransferComponent,
     PaymentConfirmComponent,
@@ -254,19 +239,13 @@ export function TranslateLoaderFactory() {
     TestJniComponent,
     IdLauncherComponent,
     IdHomeComponent,
-    IdCreateComponent,
     IdImportComponent,
     IdManagerComponent,
-    IdKycPersonComponent,
     IdKycCompanyComponent,
     IdResultComponent,
-    kycSelectTypeComponent,
-    KycOperationPage,
-    KycOrderPage,
     CompanyWriteChainPage,
     PersonWriteChainPage,
     PathlistPage,
-    PathdetailsPage,
     CompanypathinfoPage,
     BankcardpathinfoPage,
     PhonepathinfoPage,
@@ -286,7 +265,8 @@ export function TranslateLoaderFactory() {
     TxdetailsPage,
     InitializepagePage,
     PaymentboxPage,
-    CreatewalletnamePage
+    CreatewalletnamePage,
+    ModifywalletnamePage
   ],
   providers: [
     StatusBar,
@@ -298,7 +278,6 @@ export function TranslateLoaderFactory() {
     LocalStorage,
     Native,
     Logger,
-    HeaderComponent,
     WalletManager,
     BackupProvider,
     HttpService,

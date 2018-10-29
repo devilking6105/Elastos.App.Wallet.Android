@@ -17,3 +17,34 @@ ion-icon {
         mask-image: url(../assets/images/ico-settings.svg);
     }
 }
+
+::-webkit-scrollbar {
+    display: none !important;
+    box-shadow: none !important;
+}
+
+
+/* add */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Microsoft Yahei', 微软雅黑, 华文细黑, STHeiti, MingLiu;
+}
+
+body,
+html {
+    height: 100%;
+}
+
+.tabs-ios .tab-button-text {
+    margin-top: 0;
+    margin-bottom: 1px;
+    min-height: 11px;
+    font-size: 18px;
+}
+
+.label-ios[stacked] {
+    margin-bottom: 4px;
+    font-size: 1.6rem;
+}

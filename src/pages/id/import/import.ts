@@ -1,23 +1,35 @@
-import { Component,OnInit } from '@angular/core';
-import {BaseComponent} from "./../../../app/BaseComponent";
+import { Component} from '@angular/core';
 import {IdHomeComponent} from "../../../pages/id/home/home";
 import {Config} from "../../../providers/Config";
 
+import { NavController, NavParams} from 'ionic-angular';
+import {Native} from "../../../providers/Native";
+import {LocalStorage} from "../../../providers/Localstorage";
+import {DataManager} from "../../../providers/DataManager";
+import {Util} from "../../../providers/Util";
 
 @Component({
   selector: 'id-import',
   templateUrl: 'import.html',
 })
-export class IdImportComponent extends BaseComponent implements OnInit{
+export class IdImportComponent {
   private kycObj:any={};
   keyStoreContent="";
-  ngOnInit(){
-      this.setTitleByAssets('text-id-import');
-    let masterWalletId = Config.getCurMasterWalletId();
-
-    this.localStorage.getKyc().then((val)=>{
-            console.info(" import.ts ElastJs ngOnInit val" + val);
-            if(this.isNull(val)){
+// <<<<<<< HEAD
+//   ngOnInit(){
+//       this.setTitleByAssets('text-id-import');
+//     let masterWalletId = Config.getCurMasterWalletId();
+//
+//     this.localStorage.getKyc().then((val)=>{
+//             console.info(" import.ts ElastJs ngOnInit val" + val);
+//             if(this.isNull(val)){
+// =======
+  constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public localStorage: LocalStorage,public dataManager :DataManager){
+    this.init();
+}
+  init(){
+      this.localStorage.getKyc().then((val)=>{
+            if(Util.isNull(val)){
                this.kycObj = {};
             }else{
                this.kycObj =JSON.parse(val);
@@ -26,8 +38,8 @@ export class IdImportComponent extends BaseComponent implements OnInit{
   }
 
   onImport(){
-    if(this.isNull(this.keyStoreContent)){
-           this.messageBox("text-id-kyc-import-no-message");
+    if(Util.isNull(this.keyStoreContent)){
+           this.native.toast_trans("text-id-kyc-import-no-message");
            return;
     }
     let masterWalletId = Config.getCurMasterWalletId();
@@ -40,8 +52,9 @@ export class IdImportComponent extends BaseComponent implements OnInit{
     }
 
     this.localStorage.setKyc(this.kycObj).then(()=>{
-      this.messageBox('text-exprot-sucess-message');
-      this.Go(IdHomeComponent);
+      this.native.toast_trans('text-exprot-sucess-message');
+      this.native.Go(this.navCtrl,IdHomeComponent);
+
     });
   }
 }

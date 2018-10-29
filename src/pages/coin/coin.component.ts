@@ -1,5 +1,7 @@
-import {BaseComponent} from '../../app/BaseComponent';
-import {Component, ViewEncapsulation, OnInit} from '@angular/core';
+import {Component,ViewChild} from '@angular/core';
+import { NavController, NavParams,Navbar,Events } from 'ionic-angular';
+import {WalletManager} from '../../providers/WalletManager';
+import {Native} from "../../providers/Native";
 import { Config } from '../../providers/Config';
 import { Util } from '../../providers/Util';
 import {TransferComponent} from "./transfer/transfer.component";
@@ -7,15 +9,15 @@ import {CoinSelectComponent} from "./coin-select/coin-select.component";
 import {WithdrawComponent} from "./withdraw/withdraw.component";
 import {ReceiveComponent} from "./receive/receive.component";
 import {RecordinfoComponent} from "./recordinfo/recordinfo.component";
-import { max } from 'rxjs/operators';
+
 
 
 @Component({
   selector: 'coin',
   templateUrl: './coin.component.html',
-  encapsulation: ViewEncapsulation.None
 })
-export class CoinComponent extends BaseComponent implements OnInit {
+export class CoinComponent{
+  @ViewChild(Navbar) navBar: Navbar;
   public masterWalletInfo = {};
   masterWalletId:string = "1";
   transferList = [];
@@ -34,7 +36,11 @@ export class CoinComponent extends BaseComponent implements OnInit {
   idChainPer:any;
   isShowMore = false;
   MaxCount = 0;
-  ngOnInit() {
+  isNodata:boolean = false;
+  constructor(public navCtrl: NavController,public navParams: NavParams, public walletManager: WalletManager,public native: Native,public events: Events) {
+            this.init();
+  }
+  init() {
     this.masterWalletId = Config.getCurMasterWalletId();
     this.walletManager.getMasterWalletBasicInfo(this.masterWalletId,(data)=>{
                  if(data["success"]){
@@ -45,19 +51,27 @@ export class CoinComponent extends BaseComponent implements OnInit {
                     alert("=======getMasterWalletBasicInfo====error====="+JSON.stringify(data));
                  }
     });
-    this.setLeftIcon("",()=>{
-      this.events.publish("home:update");
-      this.Back();
-    });
-    this.coinName = this.getNavParams().get("name");
-    this.elaPer = this.getNavParams().get("elaPer") || 0;
-    this.idChainPer = this.getNavParams().get("idChainPer") || 0;
+    // this.setLeftIcon("",()=>{
+    //   this.events.publish("home:update");
+    //   this.Back();
+    // });
+    this.coinName = this.navParams.get("name");
+    this.elaPer = this.navParams.get("elaPer") || 0;
+    this.idChainPer = this.navParams.get("idChainPer") || 0;
     if (this.coinName == 'ELA') {
       this.textShow = 'text-recharge';
     }else{
       this.textShow = 'text-withdraw';
     }
     this.initData();
+  }
+
+  ionViewDidLoad() {
+    this.navBar.backButtonClick = (e)=>{
+      console.log("========back=======");
+      this.events.publish("home:update");
+      this.navCtrl.pop();
+    };
   }
 
   initData(){
@@ -75,10 +89,14 @@ export class CoinComponent extends BaseComponent implements OnInit {
   getAllTx(){
     this.walletManager.getAllTransaction(this.masterWalletId,this.coinName, this.start, '', (data) => {
       if(data["success"]){
-          console.log("====getAllTransaction===="+JSON.stringify(data));
       let allTransaction = JSON.parse(data['success']);
       let transactions = allTransaction['Transactions'];
       this.MaxCount = allTransaction['MaxCount'];
+      if(this.MaxCount>0){
+         this.isNodata = false;
+      }else{
+         this.isNodata = true;
+      }
       if(!transactions){
           this.isShowMore = false;
           return;
@@ -94,7 +112,22 @@ export class CoinComponent extends BaseComponent implements OnInit {
         let txId = summary['TxHash'];
         let incomingAmount = summary["Incoming"]['Amount'];
         let outcomingAmount = summary["Outcoming"]['Amount'];
+        let outcomingAddress = summary["Outcoming"]['ToAddress'];
         let balanceResult = incomingAmount - outcomingAmount;
+        let resultAmount = 0;
+        if (outcomingAmount === 0 && outcomingAddress === "") {
+          resultAmount = balanceResult;
+        } else {
+          resultAmount = balanceResult - summary['Fee'];
+        }
+        let payStatusIcon = "";
+        if (balanceResult > 0) {
+          payStatusIcon = './assets/images/tx-state/icon-tx-received-outline.svg';
+        } else if(balanceResult < 0) {
+          payStatusIcon = './assets/images/tx-state/icon-tx-sent.svg';
+        } else if(balanceResult == 0) {
+          payStatusIcon = './assets/images/tx-state/icon-tx-moved.svg';
+        }
         let status = '';
         switch(summary["Status"])
         {
@@ -113,10 +146,12 @@ export class CoinComponent extends BaseComponent implements OnInit {
           "status": status,
           "type": summary["Type"],
           "balance": balanceResult/Config.SELA,
+          "resultAmount": resultAmount/Config.SELA,
           "datetime": datetime,
           "timestamp": timestamp,
           "payfees": summary['Fee']/Config.SELA,
-          "txId": txId
+          "txId": txId,
+          "payStatusIcon": payStatusIcon
         }
         this.transferList.push(transfer);
       }
@@ -127,13 +162,13 @@ export class CoinComponent extends BaseComponent implements OnInit {
   }
 
   onItem(item) {
-    this.Go(RecordinfoComponent, {chainId: this.coinName, txId: item.txId});
+    this.native.Go(this.navCtrl,RecordinfoComponent, {chainId: this.coinName, txId: item.txId});
   }
 
   onNext(type) {
     switch (type) {
       case 1:
-        this.Go(ReceiveComponent, {id: this.coinId, chianId: this.coinName});
+        this.native.Go(this.navCtrl,ReceiveComponent, {id: this.coinId, chianId: this.coinName});
         break;
       case 2:
       if (this.coinName == 'ELA') {
@@ -141,13 +176,13 @@ export class CoinComponent extends BaseComponent implements OnInit {
         //   this.messageBox("text-ela-per-message");
         //   return;
         // }
-        this.Go(TransferComponent, {id: this.coinId, chianId: this.coinName,"walletInfo":this.masterWalletInfo});
+        this.native.Go(this.navCtrl,TransferComponent, {id: this.coinId, chianId: this.coinName,"walletInfo":this.masterWalletInfo});
       }else{
         // if(this.idChainPer != 1){
         //   this.messageBox("text-ela-per-message");
         //   return;
         // }
-        this.Go(TransferComponent, {id: this.coinId, chianId: this.coinName});
+        this.native.Go(this.navCtrl,TransferComponent, {id: this.coinId, chianId: this.coinName,"walletInfo":this.masterWalletInfo});
       }
 
         break;
@@ -157,13 +192,13 @@ export class CoinComponent extends BaseComponent implements OnInit {
           //   this.messageBox("text-ela-per-message");
           //   return;
           // }
-          this.Go(CoinSelectComponent, {chianId: this.coinName});
+          this.native.Go(this.navCtrl,CoinSelectComponent, {chianId: this.coinName});
         }else{
           // if(this.idChainPer != 1){
           //   this.messageBox("text-ela-per-message");
           //   return;
           // }
-          this.Go(WithdrawComponent, {chianId: this.coinName});
+          this.native.Go(this.navCtrl,WithdrawComponent, {chianId: this.coinName});
         }
         break;
     }
@@ -178,5 +213,14 @@ export class CoinComponent extends BaseComponent implements OnInit {
     }
     this.isShowMore = true;
     this.getAllTx();
+  }
+
+  doRefresh(refresher){
+    this.pageNo = 0;
+    this.transferList =[];
+    this.getAllTx();
+    setTimeout(() => {
+      refresher.complete();
+    },1000);
   }
 }

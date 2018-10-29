@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
-import { Platform, App } from 'ionic-angular';
+import { Component,ViewChild } from '@angular/core';
+import {Platform, IonicApp, Nav, App,Tabs} from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LauncherComponent } from "../pages/launcher/launcher.component";
 //import {Utils} from "../providers/Utils";
-//import {WalletCreateComponent} from "../pages/wallet/wallet-create/wallet-create.component";
 import { MnemonicComponent } from "../pages/mnemonic/mnemonic.component";
 //import {WriteComponent} from "../pages/mnemonic/write/write.component";
 import { ImportComponent } from "../pages/wallet/import/import.component";
@@ -25,6 +24,7 @@ import { PaymentConfirmComponent } from "../pages/coin/payment-confirm/payment-c
 import { DidLoginComponent } from "../pages/third-party/did-login/did-login.component";
 import { ManagerComponent } from "../pages/wallet/manager/manager.component"
 import { Config } from '../providers/Config';
+import { Util } from '../providers/Util';
 import { TranslateService } from '@ngx-translate/core';
 import { Native } from '../providers/Native';
 //import { WalletManager } from '../providers/WalletManager';
@@ -41,7 +41,19 @@ import { ScancodePage } from '../pages/scancode/scancode';
 import { InitializepagePage } from "../pages/initializepage/initializepage";
 import {PaymentboxPage} from '../pages/paymentbox/paymentbox';
 import { CoinSelectComponent } from "../pages/coin/coin-select/coin-select.component";
-
+import {IdHomeComponent} from "../pages/id/home/home";
+import {IdLauncherComponent} from "../pages/id/launcher/launcher";
+import {PathlistPage} from '../pages/id/pathlist/pathlist';
+import {PhonepathinfoPage} from '../pages/id/phonepathinfo/phonepathinfo';
+import {PhoneauthPage} from '../pages/id/phoneauth/phoneauth';
+import {IdentityauthPage} from '../pages/id/identityauth/identityauth';
+import {IdentitypathinfoPage} from '../pages/id/identitypathinfo/identitypathinfo';
+import {BankcardauthPage} from '../pages/id/bankcardauth/bankcardauth';
+import {BankcardpathinfoPage} from '../pages/id/bankcardpathinfo/bankcardpathinfo';
+import {CompanypathinfoPage} from '../pages/id/companypathinfo/companypathinfo';
+import {IdKycCompanyComponent} from '../pages/id/kyc/company/company';
+import {CompanyWriteChainPage} from '../pages/id/kyc/company-write-chain/company-write-chain';
+import {PersonWriteChainPage} from '../pages/id/kyc/person-write-chain/person-write-chain';
 //add for plugin
 declare var cordova: any;
 
@@ -52,15 +64,16 @@ declare var cordova: any;
 
 
 export class AppComponent {
+  @ViewChild('myNav') nav:Tabs;
   rootPage: any;
   backButtonPressed: boolean = false;  //用于判断返回键是否触发
-  constructor(public appCtrl: App, private platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public localStorage: LocalStorage, private translate: TranslateService, private native: Native) {
+  constructor(public onicApp:IonicApp,public appCtrl: App, private platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public localStorage: LocalStorage, private translate: TranslateService, private native: Native) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-      this.registerBackButtonAction();
+      this.registerBackButtonAction(this.nav);
       this.initTranslateConfig();
       this.initJsPush();
       this.getKycIdList();
@@ -73,7 +86,7 @@ export class AppComponent {
           this.rootPage = InitializepagePage;
       });
 
-      //this.rootPage = PaymentboxPage
+      //this.rootPage = PaymentboxPage;
       //this.initializeApp();
       //this.rootPage =  WalltelistPage;
       //this.rootPage = ImportprivatekeyPage;
@@ -82,7 +95,7 @@ export class AppComponent {
       //this.rootPage =  ManagerComponent;
       //this.rootPage = ExprotPrikeyComponent;
       //this.rootPage = MyComponent;
-      // this.rootPage = WalletCreateComponent;
+      //  this.rootPage = WalletCreateComponent;
       //this.rootPage = TestJniComponent;
       //this.rootPage = MnemonicComponent;
       //this.rootPage = ImportComponent;
@@ -96,6 +109,19 @@ export class AppComponent {
       //this.rootPage = RecordinfoComponent;
       //this.rootPage = CoinComponent;
       //this.rootPage = CoinSelectComponent;
+      //this.rootPage = TransferComponent;
+      //this.rootPage = IdLauncherComponent;
+      //this.rootPage = PathlistPage;
+      //this.rootPage = PhoneauthPage;
+      //this.rootPage = PhonepathinfoPage;
+      //this.rootPage = IdentityauthPage;
+      //this.rootPage = IdentitypathinfoPage;
+      //this.rootPage = BankcardauthPage;
+      //this.rootPage = BankcardpathinfoPage;
+      //this.rootPage = CompanypathinfoPage;
+      //this.rootPage = IdKycCompanyComponent;
+      //this.rootPage = CompanyWriteChainPage;
+      //this.rootPage = PersonWriteChainPage;
       //init java 2 js plugin
     });
 
@@ -147,14 +173,20 @@ export class AppComponent {
     //  });
   }
 
-  registerBackButtonAction() {
+  registerBackButtonAction(tabRef: Tabs) {
     this.platform.registerBackButtonAction(() => {
-      this.showExit();
+         this.showExit();
       // let activeNav = this.appCtrl.getActiveNavs()[0];
       // if(activeNav.canGoBack()){
       //     activeNav.pop();
       //  }else{
+      //   if (tabRef == null || tabRef._selectHistory[tabRef._selectHistory.length - 1] === tabRef.getByIndex(0).id) {
+      //     //执行退出
       //     this.showExit();
+      //   } else {
+      //     //选择首页第一个的标签
+      //     tabRef.select(0);
+      //   }
       //  }
       // let activePortal = this.ionicApp._modalPortal.getActive();
       // console.log("---activePortal---"+JSON.stringify(activePortal));
@@ -166,7 +198,7 @@ export class AppComponent {
       //   return;
       // }
       // console.log("---activeVC---"+JSON.stringify(this.nav.getActive()));
-      //let activeVC = this.nav.getActive();
+      // let activeVC = this.nav.getActive();
       // if (Util.isEmptyObject(activeVC.instance.tabs)) {
       //   this.showExit();
       // } else {
