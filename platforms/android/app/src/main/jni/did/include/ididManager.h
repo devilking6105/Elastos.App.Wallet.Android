@@ -16,8 +16,8 @@ namespace Elastos {
 		//class IIdManagerCallback;
 		class IDIDManager {
 		public:
-
-			virtual IDID * CreateDID(const std::string &password) = 0;
+      //const std::string &password
+			virtual IDID * CreateDID() = 0;
 
 			virtual IDID * GetDID(const std::string &didName) = 0;
 

@@ -2,35 +2,35 @@ import { Component} from '@angular/core';
 import {IDManager} from "../../../providers/IDManager"
 import {ApiUrl} from "../../../providers/ApiUrl"
 import {TransferComponent} from "../../../pages/coin/transfer/transfer.component";
-<<<<<<< HEAD
+//<<<<<<< HEAD
 import {Observable} from 'rxjs';
 import 'rxjs/add/observable/timer';
 import {Config} from "../../../providers/Config"
 
 
-=======
+//=======
 import { NavController, NavParams,Events } from 'ionic-angular';
 import {WalletManager} from '../../../providers/WalletManager';
 import {Native} from "../../../providers/Native";
 import {LocalStorage} from "../../../providers/Localstorage";
 import {DataManager} from "../../../providers/DataManager";
 import { Util } from '../../../providers/Util';
->>>>>>> origin/wallet_dev
+//>>>>>>> origin/wallet_dev
 @Component({
   selector: 'page-bankcardauth',
   templateUrl: 'bankcardauth.html',
 })
-<<<<<<< HEAD
-export class BankcardauthPage extends BaseComponent implements OnInit{
-  //6214 8501 0138 0787
-  //6225 8801 6782 0399
-  debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6214850101380787',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
-
-  //debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6225880167820399',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
-=======
+// <<<<<<< HEAD
+// export class BankcardauthPage extends BaseComponent implements OnInit{
+//   //6214 8501 0138 0787
+//   //6225 8801 6782 0399
+//   debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6214850101380787',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
+//
+//   //debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6225880167820399',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
+// =======
 export class BankcardauthPage{
   debitCard={fullName:'宋家准',identityNumber:'410426198811151012',cardNumber:'6225880167820399',cardMobile:'18210230496',cardCode:'',type:"bankCard"};
->>>>>>> origin/wallet_dev
+//>>>>>>> origin/wallet_dev
   payMoney = 0;
   unit:string="ELA";
   priceObj:any={};
@@ -113,8 +113,8 @@ constructor(public navCtrl: NavController,public navParams: NavParams,public nat
             self.saveKycSerialNum(self.serialNum);
           }
           else{
-            self.popupProvider.ionicAlert('confirmTitle', 'text-bankcard-auth-exist').then((data) => {
-            });
+            // self.popupProvider.ionicAlert('confirmTitle', 'text-bankcard-auth-exist').then((data) => {
+            // });
           }
         })
       }
@@ -132,11 +132,11 @@ constructor(public navCtrl: NavController,public navParams: NavParams,public nat
          this.localStorage.setKyc(idsObj).then((newVal)=>{
            this.debitCard["serialNum"] = serialNum;
 
-<<<<<<< HEAD
-           this.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.debitCard, "walletInfo" : { "Type" : "Standard"}});
-=======
-           this.native.Go(this.navCtrl,TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.debitCard});
->>>>>>> origin/wallet_dev
+//<<<<<<< HEAD
+           this.native.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.debitCard, "walletInfo" : { "Type" : "Standard"}});
+// =======
+//            this.native.Go(this.navCtrl,TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.debitCard});
+// >>>>>>> origin/wallet_dev
          });
      })
    }

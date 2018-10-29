@@ -3,6 +3,7 @@ import {ApiUrl} from "../../../../providers/ApiUrl";
 import {IDManager} from "../../../../providers/IDManager";
 import {TransferComponent} from "../../../../pages/coin/transfer/transfer.component";
 import {Config} from "../../../../providers/Config"
+import { PopupProvider } from '../../../../providers/popup';
 
 import { NavController, NavParams,Events } from 'ionic-angular';
 import {WalletManager} from '../../../../providers/WalletManager';
@@ -28,7 +29,7 @@ export class IdKycCompanyComponent{
   parms:any;
   did:any;
   path:string = "";
-  constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager){
+  constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager ,public popupProvider: PopupProvider){
     this.init();
   }
   init() {
@@ -66,8 +67,8 @@ export class IdKycCompanyComponent{
           self.saveKycSerialNum(self.serialNum);
         }
         else{
-          self.popupProvider.ionicAlert('confirmTitle', 'text-enterprise-auth-exist').then((data) => {
-          });
+           self.popupProvider.ionicAlert('confirmTitle', 'text-enterprise-auth-exist').then((data) => {
+           });
         }
       })
     }

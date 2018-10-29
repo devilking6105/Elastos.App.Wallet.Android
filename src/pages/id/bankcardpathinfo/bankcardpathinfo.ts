@@ -62,7 +62,7 @@ export class BankcardpathinfoPage{
   jumpPage(item){
     switch(item["pathStatus"]){
           case 0 :
-            this.Go(BankcardauthPage,item);
+            this.native.Go(this.navCtrl,BankcardauthPage,item);
             break;
           case 1:
              this.getAppAuth(item);

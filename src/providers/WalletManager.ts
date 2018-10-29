@@ -367,8 +367,9 @@ export class WalletManager {
 //   didGetPublicKey(masterWalletId:string, did:string,Fun){
 //     this.wallet.didGetPublicKey([masterWalletId,did],Fun,this.errorFun);
 // =======
-  createDID(masterWalletId:string,password:string,Fun){
-    this.wallet.createDID([masterWalletId,password],Fun,(error)=>{
+  //password:string,
+  createDID(masterWalletId:string,Fun){
+    this.wallet.createDID([masterWalletId],Fun,(error)=>{
       this.errorFun(error);
     });
   }

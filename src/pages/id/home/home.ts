@@ -227,8 +227,8 @@ export class IdHomeComponent{
   createDID(){
 
     console.info("home.ts ElastosJs createDID begin ");
-    //
-    this.walletManager.createDID(Config.getCurMasterWalletId(),"s12345678",(result)=>{
+    //,"s12345678"
+    this.walletManager.createDID(Config.getCurMasterWalletId(),(result)=>{
 
       if(!result.success){
         alert("home.ts createDID err"+ JSON.stringify(result));

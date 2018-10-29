@@ -1996,10 +1996,10 @@ public class Wallet extends CordovaPlugin {
 		Log.i(TAG, "ElastosJava createDID  begin");
 
 		String masterWalletID = args.getString(idx++);
-		String password       = args.getString(idx++);
+		//String password       = args.getString(idx++);
 
 		Log.i(TAG, "ElastosJava createDID  masterWalletID " + masterWalletID) ;
-		Log.i(TAG, "ElastosJava createDID  password " + password) ;
+		//Log.i(TAG, "ElastosJava createDID  password " + password) ;
 
 		if (args.length() != idx) {
 			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
@@ -2013,7 +2013,7 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 
-			IDid did = DIDManager.CreateDID(password);
+			IDid did = DIDManager.CreateDID();//password
 			successProcess(cc, did.GetDIDName());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID) + " create DID");

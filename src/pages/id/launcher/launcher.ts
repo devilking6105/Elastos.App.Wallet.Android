@@ -33,8 +33,8 @@ export class IdLauncherComponent{
 
     console.info("launcher.ts ElastosJs createId begin ");
 
-    //
-    this.walletManager.createDID(Config.getCurMasterWalletId(),"s12345678",(result)=>{
+    //,"s12345678"
+    this.walletManager.createDID(Config.getCurMasterWalletId(),(result)=>{
 
           if(!result.success){
             alert("launcher.ts createDID err"+ JSON.stringify(result));

@@ -7,24 +7,21 @@
 
 using namespace Elastos::DID;
 
-#define SIG_nativeCreateDID "(JLjava/lang/String;)J"
-static jlong JNICALL nativeCreateDID(JNIEnv *env, jobject clazz, jlong jDidMgrProxy, jstring jpassword)
+#define SIG_nativeCreateDID "(J)J"
+static jlong JNICALL nativeCreateDID(JNIEnv *env, jobject clazz, jlong jDidMgrProxy)
 {
 	bool exception = false;
 	std::string msgException;
 
-	const char *password = env->GetStringUTFChars(jpassword, NULL);
 	IDID *did = NULL;
 
 	try {
 		IDIDManager* didMgr = (IDIDManager*)jDidMgrProxy;
-		did = didMgr->CreateDID(password);
+		did = didMgr->CreateDID();//password
 	} catch (std::exception &e) {
 		exception = true;
 		msgException = e.what();
 	}
-
-	env->ReleaseStringUTFChars(jpassword, password);
 
 	if (exception) {
 		ThrowWalletException(env, msgException.c_str());

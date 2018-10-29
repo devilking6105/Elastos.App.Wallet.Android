@@ -63,7 +63,7 @@ export class CompanypathinfoPage{
       jumpPage(item){
           switch(item["pathStatus"]){
                 case 0 :
-                  this.Go(IdKycCompanyComponent,item);
+                  this.native.Go(IdKycCompanyComponent,item);
 
                   break;
                 case 1:
@@ -150,7 +150,7 @@ export class CompanypathinfoPage{
 
               }
               else{
-                this.messageBox("text-kyc-failure");
+                this.native.toast_trans("text-kyc-failure");
                 return;
               }
             }

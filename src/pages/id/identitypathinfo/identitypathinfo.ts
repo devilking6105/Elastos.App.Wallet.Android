@@ -66,7 +66,7 @@ export class IdentitypathinfoPage{
     switch(item["pathStatus"]){
           case 0 :
             //this.Go(PersonWriteChainPage,item);
-            this.Go(IdentityauthPage,item);
+            this.native.Go(IdentityauthPage,item);
 
             break;
           case 1:

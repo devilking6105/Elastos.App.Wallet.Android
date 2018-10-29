@@ -367,8 +367,8 @@ export class TestJniComponent {
 
    createDID(){
      console.log("ElastJs =====createDID=====begin");
-      //Config.getCurMasterWalletId()
-     this.walletManager.createDID(Config.getCurMasterWalletId(), this.payPassword,(result)=>{
+      //Config.getCurMasterWalletId() this.payPassword,
+     this.walletManager.createDID(Config.getCurMasterWalletId(), (result)=>{
              alert("==did=="+JSON.stringify(result));
        console.log("ElastJs =====createDID=====callback");
 

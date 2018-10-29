@@ -7,9 +7,9 @@ public class IDidManager {
     IDidManager(long proxy) {
         mDidManagerProxy = proxy;
     }
-
-    public IDid CreateDID(String password) {
-        long proxy = nativeCreateDID(mDidManagerProxy, password);
+    //String password
+    public IDid CreateDID() {
+        long proxy = nativeCreateDID(mDidManagerProxy);//, password
         IDid did = new IDid(proxy);
         return did;
     }
@@ -39,7 +39,7 @@ public class IDidManager {
         return nativeUnregisterCallback(mDidManagerProxy, id);
     }
 
-    private native long nativeCreateDID(long proxy, String password);
+    private native long nativeCreateDID(long proxy);
     private native long nativeGetDID(long proxy, String didName);
     private native String nativeGetDIDList(long proxy);
     private native void nativeDestoryDID(long proxy, String didName);
