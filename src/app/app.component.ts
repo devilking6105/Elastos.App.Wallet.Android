@@ -4,7 +4,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LauncherComponent } from "../pages/launcher/launcher.component";
 //import {Utils} from "../providers/Utils";
-//import {WalletCreateComponent} from "../pages/wallet/wallet-create/wallet-create.component";
 import { MnemonicComponent } from "../pages/mnemonic/mnemonic.component";
 //import {WriteComponent} from "../pages/mnemonic/write/write.component";
 import { ImportComponent } from "../pages/wallet/import/import.component";
@@ -96,7 +95,7 @@ export class AppComponent {
       //this.rootPage =  ManagerComponent;
       //this.rootPage = ExprotPrikeyComponent;
       //this.rootPage = MyComponent;
-      // this.rootPage = WalletCreateComponent;
+      //  this.rootPage = WalletCreateComponent;
       //this.rootPage = TestJniComponent;
       //this.rootPage = MnemonicComponent;
       //this.rootPage = ImportComponent;
@@ -161,7 +160,7 @@ export class AppComponent {
 
   registerBackButtonAction(tabRef: Tabs) {
     this.platform.registerBackButtonAction(() => {
-      this.showExit();
+         this.showExit();
       // let activeNav = this.appCtrl.getActiveNavs()[0];
       // if(activeNav.canGoBack()){
       //     activeNav.pop();

@@ -26,9 +26,11 @@ export const en = {
   'text-mnemonic-ok': 'Mnemonics Verified',
   'text-mnemonic-prompt3': 'Backup phrase or password incorrectly, Please review your backup and try again.',
   'text-mnemonic-format': 'Spaces are required between characters',
+  // TODO remove unused items
+  // import wallet page
   'text-from-mnemonic': 'from Mnemonics',
-  'text-from-key': 'from KeyStore',
-  'text-key-file': 'from SecretKey',
+  'text-from-keystore': 'from KeyStore',
+  
   'text-mnemonic-check': 'Mnemonics Verification',
   'text-mnemonic-label': 'Add Optional Password',
   'text-mnemonic-pwd': 'Set Mnemonic Password',
@@ -49,30 +51,62 @@ export const en = {
   'text-create-address': 'Get new address',
   'text-contacts': 'Contacts',
   'text-contacts-add': 'Add contacts',
-  'text-contacts-name': 'Name',
-  'text-contacts-phone': 'Phone number',
-  'text-contacts-email': 'Email Address',
-  'text-contacts-address': 'Wallet Address',
-  'text-manager-address': 'Wallet Addresses',
+  // contacts page
+  'contacts-name-title': 'Name',
+  'contacts-phone-title': 'Phone Number',
+  'contacts-email-title': 'Email Address',
+  'contacts-address-title': 'Wallet Address',
+  'contacts-remark-title': 'Remark',
+
   'text-contacts-info': 'Contacts Information',
+  'text-manager-address': 'Wallet Addresses',
   'text-setting': 'Setting',
   'text-about': 'About',
   'text-help': 'Help',
   'text-notice': 'Notification',
-  'text-remark': 'Comment',
+  'text-remark': 'Remark',
   'text-add': 'Add',
-  'text-wallet-name': 'Wallet Name',
+
+  // create wallet page
+  'addwallet-walletname-title': 'Wallet Name',
+  'addwallet-walletname-placeholder': 'Set an alias for this wallet',
+  'text-wallet-name-validator': 'Wallet name can not be empty',
+  'addwallet-paypassword1-title': 'Pay Password',
+  'addwallet-paypassword1-placeholder': 'Set Pay Password',
+  'addwallet-paypassword2-placeholder': 'Repeat Pay Password',
+  'text-pwd-validator': 'the length must be 8 or more characters, a mix of letters and numbers are bettter',
+  'text-repwd-validator': 'password do not match',
+  //
+  'showmnes-optionalpassword1-title': 'Mnemonic Optional Passphrase',
+  'showmnes-optionalpassword1-placeholder': 'Set an optional passphrase for your mnemonics',
+  'showmnes-optionalpassword2-placeholder': 'Repeat the optional passphrase you set',
+  // import wallet page - mne
+  'importmnes-optionalpassword-title': 'Mnemonic Optional Passphrase',
+  'importmnes-optionalpassword-placeholder': 'Enter the optional passphrase of your mnemonics',
+  // import wallet page - keystore
+  'importkeystore-keystorepassword-title': 'Keystore Password',
+  'importkeystore-optionalpassword-placeholder': 'Enter the password of the keystore you entered above',
+   
+  // 
+  'unlock-paypassword-title': 'Pay Password',
+  'unlock-paypassword-placeholder': 'Enter the pay password of current wallet',
+  // export wallet page
+  'exportwallet-keystorepassword1-title': 'Keystore Password',
+  'exportwallet-keystorepassword1-placeholder': 'Set a Keystore password for your wallet',
+  'exportwallet-keystorepassword2-placeholder': 'Repeat the Keystore password you set',
+  // change pay passworld
+  'updatepaypassword-origin_paypassword1-title': 'Original Pay Password',
+  'updatepaypassword-origin_paypassword1-placeholder': 'Enter the original pay password of current wallet',
+  'updatepaypassword-paypassword1-title': 'New Pay Password',
+  'updatepaypassword-paypassword1-placeholder': 'Set a new pay password for your wallet',
+  'updatepaypassword-paypassword2-placeholder': 'Repeat the new pay password you set',
+
   'text-pwd': 'Input Password',
   'text-wallet-pwd': 'Set SecretKey Password',
   'text-wallet-repwd': 'Repeat SecretKey Password',
   'text-signaddress': 'Single Address Wallet',
   'text-pwd-repeat': 'Repeat Password',
-  'text-pwd-validator': 'password length > 8, include letters and numbers',
-  'text-wallet-name-validator': 'Alias for this Wallet',
-  'text-name-validator': 's_name_validator',
-  'text-repwd-validator': 'Password Unconformity',
-  'text-pay-password': 'Set Pay Password',
-  'text-pay-repassword': 'Repeat Pay Password',
+  
   'text-old-pay-password': 'Input Original Pay Password',
   'reset-pwd-success': 'Password Updated Successfully',
   'text-keystore-pwd': 'Set KeyStore Password',
@@ -268,6 +302,7 @@ export const en = {
   'text-multi-error':"Number of signatures should less than number of public-keys",
   'text-delete-contact-confirm':"Delete this contact ?",
   'click-to-load-more':"click to load more",
+  //error alert
   'error-10000': '(ERR-10000)Json parse error of action parameters',
   'error-10001': '(ERR-10001)Parameters error of action',
   'error-10002': '(ERR-10002)Invalid master wallet',
