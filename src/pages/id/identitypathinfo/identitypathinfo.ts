@@ -28,8 +28,13 @@ export class IdentitypathinfoPage{
 //    this.localStorage.getKyc().then((val)=>{
 // =======
   constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public localStorage: LocalStorage,public dataManager :DataManager){
-    this.init();
+    //this.init();
 }
+
+  ionViewWillEnter(){
+    console.log("ElastJs---ientitypathinfo---ionViewWillEnter");
+    this.init();
+  }
   init(){
    this.parmar = this.navParams.data;
     let masterWalletId = Config.getCurMasterWalletId();
