@@ -36,9 +36,13 @@ export class IdentitypathinfoPage{
     this.init();
   }
   init(){
-   this.parmar = this.navParams.data;
+    this.identitypathlist = [];
+    console.log("ElastJs---ientitypathinfo---init");
+
+    this.parmar = this.navParams.data;
     let masterWalletId = Config.getCurMasterWalletId();
-   console.log("---path---"+JSON.stringify(this.parmar));
+   console.log("ElastJs ientitypathinfo---parmar---"+JSON.stringify(this.parmar));
+
    this.localStorage.getKyc().then((val)=>{
     if(val == null || val === undefined || val === {} || val === ''){
       return;
@@ -51,6 +55,8 @@ export class IdentitypathinfoPage{
       pathList[key]["id"] = this.parmar["id"];
       pathList[key]["path"] = this.parmar["path"];
        this.identitypathlist.push(pathList[key]);
+      console.log("ElastJs---identitypathinfo---init-identitypathlist.push");
+
     }
 
 

@@ -25,7 +25,13 @@ export class CompanypathinfoPage{
        constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager){
           this.init();
      }
+
+    ionViewWillEnter(){
+      console.log("ElastJs---CompanypathinfoPage---ionViewWillEnter");
+      this.init();
+    }
        init(){
+         this.companyPathList = [];
         this.parmar = this.navParams.data;
         console.log("---path---"+JSON.stringify(this.parmar));
 

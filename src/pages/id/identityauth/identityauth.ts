@@ -27,13 +27,18 @@ export class IdentityauthPage{
   serialNum:string;
   path:string;
   constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager,public popupProvider: PopupProvider){
-    this.init();
+   this.init();
   }
+
+  // ionViewWillEnter(){
+  //   console.log("ElastJs---IdentityauthPage---ionViewWillEnter");
+  //   this.init();
+  // }
   init(){
     this.parms = this.navParams.data;
     this.did = this.parms["id"];
     this.path = this.parms["path"] || "";
-    console.info("identityauth.ts Elastos ngOnInit parms" + JSON.stringify(this.parms));
+    console.info("identityauth.ts Elastos IdentityauthPage init parms" + JSON.stringify(this.parms));
 
     //this.getPrice();
     if(!this.parms["serialNum"]){
