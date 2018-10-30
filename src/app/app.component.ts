@@ -75,9 +75,9 @@ export class AppComponent {
       splashScreen.hide();
       this.registerBackButtonAction(this.nav);
       this.initTranslateConfig();
+
       this.initJsPush();
       this.getKycIdList();
-
       this.localStorage.getMappingTable().then((data)=>{
          console.log("===getMappingTable===="+data);
          if(data){
@@ -85,6 +85,8 @@ export class AppComponent {
           }
           this.rootPage = InitializepagePage;
       });
+
+      //test
 
       //this.rootPage = PaymentboxPage;
       //this.initializeApp();

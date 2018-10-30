@@ -34,6 +34,7 @@
                 {{'text-certified-phone' | translate }}
             </ion-col>
 
+
             <ion-col col-10 class="font-size-1" *ngIf="pageObj['phone']">
                 {{pageObj["phone"]["mobile"]}}
             </ion-col>
@@ -47,11 +48,11 @@
             </ion-col>
 
 
-            <ion-col col-2 class="font-size-1">
+            <ion-col col-2 class="font-size-1" *ngIf="pageObj['bankCard']">
                 {{'text-card' | translate }}
             </ion-col>
 
-            <ion-col col-10 class="font-size-1">
+            <ion-col col-10 class="font-size-1" *ngIf="pageObj['bankCard']">
                 {{pageObj["bankCard"]["cardNumber"]}}
             </ion-col>
         </ion-grid>

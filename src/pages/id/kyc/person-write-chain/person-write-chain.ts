@@ -26,7 +26,8 @@ export class PersonWriteChainPage{
   masterWalletId:string ="1";
   chianId = "IdChain";
   type: string;
-  pageObj = {};
+  pageObj ={
+  };
   personObj={
      fullName:'sss',
      identityNumber:'410426198811151012',
@@ -66,7 +67,7 @@ export class PersonWriteChainPage{
 //    this.masterWalletId = Config.getCurMasterWalletId();
 // =======
  constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager,public popupProvider:PopupProvider,public ngzone: NgZone){
-    this.init();
+   this.init();
 }
  init(){
 
@@ -82,6 +83,7 @@ export class PersonWriteChainPage{
 
      }
    });
+   this.masterWalletId = Config.getCurMasterWalletId();
     this.idObj = this.navParams.data;
     console.log("ElastJs ngOnInit idObj"+JSON.stringify(this.idObj));
    this.did = this.idObj["payObj"]["did"];
@@ -109,9 +111,12 @@ export class PersonWriteChainPage{
  }
 
  ionViewDidLoad() {
+   console.info("ElastJs ionViewDidLoad begin " )
+
+
   this.navBar.backButtonClick = (e)=>{
     this.navCtrl.pop();
-    this.native.Go(this.navCtrl,IdHomeComponent);
+    //this.native.Go(this.navCtrl,IdHomeComponent);
   };
 }
 
@@ -122,9 +127,21 @@ export class PersonWriteChainPage{
     console.info("ElastJs getPerson person-write-chain.ts ngOnInit idObj " + JSON.stringify(this.idObj))
 
 
+    // this.pageObj ={
+    //   "identityCard": {
+    //     "identityNumber": "410426198811151012",
+    //     "fullName": "宋家准"
+    //   }
+    // };
+
     this.pageObj = this.getPageObj(this.idObj["adata"]);
+
+    console.info("ElastJs getPerson person-write-chain.ts ngOnInit pageObj " + JSON.stringify(this.pageObj))
+
     let index = this.idObj["adata"].length-1;
     let adata = this.idObj["adata"][index];
+
+    //this.pageObj = adata;
     //let pesronObj = adata["retdata"];
 
     this.message["Path"] = adata["type"];

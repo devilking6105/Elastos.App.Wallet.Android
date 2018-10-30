@@ -33,6 +33,7 @@ export class IdKycCompanyComponent{
     this.init();
   }
   init() {
+    console.log("Elastjs company.ts---begin---");
 
     this.parms = this.navParams.data;
     this.did = this.parms["id"];

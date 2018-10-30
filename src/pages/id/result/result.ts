@@ -31,12 +31,15 @@ export class IdResultComponent{
 
   ionViewDidLoad() {
     this.navBar.backButtonClick = (e)=>{
-      this.native.setRootRouter(IdHomeComponent);
+      console.info("ElastosJs result.ts setRootRouter");
+      this.navCtrl.pop();
+      //this.native.setRootRouter(IdHomeComponent);
     };
   }
 
   check(){
-     this.native.Go(this.navCtrl,PathlistPage,this.parms);
+    this.navCtrl.pop();
+     //this.native.Go(this.navCtrl,PathlistPage,this.parms);
   }
 
 }

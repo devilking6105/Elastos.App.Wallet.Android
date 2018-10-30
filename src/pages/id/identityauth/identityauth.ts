@@ -96,7 +96,7 @@ export class IdentityauthPage{
 
         this.localStorage.setKyc(idsObj).then((newVal)=>{
           this.personValidate["serialNum"] = serialNum;
-          this.native.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD"
+          this.native.Go(this.navCtrl, TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD"
             ,money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.personValidate, "walletInfo" : { "Type" : "Standard"}});
 
         });

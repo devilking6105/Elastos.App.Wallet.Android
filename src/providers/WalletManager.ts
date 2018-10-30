@@ -23,7 +23,7 @@ export class WalletManager {
 
   constructor(public native: Native,public event: Events,public popupProvider :PopupProvider) {
           this.wallet = cordova.plugins.Wallet;
-          //this.wallet = {};
+          //   this.wallet = {};
   }
 
   //--------------------------------------------------------------------------------子钱包操作

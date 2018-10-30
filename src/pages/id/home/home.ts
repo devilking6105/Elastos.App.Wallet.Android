@@ -24,6 +24,9 @@ export class IdHomeComponent{
 
   ionViewDidLoad() {
     this.navBar.backButtonClick = (e)=>{
+
+      console.info("ElastosJs IdHomeComponent setRootRouter");
+
       this.native.setRootRouter(TabsComponent);
     };
   }

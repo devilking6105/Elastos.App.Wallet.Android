@@ -229,7 +229,8 @@ export class TransferComponent {
         console.log("=======sendRawTransaction======"+JSON.stringify(data));
         console.log("=======this.appType======"+JSON.stringify(data));
         if(Util.isNull(this.appType)){
-          console.log("===TabsComponent====");
+          console.log("ElastJs transfer.component ===TabsComponent==== setRootRouter");
+
           this.native.toast_trans('send-raw-transaction');
           this.native.setRootRouter(TabsComponent);
         }else if(this.appType === "kyc"){
@@ -324,9 +325,9 @@ sendPersonAuth(parms){
           }
          }
       }).catch(error => {
-
+        this.navCtrl.pop();
+        this.native.Go(this.navCtrl,IdResultComponent,{'status':'0'});
       });
-      this.native.Go(this.navCtrl,IdResultComponent,{'status':'0'});
 }
 
 saveKycSerialNum(serialNum){
@@ -341,7 +342,8 @@ saveKycSerialNum(serialNum){
          serialNumObj["pathStatus"] = 1;
 
          this.localStorage.setKyc(idsObj).then((newVal)=>{
-          this.native.Go(this.navCtrl,IdResultComponent,{'status':'0',id:this.did,path:this.selectType});
+                this.navCtrl.pop();
+                this.native.Go(this.navCtrl,IdResultComponent,{'status':'0',id:this.did,path:this.selectType});
          });
      })
 }

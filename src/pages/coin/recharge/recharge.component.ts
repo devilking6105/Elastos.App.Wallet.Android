@@ -208,8 +208,10 @@ export class RechargeComponent{
     this.walletManager.publishTransaction(this.masterWalletId,'ELA',rawTransaction,(data)=>{
      if(data["success"]){
        this.native.hideLoading();
-         console.log("===publishTransaction===="+JSON.stringify(data));
-         this.native.setRootRouter(TabsComponent);
+        // console.log("===publishTransaction===="+JSON.stringify(data));
+       console.info("ElastosJs recharge.component setRootRouter"+JSON.stringify(data));
+
+       this.native.setRootRouter(TabsComponent);
       }else{
         alert("========publishTransaction=====error==="+JSON.stringify(data));
       }

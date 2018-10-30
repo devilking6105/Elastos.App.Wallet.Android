@@ -192,7 +192,7 @@ export class WithdrawComponent{
     this.walletManager.publishTransaction(this.masterWalletId,this.chianId,rawTransaction,(data)=>{
      if(data["success"]){
        this.native.hideLoading();
-       console.log("======publishTransaction========"+JSON.stringify(data));
+       console.log("Elastos======publishTransaction======== setRootRouter"+JSON.stringify(data));
        this.native.setRootRouter(TabsComponent);
       }else{
         alert("========publishTransaction=====error==="+JSON.stringify(data));

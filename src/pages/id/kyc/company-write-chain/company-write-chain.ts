@@ -57,7 +57,7 @@ export class CompanyWriteChainPage{
     });
 
     this.idObj = this.navParams.data;
-
+   this.masterWalletId = Config.getCurMasterWalletId();
 
     console.info("ElastJs ngOnInit this.idObj " + JSON.stringify(this.idObj));
 

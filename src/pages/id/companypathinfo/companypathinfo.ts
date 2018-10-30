@@ -61,9 +61,12 @@ export class CompanypathinfoPage{
       }
 
       jumpPage(item){
-          switch(item["pathStatus"]){
+
+        console.log("Elastjs companypathinfo---item---"+JSON.stringify(item));
+
+        switch(item["pathStatus"]){
                 case 0 :
-                  this.native.Go(IdKycCompanyComponent,item);
+                  this.native.Go(this.navCtrl,IdKycCompanyComponent,item);
 
                   break;
                 case 1:
