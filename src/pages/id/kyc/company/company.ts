@@ -99,6 +99,7 @@ export class IdKycCompanyComponent{
                           };
 
         this.localStorage.setKyc(idsObj).then((newVal)=>{
+          this.navCtrl.pop();
           this.native.Go(this.navCtrl,TransferComponent,{
             did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path
             ,parms:this.businessObj, "walletInfo" : { "Type" : "Standard"}});

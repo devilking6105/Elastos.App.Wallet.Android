@@ -71,6 +71,9 @@ export class PhonepathinfoPage{
           case 2 :
              this.native.Go(this.navCtrl,PersonWriteChainPage,item);
               break;
+          case 3 :
+            this.native.Go(this.navCtrl,PhoneauthPage,item);
+            break;
     }
 }
 

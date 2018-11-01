@@ -51,6 +51,12 @@ export class IdentityauthPage{
       else{
         this.payMoney = 0.1;
       }
+      let length =this.parms.length();
+      let authObj = this.parms[length-1];
+      if(authObj){
+        this.personValidate.fullName = authObj["retdata"]["fullName"];
+        this.personValidate.identityNumber = authObj["retdata"]["identityNumber"];
+      }
 
       //let unit = priceObj["unit"] || "ELA";
       this.serialNum = this.parms["serialNum"];
@@ -101,6 +107,7 @@ export class IdentityauthPage{
 
         this.localStorage.setKyc(idsObj).then((newVal)=>{
           this.personValidate["serialNum"] = serialNum;
+          this.navCtrl.pop();
           this.native.Go(this.navCtrl, TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD"
             ,money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.personValidate, "walletInfo" : { "Type" : "Standard"}});
 

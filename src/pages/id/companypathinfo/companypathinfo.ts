@@ -81,6 +81,9 @@ export class CompanypathinfoPage{
                 case 2 :
                 this.native.Go(this.navCtrl,CompanyWriteChainPage,item);
                     break;
+                case 3:
+                  this.native.Go(this.navCtrl,IdKycCompanyComponent,item);
+                  break;
           }
       }
 
