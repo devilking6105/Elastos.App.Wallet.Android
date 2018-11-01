@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams, Events} from 'ionic-angular';
+import { Component,ViewChild } from '@angular/core';
+import { NavController, NavParams, Events,Platform,App,Tabs} from 'ionic-angular';
 import {LauncherComponent} from "../../pages/launcher/launcher.component";
 import {WalletManager} from "../../providers/WalletManager";
 import {Native} from "../../providers/Native";
@@ -9,23 +9,56 @@ import { TabsComponent } from '../../pages/tabs/tabs.component';
 import { LocalStorage } from "../../providers/Localstorage";
 import { PaymentConfirmComponent } from "../../pages/coin/payment-confirm/payment-confirm.component";
 import { DidLoginComponent } from "../../pages/third-party/did-login/did-login.component";
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'page-initializepage',
   templateUrl: 'initializepage.html',
 })
 export class InitializepagePage {
-  constructor(public navCtrl: NavController, public navParams: NavParams,public walletManager: WalletManager,public native: Native,public localStorage: LocalStorage,public events: Events) {
+  @ViewChild('myTabs') tabs:Tabs;
+  backButtonPressed: boolean = false;  //用于判断返回键是否触发
+  constructor(public appCtrl: App,private platform: Platform,public navCtrl: NavController, public navParams: NavParams,public walletManager: WalletManager,public native: Native,public localStorage: LocalStorage,public events: Events,private translate: TranslateService) {
 
   }
 
   ionViewDidLoad() {
-
+    this.registerBackButtonAction(this.tabs);
     this.native.showLoading().then(()=>{
       this.initializeApp();
     });
 
   }
+
+  registerBackButtonAction(tabRef:Tabs){
+    this.platform.registerBackButtonAction(() => {
+      let activeNav: NavController = this.appCtrl.getActiveNav();
+      if(activeNav.canGoBack()){
+        activeNav.pop();
+      }else{
+        if (tabRef == null || tabRef._selectHistory[tabRef._selectHistory.length - 1] === tabRef.getByIndex(0).id) {
+          this.showExit();
+        }else{
+           //选择首页第一个的标签
+           tabRef.select(0);
+        }
+      }
+
+    },1);
+  }
+
+    //双击退出提示框
+    showExit() {
+      if (this.backButtonPressed) { //当触发标志为true时，即2秒内双击返回按键则退出APP
+        this.walletManager.disposeNative((data)=>{
+          this.platform.exitApp();
+        });
+      } else {
+        let exitmesage = this.translate.instant("text-exit-message");
+        this.native.toast(exitmesage);
+        this.backButtonPressed = true;
+        setTimeout(() => this.backButtonPressed = false, 2000);//2秒内没有再次点击返回则将触发标志标记为false
+      }
+    }
 
 
   initializeApp(){
@@ -142,7 +175,7 @@ export class InitializepagePage {
   registerWalletListener(masterId,coin){
 
     this.walletManager.registerWalletListener(masterId,coin,(data)=>{
-            console.log("==========="+Config.isResregister(masterId,coin))
+            //console.log("==========="+Config.isResregister(masterId,coin))
             if(!Config.isResregister(masterId,coin)){
               //console.log("==========="+Config.isResregister(masterId,coin))
               Config.setResregister(masterId,coin,true);

@@ -39,6 +39,21 @@ namespace Elastos {
 			virtual std::string GenerateMnemonic(const std::string &language);
 
 			/**
+			 * Get public key for creating multi sign wallet with phrase.
+			 * @param phrase is something like mnemonic generated from GenerateMnemonic().
+			 * @param phrasePassword combine with random seed to generate root key and chain code. Phrase password can be empty or between 8 and 128, otherwise will throw invalid argument exception.
+			 * @return public key as expected.
+			 */
+			virtual std::string GetMultiSignPubKey(const std::string &phrase, const std::string &phrasePassword);
+
+			/**
+			 * Get public key for creating multi sign wallet with private key.
+			 * @param privKey private key to do the sign job of related multi-sign accounts.
+			 * @return public key as expected.
+			 */
+			virtual std::string GetMultiSignPubKey(const std::string &privKey);
+
+			/**
 			 * Create a new master wallet by mnemonic and phrase password, or return existing master wallet if current master wallet manager has the master wallet id.
 			 * @param masterWalletId is the unique identification of a master wallet object.
 			 * @param mnemonic use to generate seed which deriving the master private key and chain code.
@@ -53,8 +68,7 @@ namespace Elastos {
 					const std::string &mnemonic,
 					const std::string &phrasePassword,
 					const std::string &payPassword,
-					bool singleAddress,
-					const std::string &language = "english");
+					bool singleAddress);
 
 			/**
 			  * Create a multi-sign master wallet by mnemonic phrase password and related co-signers, or return existing master wallet if current master wallet manager has the master wallet id.
@@ -101,8 +115,7 @@ namespace Elastos {
 					const std::string &phrasePassword,
 					const std::string &payPassword,
 					const nlohmann::json &coSigners,
-					uint32_t requiredSignCount,
-					const std::string &language = "english");
+					uint32_t requiredSignCount);
 
 
 			/**
@@ -162,8 +175,7 @@ namespace Elastos {
 					const std::string &mnemonic,
 					const std::string &phrasePassword,
 					const std::string &payPassword,
-					bool singleAddress,
-					const std::string &language = "english");
+					bool singleAddress);
 
 			/**
 			 * Export key store content of the master wallet in json format.

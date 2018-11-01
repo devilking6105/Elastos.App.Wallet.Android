@@ -26,13 +26,27 @@ namespace Elastos {
 			virtual std::string GenerateMnemonic(const std::string &language) = 0;
 
 			/**
+			 * Generate a mnemonic by random 128 entropy. We support English, Chinese, French, Italian, Japanese, and
+			 * 	Spanish 6 types of mnemonic currently.
+			 * @param language specify mnemonic language.
+			 * @return a random mnemonic.
+			 */
+			virtual std::string GetMultiSignPubKey(const std::string &phrase, const std::string &phrasePassword) = 0;
+
+			/**
+			 * Get public key for creating multi sign wallet with private key.
+			 * @param privKey private key to do the sign job of related multi-sign accounts.
+			 * @return public key as expected.
+			 */
+			virtual std::string GetMultiSignPubKey(const std::string &privKey) = 0;
+
+			/**
 			  * Create a new master wallet by mnemonic and phrase password, or return existing master wallet if current master wallet manager has the master wallet id.
 			  * @param masterWalletId is the unique identification of a master wallet object.
 			  * @param mnemonic use to generate seed which deriving the master private key and chain code.
 			  * @param phrasePassword combine with random seed to generate root key and chain code. Phrase password can be empty or between 8 and 128, otherwise will throw invalid argument exception.
 			  * @param payPassword use to encrypt important things(such as private key) in memory. Pay password should between 8 and 128, otherwise will throw invalid argument exception.
 			  * @param singleAddress singleAddress if true created wallet will have only one address inside, otherwise sub wallet will manager a chain of addresses for security.
-			  * @param language specify language of mnemonic, value of language should correspond to the language of \p mnemonic.
 			  * @return If success will return a pointer of master wallet interface.
 			  */
 			virtual IMasterWallet *CreateMasterWallet(
@@ -40,8 +54,7 @@ namespace Elastos {
 					const std::string &mnemonic,
 					const std::string &phrasePassword,
 					const std::string &payPassword,
-					bool singleAddress,
-					const std::string &language = "english") = 0;
+					bool singleAddress) = 0;
 
 			/**
 			  * Create a multi-sign master wallet by related co-signers, or return existing master wallet if current master wallet manager has the master wallet id. Note this creating method generate an readonly multi-sign account which can not append sign into a transaction.
@@ -79,7 +92,6 @@ namespace Elastos {
 			 * @param payPassword use to encrypt important things(such as private key) in memory. Pay password should between 8 and 128, otherwise will throw invalid argument exception.
 			 * @param coSigners is an array of signers' public key.
 			 * @param requiredSignCount specify minimum count to accomplish related transactions.
-			 * @param language specify language of mnemonic, value of language should correspond to the language of \p mnemonic.
 			 * @return If success will return a pointer of master wallet interface.
 			 */
 			virtual IMasterWallet *CreateMultiSignMasterWallet(
@@ -88,8 +100,7 @@ namespace Elastos {
 					const std::string &phrasePassword,
 					const std::string &payPassword,
 					const nlohmann::json &coSigners,
-					uint32_t requiredSignCount,
-					const std::string &language = "english") = 0;
+					uint32_t requiredSignCount) = 0;
 
 			/**
 			 * Get manager existing master wallets.
@@ -139,7 +150,6 @@ namespace Elastos {
 			 * @param phrasePassword combine with mnemonic to generate root key and chain code. Phrase password can be empty or between 8 and 128, otherwise will throw invalid argument exception.
 			 * @param payPassword use to encrypt important things(such as private key) in memory. Pay password should between 8 and 128, otherwise will throw invalid argument exception.
 			 * @param singleAddress singleAddress if true created wallet will have only one address inside, otherwise sub wallet will manager a chain of addresses for security.
-			 * @param language specify language of mnemonic. Language should not be empty, and exit corresponding language config file under the root path. The config begin with fixed prefix "mnemonic_" and end with ".txt" extension, for example mnemonic of Chinese config will be "mnemonic_chinese.txt".
 			 * @return If success will return a pointer of master wallet interface.
 			 */
 			virtual IMasterWallet *ImportWalletWithMnemonic(
@@ -147,8 +157,7 @@ namespace Elastos {
 					const std::string &mnemonic,
 					const std::string &phrasePassword,
 					const std::string &payPassword,
-					bool singleAddress,
-					const std::string &language) = 0;
+					bool singleAddress) = 0;
 
 			/**
 			 * Export key store content of the master wallet in json format.
