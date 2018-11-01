@@ -30,8 +30,14 @@ export class IdKycCompanyComponent{
   did:any;
   path:string = "";
   constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager ,public popupProvider: PopupProvider){
+    //this.init();
+  }
+
+  ionViewWillEnter(){
+    console.log("ElastJs---IdKycCompanyComponent---ionViewWillEnter");
     this.init();
   }
+
   init() {
     console.log("Elastjs company.ts---begin---");
 

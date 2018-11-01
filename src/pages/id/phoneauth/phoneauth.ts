@@ -19,9 +19,9 @@ import {PopupProvider} from '../../../providers/popup';
 })
 
 export class PhoneauthPage {
-  //phoneValidate  = {fullName:'刘博群',identityNumber:'220106198402038222',mobile:'15210335978',code:'',type:"phone"};
+  phoneValidate  = {fullName:'刘博群',identityNumber:'220106198402038222',mobile:'15210335978',code:'',type:"phone"};
 
-  phoneValidate  = {fullName:'宋家准',identityNumber:'410426198811151012',mobile:'18210230496',code:'',type:"phone"};
+  //phoneValidate  = {fullName:'宋家准',identityNumber:'410426198811151012',mobile:'18210230496',code:'',type:"phone"};
   payMoney = 0;
   unit:string="ELA"
   priceObj:any={};
@@ -109,7 +109,7 @@ export class PhoneauthPage {
         this.localStorage.setKyc(idsObj).then((newVal)=>{
 
           this.phoneValidate["serialNum"] = serialNum;
-          this.native.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.phoneValidate, "walletInfo" : { "Type" : "Standard"}});
+          this.native.Go(this.navCtrl, TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.phoneValidate, "walletInfo" : { "Type" : "Standard"}});
 
         });
     })

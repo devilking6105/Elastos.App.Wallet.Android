@@ -21,17 +21,20 @@ export class PhonepathinfoPage{
   constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public localStorage: LocalStorage,public dataManager :DataManager){
     this.init();
 }
+  ionViewWillEnter(){
+    console.log("ElastJs---PhonepathinfoPage---ionViewWillEnter");
+    this.init();
+  }
+
   init(){
+    this.phonepathlist = [];
    this.parmar = this.navParams.data;
    console.log("---path---"+JSON.stringify(this.parmar));
-//<<<<<<< HEAD
   // this.setTitleByAssets("phone-path-deatils");
     let masterWalletId = Config.getCurMasterWalletId();
 
    this.localStorage.getKyc().then((val)=>{
-// =======
-//    this.localStorage.get("kycId").then((val)=>{
-// >>>>>>> origin/wallet_dev
+
     if(val == null || val === undefined || val === {} || val === ''){
       return;
      }
@@ -60,7 +63,7 @@ export class PhonepathinfoPage{
   jumpPage(item){
     switch(item["pathStatus"]){
           case 0 :
-            this.native.Go(PhoneauthPage,item);
+            this.native.Go(this.navCtrl,PhoneauthPage,item);
             break;
           case 1:
              this.getAppAuth(item);
@@ -126,7 +129,6 @@ getAppAuth(item){
   });
 }
 
-//<<<<<<< HEAD
 saveSerialNumParm(serialNum,item, pathStatus){
   let masterWalletId = Config.getCurMasterWalletId();
 
@@ -135,16 +137,8 @@ saveSerialNumParm(serialNum,item, pathStatus){
    this.localStorage.setKyc(this.idsObj).then(()=>{
 
      if(item["pathStatus"]  == 2) {
-       this.native.Go(PersonWriteChainPage, item);
+       this.native.Go(this.navCtrl,PersonWriteChainPage, item);
      }
-
-// =======
-// saveSerialNumParm(serialNum,item){
-//    item["pathStatus"] = 2;
-//    this.idsObj[this.parmar["id"]][this.parmar["path"]][serialNum]= item;
-//    this.localStorage.set("kycId",this.idsObj).then(()=>{
-//      this.native.Go(PersonWriteChainPage,item);
-// >>>>>>> origin/wallet_dev
    });
 }
 }

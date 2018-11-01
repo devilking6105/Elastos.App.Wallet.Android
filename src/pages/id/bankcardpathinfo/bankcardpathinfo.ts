@@ -23,11 +23,17 @@ export class BankcardpathinfoPage{
   private parmar ={};
   public idsObj ={};
   constructor(public navCtrl: NavController,public navParams: NavParams,public native :Native,public walletManager :WalletManager,public localStorage: LocalStorage,public events: Events,public dataManager :DataManager){
-     this.init();
+     //this.init();
+  }
+
+  ionViewWillEnter(){
+    console.log("ElastJs---BankcardpathinfoPage---ionViewWillEnter");
+    this.init();
   }
   init(){
-   this.parmar = this.navParams.data;
-   console.log("---path---"+JSON.stringify(this.parmar));
+    this.backcardList = [];
+    this.parmar = this.navParams.data;
+   console.log("-ElastJs---BankcardpathinfoPage-- init--parmar---"+JSON.stringify(this.parmar));
 
    //this.setTitleByAssets("text-bankcard-path-deatils");
     let masterWalletId = Config.getCurMasterWalletId();
@@ -56,6 +62,8 @@ export class BankcardpathinfoPage{
   }
 
   onCommit(){
+    console.log("-ElastJs---BankcardpathinfoPage-- onCommit--parmar---"+JSON.stringify(this.parmar));
+
     this.native.Go(this.navCtrl,BankcardauthPage,this.parmar);
   }
 
@@ -87,6 +95,9 @@ getAppAuth(item){
   let checksum = IDManager.getCheckSum(parms,"asc");
   parms["checksum"] = checksum;
   this.native.getHttp().postByAuth(ApiUrl.APP_AUTH,parms).toPromise().then().then(data => {
+
+    console.log("ElastosJs--bankcardpathinfo.ts--getAppAuth-data======="+JSON.stringify(data));
+
     if(data["status"] === 200){
       console.log("sssss======="+JSON.stringify(data));
       let authResult = JSON.parse(data["_body"]);

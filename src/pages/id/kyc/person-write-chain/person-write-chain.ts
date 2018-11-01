@@ -127,6 +127,9 @@ export class PersonWriteChainPage{
     console.info("ElastJs getPerson person-write-chain.ts ngOnInit idObj " + JSON.stringify(this.idObj))
 
 
+
+    this.pageObj = this.getPageObj(this.idObj["adata"]);
+
     // this.pageObj ={
     //   "identityCard": {
     //     "identityNumber": "410426198811151012",
@@ -134,7 +137,6 @@ export class PersonWriteChainPage{
     //   }
     // };
 
-    this.pageObj = this.getPageObj(this.idObj["adata"]);
 
     console.info("ElastJs getPerson person-write-chain.ts ngOnInit pageObj " + JSON.stringify(this.pageObj))
 
@@ -460,12 +462,28 @@ getPageObj(obj){
 for(let index in obj){
  let data = obj[index];
  let retdata= data["retdata"];
- if(data["type"] === "identityCard"){
-   aprObj["identityCard"] = {"identityNumber":retdata["identityNumber"],"fullName":retdata["fullName"]}
- }else if(data["type"] === "phone"){
-   aprObj["phone"] = {"mobile":retdata["mobile"]};
+
+  aprObj["identityCard"] = {
+    "identityNumber":retdata["identityNumber"],
+    "fullName":retdata["fullName"]
+  }
+ // if(data["type"] === "identityCard"){
+ //   aprObj["identityCard"] = {
+ //      "identityNumber":retdata["identityNumber"],
+ //     "fullName":retdata["fullName"]
+ //   }
+ // }else
+
+   if(data["type"] === "phone"){
+    aprObj["phone"] = {
+     "mobile":retdata["mobile"]
+   };
  }else if(data["type"] === "bankCard"){
-   aprObj["bankCard"] = {"cardMobile":retdata["mobile"],"cardNumber":retdata["cardNumber"]};
+
+   aprObj["bankCard"] = {
+      "cardMobile":retdata["mobile"],
+      "cardNumber":retdata["cardNumber"]
+   };
  }
 }
  return aprObj;

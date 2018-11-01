@@ -29,8 +29,13 @@ import { Util } from '../../../providers/Util';
 //   //debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6225880167820399',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
 // =======
 export class BankcardauthPage{
-  debitCard={fullName:'宋家准',identityNumber:'410426198811151012',cardNumber:'6225880167820399',cardMobile:'18210230496',cardCode:'',type:"bankCard"};
-//>>>>>>> origin/wallet_dev
+  //6214680046602502    6225880167820399
+  //debitCard={fullName:'宋家准',identityNumber:'410426198811151012',cardNumber:'6214680046602502',cardMobile:'18210230496',cardCode:'',type:"bankCard"};
+  //debitCard={fullName:'刘博群',identityNumber:'220106198402038222',cardNumber:'6214850101380787',cardMobile:'15210335978',cardCode:'',type:"bankCard"};
+  //debitCard={fullName:'郝文博',identityNumber:'152601199902113616',cardNumber:'6214830176303468',cardMobile:'15114746136',cardCode:'',type:"bankCard"};
+  debitCard={fullName:'徐晨',identityNumber:'370802199206192417',cardNumber:'6217710718887045',cardMobile:'18552462795',cardCode:'',type:"bankCard"};
+
+  //>>>>>>> origin/wallet_dev
   payMoney = 0;
   unit:string="ELA";
   priceObj:any={};
@@ -49,6 +54,9 @@ constructor(public navCtrl: NavController,public navParams: NavParams,public nat
   init(){
 
     this.parms = this.navParams.data;
+
+    console.log("-ElastJs---BankcardauthPage-- onCommit--parmar---"+JSON.stringify(this.parms));
+
     this.did = this.parms["id"];
     this.path = this.parms["path"] || "";
     //this.getPrice();
@@ -133,7 +141,7 @@ constructor(public navCtrl: NavController,public navParams: NavParams,public nat
            this.debitCard["serialNum"] = serialNum;
 
 //<<<<<<< HEAD
-           this.native.Go(TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.debitCard, "walletInfo" : { "Type" : "Standard"}});
+           this.native.Go(this.navCtrl, TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.debitCard, "walletInfo" : { "Type" : "Standard"}});
 // =======
 //            this.native.Go(this.navCtrl,TransferComponent,{did:this.did,addr:"EKZCcfqBP1YXiDtJVNdnLQR74QRHKrgFYD",money:this.payMoney,appType:"kyc",chianId:"ELA",selectType:this.path,parms:this.debitCard});
 // >>>>>>> origin/wallet_dev
@@ -166,7 +174,7 @@ if(Util.isCardNo(this.debitCard.identityNumber)){
      }
 
 
-     if(Util.isBankCard(this.debitCard.cardNumber)){
+     if(!Util.isBankCard(this.debitCard.cardNumber)){
       this.native.toast_trans('text-debitCard-message-2');
        return;
      }
