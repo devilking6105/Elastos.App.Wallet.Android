@@ -70,7 +70,14 @@ constructor(public navCtrl: NavController,public navParams: NavParams,public nat
       else{
         this.payMoney = 0.1;
       }
+      let authObj = this.parms['adata'][0];
+      if(authObj){
+        this.debitCard.fullName = authObj["retdata"]["fullName"];
+        this.debitCard.identityNumber = authObj["retdata"]["identityNumber"];
+        this.debitCard.cardMobile = authObj["retdata"]["mobile"];
+        this.debitCard.cardNumber = authObj["retdata"]["cardNumber"];
 
+      }
       //let unit = priceObj["unit"] || "ELA";
       this.serialNum = this.parms["serialNum"];
     }

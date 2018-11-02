@@ -40,19 +40,21 @@ export class IdentityauthPage{
     this.path = this.parms["path"] || "";
     console.info("identityauth.ts Elastos IdentityauthPage init parms" + JSON.stringify(this.parms));
 
-    //this.getPrice();
+    console.info("identityauth.ts Elastos IdentityauthPage init serialNum" + this.parms["serialNum"]);
+
     if(!this.parms["serialNum"]){
       this.getPrice();
     }
     else{
+
+
       if (this.parms["payObj"]) {
         this.payMoney = this.parms["payObj"]["money"] || 0.1;
       }
       else{
         this.payMoney = 0.1;
       }
-      let length =this.parms.length();
-      let authObj = this.parms[length-1];
+      let authObj = this.parms['adata'][0];
       if(authObj){
         this.personValidate.fullName = authObj["retdata"]["fullName"];
         this.personValidate.identityNumber = authObj["retdata"]["identityNumber"];

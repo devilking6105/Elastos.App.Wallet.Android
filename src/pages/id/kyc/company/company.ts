@@ -44,6 +44,9 @@ export class IdKycCompanyComponent{
     this.parms = this.navParams.data;
     this.did = this.parms["id"];
     this.path = this.parms["path"] || "";
+
+    console.log("Elastjs company.ts---parms---" + JSON.stringify(this.parms));
+
     if(!this.parms["serialNum"]){
       this.getPrice();
     }
@@ -54,7 +57,12 @@ export class IdKycCompanyComponent{
       else{
         this.payMoney = 0.1;
       }
-
+      let authObj = this.parms['adata'][0];
+      if(authObj) {
+        this.businessObj.word = authObj["retdata"]["word"];
+        this.businessObj.legalPerson = authObj["retdata"]["legalPerson"];
+        this.businessObj.registrationNum = authObj["retdata"]["RegistrationNum"];
+      }
       //let unit = priceObj["unit"] || "ELA";
       this.serialNum = this.parms["serialNum"];
     }  }

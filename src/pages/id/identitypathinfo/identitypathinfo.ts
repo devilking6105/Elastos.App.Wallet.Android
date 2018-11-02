@@ -41,7 +41,7 @@ export class IdentitypathinfoPage{
 
     this.parmar = this.navParams.data;
     let masterWalletId = Config.getCurMasterWalletId();
-   console.log("ElastJs ientitypathinfo---parmar---"+JSON.stringify(this.parmar));
+   console.log("ElastJs ientitypathinfo---navParams---"+JSON.stringify(this.navParams));
 
    this.localStorage.getKyc().then((val)=>{
     if(val == null || val === undefined || val === {} || val === ''){
@@ -87,7 +87,7 @@ export class IdentitypathinfoPage{
           this.native.Go(this.navCtrl,PersonWriteChainPage,item);
               break;
           case 3 :
-            this.native.Go(this.navCtrl,IdentityauthPage,this.parmar);
+            this.native.Go(this.navCtrl,IdentityauthPage,item);
             break;
     }
 }
