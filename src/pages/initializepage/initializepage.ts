@@ -30,7 +30,10 @@ export class InitializepagePage {
 
   initializeApp(){
      this.load().then((data)=>{
-      this.successHandle(data["success"]);
+
+       this.successHandle(data["success"]);
+
+
      }).catch((data)=>{
       this.errorHandle(data);
 
@@ -52,6 +55,7 @@ export class InitializepagePage {
   successHandle(data){
       let idList = JSON.parse(data);
       let type = Util.GetQueryString("type");
+      let self =this;
       if(idList.length === 0){
          Config.setMappingList({});
          this.handleNull(type);
@@ -60,8 +64,25 @@ export class InitializepagePage {
           let item = JSON.parse(data);
           Config.setCurMasterWalletId(item["masterId"]);
           Config.setMasterWalletIdList(idList);
+
           this.handleMappingdata(idList);
           this.getAllsubWallet(item["masterId"],type);
+
+
+           console.log("ElastJs successHandle before getkyc ");
+           self.localStorage.getKyc().then((val)=>{
+             console.log("ElastJs successHandle  getkyc val " + val);
+             if(val == null || val === undefined || val === {} || val === ''){
+               return;
+             }
+             let masterWalletId = Config.getCurMasterWalletId();
+             console.log("ElastJs successHandle  getkyc masterWalletId " + masterWalletId);
+             let kycObj = JSON.parse(val);
+             let serids = Config.getSertoIdNew(kycObj[masterWalletId]);
+             Config.setSerIds(serids);
+             console.log("ElastJs successHandle setSerIds "+ JSON.stringify(serids));
+
+           });
         });
 
        }

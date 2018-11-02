@@ -55,11 +55,51 @@ export class Config {
   }
 
  public static add(idObj,newIds,id,path){
-  for(let index in idObj[id][path]){
-   let data = idObj[id][path][index];
-   newIds[index] ={"id":id,"path":path,"serialNum":data["serialNum"],"txHash":data["txHash"]};
+   console.info("Elastjs getSertoIdNew id " + id + " path " + path + " idobj "+ JSON.stringify(idObj));
+
+   console.info("Elastjs getSertoIdNew id "+JSON.stringify(idObj[id]));
+   console.info("Elastjs getSertoIdNew path "+JSON.stringify(idObj[id][path]));
+
+
+   for(let serinum in idObj[id][path]){
+
+   let data = idObj[id][path][serinum];
+   newIds[serinum] ={"id":id,"path":path,"serialNum":data["serialNum"],"txHash":data["txHash"]};
+   console.info("Elastjs getSertoIdNew add " + JSON.stringify(newIds));
+
   }
 }
+  public static getSertoIdNew(ids){
+    let newIds = {};
+    console.info("Elastjs getSertoIdNew ids " + JSON.stringify(ids));
+    var self = this;
+    for(let id in ids){
+      for(let authtype in ids[id]){
+
+        switch(authtype){
+          case "enterprise":
+            self.add(ids, newIds, id, authtype);
+            break;
+
+          case "identityCard":
+            self.add(ids, newIds, id, authtype);
+            break;
+
+          case "phone":
+            self.add(ids, newIds, id, authtype);
+
+            break;
+          case "bankCard":
+            self.add(ids, newIds, id, authtype);
+
+            break;
+          }
+        }
+      }
+    console.info("Elastjs getSertoIdNew end newIds " + JSON.stringify(newIds));
+
+    return newIds;
+  }
 
  public static getSertoId(ids){
   let newIds = {};

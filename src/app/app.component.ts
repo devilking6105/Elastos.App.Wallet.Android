@@ -77,7 +77,7 @@ export class AppComponent {
       this.initTranslateConfig();
 
       this.initJsPush();
-      this.getKycIdList();
+      //this.getKycIdList();
       this.localStorage.getMappingTable().then((data)=>{
          console.log("===getMappingTable===="+data);
          if(data){
@@ -127,17 +127,6 @@ export class AppComponent {
       //init java 2 js plugin
     });
 
-      localStorage.getKyc().then((val)=>{
-
-             if(val == null || val === undefined || val === {} || val === ''){
-                          return;
-             }
-             let masterWalletId = Config.getCurMasterWalletId();
-             let kycObj = JSON.parse(val);
-
-            let serids = Config.getSertoId(kycObj[masterWalletId]);
-            Config.setSerIds(serids);
-      });
   }
 
   GetQueryString(name) {
@@ -253,7 +242,7 @@ export class AppComponent {
       if (val == null || val === undefined || val === {} || val === '') {
         return;
       }
-      let serids = Config.getSertoId(JSON.parse(val));
+      let serids = Config.getSertoIdNew(JSON.parse(val));
       Config.setSerIds(serids);
     });
   }
