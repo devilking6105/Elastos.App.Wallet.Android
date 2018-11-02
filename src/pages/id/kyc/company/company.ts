@@ -57,12 +57,11 @@ export class IdKycCompanyComponent{
       else{
         this.payMoney = 0.1;
       }
-      let authObj = this.parms['adata'][0];
-      if(authObj) {
-        this.businessObj.word = authObj["retdata"]["word"];
-        this.businessObj.legalPerson = authObj["retdata"]["legalPerson"];
-        this.businessObj.registrationNum = authObj["retdata"]["RegistrationNum"];
-      }
+
+      this.businessObj.word = this.parms["payObj"]['parms']["word"];
+      this.businessObj.legalPerson = this.parms["payObj"]['parms']["legalPerson"];
+      this.businessObj.registrationNum = this.parms["payObj"]['parms']["registrationNum"];//registrationNum
+
       //let unit = priceObj["unit"] || "ELA";
       this.serialNum = this.parms["serialNum"];
     }  }

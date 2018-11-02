@@ -127,7 +127,6 @@ export class AppComponent {
       //init java 2 js plugin
     });
 
-//<<<<<<< HEAD
       localStorage.getKyc().then((val)=>{
 
              if(val == null || val === undefined || val === {} || val === ''){
@@ -139,10 +138,6 @@ export class AppComponent {
             let serids = Config.getSertoId(kycObj[masterWalletId]);
             Config.setSerIds(serids);
       });
-   // });
-// =======
-//
-// >>>>>>> origin/wallet_dev
   }
 
   GetQueryString(name) {

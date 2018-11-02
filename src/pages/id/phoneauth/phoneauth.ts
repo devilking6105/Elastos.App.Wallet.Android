@@ -54,13 +54,11 @@ export class PhoneauthPage {
       else{
         this.payMoney = 0.1;
       }
-      let authObj = this.parms['adata'][0];
-      if(authObj){
-        this.phoneValidate.fullName = authObj["retdata"]["fullName"];
-        this.phoneValidate.identityNumber = authObj["retdata"]["identityNumber"];
-        this.phoneValidate.mobile = authObj["retdata"]["mobile"];
 
-      }
+      this.phoneValidate.fullName = this.parms["payObj"]['parms']["fullName"];
+      this.phoneValidate.identityNumber = this.parms["payObj"]['parms']["identityNumber"];
+      this.phoneValidate.mobile = this.parms["payObj"]['parms']["mobile"];
+
       //let unit = priceObj["unit"] || "ELA";
       this.serialNum = this.parms["serialNum"];
     }

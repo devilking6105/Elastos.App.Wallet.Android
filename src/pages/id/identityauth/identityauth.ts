@@ -40,7 +40,7 @@ export class IdentityauthPage{
     this.path = this.parms["path"] || "";
     console.info("identityauth.ts Elastos IdentityauthPage init parms" + JSON.stringify(this.parms));
 
-    console.info("identityauth.ts Elastos IdentityauthPage init serialNum" + this.parms["serialNum"]);
+    console.info("identityauth.ts Elastos IdentityauthPage init serialNum " + this.parms["serialNum"]);
 
     if(!this.parms["serialNum"]){
       this.getPrice();
@@ -54,11 +54,10 @@ export class IdentityauthPage{
       else{
         this.payMoney = 0.1;
       }
-      let authObj = this.parms['adata'][0];
-      if(authObj){
-        this.personValidate.fullName = authObj["retdata"]["fullName"];
-        this.personValidate.identityNumber = authObj["retdata"]["identityNumber"];
-      }
+
+      this.personValidate.fullName = this.parms["payObj"]['parms']["fullName"];
+      this.personValidate.identityNumber = this.parms["payObj"]['parms']["identityNumber"];
+
 
       //let unit = priceObj["unit"] || "ELA";
       this.serialNum = this.parms["serialNum"];
