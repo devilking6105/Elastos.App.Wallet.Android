@@ -101,7 +101,8 @@ class ElaIdManagerCallback: public IIdManagerCallback
 		virtual void OnIdStatusChanged(
 				const std::string &id,
 				const std::string &path,
-				const nlohmann::json &value);
+				const nlohmann::json &value,
+				uint32_t confirms);
 
 		ElaIdManagerCallback(
 				/* [in] */ JNIEnv* env,
@@ -228,17 +229,17 @@ void ElaIdManagerCallback::Detach()
 }
 
 void ElaIdManagerCallback::OnIdStatusChanged(const std::string &id,
-		const std::string &path, const nlohmann::json &value)
+		const std::string &path, const nlohmann::json &value, uint32_t confirms)
 {
 	JNIEnv* env = GetEnv();
 
 	jclass clazz = env->GetObjectClass(mObj);
-	jmethodID methodId = env->GetMethodID(clazz, "OnIdStatusChanged","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+	jmethodID methodId = env->GetMethodID(clazz, "OnIdStatusChanged","(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V");
 	jstring jid = env->NewStringUTF(id.c_str());
 	jstring jpath = env->NewStringUTF(path.c_str());
 	jstring jvalue = env->NewStringUTF(value.dump().c_str());
 
-	env->CallVoidMethod(mObj, methodId, jid, jpath, jvalue);
+	env->CallVoidMethod(mObj, methodId, jid, jpath, jvalue, confirms);
 
 	Detach();
 }

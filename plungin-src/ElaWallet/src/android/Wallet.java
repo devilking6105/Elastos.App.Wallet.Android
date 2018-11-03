@@ -2376,12 +2376,13 @@ public class Wallet extends CordovaPlugin {
 
 			DIDManager.RegisterCallback(didName, new IIdManagerCallback() {
 				@Override
-				public void OnIdStatusChanged(String id, String path, /*const nlohmann::json*/ String value) {
+				public void OnIdStatusChanged(String id, String path, /*const nlohmann::json*/ String value, int confirms) {
 					try {
 						JSONObject jsonObject = new JSONObject();
 						jsonObject.put("id", id);
 						jsonObject.put("path", path);
 						jsonObject.put("value", value);
+            jsonObject.put("confirms", confirms);
 
 						PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, jsonObject);
 						pluginResult.setKeepCallback(true);

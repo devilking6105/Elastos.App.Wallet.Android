@@ -16,7 +16,8 @@ namespace Elastos {
 			virtual void OnIdStatusChanged(
 					const std::string &id,
 					const std::string &path,
-					const nlohmann::json &value) = 0;
+					const nlohmann::json &value,
+					uint32_t confirms) = 0;
 		};
 
 	}
