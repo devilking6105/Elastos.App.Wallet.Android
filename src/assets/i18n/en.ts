@@ -26,9 +26,11 @@ export const en = {
   'text-mnemonic-ok': 'Mnemonics Verified',
   'text-mnemonic-prompt3': 'Backup phrase or password incorrectly, Please review your backup and try again.',
   'text-mnemonic-format': 'Spaces are required between characters',
+  // TODO remove unused items
+  // import wallet page
   'text-from-mnemonic': 'from Mnemonics',
-  'text-from-key': 'from KeyStore',
-  'text-key-file': 'from SecretKey',
+  'text-from-keystore': 'from KeyStore',
+
   'text-mnemonic-check': 'Mnemonics Verification',
   'text-mnemonic-label': 'Add Optional Password',
   'text-mnemonic-pwd': 'Set Mnemonic Password',
@@ -49,17 +51,20 @@ export const en = {
   'text-create-address': 'Get new address',
   'text-contacts': 'Contacts',
   'text-contacts-add': 'Add contacts',
-  'text-contacts-name': 'Name',
-  'text-contacts-phone': 'Phone number',
-  'text-contacts-email': 'Email Address',
-  'text-contacts-address': 'Wallet Address',
-  'text-manager-address': 'Wallet Addresses',
+  // contacts page
+  'contacts-name-title': 'Name',
+  'contacts-phone-title': 'Phone Number',
+  'contacts-email-title': 'Email Address',
+  'contacts-address-title': 'Wallet Address',
+  'contacts-remark-title': 'Remark',
+
   'text-contacts-info': 'Contacts Information',
+  'text-manager-address': 'Wallet Addresses',
   'text-setting': 'Setting',
   'text-about': 'About',
   'text-help': 'Help',
   'text-notice': 'Notification',
-  'text-remark': 'Comment',
+  'text-remark': 'Remark',
   'text-add': 'Add',
 
   // create wallet page
@@ -75,19 +80,33 @@ export const en = {
   'showmnes-optionalpassword1-title': 'Mnemonic Optional Passphrase',
   'showmnes-optionalpassword1-placeholder': 'Set an optional passphrase for your mnemonics',
   'showmnes-optionalpassword2-placeholder': 'Repeat the optional passphrase you set',
-  //
+  // import wallet page - mne
   'importmnes-optionalpassword-title': 'Mnemonic Optional Passphrase',
   'importmnes-optionalpassword-placeholder': 'Enter the optional passphrase of your mnemonics',
-  //
+  // import wallet page - keystore
   'importkeystore-keystorepassword-title': 'Keystore Password',
   'importkeystore-optionalpassword-placeholder': 'Enter the password of the keystore you entered above',
+
   //
+  'unlock-paypassword-title': 'Pay Password',
+  'unlock-paypassword-placeholder': 'Enter the pay password of current wallet',
+  // export wallet page
+  'exportwallet-keystorepassword1-title': 'Keystore Password',
+  'exportwallet-keystorepassword1-placeholder': 'Set a Keystore password for your wallet',
+  'exportwallet-keystorepassword2-placeholder': 'Repeat the Keystore password you set',
+  // change pay passworld
+  'updatepaypassword-origin_paypassword1-title': 'Original Pay Password',
+  'updatepaypassword-origin_paypassword1-placeholder': 'Enter the original pay password of current wallet',
+  'updatepaypassword-paypassword1-title': 'New Pay Password',
+  'updatepaypassword-paypassword1-placeholder': 'Set a new pay password for your wallet',
+  'updatepaypassword-paypassword2-placeholder': 'Repeat the new pay password you set',
+
   'text-pwd': 'Input Password',
   'text-wallet-pwd': 'Set SecretKey Password',
   'text-wallet-repwd': 'Repeat SecretKey Password',
   'text-signaddress': 'Single Address Wallet',
   'text-pwd-repeat': 'Repeat Password',
-  
+
   'text-old-pay-password': 'Input Original Pay Password',
   'reset-pwd-success': 'Password Updated Successfully',
   'text-keystore-pwd': 'Set KeyStore Password',
@@ -104,7 +123,7 @@ export const en = {
   'confirm': 'Comfirm',
   'confirmTitle': 'confirm_title',
   'confirmTransaction': 'Transaction Comfirmed',
-  'confirmSubTitle': 'Please make sure your wallet are backuped properly before you exit',
+  'confirmSubTitle': 'Are you sure you want to log out this wallet? <br/>Before logging out, confirm that you have recorded your backup phrase and optional passphrase securely.To restore your account, both the backup phrase and optional passphrase will be required.Nobody can assist in restoring your account.',
   'cancel': 'Cancel',
   'copy-ok': 'Copied to Clipboard',
   'correct-amount': 'Wrong Amount',
@@ -341,5 +360,8 @@ export const en = {
   'no-tx-record':'no tx record',
   'no-add-contact':'no add contact',
   'suggest-amount':'amount should less than',
-  'text-wallet-name-validator1':'Wallet name with more than 30 characters'
+  'text-wallet-name-validator1':'Wallet name with more than 30 characters',
+  'text-wallet-name-validator2': 'Wallet name exit',
+  'text-multi-wallte':'(multi wallt)',
+  'text-standard-wallte':'(standard wallte)'
 };

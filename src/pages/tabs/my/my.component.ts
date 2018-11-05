@@ -28,16 +28,32 @@ export class MyComponent{
   }
 
   ionViewWillEnter(){
-    this.init();
+       this.init();
   }
 
   init() {
     this.localStorage.getLanguage("wallte-language").then((val)=>{
       this.currentLanguageName = JSON.parse(val)["name"] || "";
+      let lang=  JSON.parse(val)["isoCode"] || "";
+      if(lang == 'en'){
+        this.native.setMnemonicLang("english");
+      }else if(lang == "zh"){
+       this.native.setMnemonicLang("chinese");
+      }else{
+       this.native.setMnemonicLang("english");
+      }
     });
 
     this.events.subscribe('language:update', (item) => {
      this.currentLanguageName = item["name"] || "";
+     let lang=  item["isoCode"] || "";
+     if(lang == 'en'){
+       this.native.setMnemonicLang("english");
+     }else if(lang == "zh"){
+      this.native.setMnemonicLang("chinese");
+     }else{
+      this.native.setMnemonicLang("english");
+     }
     });
 
     this.events.subscribe("wallte:update",(item)=>{
@@ -62,7 +78,9 @@ export class MyComponent{
   }
 
   onNext(type): void {
-     switch (type){
+    console.info("ElastJs onNext begin my.componet.ts type " + type);
+
+    switch (type){
        case 0:
          this.native.Go(this.navCtrl,ManagerComponent);
          break;
@@ -88,12 +106,19 @@ export class MyComponent{
    }
 
    getDIDList(){
+     console.info("ElastJs getDIDList begin my.componet.ts val ");
 
     this.localStorage.getKyc().then((val)=>{
+      console.info("ElastJs getDIDList my.componet.ts val " + val);
+
       if(Util.isNull(val)){
+        console.info("ElastJs getDIDList my.componet.ts Go IdLauncherComponent ");
+
         this.native.Go(this.navCtrl,IdLauncherComponent);
         return;
       }
+      console.info("ElastJs getDIDList my.componet.ts Go IdHomeComponent ");
+
       this.native.Go(this.navCtrl,IdHomeComponent);
     });
    }

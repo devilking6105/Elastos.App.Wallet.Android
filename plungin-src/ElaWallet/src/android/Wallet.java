@@ -71,6 +71,71 @@ public class Wallet extends CordovaPlugin {
 
 	private int errCodeWalletException            = 20000;
 
+	/**
+	 * Called when the system is about to start resuming a previous activity.
+	 *
+	 * @param multitasking		Flag indicating if multitasking is turned on for app
+	 */
+	@Override
+	public void onPause(boolean multitasking) {
+		Log.i(TAG, "onPause");
+		if (mMasterWalletManager != null) {
+			mMasterWalletManager.SaveConfigs();
+		}
+		super.onPause(multitasking);
+	}
+
+	/**
+	 * Called when the activity will start interacting with the user.
+	 *
+	 * @param multitasking		Flag indicating if multitasking is turned on for app
+	 */
+	@Override
+	public void onResume(boolean multitasking) {
+		Log.i(TAG, "onResume");
+		super.onResume(multitasking);
+	}
+
+	/**
+	 * Called when the activity is becoming visible to the user.
+	 */
+	@Override
+	public void onStart() {
+		Log.i(TAG, "onStart");
+		super.onStart();
+	}
+
+	/**
+	 * Called when the activity is no longer visible to the user.
+	 */
+	@Override
+	public void onStop() {
+		Log.i(TAG, "onStop");
+		super.onStop();
+	}
+
+	/**
+	 * The final call you receive before your activity is destroyed.
+	 */
+	@Override
+	public void onDestroy() {
+		Log.i(TAG, "onDestroy");
+		if (mMasterWalletManager != null) {
+			ArrayList<IMasterWallet> masterWalletList = mMasterWalletManager.GetAllMasterWallets();
+			for (int i = 0; i < masterWalletList.size(); i++) {
+				ArrayList<ISubWallet> subWalletList = masterWalletList.get(i).GetAllSubWallets();
+				for (int j = 0; j < subWalletList.size(); j++) {
+					subWalletList.get(j).RemoveCallback();
+				}
+			}
+
+			mMasterWalletManager.DisposeNative();
+			mMasterWalletManager = null;
+		}
+
+		super.onDestroy();
+	}
+
 	@Override
 	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
 
@@ -79,6 +144,7 @@ public class Wallet extends CordovaPlugin {
 		super.initialize(cordova, webView);
 
 		mRootPath = MyUtil.getRootPath();
+/*
 
 		Log.i(TAG, "Initialize mRootPath = " + mRootPath);
 		mDIDManagerSupervisor = new DIDManagerSupervisor(mRootPath);
@@ -87,6 +153,9 @@ public class Wallet extends CordovaPlugin {
 		MyUtil.SetCurrentMasterWalletManager(mMasterWalletManager);
 
 		Log.i(TAG, "ElastosJava initialize end ");
+*/
+		mDIDManagerSupervisor = new DIDManagerSupervisor(mRootPath);
+		mMasterWalletManager = new MasterWalletManager(mRootPath);
 	}
 
 	private boolean createDIDManager(IMasterWallet masterWallet) {
@@ -166,11 +235,14 @@ public class Wallet extends CordovaPlugin {
 	}
 
 	private IDidManager getDIDManager(String masterWalletID) {
+		Log.i(TAG, "ElastosJava getDIDManager masterWalletID " + masterWalletID);
 		return mDIDManagerMap.get(masterWalletID);
 	}
 
 	private void putDIDManager(String masterWalletID, IDidManager DIDManager) {
 		mDIDManagerMap.put(masterWalletID, DIDManager);
+		Log.i(TAG, "ElastosJava putDIDManager masterWalletID " + masterWalletID);
+
 	}
 
 	private JSONObject mkJson(String key, Object value) throws JSONException {
@@ -294,6 +366,12 @@ public class Wallet extends CordovaPlugin {
 				case "generateMnemonic":
 					this.generateMnemonic(args, cc);
 					break;
+				case "getMultiSignPubKeyWithMnemonic":
+					this.getMultiSignPubKeyWithMnemonic(args, cc);
+					break;
+				case "getMultiSignPubKeyWithPrivKey":
+					this.getMultiSignPubKeyWithPrivKey(args, cc);
+					break;
 				case "createMasterWallet":
 					this.createMasterWallet(args, cc);
 					break;
@@ -332,6 +410,9 @@ public class Wallet extends CordovaPlugin {
 					break;
 				case "decodeTransactionFromString":
 					this.decodeTransactionFromString(args, cc);
+					break;
+				case "disposeNative":
+					this.disposeNative(args, cc);
 					break;
 
 					// Master wallet
@@ -434,6 +515,15 @@ public class Wallet extends CordovaPlugin {
 				case "createDepositTransaction":
 					this.createDepositTransaction(args, cc);
 					break;
+				case "createRegisterProducerTransaction":
+					this.createRegisterProducerTransaction(args, cc);
+					break;
+				case "createCancelProducerTransaction":
+					this.createCancelProducerTransaction(args, cc);
+					break;
+				case "createVoteProducerTransaction":
+					this.createVoteProducerTransaction(args, cc);
+					break;
 
 					// Side chain subwallet
 				case "createWithdrawTransaction":
@@ -491,6 +581,27 @@ public class Wallet extends CordovaPlugin {
 		}
 
 		return true;
+	}
+
+	public void disposeNative(JSONArray args, CallbackContext cc) throws JSONException {
+		try {
+			if (mMasterWalletManager != null) {
+				ArrayList<IMasterWallet> masterWalletList = mMasterWalletManager.GetAllMasterWallets();
+				for (int i = 0; i < masterWalletList.size(); i++) {
+					ArrayList<ISubWallet> subWalletList = masterWalletList.get(i).GetAllSubWallets();
+					for (int j = 0; j < subWalletList.size(); j++) {
+						subWalletList.get(j).RemoveCallback();
+					}
+				}
+
+				mMasterWalletManager.DisposeNative();
+				mMasterWalletManager = null;
+			}
+
+			successProcess(cc, "OK");
+		} catch (WalletException e) {
+			exceptionProcess(e, cc, "DisposeNative");
+		}
 	}
 
 	// args[0]: String masterWalletID
@@ -718,6 +829,51 @@ public class Wallet extends CordovaPlugin {
 		}
 	}
 
+	// args[0]: String mnemonic
+	// args[1]: String phrasePassword
+	public void getMultiSignPubKeyWithMnemonic(JSONArray args, CallbackContext cc) throws JSONException {
+		int idx = 0;
+
+		String mnemonic = args.getString(idx++);
+		String phrasePassword = args.getString(idx++);
+
+		if (args.length() != idx) {
+			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
+			return;
+		}
+
+		if (mMasterWalletManager == null) {
+			errorProcess(cc, errCodeInvalidMasterWalletManager, "Master wallet manager has not initialize");
+			return;
+		}
+
+		try {
+			String pubKey = mMasterWalletManager.GetMultiSignPubKeyWithMnemonic(mnemonic, phrasePassword);
+			successProcess(cc, pubKey);
+		} catch (WalletException e) {
+			exceptionProcess(e, cc, "Get multi sign public key with mnemonic");
+		}
+	}
+
+	// args[0]: String privKey
+	public void getMultiSignPubKeyWithPrivKey(JSONArray args, CallbackContext cc) throws JSONException {
+		int idx = 0;
+
+		String privKey = args.getString(idx++);
+
+		if (args.length() != idx) {
+			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
+			return;
+		}
+
+		try {
+			String pubKey = mMasterWalletManager.GetMultiSignPubKeyWithPrivKey(privKey);
+			successProcess(cc, pubKey);
+		} catch (WalletException e) {
+			exceptionProcess(e, cc, "Get multi sign public key with private key");
+		}
+	}
+
 	// args[0]: String masterWalletID
 	// args[1]: String address
 	public void isAddressValid(JSONArray args, CallbackContext cc) throws JSONException {
@@ -750,7 +906,6 @@ public class Wallet extends CordovaPlugin {
 	// args[2]: String phrasePassword
 	// args[3]: String payPassword
 	// args[4]: boolean singleAddress
-	// args[5]: String language
 	public void createMasterWallet(JSONArray args, CallbackContext cc) throws JSONException {
 		int idx = 0;
     Log.i(TAG, "ElastJava createMasterWallet begin");
@@ -759,7 +914,6 @@ public class Wallet extends CordovaPlugin {
 		String phrasePassword = args.getString(idx++);
 		String payPassword    = args.getString(idx++);
 		boolean singleAddress = args.getBoolean(idx++);
-		String language       = args.getString(idx++);
 
 		if (args.length() != idx) {
 			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
@@ -768,7 +922,7 @@ public class Wallet extends CordovaPlugin {
 
 		try {
 			IMasterWallet masterWallet = mMasterWalletManager.CreateMasterWallet(
-					masterWalletID, mnemonic, phrasePassword, payPassword, singleAddress, language);
+					masterWalletID, mnemonic, phrasePassword, payPassword, singleAddress);
 
 			if (masterWallet == null) {
 				errorProcess(cc, errCodeCreateMasterWallet, "Create " + formatWalletName(masterWalletID));
@@ -857,7 +1011,6 @@ public class Wallet extends CordovaPlugin {
 	// args[3]: String payPassword
 	// args[4]: String coSignersJson
 	// args[5]: int requiredSignCount
-	// args[6]: String language
 	public void createMultiSignMasterWalletWithMnemonic(JSONArray args, CallbackContext cc) throws JSONException {
 		int idx = 0;
 
@@ -867,7 +1020,6 @@ public class Wallet extends CordovaPlugin {
 		String payPassword    = args.getString(idx++);
 		String coSigners      = args.getString(idx++);
 		int requiredSignCount = args.getInt(idx++);
-		String language       = args.getString(idx++);
 
 		if (args.length() != idx) {
 			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
@@ -876,7 +1028,7 @@ public class Wallet extends CordovaPlugin {
 
 		try {
 			IMasterWallet masterWallet = mMasterWalletManager.CreateMultiSignMasterWallet(
-						masterWalletID, mnemonic, phrasePassword, payPassword, coSigners, requiredSignCount, language);
+						masterWalletID, mnemonic, phrasePassword, payPassword, coSigners, requiredSignCount);
 
 			if (masterWallet == null) {
 				errorProcess(cc, errCodeCreateMasterWallet, "Create multi sign " + formatWalletName(masterWalletID) + " with mnemonic");
@@ -951,7 +1103,6 @@ public class Wallet extends CordovaPlugin {
 	// args[2]: String phrasePassword
 	// args[3]: String payPassword
 	// args[4]: boolean singleAddress
-	// args[5]: String language
 	public void importWalletWithMnemonic(JSONArray args, CallbackContext cc) throws JSONException {
 		int idx = 0;
 
@@ -960,7 +1111,6 @@ public class Wallet extends CordovaPlugin {
 		String phrasePassword = args.getString(idx++);
 		String payPassword    = args.getString(idx++);
 		boolean singleAddress = args.getBoolean(idx++);
-		String language       = args.getString(idx++);
 
 		if (args.length() != idx) {
 			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
@@ -969,7 +1119,7 @@ public class Wallet extends CordovaPlugin {
 
 		try {
 			IMasterWallet masterWallet = mMasterWalletManager.ImportWalletWithMnemonic(
-					masterWalletID, mnemonic, phrasePassword, payPassword, singleAddress, language);
+					masterWalletID, mnemonic, phrasePassword, payPassword, singleAddress);
 			if (masterWallet == null) {
 				errorProcess(cc, errCodeImportFromMnemonic, "Import " + formatWalletName(masterWalletID) + " with mnemonic");
 				return;
@@ -1012,7 +1162,7 @@ public class Wallet extends CordovaPlugin {
 	}
 
 	// args[0]: String masterWalletID
-	// args[1]: String backupPassword
+	// args[1]: String payPassword
 	public void exportWalletWithMnemonic(JSONArray args, CallbackContext cc) throws JSONException {
 		int idx = 0;
 
@@ -1905,6 +2055,135 @@ public class Wallet extends CordovaPlugin {
 	}
 
 	// args[0]: String masterWalletID
+	// args[1]: String chainID
+	// args[2]: String fromAddress
+	// args[3]: String toAddress
+	// args[4]: String publicKey
+	// args[5]: String nickName
+	// args[6]: String url
+	// args[7]: long   location
+	public void createRegisterProducerTransaction(JSONArray args, CallbackContext cc) throws JSONException {
+		int idx = 0;
+
+		String masterWalletID = args.getString(idx++);
+		String chainID        = args.getString(idx++);
+		String fromAddress    = args.getString(idx++);
+		String toAddress      = args.getString(idx++);
+		String publicKey      = args.getString(idx++);
+		String nickName       = args.getString(idx++);
+		String url            = args.getString(idx++);
+		long   location       = args.getLong(idx++);
+
+		if (args.length() != idx) {
+			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
+			return;
+		}
+
+		try {
+			ISubWallet subWallet = getSubWallet(masterWalletID, chainID);
+			if (subWallet == null) {
+				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID));
+				return;
+			}
+
+			if (! (subWallet instanceof IMainchainSubWallet)) {
+				errorProcess(cc, errCodeSubWalletInstance, formatWalletName(masterWalletID, chainID) + " is not instance of IMainchainSubWallet");
+				return;
+			}
+
+			IMainchainSubWallet mainchainSubWallet = (IMainchainSubWallet)subWallet;
+
+			String txJson = mainchainSubWallet.CreateRegisterProducerTransaction(fromAddress, toAddress, publicKey,
+					nickName, url, location);
+			successProcess(cc, txJson);
+		} catch (WalletException e) {
+			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " create register producer tx");
+		}
+	}
+
+	// args[0]: String masterWalletID
+	// args[1]: String chainID
+	// args[2]: String fromAddress
+	// args[3]: String toAddress
+	// args[4]: String publicKey
+	public void createCancelProducerTransaction(JSONArray args, CallbackContext cc) throws JSONException {
+		int idx = 0;
+
+		String masterWalletID = args.getString(idx++);
+		String chainID        = args.getString(idx++);
+		String fromAddress    = args.getString(idx++);
+		String toAddress      = args.getString(idx++);
+		String publicKey      = args.getString(idx++);
+
+		if (args.length() != idx) {
+			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
+			return;
+		}
+
+		try {
+			ISubWallet subWallet = getSubWallet(masterWalletID, chainID);
+			if (subWallet == null) {
+				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID));
+				return;
+			}
+
+			if (! (subWallet instanceof IMainchainSubWallet)) {
+				errorProcess(cc, errCodeSubWalletInstance, formatWalletName(masterWalletID, chainID) + " is not instance of IMainchainSubWallet");
+				return;
+			}
+
+			IMainchainSubWallet mainchainSubWallet = (IMainchainSubWallet)subWallet;
+
+			String txJson = mainchainSubWallet.CreateCancelProducerTransaction(fromAddress, toAddress, publicKey);
+			successProcess(cc, txJson);
+		} catch (WalletException e) {
+			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " create cancel producer tx");
+		}
+	}
+
+	// args[0]: String masterWalletID
+	// args[1]: String chainID
+	// args[2]: String fromAddress
+	// args[3]: String toAddress
+	// args[4]: long   stake
+	// args[5]: String publicKeys JSONArray
+	public void createVoteProducerTransaction(JSONArray args, CallbackContext cc) throws JSONException {
+		int idx = 0;
+
+		String masterWalletID = args.getString(idx++);
+		String chainID        = args.getString(idx++);
+		String fromAddress    = args.getString(idx++);
+		String toAddress      = args.getString(idx++);
+		long   stake          = args.getLong(idx++);
+		String publicKeys     = args.getString(idx++);
+
+		if (args.length() != idx) {
+			errorProcess(cc, errCodeInvalidArg, idx + " parameters are expected");
+			return;
+		}
+
+		try {
+			ISubWallet subWallet = getSubWallet(masterWalletID, chainID);
+			if (subWallet == null) {
+				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID));
+				return;
+			}
+
+			if (! (subWallet instanceof IMainchainSubWallet)) {
+				errorProcess(cc, errCodeSubWalletInstance, formatWalletName(masterWalletID, chainID) + " is not instance of IMainchainSubWallet");
+				return;
+			}
+
+			IMainchainSubWallet mainchainSubWallet = (IMainchainSubWallet)subWallet;
+
+			String txJson = mainchainSubWallet.CreateVoteProducerTransaction(fromAddress, toAddress, stake, publicKeys);
+			successProcess(cc, txJson);
+		} catch (WalletException e) {
+			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " create vote producer tx");
+		}
+	}
+
+	// args[0]: String masterWalletID
 	public void getSupportedChains(JSONArray args, CallbackContext cc) throws JSONException {
 		int idx = 0;
 
@@ -2402,7 +2681,6 @@ public class Wallet extends CordovaPlugin {
 	// args[0]: String masterWalletID
 	// args[1]: String chainID
 	// args[2]: String fromAddress
-	// args[3]: String toAddress
 	// args[4]: long amount
 	// args[5]: String mainchainAccountsJson
 	// args[6]: String mainchainAmountsJson
@@ -2415,7 +2693,6 @@ public class Wallet extends CordovaPlugin {
 		String masterWalletID        = args.getString(idx++);
 		String chainID               = args.getString(idx++);
 		String fromAddress           = args.getString(idx++);
-		String toAddress             = args.getString(idx++);
 		long   amount                = args.getLong(idx++);
 		String mainchainAccountsJson = args.getString(idx++);
 		String mainchainAmountsJson  = args.getString(idx++);
@@ -2441,7 +2718,7 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			ISidechainSubWallet sidechainSubWallet = (ISidechainSubWallet)subWallet;
-			String tx = sidechainSubWallet.CreateWithdrawTransaction(fromAddress, toAddress, amount,
+			String tx = sidechainSubWallet.CreateWithdrawTransaction(fromAddress, amount,
 					mainchainAccountsJson, mainchainAmountsJson, mainchainIndexsJson, memo, remark);
 
 			successProcess(cc, tx);
@@ -2483,9 +2760,5 @@ public class Wallet extends CordovaPlugin {
 		}
 	}
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-	}
 }
 

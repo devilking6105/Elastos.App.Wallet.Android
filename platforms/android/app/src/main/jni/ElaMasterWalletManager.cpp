@@ -11,7 +11,8 @@ using namespace Elastos::ElaWallet;
 #define  FIELD_MASTERWALLET   "mMasterProxy"
 
 #define SIG_nativeGenerateMnemonic "(JLjava/lang/String;)Ljava/lang/String;"
-static jstring JNICALL nativeGenerateMnemonic(JNIEnv *env, jobject clazz, jlong jWalletMgr, jstring jlanguage)
+static jstring JNICALL nativeGenerateMnemonic(JNIEnv *env, jobject clazz, jlong jWalletMgr,
+		jstring jlanguage)
 {
 	bool exception = false;
 	std::string msgException;
@@ -37,14 +38,72 @@ static jstring JNICALL nativeGenerateMnemonic(JNIEnv *env, jobject clazz, jlong 
 	return mnemonic;
 }
 
-#define SIG_nativeCreateMasterWallet "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;)J"
+#define SIG_nativeGetMultiSignPubKeyWithMnemonic "(JLjava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+static jstring JNICALL nativeGetMultiSignPubKeyWithMnemonic(JNIEnv *env, jobject clazz, jlong jWalletMgr,
+		jstring jPhrase,
+		jstring jPhrasePassword)
+{
+	bool exception = false;
+	std::string msgException;
+
+	MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
+	const char *phrase = env->GetStringUTFChars(jPhrase, NULL);
+	const char *phrasePassword = env->GetStringUTFChars(jPhrasePassword, NULL);
+	jstring pubkey = NULL;
+
+	try {
+		std::string str = walletManager->GetMultiSignPubKey(phrase, phrasePassword);
+		pubkey = env->NewStringUTF(str.c_str());
+	} catch (std::exception &e) {
+		exception = true;
+		msgException = e.what();
+	}
+
+	env->ReleaseStringUTFChars(jPhrase, phrase);
+	env->ReleaseStringUTFChars(jPhrasePassword, phrasePassword);
+
+	if (exception) {
+		ThrowWalletException(env, msgException.c_str());
+	}
+
+	return pubkey;
+}
+
+#define SIG_nativeGetMultiSignPubKeyWithPrivKey "(JLjava/lang/String;)Ljava/lang/String;"
+static jstring JNICALL nativeGetMultiSignPubKeyWithPrivKey(JNIEnv *env, jobject clazz, jlong jWalletMgr,
+		jstring jPrivKey)
+{
+	bool exception = false;
+	std::string msgException;
+
+	MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
+	const char *privKey = env->GetStringUTFChars(jPrivKey, NULL);
+	jstring pubkey = NULL;
+
+	try {
+		std::string str = walletManager->GetMultiSignPubKey(privKey);
+		pubkey = env->NewStringUTF(str.c_str());
+	} catch (std::exception &e) {
+		exception = true;
+		msgException = e.what();
+	}
+
+	env->ReleaseStringUTFChars(jPrivKey, privKey);
+
+	if (exception) {
+		ThrowWalletException(env, msgException.c_str());
+	}
+
+	return pubkey;
+}
+
+#define SIG_nativeCreateMasterWallet "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)J"
 static jlong JNICALL nativeCreateMasterWallet(JNIEnv *env, jobject clazz, jlong jWalletMgr,
 		jstring jmasterWalletId,
 		jstring jmnemonic,
 		jstring jphrasePassword,
 		jstring jpayPassword,
-		jboolean jSingleAddress,
-		jstring jlanguage)
+		jboolean jSingleAddress)
 {
 	bool exception = false;
 	std::string msgException;
@@ -53,13 +112,13 @@ static jlong JNICALL nativeCreateMasterWallet(JNIEnv *env, jobject clazz, jlong 
 	const char* mnemonic = env->GetStringUTFChars(jmnemonic, NULL);
 	const char* phrasePassword = env->GetStringUTFChars(jphrasePassword, NULL);
 	const char* payPassword = env->GetStringUTFChars(jpayPassword, NULL);
-	const char* language = env->GetStringUTFChars(jlanguage, NULL);
 
 	MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
 	IMasterWallet* masterWallet = NULL;
 
 	try {
-		masterWallet = walletManager->CreateMasterWallet(masterWalletId, mnemonic, phrasePassword, payPassword, jSingleAddress, language);
+		masterWallet = walletManager->CreateMasterWallet(masterWalletId, mnemonic,
+				phrasePassword, payPassword, jSingleAddress);
 	} catch (std::exception &e) {
 		exception = true;
 		msgException = e.what();
@@ -69,7 +128,6 @@ static jlong JNICALL nativeCreateMasterWallet(JNIEnv *env, jobject clazz, jlong 
 	env->ReleaseStringUTFChars(jmnemonic, mnemonic);
 	env->ReleaseStringUTFChars(jphrasePassword, phrasePassword);
 	env->ReleaseStringUTFChars(jpayPassword, payPassword);
-	env->ReleaseStringUTFChars(jlanguage, language);
 
 	if (exception) {
 		ThrowWalletException(env, msgException.c_str());
@@ -150,15 +208,14 @@ static jlong JNICALL nativeCreateMultiSignMasterWalletWithPrivKey(JNIEnv *env, j
 	return (jlong)masterWallet;
 }
 
-#define SIG_nativeCreateMultiSignMasterWalletWithMnemonic "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;)J"
+#define SIG_nativeCreateMultiSignMasterWalletWithMnemonic "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)J"
 static jlong JNICALL nativeCreateMultiSignMasterWalletWithMnemonic(JNIEnv *env, jobject clazz, jlong jWalletMgr,
 		jstring jMasterWalletId,
 		jstring jMnemonic,
 		jstring jPhrasePassword,
 		jstring jPayPassword,
 		jstring jCoSigners,
-		jint jRequiredSignCount,
-		jstring jLanguage)
+		jint jRequiredSignCount)
 {
 	bool exception = false;
 	std::string msgException;
@@ -168,7 +225,6 @@ static jlong JNICALL nativeCreateMultiSignMasterWalletWithMnemonic(JNIEnv *env, 
 	const char *phrasePassword = env->GetStringUTFChars(jPhrasePassword, NULL);
 	const char *payPassword    = env->GetStringUTFChars(jPayPassword, NULL);
 	const char *coSigners      = env->GetStringUTFChars(jCoSigners, NULL);
-	const char *language       = env->GetStringUTFChars(jLanguage, NULL);
 
 	MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
 	IMasterWallet* masterWallet = NULL;
@@ -176,7 +232,7 @@ static jlong JNICALL nativeCreateMultiSignMasterWalletWithMnemonic(JNIEnv *env, 
 	try {
 		nlohmann::json coSignersJson = nlohmann::json::parse(coSigners);
 		masterWallet = walletManager->CreateMultiSignMasterWallet(masterWalletId, mnemonic,
-				phrasePassword, payPassword, coSignersJson, jRequiredSignCount, language);
+				phrasePassword, payPassword, coSignersJson, jRequiredSignCount);
 	} catch (std::exception &e) {
 		exception = true;
 		msgException = e.what();
@@ -187,7 +243,6 @@ static jlong JNICALL nativeCreateMultiSignMasterWalletWithMnemonic(JNIEnv *env, 
 	env->ReleaseStringUTFChars(jPhrasePassword, phrasePassword);
 	env->ReleaseStringUTFChars(jPayPassword, payPassword);
 	env->ReleaseStringUTFChars(jCoSigners, coSigners);
-	env->ReleaseStringUTFChars(jLanguage, language);
 
 	if (exception) {
 		ThrowWalletException(env, msgException.c_str());
@@ -259,14 +314,13 @@ static jlong JNICALL nativeImportWalletWithKeystore(JNIEnv *env, jobject clazz, 
 	return (jlong)masterWallet;
 }
 
-#define SIG_nativeImportWalletWithMnemonic "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;)J"
+#define SIG_nativeImportWalletWithMnemonic "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)J"
 static jlong JNICALL nativeImportWalletWithMnemonic(JNIEnv *env, jobject clazz, jlong jWalletMgr,
 		jstring jmasterWalletId,
 		jstring jmnemonic,
 		jstring jphrasePassword,
 		jstring jpayPassword,
-		jboolean jSingleAddress,
-		jstring jlanguage)
+		jboolean jSingleAddress)
 {
 	bool exception = false;
 	std::string msgException;
@@ -275,13 +329,12 @@ static jlong JNICALL nativeImportWalletWithMnemonic(JNIEnv *env, jobject clazz, 
 	const char* mnemonic = env->GetStringUTFChars(jmnemonic, NULL);
 	const char* phrasePassword = env->GetStringUTFChars(jphrasePassword, NULL);
 	const char* payPassword = env->GetStringUTFChars(jpayPassword, NULL);
-	const char* language = env->GetStringUTFChars(jlanguage, NULL);
 
 	MasterWalletManager* walletManager = (MasterWalletManager*)jWalletMgr;
 	IMasterWallet* masterWallet = NULL;
 
 	try {
-		masterWallet = walletManager->ImportWalletWithMnemonic(masterWalletId, mnemonic, phrasePassword, payPassword, jSingleAddress, language);
+		masterWallet = walletManager->ImportWalletWithMnemonic(masterWalletId, mnemonic, phrasePassword, payPassword, jSingleAddress);
 	} catch (std::exception &e) {
 		exception = true;
 		msgException = e.what();
@@ -291,7 +344,6 @@ static jlong JNICALL nativeImportWalletWithMnemonic(JNIEnv *env, jobject clazz, 
 	env->ReleaseStringUTFChars(jmnemonic, mnemonic);
 	env->ReleaseStringUTFChars(jphrasePassword, phrasePassword);
 	env->ReleaseStringUTFChars(jpayPassword, payPassword);
-	env->ReleaseStringUTFChars(jlanguage, language);
 
 	if (exception) {
 		ThrowWalletException(env, msgException.c_str());
@@ -552,6 +604,8 @@ static void JNICALL nativeDisposeNative(JNIEnv *env, jobject clazz, jlong jWalle
 static const JNINativeMethod gMethods[] = {
 	REGISTER_METHOD(nativeSaveConfigs),
 	REGISTER_METHOD(nativeGenerateMnemonic),
+	REGISTER_METHOD(nativeGetMultiSignPubKeyWithMnemonic),
+	REGISTER_METHOD(nativeGetMultiSignPubKeyWithPrivKey),
 	REGISTER_METHOD(nativeCreateMasterWallet),
 	REGISTER_METHOD(nativeCreateMultiSignMasterWallet),
 	REGISTER_METHOD(nativeCreateMultiSignMasterWalletWithPrivKey),

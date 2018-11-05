@@ -3,6 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import {Util} from "../../providers/Util";
 import {Native} from "../../providers/Native";
 import {AddprivatekeyPage} from '../../pages/addprivatekey/addprivatekey';
+import {MpublickeyPage} from '../../pages/mpublickey/mpublickey';
 @Component({
   selector: 'page-importprivatekey',
   templateUrl: 'importprivatekey.html',
@@ -27,7 +28,8 @@ export class ImportprivatekeyPage {
             this.msobj["importText"] = this.importText.replace(/^\s+|\s+$/g,"");
             this.msobj["passWord"] = this.passWord;
             this.msobj["name"] = this.name;
-            this.navCtrl.push(AddprivatekeyPage,this.msobj);
+            //this.navCtrl.push(AddprivatekeyPage,this.msobj);
+            this.navCtrl.push(MpublickeyPage,this.msobj);
         }
   }
   checkParms(){
@@ -40,6 +42,11 @@ export class ImportprivatekeyPage {
       this.native.toast_trans("text-wallet-name-validator1");
       return;
    }
+
+   if(Util.isWallNameExit(this.name)){
+    this.native.toast_trans("text-wallet-name-validator2");
+    return;
+  }
 
     if(Util.isNull(this.importText)){
       this.native.toast_trans('text-import-privatekey-placeholder');

@@ -53,9 +53,11 @@ export class IdHomeComponent{
                self.walletManager.registerIdListener(Config.getCurMasterWalletId() , e.id, (data) => {
 
                  console.info("home.ts ElastosJs ngOnInit registerIdListener data "+ JSON.stringify(data));
+
+                 alert("ElastosJs IdHomeComponent home.ts registerIdListener "+ JSON.stringify(data));
                  //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
                  //first commit
-                 if(data["path"] == "Added"){
+                 if(data["confirms"] == 1){
 
                    let valueObj = JSON.parse(data["value"]) ;
 
@@ -245,10 +247,12 @@ export class IdHomeComponent{
 
       this.walletManager.registerIdListener(Config.getCurMasterWalletId(), result.success, (data) => {
 
+        alert("ElastosJs IdHomeComponent home.ts createDID createDID registerIdListener "+ JSON.stringify(data));
+
         console.info("home.ts ElastosJs createDID registerIdListener "+ JSON.stringify(data));
-        //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
+        alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
         //first commit
-        if(data["path"] == "Added"){
+        if(data["confirms"] == 1){
 
           let valueObj = JSON.parse(data["value"]) ;
           if((valueObj["Contents"].length > 0) && (valueObj["Contents"][0]["Values"].length > 0) && valueObj["Contents"][0]["Values"][0]["Proof"] ){

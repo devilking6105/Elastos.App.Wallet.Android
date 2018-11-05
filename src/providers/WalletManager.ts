@@ -22,8 +22,10 @@ export class WalletManager {
   public static PAGECOUNT = 20;
 
   constructor(public native: Native,public event: Events,public popupProvider :PopupProvider) {
-          this.wallet = cordova.plugins.Wallet;
-          //   this.wallet = {};
+
+      this.wallet = cordova.plugins.Wallet;
+       //  this.wallet = {};
+
   }
 
   //--------------------------------------------------------------------------------子钱包操作
@@ -64,11 +66,10 @@ export class WalletManager {
    * @param {string} phrasePassword
    * @param {string} payPassword
    * @param {boolean} singleAddress
-   * @param {string} language
    * @param Fun
    */
-  createMasterWallet(masterWalletId: string,mnemonic:string,phrasePassword:string,payPassword:string,singleAddress:boolean,language:string, Fun) {
-    this.wallet.createMasterWallet([masterWalletId,mnemonic,phrasePassword,payPassword,singleAddress,language], Fun,(error)=>{
+  createMasterWallet(masterWalletId: string,mnemonic:string,phrasePassword:string,payPassword:string,singleAddress:boolean, Fun) {
+    this.wallet.createMasterWallet([masterWalletId,mnemonic,phrasePassword,payPassword,singleAddress], Fun,(error)=>{
       this.errorFun(error);
     });
   }
@@ -91,11 +92,10 @@ export class WalletManager {
    * @param {string} phrasePassword
    * @param {string} payPassword
    * @param {string} singleAddress
-   * @param {string} language
    * @param Fun
    */
-  importWalletWithMnemonic(masterWalletId:string,mnemonic: string, phrasePassword: string, payPassword,singleAddress:boolean,language:string, Fun) {
-    this.wallet.importWalletWithMnemonic([masterWalletId,mnemonic,phrasePassword, payPassword,singleAddress,language], Fun,(error)=>{
+  importWalletWithMnemonic(masterWalletId:string,mnemonic: string, phrasePassword: string, payPassword,singleAddress:boolean, Fun) {
+    this.wallet.importWalletWithMnemonic([masterWalletId,mnemonic,phrasePassword, payPassword,singleAddress], Fun,(error)=>{
       this.errorFun(error);
     });
   }
@@ -113,11 +113,11 @@ export class WalletManager {
   }
   /**
    * @param {string} masterWalletId
-   * @param {string} backupPassWord
+   * @param {string} payPassWord
    * @param Fun
    */
-  exportWalletWithMnemonic(masterWalletId:string,backupPassWord: string, Fun) {
-    this.wallet.exportWalletWithMnemonic([masterWalletId,backupPassWord], Fun,(error)=>{
+  exportWalletWithMnemonic(masterWalletId:string,payPassWord: string, Fun) {
+    this.wallet.exportWalletWithMnemonic([masterWalletId,payPassWord], Fun,(error)=>{
       this.errorFun(error);
     });
   }
@@ -520,8 +520,8 @@ export class WalletManager {
     });
   }
 
-  createMultiSignMasterWalletWithMnemonic(masterWalletId:string,mnemonic:string,phrasePassword:string,payPassword:string,coSignersJson:string,requiredSignCount:string,language:string,Fun){
-     this.wallet.createMultiSignMasterWalletWithMnemonic([masterWalletId,mnemonic,phrasePassword,payPassword,coSignersJson,requiredSignCount,language],Fun,(error)=>{
+  createMultiSignMasterWalletWithMnemonic(masterWalletId:string,mnemonic:string,phrasePassword:string,payPassword:string,coSignersJson:string,requiredSignCount:string,Fun){
+     this.wallet.createMultiSignMasterWalletWithMnemonic([masterWalletId,mnemonic,phrasePassword,payPassword,coSignersJson,requiredSignCount],Fun,(error)=>{
       this.errorFun(error);
     });
   }
@@ -541,6 +541,25 @@ export class WalletManager {
 
    removeWalletListener(masterWalletId:string,chainId:string,Fun){
      this.wallet.removeWalletListener([masterWalletId,chainId],Fun,(error)=>{
+      this.errorFun(error);
+    });
+   }
+
+   disposeNative(Fun){
+     this.wallet.disposeNative([],Fun,(error)=>{
+        this.errorFun(error);
+     });
+   }
+  // args[0]: String mnemonic
+	// args[1]: String phrasePassword
+   getMultiSignPubKeyWithMnemonic(mnemonic,phrasePassword,Fun){
+         this.wallet.getMultiSignPubKeyWithMnemonic([mnemonic,phrasePassword],Fun,(error)=>{
+                this.errorFun(error);
+         });
+   }
+   // args[0]: String privKey
+   getMultiSignPubKeyWithPrivKey(privKey,Fun){
+    this.wallet.getMultiSignPubKeyWithPrivKey([privKey],Fun,(error)=>{
       this.errorFun(error);
     });
    }
