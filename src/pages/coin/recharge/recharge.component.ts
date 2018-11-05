@@ -48,6 +48,7 @@ export class RechargeComponent{
     this.masterWalletId = Config.getCurMasterWalletId();
     let transferObj =this.navParams.data;
     this.chianId = transferObj["chianId"];
+    this.getGenesisAddress();
     this.initData();
   }
 
@@ -118,7 +119,6 @@ export class RechargeComponent{
 
 
   createDepositTransaction(){
-    this.getGenesisAddress();
     let sidechainAddress = JSON.stringify([this.sidechain.accounts]);
     let sidechainAmounts = JSON.stringify([this.transfer.amount*Config.SELA - this.transfer.fee]);
     let sidechainIndex = JSON.stringify([this.sidechain.index]);
@@ -142,9 +142,9 @@ export class RechargeComponent{
   }
 
   getGenesisAddress(){
-    // this.walletManager.getGenesisAddress(this.chianId, (data) => {
-      this.transfer.toAddress = 'XKUh4GLhFJiqAMTF6HyWQrV9pK9HcGUdfJ';
-    // });
+    this.walletManager.getGenesisAddress(this.masterWalletId, this.chianId, (data) => {
+      this.transfer.toAddress = data['success'];
+    });
   }
 
   getFee(){

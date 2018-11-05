@@ -11,6 +11,7 @@ import {Config} from "../../../providers/Config";
 import {TabsComponent} from "../../tabs/tabs.component"
 import {ModifywalletnamePage} from '../../../pages/modifywalletname/modifywalletname';
 import {PublickeyPage} from '../../../pages/publickey/publickey';
+import {ExportmnemomicPage} from '../../../pages/exportmnemomic/exportmnemomic';
 @Component({
   selector: 'app-manager',
   templateUrl: './manager.component.html',
@@ -61,7 +62,8 @@ export class ManagerComponent {
           if (data) {
             //this.destroyWallet(this.masterWalletId);
             this.native.showLoading().then(()=>{
-              this.getAllCreatedSubWallets();
+			 this.destroyWallet(this.masterWalletId);
+			//this.getAllCreatedSubWallets();
             });
           }
         });
@@ -76,6 +78,9 @@ export class ManagerComponent {
          break;
       case 4:
          this.native.Go(this.navCtrl,ModifywalletnamePage);
+         break;
+      case 5:
+         this.native.Go(this.navCtrl,ExportmnemomicPage);
          break;
     }
   }

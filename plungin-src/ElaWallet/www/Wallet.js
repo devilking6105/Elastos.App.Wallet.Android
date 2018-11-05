@@ -299,9 +299,13 @@ walletFunc.prototype.disposeNative = function(arg0, success, error) {
     exec(success, error, "Wallet", "disposeNative", arg0);
 };
 
+walletFunc.prototype.getMultiSignPubKeyWithMnemonic = function(arg0, success, error) {
+    exec(success, error, "Wallet", "getMultiSignPubKeyWithMnemonic", arg0);
+};
 
-
-
+walletFunc.prototype.getMultiSignPubKeyWithPrivKey = function(arg0, success, error) {
+    exec(success, error, "Wallet", "getMultiSignPubKeyWithPrivKey", arg0);
+};
 
 var WALLETFUNC = new walletFunc();
 module.exports = WALLETFUNC;

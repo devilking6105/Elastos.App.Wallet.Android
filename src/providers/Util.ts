@@ -2,8 +2,8 @@
  * Created by yanxiaojun617@163.com on 3-12.
  */
 import {Injectable} from '@angular/core';
+import {Config} from "../providers/Config";
 //import {Validators as angularValidators, AbstractControl} from '@angular/forms';
-
 @Injectable()
 export class Util {
 
@@ -171,6 +171,27 @@ export class Util {
     //return pPattern.test(text);
 
   };
+
+  static isWallNameExit(name){
+        let data = Config.getMappingList();
+        if(this.isEmptyObject(data)){
+          return false;
+        }
+      var isexit = true;
+      for(var key in data){
+         var item = data[key];
+
+         if(item["wallname"] === name){
+              isexit = true;
+              break;
+         }else{
+              isexit =false;
+         }
+      }
+
+      return isexit;
+
+  }
 
 
 

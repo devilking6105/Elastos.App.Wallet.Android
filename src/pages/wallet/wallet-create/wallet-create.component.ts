@@ -9,9 +9,14 @@ import {Native} from "../../../providers/Native";
 })
 export class WalletCreateComponent {
  MultObj:any;
+ isShow:any = false;
  constructor(public navCtrl: NavController,public navParams:NavParams,public native:Native){
       this.MultObj = this.navParams.data;
       console.log("====WalletCreateComponent====="+JSON.stringify(this.MultObj));
+      if(!Util.isEmptyObject(this.MultObj)){
+          this.wallet.singleAddress = true;
+          this.isShow = true;
+      }
  }
   wallet = {
     name: '',
@@ -31,6 +36,12 @@ export class WalletCreateComponent {
        this.native.toast_trans("text-wallet-name-validator1");
        return;
     }
+
+    if(Util.isWallNameExit(this.wallet.name)){
+      this.native.toast_trans("text-wallet-name-validator2");
+      return;
+    }
+
     if (!Util.password(this.wallet.payPassword)) {
       this.native.toast_trans("text-pwd-validator");
       return;

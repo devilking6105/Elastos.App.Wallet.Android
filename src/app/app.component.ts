@@ -54,6 +54,7 @@ import {CompanypathinfoPage} from '../pages/id/companypathinfo/companypathinfo';
 import {IdKycCompanyComponent} from '../pages/id/kyc/company/company';
 import {CompanyWriteChainPage} from '../pages/id/kyc/company-write-chain/company-write-chain';
 import {PersonWriteChainPage} from '../pages/id/kyc/person-write-chain/person-write-chain';
+import {ExportmnemomicPage} from '../pages/exportmnemomic/exportmnemomic';
 //add for plugin
 declare var cordova: any;
 
@@ -73,7 +74,6 @@ export class AppComponent {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-      //this.registerBackButtonAction(this.nav);
       this.initTranslateConfig();
       this.initJsPush();
       this.getKycIdList();
@@ -90,7 +90,7 @@ export class AppComponent {
       //this.initializeApp();
       //this.rootPage =  WalltelistPage;
       //this.rootPage = ImportprivatekeyPage;
-      //this.rootPage =  TabsComponent;
+      //  this.rootPage =  TabsComponent;
       //this.rootPage =  LauncherComponent;
       //this.rootPage =  ManagerComponent;
       //this.rootPage = ExprotPrikeyComponent;
@@ -122,6 +122,7 @@ export class AppComponent {
       //this.rootPage = IdKycCompanyComponent;
       //this.rootPage = CompanyWriteChainPage;
       //this.rootPage = PersonWriteChainPage;
+      //  this.rootPage = ExportmnemomicPage;
       //init java 2 js plugin
     });
 

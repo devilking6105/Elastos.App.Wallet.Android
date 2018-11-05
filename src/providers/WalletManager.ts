@@ -22,8 +22,8 @@ export class WalletManager {
   public static PAGECOUNT = 20;
 
   constructor(public native: Native,public event: Events,public popupProvider :PopupProvider) {
-          this.wallet = cordova.plugins.Wallet;
-          //this.wallet = {};
+                this.wallet = cordova.plugins.Wallet;
+                //this.wallet = {};
   }
 
   //--------------------------------------------------------------------------------子钱包操作
@@ -111,11 +111,11 @@ export class WalletManager {
   }
   /**
    * @param {string} masterWalletId
-   * @param {string} backupPassWord
+   * @param {string} payPassWord
    * @param Fun
    */
-  exportWalletWithMnemonic(masterWalletId:string,backupPassWord: string, Fun) {
-    this.wallet.exportWalletWithMnemonic([masterWalletId,backupPassWord], Fun,(error)=>{
+  exportWalletWithMnemonic(masterWalletId:string,payPassWord: string, Fun) {
+    this.wallet.exportWalletWithMnemonic([masterWalletId,payPassWord], Fun,(error)=>{
       this.errorFun(error);
     });
   }
@@ -488,6 +488,19 @@ export class WalletManager {
      this.wallet.disposeNative([],Fun,(error)=>{
         this.errorFun(error);
      });
+   }
+  // args[0]: String mnemonic
+	// args[1]: String phrasePassword
+   getMultiSignPubKeyWithMnemonic(mnemonic,phrasePassword,Fun){
+         this.wallet.getMultiSignPubKeyWithMnemonic([mnemonic,phrasePassword],Fun,(error)=>{
+                this.errorFun(error);
+         });
+   }
+   // args[0]: String privKey
+   getMultiSignPubKeyWithPrivKey(privKey,Fun){
+    this.wallet.getMultiSignPubKeyWithPrivKey([privKey],Fun,(error)=>{
+      this.errorFun(error);
+    });
    }
 
   errorFun(error) {
