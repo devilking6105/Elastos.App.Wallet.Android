@@ -519,24 +519,17 @@ export class WalletManager {
     //alert("错误信息：" + JSON.stringify(error));
     this.event.publish("error:update");
   }
-
+                                                                                                           
   // Vote
-  createVoteTransaction(masterWalletId:string, chainId:string, voter:string, stake:number, publicKeys:string, Fun){
-    this.wallet.createVoteTransaction([masterWalletId, chainId, voter, stake, publicKeys], Fun, this.errorFun);
+  createVoteProducerTransaction(masterWalletId:string, chainId:string, stake:number, publicKeys:string, Fun){
+    this.wallet.createVoteTransaction([masterWalletId, chainId, stake, publicKeys], Fun, this.errorFun);
   }
 
-  registerProducer(masterWalletId:string, chainId:string, publicKey:string, nickname:string, url:string, location:string, Fun){
-    // publicKey, url, location
-    let payload = {
-      publicKey: publicKey,
-      nickname: nickname,
-      url: url,
-      location: location
-    };
-    this.wallet.registerProducer([masterWalletId, chainId, payload], Fun, this.errorFun);
+  createRegisterProducerTransaction(masterWalletId:string, chainId:string, publicKey:string, nickName:string, url:string, location:string, fromAddress:string, toAddress:string, Fun){
+    this.wallet.registerProducer([masterWalletId, chainId, publicKey, nickName, url, location, fromAddress, toAddress], Fun, this.errorFun);
   }
 
-  cancelProducer(masterWalletId:string, chainId:string, publicKey:string, Fun){
+  createCancelProducerTransaction(masterWalletId:string, chainId:string, publicKey:string, Fun){
     this.wallet.cancelProducer([masterWalletId, chainId, publicKey], Fun, this.errorFun);
   }
 

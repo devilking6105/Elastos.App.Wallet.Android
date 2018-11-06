@@ -259,17 +259,6 @@ walletFunc.prototype.publishTransaction = function(arg0, success, error) {
     exec(success, error, "Wallet", "publishTransaction", arg0);
 };
 
-// Vote
-walletFunc.prototype.createVoteTransaction = function(arg0, sucess, error) {
-    exec(sucess, error, "Wallet", "createVoteTransaction", arg0);
-};
-walletFunc.prototype.registerProducer = function(arg0, sucess, error) {
-    exec(sucess, error, "Wallet", "registerProducer", arg0);
-};
-walletFunc.prototype.cancelProducer = function(arg0, sucess, error) {
-    exec(sucess, error, "Wallet", "cancelProducer", arg0);
-};
-
 walletFunc.prototype.getMasterWalletPublicKey = function(arg0, success, error) {
     exec(success, error, "Wallet", "getMasterWalletPublicKey", arg0);
 };
@@ -305,6 +294,17 @@ walletFunc.prototype.getMultiSignPubKeyWithMnemonic = function(arg0, success, er
 
 walletFunc.prototype.getMultiSignPubKeyWithPrivKey = function(arg0, success, error) {
     exec(success, error, "Wallet", "getMultiSignPubKeyWithPrivKey", arg0);
+};
+
+// Vote
+walletFunc.prototype.createVoteProducerTransaction = function(arg0, sucess, error) {
+    exec(sucess, error, "Wallet", "createVoteProducerTransaction", arg0);
+};
+walletFunc.prototype.createRegisterProducerTransaction = function(arg0, sucess, error) {
+    exec(sucess, error, "Wallet", "createRegisterProducerTransaction", arg0);
+};
+walletFunc.prototype.createCancelProducerTransaction = function(arg0, sucess, error) {
+    exec(sucess, error, "Wallet", "createCancelProducerTransaction", arg0);
 };
 
 var WALLETFUNC = new walletFunc();
