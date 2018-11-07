@@ -522,15 +522,21 @@ export class WalletManager {
                                                                                                            
   // Vote
   createVoteProducerTransaction(masterWalletId:string, chainId:string, stake:number, publicKeys:string, Fun){
-    this.wallet.createVoteTransaction([masterWalletId, chainId, stake, publicKeys], Fun, this.errorFun);
+    this.wallet.createVoteProducerTransaction([masterWalletId, chainId, stake, publicKeys], Fun, (error)=>{
+      this.errorFun(error);
+    });
   }
 
   createRegisterProducerTransaction(masterWalletId:string, chainId:string, publicKey:string, nickName:string, url:string, location:string, fromAddress:string, toAddress:string, Fun){
-    this.wallet.registerProducer([masterWalletId, chainId, publicKey, nickName, url, location, fromAddress, toAddress], Fun, this.errorFun);
+    this.wallet.createRegisterProducerTransaction([masterWalletId, chainId, publicKey, nickName, url, location, fromAddress, toAddress], Fun, (error)=>{
+      this.errorFun(error);
+    });
   }
 
   createCancelProducerTransaction(masterWalletId:string, chainId:string, publicKey:string, Fun){
-    this.wallet.cancelProducer([masterWalletId, chainId, publicKey], Fun, this.errorFun);
+    this.wallet.createCancelProducerTransaction([masterWalletId, chainId, publicKey], Fun, (error)=>{
+      this.errorFun(error);
+    });
   }
 
 }
