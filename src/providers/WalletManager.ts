@@ -528,7 +528,7 @@ export class WalletManager {
   }
 
   createRegisterProducerTransaction(masterWalletId:string, chainId:string, fromAddress:string, toAddress:string, publicKey:string, nickName:string, url:string, location:number, Fun){
-    this.wallet.createRegisterProducerTransaction([masterWalletId, chainId, publicKey, nickName, url, location, fromAddress, toAddress], Fun, (error)=>{
+    this.wallet.createRegisterProducerTransaction([masterWalletId, chainId, fromAddress, toAddress, publicKey, nickName, url, location], Fun, (error)=>{
       this.errorFun(error);
     });
   }

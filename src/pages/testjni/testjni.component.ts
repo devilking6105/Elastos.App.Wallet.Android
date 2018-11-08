@@ -483,7 +483,7 @@ export class TestJniComponent {
    }
 
    createRegisterProducerTransaction(){
-     this.walletManager.createRegisterProducerTransaction(this.masterWalletId, this.chinaId, "", "", "02848A8F1880408C4186ED31768331BC9296E1B0C3EC7AE6F11E9069B16013A9C5", "free", "free.io", 0, (result)=>{
+     this.walletManager.createRegisterProducerTransaction(this.masterWalletId, this.chinaId, "", "EMYe2HwzF3WVeMeFjB9uQ32rwM7cGnWV6k", "02848A8F1880408C4186ED31768331BC9296E1B0C3EC7AE6F11E9069B16013A9C5", "free", "free.com", 0, (result)=>{
                     alert("===== createRegisterProducerTransaction ====="+JSON.stringify(result));
      })
    }
