@@ -1,5 +1,6 @@
 import { Component} from '@angular/core';
 import {WalletManager} from '../../providers/WalletManager';
+import {Config} from "../../providers/Config";
 
 
 @Component({
@@ -69,9 +70,12 @@ export class TestJniComponent {
                 {id:26,name:"getWalletId"},
                 {id:27,name:"getAllChainIds"},
                 {id:7,name:"exportWalletWithMnemonic"},
+                {id: 51,name:"createVoteProducerTransaction"},
+                {id: 52,name:"createRegisterProducerTransaction"},
+                {id: 53,name:"createCancelProducerTransaction"},
               ];
   constructor(public walletManager:WalletManager){
-
+    this.masterWalletId = Config.getCurMasterWalletId();
   }
 
   onNext(type): void {
@@ -193,6 +197,15 @@ export class TestJniComponent {
          break;
       case 29:
          this.changePassword();
+         break;
+      case 51:
+         this.createVoteProducerTransaction();
+         break;
+      case 52:
+         this.createRegisterProducerTransaction();
+         break;
+      case 53:
+         this.createCancelProducerTransaction();
          break;
      }
    }
@@ -462,5 +475,24 @@ export class TestJniComponent {
       //                alert("===sendRawTransaction==="+JSON.stringify(result));
       // });
    }
+
+   createVoteProducerTransaction(){
+     this.walletManager.createVoteProducerTransaction(this.masterWalletId, this.chinaId, 10,  JSON.stringify(["02848A8F1880408C4186ED31768331BC9296E1B0C3EC7AE6F11E9069B16013A9C5"]), (result)=>{
+                    alert("===== createVoteProducerTransaction ====="+JSON.stringify(result));
+     })
+   }
+
+   createRegisterProducerTransaction(){
+     this.walletManager.createRegisterProducerTransaction(this.masterWalletId, this.chinaId, "", "", "02848A8F1880408C4186ED31768331BC9296E1B0C3EC7AE6F11E9069B16013A9C5", "free", "free.io", 0, (result)=>{
+                    alert("===== createRegisterProducerTransaction ====="+JSON.stringify(result));
+     })
+   }
+
+   createCancelProducerTransaction(){
+    this.walletManager.createCancelProducerTransaction(this.masterWalletId, this.chinaId, JSON.stringify(["02848A8F1880408C4186ED31768331BC9296E1B0C3EC7AE6F11E9069B16013A9C5"]),(result)=>{
+                  alert("===== createCancelProducerTransaction ====="+JSON.stringify(result));
+    })
+   }
+
 
 }
