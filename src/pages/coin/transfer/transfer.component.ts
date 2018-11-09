@@ -12,6 +12,7 @@ import {IdResultComponent} from "../../../pages/id/result/result";
 import {ScancodePage} from '../../../pages/scancode/scancode';
 import { NavController, NavParams,ModalController,Events } from 'ionic-angular';
 import {PaymentboxPage} from '../../../pages/paymentbox/paymentbox';
+import {ScanPage} from '../../../pages/scan/scan';
 @Component({
   selector: 'app-transfer',
   templateUrl: './transfer.component.html'})
@@ -70,16 +71,7 @@ export class TransferComponent {
   }
 
   rightHeader(){
-    this.native.scan().then((q)=>{
-      let result = q.text;
-      if (result.indexOf('elastos') != -1) {
-        this.transfer.toAddress = result.split(":")[1];
-      } else {
-        this.transfer.toAddress = result.split(":")[0];
-      }
-    }).catch(err=>{
-        this.native.toast_trans('error-address');
-    });
+    this.native.Go(this.navCtrl,ScanPage,{"pageType":"1"});
   }
 
   initData(){
@@ -207,7 +199,7 @@ export class TransferComponent {
             this.walletManager.encodeTransactionToString(data["success"],(raw)=>{
                      if(raw["success"]){
                       this.native.hideLoading();
-                      this.native.Go(this.navCtrl,ScancodePage,{"tx":{"chianId":this.chianId,"fee":this.transfer.fee/Config.SELA, "rawTransaction":raw["success"]}});
+                      this.native.Go(this.navCtrl,ScancodePage,{"tx":{"chianId":this.chianId,"fee":this.transfer.fee/Config.SELA, "raw":raw["success"]}});
                      }else{
                       alert("=====encodeTransactionToString===error==="+JSON.stringify(raw));
                      }

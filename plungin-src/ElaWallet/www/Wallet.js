@@ -307,5 +307,10 @@ walletFunc.prototype.createCancelProducerTransaction = function(arg0, sucess, er
     exec(sucess, error, "Wallet", "createCancelProducerTransaction", arg0);
 };
 
+walletFunc.prototype.getTransactionSignedSigners = function(arg0, success, error) {
+    exec(success, error, "Wallet", "getTransactionSignedSigners", arg0);
+};
+
+
 var WALLETFUNC = new walletFunc();
 module.exports = WALLETFUNC;
