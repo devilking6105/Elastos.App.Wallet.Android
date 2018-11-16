@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import { Storage } from '@ionic/storage';
+import {Config} from "./Config";
 
 /***
  * 封装存储操作
@@ -196,6 +197,41 @@ export class LocalStorage {
 
     return this.storage.get(key);
   }
+
+  /////////////////
+  addOnChainContent(masterWalletId: string ,onChainConentObj : any , authType : string ){
+
+    console.info("ElastJs home.ts begin addOnChainContent" + JSON.stringify(onChainConentObj) + " authType " + authType);
+    let idsObj = {};
+    this.getKyc().then((val)=>{
+
+      console.info("ElastJs addOnChainContent getKycList " + val);
+      if(val == null || val === undefined || val === {} || val === ''){
+        console.info("ElastJs addOnChainContent getKycList err return ");
+
+        return;
+      }
+      //let masterWalletId = Config.getCurMasterWalletId();
+
+      idsObj = JSON.parse(val);
+
+      //idsObj[masterWalletId][onChainConentObj.Id]
+      if(!idsObj[masterWalletId][onChainConentObj.Id]["onChainContent"]){
+        idsObj[masterWalletId][onChainConentObj.Id]["onChainContent"] ={};
+      }
+
+      idsObj[masterWalletId][onChainConentObj.Id]["onChainContent"][authType] = onChainConentObj;
+      console.info("ElastJs addOnChainContent idsObj " + JSON.stringify(idsObj));
+
+      this.setKyc(idsObj).then(()=>{
+        console.info("ElastJs addOnChainContent pulish order ");
+
+      });
+    });
+  }
+
+
+/////////////////
 
   public getOnchainContent(masterWalletID: string , id: string, authType: string, callBack : any){
 

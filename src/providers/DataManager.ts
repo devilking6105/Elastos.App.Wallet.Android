@@ -64,18 +64,18 @@ export class DataManager {
   public OutPutIDJson(Id: string, Path : string , signature: string){
     let idJson = {};
 
-    // let jsonObj = this.getIdPathJson(Id, Path);
-    //
-    // let signCont = this.getSignCont(signature)
-    //
-    // idJson["Id"] = Id;
-    // idJson["Path"] = Path;
-    // idJson["SignContent"] = signCont;
-    // //idJson["DataHash"] = [];
-    //
-    // idJson["DataHash"] = (jsonObj)
-    //
-    // console.info("Elastjs OutPutIDJson " + JSON.stringify(idJson));
+    let jsonObj = this.getIdPathJson(Id, Path);
+
+    let signCont = this.getSignCont(signature)
+
+    idJson["Id"] = Id;
+    idJson["Path"] = Path;
+    idJson["SignContent"] = signCont;
+    //idJson["DataHash"] = [];
+
+    idJson["DataHash"] = (jsonObj)
+
+    console.info("Elastjs OutPutIDJson " + JSON.stringify(idJson));
     return idJson;
 
 

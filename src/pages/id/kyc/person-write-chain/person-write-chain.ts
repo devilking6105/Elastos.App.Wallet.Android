@@ -536,8 +536,14 @@ for(let index in obj){
   }
 
   sendTx(rawTransaction){
-    console.log("ElastJs sendTx===publishTransaction====rawTransaction"+rawTransaction);
+    let beginStr = new Date().toString();
+
+    console.log("ElastJs sendTx===before publishTransaction====rawTransaction"+rawTransaction + " beginStr -----" + beginStr);
     this.walletManager.publishTransaction(this.masterWalletId,this.chianId,rawTransaction,(data)=>{
+      let endStr = new Date().toString();
+      console.log("ElastJs sendTx=== after publishTransaction====rawTransaction"+rawTransaction + " endStr -----" + beginStr);
+
+
       if(data["success"]){
         ////////////////////
         let rawTransactionObj = JSON.parse(rawTransaction);

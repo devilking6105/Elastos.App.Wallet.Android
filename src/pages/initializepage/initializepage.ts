@@ -10,6 +10,8 @@ import { LocalStorage } from "../../providers/Localstorage";
 import { PaymentConfirmComponent } from "../../pages/coin/payment-confirm/payment-confirm.component";
 import { DidLoginComponent } from "../../pages/third-party/did-login/did-login.component";
 import { TranslateService } from '@ngx-translate/core';
+import {DataManager} from "../../providers/DataManager";
+
 @Component({
   selector: 'page-initializepage',
   templateUrl: 'initializepage.html',
@@ -17,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class InitializepagePage {
   @ViewChild('myTabs') tabs:Tabs;
   backButtonPressed: boolean = false;  //用于判断返回键是否触发
-  constructor(public appCtrl: App,private platform: Platform,public navCtrl: NavController, public navParams: NavParams,public walletManager: WalletManager,public native: Native,public localStorage: LocalStorage,public events: Events,private translate: TranslateService) {
+  constructor(public appCtrl: App,private platform: Platform,public navCtrl: NavController, public navParams: NavParams,public walletManager: WalletManager,public native: Native,public localStorage: LocalStorage,public events: Events,private translate: TranslateService , public dataManager :DataManager) {
 
   }
 
@@ -83,6 +85,53 @@ export class InitializepagePage {
      });
   }
 
+  registeIdListener(walletIDObj){
+    alert("initializePage.ts createDID registerIdListener  begin" + JSON.stringify(walletIDObj));
+    console.info("initializePage.ts ElastosJs createDID registerIdListener "+ JSON.stringify(walletIDObj));
+
+    var self = this;
+    for (let id in walletIDObj){
+      console.info("initializePage.ts ElastosJs id "+ id);
+      console.info("initializePage.ts ElastosJs walletid "+ Config.getCurMasterWalletId());
+      console.info("initializePage.ts ElastosJs before registerIdListener ");
+
+      self.walletManager.registerIdListener(Config.getCurMasterWalletId(), id, (data) => {
+        console.info("home.ts ElastosJs createDID registerIdListener "+ JSON.stringify(data));
+        //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
+        //first commit
+        if(data["confirms"] == 1){
+          let valueObj = JSON.parse(data["value"]) ;
+          if((valueObj["Contents"].length > 0) && (valueObj["Contents"][0]["Values"].length > 0) && valueObj["Contents"][0]["Values"][0]["Proof"] ){
+
+            let proofObj = JSON.parse(valueObj["Contents"][0]["Values"][0]["Proof"]);
+
+            console.info("home.ts ElastosJs createDID valueObj  "+ JSON.stringify(valueObj));
+            let seqNumObj = self.dataManager.getSeqNumObj(proofObj["signature"]);
+
+            let serialNum =  seqNumObj["serialNum"] ;
+
+
+            let arrPath = valueObj["Contents"][0]["Path"].split("/");
+
+            if (arrPath && arrPath[1]){
+              let  idJson = self.dataManager.OutPutIDJson(data.id,valueObj["Contents"][0]["Path"], proofObj["signature"]);
+              self.localStorage.addKeyToSerialNum(Config.getCurMasterWalletId(),data.id,  arrPath[1], serialNum, "idJson", idJson, function(){
+
+                self.setOrderStatus(5,serialNum ,function () {
+                  self.localStorage.addOnChainContent(Config.getCurMasterWalletId(), valueObj, arrPath[1]);
+                });
+
+              });
+            }
+          }
+        }
+        console.info("home.ts ElastosJs createDID registerIdListener  data  callback !!!!!" + JSON.stringify(data));
+      });
+    }
+
+  }
+
+
   successHandle(data){
       let idList = JSON.parse(data);
       let type = Util.GetQueryString("type");
@@ -91,6 +140,8 @@ export class InitializepagePage {
          Config.setMappingList({});
          this.handleNull(type);
        }else{
+
+
          this.localStorage.getCurMasterId().then((data) => {
           let item = JSON.parse(data);
           Config.setCurMasterWalletId(item["masterId"]);
@@ -112,6 +163,8 @@ export class InitializepagePage {
              let serids = Config.getSertoIdNew(kycObj[masterWalletId]);
              Config.setSerIds(serids);
              console.log("ElastJs successHandle setSerIds "+ JSON.stringify(serids));
+             //注册回调状态
+             self.registeIdListener(kycObj[masterWalletId]);
 
            });
         });
@@ -203,4 +256,49 @@ export class InitializepagePage {
     });
   }
 
+  setOrderStatus(status,serialNum , callback : any){
+
+    console.info("ElastJs initializepage.ts begin setOrderStatus begin status " + status +" serialNum " + serialNum);
+
+    let serids = Config.getSerIds();
+    let serid = serids[serialNum];
+
+    console.info("ElastJs initializepage setOrderStatus serid " + JSON.stringify(serid));
+    console.info("ElastJs initializepage setOrderStatus serids " + JSON.stringify(serids));
+
+    let did = serid["id"];
+    let path = serid["path"];
+    console.info("ElastJs initializepage setOrderStatus appr " + path);
+
+    let idsObj = {};
+    this.localStorage.getKyc().then((val)=>{
+
+      console.info("ElastJs initializepage setOrderStatus getKycList " + val);
+      if(val == null || val === undefined || val === {} || val === ''){
+        console.info("ElastJs initializepage setOrderStatus getKycList err return ");
+
+        return;
+      }
+      let masterWalletId = Config.getCurMasterWalletId();
+
+      idsObj = JSON.parse(val);
+
+      console.info("ElastJs initializepage setOrderStatus before chg status did "+ did + " path "+path + " serialNum "+ serialNum + " status "+ status);
+
+      console.info("ElastJs initializepage  setOrderStatus idsObj before chg----- " + JSON.stringify(idsObj));
+
+      idsObj[masterWalletId][did][path][serialNum]["pathStatus"] = status;
+
+
+      console.info("ElastJs initializepage  setOrderStatus idsObj " + JSON.stringify(idsObj));
+
+      this.localStorage.setKyc(idsObj).then(()=>{
+       // this.events.publish("order:update",status,path);
+
+        console.info("ElastJs initializepage.ts end setOrderStatus pulish order ");
+        callback();
+
+      });
+    });
+  }
 }

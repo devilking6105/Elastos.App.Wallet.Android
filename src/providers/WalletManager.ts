@@ -197,6 +197,7 @@ export class WalletManager {
 
 
   registerIdListener(masterWalletId:string, chainId:string,Fun) {
+    console.info("ElastJs WalletManager.ts registerIdListener begin masterWalletId " + masterWalletId + " chainId" +chainId);
     this.wallet.registerIdListener([masterWalletId, chainId], Fun,(error)=>{
       this.errorFun(error);
     });
