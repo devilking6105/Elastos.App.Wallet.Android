@@ -103,7 +103,7 @@ export class RechargeComponent{
       this.native.toast_trans('error-amount');
       return;
     }
-    if(!(this.transfer.amount*Config.SELA>=1)){
+    if(this.transfer.amount.toString().split(".")[1].length>8){
       this.native.toast_trans('error-amount');
       return;
     }
@@ -122,11 +122,7 @@ export class RechargeComponent{
 
   createDepositTransaction(){
     let toAmount = 0;
-    if(this.transfer.amount<1){
-      toAmount = parseInt((this.transfer.amount*Config.SELA).toPrecision(8));
-    }else{
-      toAmount =this.transfer.amount*Config.SELA;
-    }
+    toAmount = parseFloat((this.transfer.amount*Config.SELA).toPrecision(16));
     let sidechainAddress = JSON.stringify([this.sidechain.accounts]);
     let sidechainAmounts = JSON.stringify([toAmount - this.transfer.fee]);
     let sidechainIndex = JSON.stringify([this.sidechain.index]);
