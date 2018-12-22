@@ -99,6 +99,11 @@ export class RechargeComponent{
       this.native.toast_trans('correct-amount');
       return;
     }
+
+    if(this.transfer.amount <= 0){
+      this.native.toast_trans('correct-amount');
+      return;
+    }
     if(this.transfer.amount > this.balance){
       this.native.toast_trans('error-amount');
       return;
