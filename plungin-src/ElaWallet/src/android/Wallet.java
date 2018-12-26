@@ -278,8 +278,8 @@ public class Wallet extends CordovaPlugin {
 	}
 
 	private void successProcess(CallbackContext cc, Object msg) throws JSONException {
-		//Log.i(TAG, "result -> " + msg);
-		Log.i(TAG, "action success");
+		//Log.i(TAG, "result => " + msg);
+		//Log.i(TAG, "action success");
 		cc.success(mkJson(keySuccess, msg));
 	}
 
@@ -312,7 +312,7 @@ public class Wallet extends CordovaPlugin {
 
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext cc) {
-		Log.i(TAG, "action -> '" + action + "'");
+		//Log.i(TAG, "action => '" + action + "'");
 		try {
 			if (false == parametersCheck(args)) {
 				errorProcess(cc, errCodeInvalidArg, "Parameters contain 'null' value in action '" + action + "'");
@@ -584,6 +584,9 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeCreateSubWallet, "Create " + formatWalletName(masterWalletID, chainID));
 				return;
 			}
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " createSubWallet [" + feePerKb + "] => " + subWallet.GetBasicInfo());
+
 			successProcess(cc, subWallet.GetBasicInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Create " + formatWalletName(masterWalletID, chainID));
@@ -619,6 +622,9 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeRecoverSubWallet, "Recover " + formatWalletName(masterWalletID, chainID));
 				return;
 			}
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " recoverSubWallet [" + limitGap + "," + feePerKb + "] => " + subWallet.GetBasicInfo());
+
 			successProcess(cc, subWallet.GetBasicInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Recover " + formatWalletName(masterWalletID, chainID));
@@ -627,12 +633,14 @@ public class Wallet extends CordovaPlugin {
 
 	public void getAllMasterWallets(JSONArray args, CallbackContext cc) throws JSONException {
 		try {
+
 			ArrayList<IMasterWallet> masterWalletList = mMasterWalletManager.GetAllMasterWallets();
 			JSONArray masterWalletListJson = new JSONArray();
 
 			for (int i = 0; i < masterWalletList.size(); i++) {
 				masterWalletListJson.put(masterWalletList.get(i).GetId());
 			}
+			Log.i(TAG, "getAllMasterWallets => " + masterWalletListJson.toString());
 			successProcess(cc, masterWalletListJson.toString());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get all master wallets");
@@ -652,6 +660,7 @@ public class Wallet extends CordovaPlugin {
 			for (int i = 0; i < allMasterWalletIds.length; i++) {
 				allIdJson.put(allMasterWalletIds[i]);
 			}
+			Log.i(TAG, " getAllMasterWalletIds => " + allIdJson.toString());
 			successProcess(cc, allIdJson.toString());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get all master wallet ID");
@@ -676,6 +685,8 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 
+			Log.i(TAG, formatWalletName(masterWalletID) + " getMasterWallet => " + masterWallet.GetBasicInfo());
+
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get " + formatWalletName(masterWalletID));
@@ -699,6 +710,8 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeInvalidMasterWallet, "Get " + formatWalletName(masterWalletID));
 				return;
 			}
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " getMasterWalletBasicInfo => " + masterWallet.GetBasicInfo());
 
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
@@ -730,6 +743,9 @@ public class Wallet extends CordovaPlugin {
 			for (int i = 0; i < subWalletList.size(); i++) {
 				subWalletJsonArray.put(subWalletList.get(i).GetChainId());
 			}
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " getAllSubWallets => " + subWalletJsonArray.toString());
+
 			successProcess(cc, subWalletJsonArray.toString());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get " + masterWalletID + " all subwallets");
@@ -778,7 +794,7 @@ public class Wallet extends CordovaPlugin {
 
 		try {
 			String mnemonic = mMasterWalletManager.GenerateMnemonic(language);
-			Log.i(TAG, "Generate mnemonic in '" + language + "'");
+			Log.i(TAG, "generateMnemonic [" + language + "] => ...");
 			cc.success(mkJson(keySuccess, mnemonic));
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Generate mnemonic in '" + language + "'");
@@ -805,6 +821,7 @@ public class Wallet extends CordovaPlugin {
 
 		try {
 			String pubKey = mMasterWalletManager.GetMultiSignPubKeyWithMnemonic(mnemonic, phrasePassword);
+			Log.i(TAG, "getMultiSignPubKeyWithMnemonic => pubKey: " + pubKey);
 			successProcess(cc, pubKey);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get multi sign public key with mnemonic");
@@ -824,6 +841,7 @@ public class Wallet extends CordovaPlugin {
 
 		try {
 			String pubKey = mMasterWalletManager.GetMultiSignPubKeyWithPrivKey(privKey);
+			Log.i(TAG, "getMultiSignPubKeyWithPrivKey => pubKey: " + pubKey);
 			successProcess(cc, pubKey);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get multi sign public key with private key");
@@ -851,6 +869,7 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			boolean valid = masterWallet.IsAddressValid(addr);
+			Log.i(TAG, formatWalletName(masterWalletID) + " isAddressValid [" + addr + "] => " + valid);
 			successProcess(cc, valid);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Check address valid of " + formatWalletName(masterWalletID));
@@ -885,6 +904,9 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 			createDIDManager(masterWallet);
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " createMasterWallet [" + singleAddress + "] => " + masterWallet.GetBasicInfo());
+
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Create " + formatWalletName(masterWalletID));
@@ -917,6 +939,10 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			createDIDManager(masterWallet);
+
+			Log.i(TAG,formatWalletName(masterWalletID) +  " createMultiSignMasterWallet [" + coSigners +
+					", requiredSignCount" + "] => " + masterWallet.GetBasicInfo());
+
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Create multi sign " + formatWalletName(masterWalletID));
@@ -952,6 +978,10 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			createDIDManager(masterWallet);
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " createMultiSignMasterWalletWithPrivKey [" +
+					coSigners + ", " + requiredSignCount + "]=> " + masterWallet.GetBasicInfo());
+
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Create multi sign " + formatWalletName(masterWalletID) + " with private key");
@@ -989,6 +1019,10 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			createDIDManager(masterWallet);
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " createMultiSignMasterWalletWithMnemonic [" +
+					coSigners + ", " + requiredSignCount + "] => " + masterWallet.GetBasicInfo());
+
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Create multi sign " + formatWalletName(masterWalletID) + " with mnemonic");
@@ -1020,11 +1054,12 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 
-			Log.i(TAG, "Removing subWallet " + formatWalletName(masterWalletID, chainID) + "'s callback");
 
 			masterWallet.DestroyWallet(subWallet);
 
 			subWallet.RemoveCallback();
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " destroySubWallet =>");
 
 			successProcess(cc, "Destroy " + formatWalletName(masterWalletID, chainID) + " OK");
 		} catch (WalletException e) {
@@ -1050,7 +1085,6 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 
-			Log.i(TAG, "Removing masterWallet[" + masterWalletID + "]'s callback");
 			ArrayList<ISubWallet> subWallets = masterWallet.GetAllSubWallets();
 
 			IDidManager DIDManager = getDIDManager(masterWalletID);
@@ -1063,6 +1097,7 @@ public class Wallet extends CordovaPlugin {
 				subWallets.get(i).RemoveCallback();
 			}
 
+			Log.i(TAG, formatWalletName(masterWalletID) + " destroyWallet =>");
 			successProcess(cc, "Destroy " + formatWalletName(masterWalletID) + " OK");
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Destroy " + formatWalletName(masterWalletID));
@@ -1098,6 +1133,8 @@ public class Wallet extends CordovaPlugin {
 
 			createDIDManager(masterWallet);
 
+			Log.i(TAG, formatWalletName(masterWalletID) + " importWalletWithOldKeystore => " + masterWallet.GetBasicInfo());
+
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Import " + formatWalletName(masterWalletID) + " with keystore");
@@ -1130,6 +1167,8 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			createDIDManager(masterWallet);
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " importWalletWithKeystore => " + masterWallet.GetBasicInfo());
 
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
@@ -1165,6 +1204,9 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			createDIDManager(masterWallet);
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " importWalletWithMnemonic [... , " + singleAddress + "] => " + masterWallet.GetBasicInfo());
+
 			successProcess(cc, masterWallet.GetBasicInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Import " + formatWalletName(masterWalletID) + " with mnemonic");
@@ -1194,6 +1236,8 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			String keystore = mMasterWalletManager.ExportWalletWithKeystore(masterWallet, backupPassword, payPassword);
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " exportWalletWithKeystore [... , ...] => ...");
 			successProcess(cc, keystore);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Export " + formatWalletName(masterWalletID) + "to keystore");
@@ -1221,6 +1265,8 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			String mnemonic = mMasterWalletManager.ExportWalletWithMnemonic(masterWallet, backupPassword);
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " exportWalletWithMnemonic [...] => ...");
 			cc.success(mkJson(keySuccess, mnemonic));
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Export " + masterWalletID + " to mnemonic");
@@ -1240,6 +1286,7 @@ public class Wallet extends CordovaPlugin {
 
 		try {
 			String cipherJson = mMasterWalletManager.EncodeTransactionToString(txJson);
+			Log.i(TAG, "encodeTransactionToString => " + cipherJson);
 			successProcess(cc, cipherJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Encode tx to cipher string");
@@ -1259,6 +1306,7 @@ public class Wallet extends CordovaPlugin {
 
 		try {
 			String txJson = mMasterWalletManager.DecodeTransactionFromString(cipherJson);
+			Log.i(TAG, "decodeTransactionFromString => " + txJson);
 			successProcess(cc, txJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Decode tx from cipher string");
@@ -1284,6 +1332,7 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID));
 				return;
 			}
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " getBalanceInfo => " + subWallet.GetBalanceInfo());
 			successProcess(cc, subWallet.GetBalanceInfo());
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get " + formatWalletName(masterWalletID, chainID) + " balance info");
@@ -1309,6 +1358,8 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID) + " balance");
 				return;
 			}
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " getBalance => " + subWallet.GetBalance());
 
 			successProcess(cc, subWallet.GetBalance());
 		} catch (WalletException e) {
@@ -1336,7 +1387,11 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 
-			successProcess(cc, subWallet.CreateAddress());
+			String address = subWallet.CreateAddress();
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " createAddress => " + address);
+
+			successProcess(cc, address);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Create " + formatWalletName(masterWalletID, chainID) + " address");
 		}
@@ -1365,8 +1420,9 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID));
 				return;
 			}
-
-			successProcess(cc, subWallet.GetAllAddress(start, count));
+			String allAddresses = subWallet.GetAllAddress(start, count);
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " getAllAddress [" + start + ", " + count + "] => " + allAddresses);
+			successProcess(cc, allAddresses);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get " + formatWalletName(masterWalletID, chainID) + " all addresses");
 		}
@@ -1393,6 +1449,8 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID));
 				return;
 			}
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " getBalanceWithAddress [" + address + "] => " + subWallet.GetBalanceWithAddress(address));
 
 			successProcess(cc, subWallet.GetBalanceWithAddress(address));
 		} catch (WalletException e) {
@@ -1431,6 +1489,10 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			String tx = subWallet.CreateTransaction(fromAddress, toAddress, amount, memo, remark);
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " createTransaction [" + fromAddress + "," + toAddress + "," +
+					amount + "," + memo  + "," + remark + "] => " + tx);
+
 			successProcess(cc, tx);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Create " + formatWalletName(masterWalletID, chainID) + " tx");
@@ -1467,6 +1529,8 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			String tx = subWallet.CreateMultiSignTransaction(fromAddress, toAddress, amount, memo);
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) +  " createMultiSignTransaction [" + fromAddress + "," +
+					toAddress + "," + amount + "," + memo + "] => " + tx);
 			successProcess(cc, tx);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Create " + formatWalletName(masterWalletID, chainID) + " multi sign tx");
@@ -1499,6 +1563,8 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			long fee = subWallet.CalculateTransactionFee(rawTransaction, feePerKb);
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " calculateTransactionFee [...," + feePerKb + "] => " + fee);
 			successProcess(cc, fee);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Calculate " + formatWalletName(masterWalletID, chainID) + " tx fee");
@@ -1531,6 +1597,8 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			String result = subWallet.UpdateTransactionFee(rawTransaction, fee);
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " updateTransactionFee [... ," + fee + "]=> ...");
+
 			successProcess(cc, result);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Update " + formatWalletName(masterWalletID, chainID) + " tx fee");
@@ -1563,6 +1631,7 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			String result = subWallet.SignTransaction(rawTransaction, payPassword);
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " signTransaction [...] => " + result);
 			successProcess(cc, result);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Sign " + formatWalletName(masterWalletID, chainID) + " tx");
@@ -1592,6 +1661,7 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			String resultJson = subWallet.GetTransactionSignedSigners(rawTxJson);
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " getTransactionSignedSigners [...] => " + resultJson);
 			successProcess(cc, resultJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get " + formatWalletName(masterWalletID, chainID) + " tx signed signers");
@@ -1622,6 +1692,7 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			String resultJson = subWallet.PublishTransaction(rawTxJson);
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " publishTransaction [...] => " + resultJson);
 			successProcess(cc, resultJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Publish " + formatWalletName(masterWalletID, chainID) + " tx");
@@ -1656,6 +1727,8 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			String txJson = subWallet.GetAllTransaction(start, count, addressOrTxId);
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " getAllTransaction [" + start + "," +
+					count + "," + addressOrTxId + "]=> " + txJson);
 			successProcess(cc, txJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get " + formatWalletName(masterWalletID, chainID) + " all tx");
@@ -1685,6 +1758,8 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID));
 				return;
 			}
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " sign [...] => ...");
 
 			successProcess(cc, subWallet.Sign(message, payPassword));
 		} catch (WalletException e) {
@@ -1718,7 +1793,11 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 
-			successProcess(cc, subWallet.CheckSign(publicKey, message, signature));
+			String result = subWallet.CheckSign(publicKey, message, signature);
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " checkSign [...] => " + result);
+
+			successProcess(cc, result);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " verify sign");
 		}
@@ -1744,8 +1823,11 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID));
 				return;
 			}
+			String pubKey = subWallet.GetPublicKey();
 
-			successProcess(cc, subWallet.GetPublicKey());
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " getSubWalletPublicKey => " + pubKey);
+
+			successProcess(cc, pubKey);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get " + formatWalletName(masterWalletID, chainID) + " public key");
 		}
@@ -1769,7 +1851,11 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 
-			successProcess(cc, masterWallet.GetPublicKey());
+			String pubKey = masterWallet.GetPublicKey();
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " getMasterWalletPublicKey => " + pubKey);
+
+			successProcess(cc, pubKey);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, "Get " + formatWalletName(masterWalletID) + " public key");
 		}
@@ -1797,6 +1883,8 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeInvalidMasterWallet, "Get " + formatWalletName(masterWalletID));
 				return;
 			}
+
+			Log.i(TAG, formatWalletName(masterWalletID) + " masterWalletSign [...] => ...");
 
 			successProcess(cc, masterWallet.Sign(message, payPassword));
 		} catch (WalletException e) {
@@ -1829,6 +1917,8 @@ public class Wallet extends CordovaPlugin {
 				return;
 			}
 
+			Log.i(TAG, formatWalletName(masterWalletID) + " masterWalletCheckSign [...] => ...");
+
 			successProcess(cc, masterWallet.CheckSign(publicKey, message, signature));
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID) + " verify sign");
@@ -1854,6 +1944,8 @@ public class Wallet extends CordovaPlugin {
 				errorProcess(cc, errCodeInvalidSubWallet, "Get " + formatWalletName(masterWalletID, chainID));
 				return;
 			}
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " registerWalletListener =>");
 
 			subWallet.AddCallback(new ISubWalletCallback() {
 				@Override
@@ -2045,6 +2137,8 @@ public class Wallet extends CordovaPlugin {
 
 			subWallet.RemoveCallback();
 
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " removeWalletListener =>");
+
 			successProcess(cc, formatWalletName(masterWalletID, chainID) + " remove listener");
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " remove listener");
@@ -2087,6 +2181,8 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			IIdChainSubWallet idchainSubWallet = (IIdChainSubWallet)subWallet;
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " createIdTransaction [...] => ...");
 
 			successProcess(cc, idchainSubWallet.CreateIdTransaction(fromAddress, payloadJson, programJson, memo, remark));
 		} catch (WalletException e) {
@@ -2139,6 +2235,9 @@ public class Wallet extends CordovaPlugin {
 
 			String txJson = mainchainSubWallet.CreateDepositTransaction(fromAddress, toAddress, amount,
 					sideAccountJson, sideAmountJson, sideIndicesJson, memo, remark);
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " createDepositTransaction [" + fromAddress + "," + toAddress + "," +
+					amount + "," + sideAccountJson + "," + sideAmountJson + "," + sideIndicesJson + "," + memo + "," + remark + "] => " + txJson);
 			successProcess(cc, txJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " create deposit tx");
@@ -2186,6 +2285,9 @@ public class Wallet extends CordovaPlugin {
 
 			String txJson = mainchainSubWallet.CreateRegisterProducerTransaction(fromAddress, toAddress, publicKey,
 					nickName, url, location);
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " createRegisterProducerTransaction [" + fromAddress + "," +
+					toAddress + "," + publicKey + "," + nickName + "," + url + "," + location + "] => " + txJson);
 			successProcess(cc, txJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " create register producer tx");
@@ -2222,6 +2324,8 @@ public class Wallet extends CordovaPlugin {
 			IMainchainSubWallet mainchainSubWallet = (IMainchainSubWallet)subWallet;
 
 			String txJson = mainchainSubWallet.CreateCancelProducerTransaction(publicKey);
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " createCancelProducerTransaction ...");
 			successProcess(cc, txJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " create cancel producer tx");
@@ -2260,6 +2364,9 @@ public class Wallet extends CordovaPlugin {
 			IMainchainSubWallet mainchainSubWallet = (IMainchainSubWallet)subWallet;
 
 			String txJson = mainchainSubWallet.CreateVoteProducerTransaction(stake, publicKeys);
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " createVoteProducerTransaction [" + stake + "," + publicKeys + "] => " + txJson);
+
 			successProcess(cc, txJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " create vote producer tx");
@@ -2290,6 +2397,8 @@ public class Wallet extends CordovaPlugin {
 				supportedChainsJson.put(supportedChains[i]);
 			}
 
+			Log.i(TAG, formatWalletName(masterWalletID) + " getSupportedChains => " + supportedChainsJson);
+
 			successProcess(cc, supportedChainsJson);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID) + " get support chain");
@@ -2319,6 +2428,7 @@ public class Wallet extends CordovaPlugin {
 			}
 
 			masterWallet.ChangePassword(oldPassword, newPassword);
+			Log.i(TAG, formatWalletName(masterWalletID) + " changePassword [...] => ...");
 			successProcess(cc, "Change password OK");
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID) + " change password");
@@ -2798,6 +2908,8 @@ public class Wallet extends CordovaPlugin {
 			String tx = sidechainSubWallet.CreateWithdrawTransaction(fromAddress, amount,
 					mainchainAccountsJson, mainchainAmountsJson, mainchainIndexsJson, memo, remark);
 
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " createWithdrawTransaction [" + fromAddress + "," + amount + "," +
+					mainchainAmountsJson + "," + mainchainAmountsJson + "," + mainchainIndexsJson + "] => " + tx);
 			successProcess(cc, tx);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " create withdraw tx");
@@ -2831,7 +2943,11 @@ public class Wallet extends CordovaPlugin {
 
 			ISidechainSubWallet sidechainSubWallet = (ISidechainSubWallet)subWallet;
 
-			successProcess(cc, sidechainSubWallet.GetGenesisAddress());
+			String address = sidechainSubWallet.GetGenesisAddress();
+
+			Log.i(TAG, formatWalletName(masterWalletID, chainID) + " getGenesisAddress => " + address);
+
+			successProcess(cc, address);
 		} catch (WalletException e) {
 			exceptionProcess(e, cc, formatWalletName(masterWalletID, chainID) + " get genesis address");
 		}
