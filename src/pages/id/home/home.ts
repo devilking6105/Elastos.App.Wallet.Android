@@ -57,7 +57,7 @@ export class IdHomeComponent{
                  alert("ElastosJs IdHomeComponent home.ts registerIdListener "+ JSON.stringify(data));
                  //alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
                  //first commit
-                 if(data["confirms"] == 1){
+                 if(data["confirms"] == 0){
 
                    let valueObj = JSON.parse(data["value"]) ;
 
@@ -252,7 +252,7 @@ export class IdHomeComponent{
         console.info("home.ts ElastosJs createDID registerIdListener "+ JSON.stringify(data));
         alert("home.ts createDID registerIdListener  data  callback"+ JSON.stringify(data));
         //first commit
-        if(data["confirms"] == 1){
+        if(data["confirms"] == 0){
 
           let valueObj = JSON.parse(data["value"]) ;
           if((valueObj["Contents"].length > 0) && (valueObj["Contents"][0]["Values"].length > 0) && valueObj["Contents"][0]["Values"][0]["Proof"] ){
