@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component,NgZone} from '@angular/core';
 import { NavController,NavParams} from 'ionic-angular';
 import {Util} from "../../../providers/Util";
 import {MnemonicComponent} from "../../mnemonic/mnemonic.component";
@@ -10,7 +10,7 @@ import {Native} from "../../../providers/Native";
 export class WalletCreateComponent {
  MultObj:any;
  isShow:any = false;
- constructor(public navCtrl: NavController,public navParams:NavParams,public native:Native){
+ constructor(public navCtrl: NavController,public navParams:NavParams,public native:Native,public zone:NgZone){
       this.MultObj = this.navParams.data;
       this.native.info(this.MultObj);
       if(!Util.isEmptyObject(this.MultObj)){
@@ -24,6 +24,12 @@ export class WalletCreateComponent {
     payPassword:'' ,//houpeitest
     rePayPassword:''//houpeitest
   };
+
+  updateSingleAddress(isShow){
+    this.zone.run(()=>{
+      this.wallet.singleAddress = isShow;
+    });
+  }
 
 
   onCreate() {
