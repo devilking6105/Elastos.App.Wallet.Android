@@ -3,10 +3,10 @@
     "Type": "Mainchain",
     "CoinIndex": 0,
     "NetType": "MainNet",
-    "TargetTimeSpan": 60, // SOV 1 Hour
-    "TargetTimePerBlock": 60, // Sov 1 Minute
+    "TargetTimeSpan": 60,
+    "TargetTimePerBlock": 60, 
     "StandardPort": 11888,
-    "MagicNumber": 0xae7e5d74,
+    "MagicNumber": 74d5e7ae,
     "Services": 0,
     "MinFee": 10000,
     "BlockType": "SOV",
