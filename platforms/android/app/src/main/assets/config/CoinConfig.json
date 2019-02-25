@@ -1,22 +1,22 @@
 {
-  "ELA": {
+  "SOV": {
     "Type": "Mainchain",
     "CoinIndex": 0,
     "NetType": "MainNet",
-    "TargetTimeSpan": 86400,
-    "TargetTimePerBlock": 120,
-    "StandardPort": 21866,
-    "MagicNumber": 2018001,
+    "TargetTimeSpan": 1 * 60, // SOV 1 Hour
+    "TargetTimePerBlock": 1 * 60, // Sov 1 Minute
+    "StandardPort": 11888,
+    "MagicNumber": ae7e5d74,
     "Services": 0,
     "MinFee": 10000,
-    "BlockType": "ELA",
+    "BlockType": "SOV",
     "GenesisAddress" : "",
     "CheckPoints": [
       {
         "Height": 0,
-        "Hash": "6418be20291bc857c9a01e5ba205445b85a0593d47cc0b576d55a55e464f31b3",
-        "Timestamp": 1513936800,
-        "Target": 486801407
+        "Hash": "000000bdd771b14e5a031806292305e563956ce2584278de414d9965f6ab54b0",
+        "Timestamp": 1390095618,
+        "Target": 296277
       }
     ]
   },
